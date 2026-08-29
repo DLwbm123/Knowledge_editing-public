@@ -1,0 +1,25 @@
+name: paper-compatible
+paper: "Evaluating and Understanding Model Editing for Medical Vision Language Models (Zhu et al., 2026)"
+tasks: [T0, T1L, T1G, T2L, T2G, T3L, T3G, T4L, T4G, T5]
+metrics:
+  reliability: post_edit_correct_on_originally_wrong_target
+  locality: "1 - (pre_correct_and_post_wrong / pre_correct_probes), macro_per_edit"
+  generality: "pre_wrong_and_post_correct / pre_wrong_probes, macro_per_edit"
+  temporality: "1 - temporal factual errors on later follow-up, macro_per_edit"
+  overall: harmonic_mean_10_dimensions
+t5:
+  edit_timepoint: earlier
+  eval_timepoint: later_same_patient
+  curated_images: 440
+  edit_instances: 324
+  diseases: 43
+t2g:
+  variants: [paraphrase, synonym_or_abbreviation, question_form_change, telegraphic_clinical_note_style]
+t1g:
+  definition: clinically_semantically_matched_images_or_patient_variation
+sequential:
+  requested_edits: 200
+  original_author_order: UNKNOWN
+  reproduction_manifest: manifests/llava_med_seq200_reproduction_seed42.json
+  reproduction_seed: 42
+  freeze_manifest_after_creation: true

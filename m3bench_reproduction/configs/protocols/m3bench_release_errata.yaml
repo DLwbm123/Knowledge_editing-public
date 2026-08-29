@@ -1,0 +1,17 @@
+protocol_id: M3BENCH_RELEASE_ERRATUM__ONE_MISSING_GOLD_EXCLUDED_FROM_EVALUATION
+upstream_repo: BioMed-AI-Lab-U-Michgan/M3Bench
+upstream_commit: 03c6fda3813301dab3be5831fdc94b493c10afc9
+exclusions:
+  - dataset: slake
+    image_id: xmlab281
+    question_id: xmlab281_3
+    global_index: 4467
+    issue: missing_gold_answer
+    retain_in_source_manifest: true
+    retain_in_inference_manifest: true
+    retain_in_raw_baseline: true
+    include_in_gate_b_sampling: false
+    include_in_correctness_judging: false
+    include_in_task_construction: false
+    replacement_gold_answer: null
+    policy: preserve_released_record_without_imputation

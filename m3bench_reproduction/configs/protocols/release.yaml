@@ -1,0 +1,20 @@
+name: release-compatible
+source: external/M3Bench@03c6fda3813301dab3be5831fdc94b493c10afc9
+description: Exact behavior of the public M3Bench release; not a claim of paper reproduction.
+tasks: [T0, T1L, T1G, T2L, T2G, T3L, T3G, T4L, T4G, T5]
+t5:
+  metric: delta_ACC
+  reference_experiments_run: false
+t1g:
+  variants:
+    - gaussian_blur_radius_2
+    - center_crop_fraction_0.85
+    - contrast_factor_1.5
+    - gaussian_noise_std_15
+t2g:
+  variants: [paraphrase, negation_uncertainty, numeric_perturbation, distractor_insertion]
+sequential:
+  selection: all_baseline_wrong_cases
+  paper_200_case_order: unavailable
+judge:
+  release_builder_calls_no_llm: true

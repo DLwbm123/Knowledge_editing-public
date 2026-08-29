@@ -1,0 +1,12 @@
+method: lora
+rank: 16
+lora_alpha: 16
+lora_dropout: 0.0
+target_modules: [gate_proj, up_proj, down_proj]
+scope: all_language_model_mlp_blocks
+vision_encoder_trainable: false
+optimizer: AdamW
+learning_rate: 5.0e-5
+batch_size: 1
+gradient_clip_norm: 1.0
+epochs: 5

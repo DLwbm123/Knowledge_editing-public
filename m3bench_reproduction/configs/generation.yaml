@@ -1,0 +1,14 @@
+do_sample: false
+max_new_tokens: 64  # REPRODUCTION_CHOICE: paper/release do not specify decoding length.
+temperature: null
+top_p: null
+use_cache: true
+precision: float16
+conversation_template: mistral_instruct
+prompt_template: "<image>\\n{question}"
+image_preprocessing: model_native_image_processor
+eos_token_id: 2
+pad_token_id: null
+notes:
+  - "Deterministic decoding is a reproduction choice, not a claimed paper setting."
+  - "Model revision and generation-config SHA256 are written with every prediction."
