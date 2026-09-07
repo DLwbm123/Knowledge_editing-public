@@ -1,6 +1,6 @@
 # Selective-write V1 public source snapshot
 
-Current operational status: PAUSED_RESOURCE_BUSY after the user's stop/neutral-name/restart request. All old project processes stopped; neutral entrypoint tests pass, but other allocations on GPU2/3 blocked relaunch. Current queue: 12 RAW_READY, 2 PAUSED_BY_USER, 56 PENDING. The earlier running snapshot below is historical; see PROCESS_NAMING_AUDIT.json for the latest evidence.
+Current operational status: resume02 launched on GPU2/3 after the user explicitly authorized sharing when enough free VRAM remains. Source 5981c54 replaces the idle-only guard with stage-specific free-memory thresholds; nine CPU tests pass. The neutral main/run/job entrypoint is retained. See PROCESS_NAMING_AUDIT.json and USER_RESUME_STATUS.json for the latest evidence; earlier blocked snapshots are historical.
 
 Reviewer-facing dependency snapshot from research branch `medtrace-selective-write-20260907`; neutral process entrypoint `5ef3a16`, checked at `8d3a344`; endpoint-resume implementation `c4397a7` (original training/cache binding `0c72cfe`, closure/scheduling `5106c14`).
 
