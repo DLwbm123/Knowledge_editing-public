@@ -4,7 +4,11 @@ This repository is a public, source-only research snapshot of the `Knowledge_edi
 
 ## Current experiment snapshot
 
-The newest packaged implementation is the M3Bench editor paper-spec runtime:
+The latest verified results are in the [2026-09-07 experiment closeout](reports/current_experiments_20260907/README.md): LoRA-Perf completed with `QUAL_VALIDATION_FAIL`; the MedTRACE execution-preservation campaign completed without improving the routing/execution tradeoff. The newer visual-verifier R1 campaign failed at startup and remains incomplete.
+
+The corresponding source snapshots are `experiments/lora_perf_20260905/` and `experiments/medtrace_execution_preserving_20260906/`. Their checks and reproducibility limits are documented in the closeout report.
+
+The earlier M3Bench editor paper-spec runtime is retained:
 
 - `experiments/m3bench_editor_paperspec/m3bench_repro/editors/`: LoRA, GRACE, BalanceEdit, and BELoRA paper-spec implementations for the frozen LLaVA-Med runtime.
 - `experiments/m3bench_editor_paperspec/scripts/`: setup, CPU-gate, smoke-input, and GPU-runtime entry points.
@@ -15,6 +19,7 @@ These implementations are independent paper-spec adaptations/reimplementations. 
 ## Experiment reports
 
 - [M3Bench editor paper-spec final status (2026-08-28)](reports/M3BENCH_EDITOR_PAPERSPEC_FINAL_STATUS_20260828.md)
+- [Current experiment status, LoRA-Perf and MedTRACE results (2026-09-07)](reports/current_experiments_20260907/README.md)
 - [M3Bench V4 Foundation closure (2026-08-28)](reports/M3BENCH_V4_FOUNDATION_CLOSURE_20260828.md)
 - [LiveEdit-Med router R1 oracle final results (2026-08-17)](reports/LIVEEDIT_MED_ROUTER_R1_ORACLE_FINAL_RESULTS_20260817.md)
 - [LiveEdit-Med reproduction summary (2026-08-14)](reports/LIVEEDIT_MED_REPRODUCTION_SUMMARY_20260814.md)
@@ -26,7 +31,7 @@ The reports preserve their original scientific status labels. A runtime or smoke
 - `methods/`, `src/`, `easyeditor/`, `KE/`: core and adapted knowledge-editing code.
 - `scripts/`: experiment, evaluation, and audit entry points.
 - `m3bench_reproduction/`: M3Bench reproduction utilities and protocol material.
-- `experiments/m3bench_editor_paperspec/`: newest self-contained experiment implementation snapshot.
+- `experiments/`: dated implementation snapshots, including the earlier paper-spec runtime and the completed LoRA-Perf and MedTRACE campaigns.
 - `tests/`: project tests.
 - `reports/`: selected status and result reports.
 - `third_party/`, `external/`: retained upstream/adapted sources with their own provenance and licensing terms.
