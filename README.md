@@ -4,9 +4,9 @@ This repository is a public, source-only research snapshot of the `Knowledge_edi
 
 ## Current experiment snapshot
 
-The latest verified results are in the [2026-09-07 experiment closeout](reports/current_experiments_20260907/README.md): LoRA-Perf completed with `QUAL_VALIDATION_FAIL`; the MedTRACE execution-preservation campaign completed without improving the routing/execution tradeoff. The newer visual-verifier R1 campaign failed at startup and remains incomplete.
+The latest results are in the [visual-verifier R1 recovery report](reports/medtrace_visual_verifier_recovery_20260907T045800Z/GPT_PRO_REVIEW.md): 21/21 tasks and 42 verifier fits closed; none of M1–M3 passed the predeclared development retention signal. The [2026-09-07 experiment index](reports/current_experiments_20260907/README.md) preserves the earlier startup failure, LoRA-Perf `QUAL_VALIDATION_FAIL`, and the MedTRACE execution-preservation results.
 
-The corresponding source snapshots are `experiments/lora_perf_20260905/` and `experiments/medtrace_execution_preserving_20260906/`. Their checks and reproducibility limits are documented in the closeout report.
+The corresponding source snapshots are `experiments/lora_perf_20260905/`, `experiments/medtrace_execution_preserving_20260906/`, and [the visual-verifier recovery source](experiments/medtrace_visual_verifier_20260907T045800Z/README.md). Their checks and reproducibility limits are documented in the closeout reports.
 
 The earlier M3Bench editor paper-spec runtime is retained:
 

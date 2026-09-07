@@ -1,10 +1,10 @@
 # 当前实验核查与已完成轮次交付（2026-09-07）
 
-最新 MedTRACE visual-verifier R1 尚未完成：启动失败且当前无模型进程。此前的 LoRA-Perf 验证和 MedTRACE execution-preservation 长实验均已结束，分别得到资格验证失败和未改善的结果。本次公开交付的是这两个已完成轮次，不能据此宣称整个 M3Bench 实验计划已完成。
+MedTRACE visual-verifier R1 已恢复并完成 21/21 个任务、42 个 verifier fits，以及新增 275 / 复用 759 个完整元组的 Judge 判分。M1–M3 均未通过既定开发保留标准；详细结果与最终独立状态见[恢复轮次审阅报告](../medtrace_visual_verifier_recovery_20260907T045800Z/GPT_PRO_REVIEW.md)和[完成记录](../medtrace_visual_verifier_recovery_20260907T045800Z/RUN_COMPLETION.json)。此前的 LoRA-Perf `QUAL_VALIDATION_FAIL` 和 MedTRACE execution-preservation 未改善结论保持不变。这不代表完整 M3Bench、TIME/MedTRACE 或临床验证完成。
 
-## 1. 当前运行状态
+## 1. 恢复前的运行状态（历史快照，保留失败事实）
 
-2026-09-07 通过 `my-gpu` 实时读取进程、GPU 状态、运行目录、最终报告与退出码；没有启动训练或重新执行 Judge。
+以下为 2026-09-07 较早一次通过 `my-gpu` 进行的只读核查；该次核查没有启动训练或重新执行 Judge。后续已授权恢复工作另存于上方链接的新报告。
 
 - 最新运行：`/remote-home/wangbomin/medtrace_runs/20260907T032521Z`。
 - 存在 `ORCHESTRATOR_FAILED`；`worker2_rc=1`、`worker3_rc=1`、`queue_complete=0`。

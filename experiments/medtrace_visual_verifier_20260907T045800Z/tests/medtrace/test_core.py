@@ -1,0 +1,140 @@
+import unittest
+
+import torch
+import torch.nn as nn
+
+from methods.medtrace import AsymmetricCPExpert, MedTraceLayerHook, calibrate_threshold, factor_pair
+
+
+class MedTraceCoreTests(unittest.TestCase):
+    def test_factorized_dense_and_normalization(self):
+        torch.manual_seed(1)
+        expert = AsymmetricCPExpert(12, 8, 4)
+        expert.rho.data.normal_()
+        activation = torch.randn(2, 3, 12)
+        expected = expert.normalize_activation(activation) @ expert.materialize_dense().T
+        self.assertTrue(torch.allclose(expert.residual(activation), expected, atol=1e-6))
+        before = expert.residual(activation)
+        expert.normalize_factors_()
+        self.assertTrue(torch.allclose(before, expert.residual(activation), atol=1e-5))
+        before = expert.residual(activation)
+        expert.normalize_factors_(verify_dense=False)
+        self.assertTrue(torch.allclose(before, expert.residual(activation), atol=1e-5))
+        restored = AsymmetricCPExpert(12, 8, 4)
+        restored.load_state_dict(expert.state_dict())
+        self.assertTrue(torch.equal(expert.residual(activation), restored.residual(activation)))
+
+        factorized = AsymmetricCPExpert(12, 8, 4)
+        factorized.rho.data.normal_()
+        dense = AsymmetricCPExpert(12, 8, 4)
+        dense.load_state_dict(factorized.state_dict())
+        x1 = torch.randn(2, 3, 12, requires_grad=True)
+        x2 = x1.detach().clone().requires_grad_()
+        factorized.residual(x1).square().sum().backward()
+        (dense.normalize_activation(x2) @ dense.materialize_dense().T).square().sum().backward()
+        self.assertTrue(torch.allclose(x1.grad, x2.grad, atol=1e-5))
+        for left, right in zip(factorized.parameters(), dense.parameters(), strict=True):
+            self.assertTrue(torch.allclose(left.grad, right.grad, atol=1e-5))
+
+    def test_zero_effect_and_assistant_only_mask(self):
+        layer = nn.Linear(12, 8, bias=False)
+        expert = AsymmetricCPExpert(12, 8, 4)
+        hook = MedTraceLayerHook(layer, expert)
+        hook.attach()
+        activation = torch.randn(1, 4, 12)
+        base = layer(activation).detach()
+        hook.set_request_routing(torch.tensor([[False, False, False, True]]))
+        self.assertTrue(torch.equal(base, layer(activation)))
+        expert.rho.data.fill_(0.1)
+        edited = layer(activation)
+        self.assertTrue(torch.equal(base[:, :3], edited[:, :3]))
+        self.assertFalse(torch.equal(base[:, 3:], edited[:, 3:]))
+        hook.clear_request_routing()
+        self.assertTrue(torch.equal(base, layer(activation)))
+        hook.set_teacher_routing(torch.tensor([[-100, -100, 5, 6]]))
+        teacher = layer(activation)
+        self.assertTrue(torch.equal(base[:, :1], teacher[:, :1]))
+        self.assertFalse(torch.equal(base[:, 1:3], teacher[:, 1:3]))
+        self.assertTrue(torch.equal(base[:, 3:], teacher[:, 3:]))
+        with hook.generation_request():
+            generated = layer(activation)
+            longer = torch.randn(1, 5, 12)
+            longer_base = nn.functional.linear(longer, layer.weight)
+            longer_generated = layer(longer)
+        self.assertTrue(torch.equal(base[:, :3], generated[:, :3]))
+        self.assertFalse(torch.equal(base[:, 3:], generated[:, 3:]))
+        self.assertTrue(torch.equal(longer_base[:, :3], longer_generated[:, :3]))
+        self.assertFalse(torch.equal(longer_base[:, 3:], longer_generated[:, 3:]))
+        hook.detach()
+        restored = MedTraceLayerHook(layer, AsymmetricCPExpert(12, 8, 4))
+        self.assertFalse(restored.enabled)
+        self.assertIsNone(restored.token_mask)
+
+    def test_generation_request_lifecycle(self):
+        layer = nn.Linear(12, 8, bias=False)
+        expert = AsymmetricCPExpert(12, 8, 4)
+        expert.rho.data.fill_(0.1)
+        hook = MedTraceLayerHook(layer, expert)
+        hook.attach()
+
+        def changed_positions(length):
+            activation = torch.randn(1, length, 12)
+            changed = layer(activation) != nn.functional.linear(activation, layer.weight)
+            return torch.where(changed.any(dim=-1)[0])[0].tolist()
+
+        with hook.generation_request():
+            self.assertEqual(changed_positions(4), [3])
+            self.assertEqual(changed_positions(7), [3, 4, 5, 6])
+        with hook.generation_request():
+            self.assertEqual(changed_positions(7), [6])
+        with hook.generation_request():
+            self.assertEqual(changed_positions(4), [3])
+        with hook.generation_request():
+            self.assertEqual(changed_positions(1), [0])
+        with self.assertRaisesRegex(RuntimeError, "boom"):
+            with hook.generation_request():
+                self.assertEqual(changed_positions(5), [4])
+                raise RuntimeError("boom")
+        self.assertFalse(hook.enabled)
+        self.assertFalse(hook.generation_routing)
+        with hook.generation_request():
+            self.assertEqual(changed_positions(6), [5])
+        hook.detach()
+        self.assertFalse(hook.enabled)
+
+    def test_zero_rho_gradient_and_optimizer_boundary(self):
+        base = nn.Linear(12, 8, bias=False)
+        expert = AsymmetricCPExpert(12, 8, 4)
+        activation = torch.randn(1, 2, 12)
+        expert.residual(activation).sum().backward()
+        self.assertGreater(expert.rho.grad.abs().sum().item(), 0)
+        self.assertEqual(expert.u_in.grad.abs().sum().item(), 0)
+        optimizer = torch.optim.AdamW(expert.parameters(), lr=1e-3)
+        optimized = {id(parameter) for group in optimizer.param_groups for parameter in group["params"]}
+        self.assertEqual(optimized, {id(parameter) for parameter in expert.parameters()})
+        self.assertTrue(all(id(parameter) not in optimized for parameter in base.parameters()))
+
+    def test_threshold_is_metadata_not_parameter(self):
+        calibration = calibrate_threshold([0.8, 0.9], [0.1, 0.2, 0.3], target_fpr=0.0)
+        self.assertEqual(calibration.false_positive_rate, 0.0)
+        self.assertEqual(calibration.true_positive_rate, 1.0)
+        self.assertEqual(factor_pair(14336), (112, 128))
+        expert = AsymmetricCPExpert(12, 8, 4)
+        self.assertNotIn("threshold", dict(expert.named_parameters()))
+
+    def test_scope_stage_normalization_boundaries(self):
+        torch.manual_seed(2)
+        expert = AsymmetricCPExpert(12, 8, 4)
+        expert.rho.data.normal_()
+        output_before = [value.detach().clone() for value in (expert.u_out, expert.v_out, expert.rho)]
+        expert.normalize_input_factors_()
+        self.assertTrue(all(torch.equal(a, b) for a, b in zip(output_before, (expert.u_out, expert.v_out, expert.rho), strict=True)))
+        q_before = expert.input_basis().detach().clone()
+        dense_before = expert.materialize_dense().detach().clone()
+        expert.normalize_output_factors_()
+        self.assertTrue(torch.equal(q_before, expert.input_basis()))
+        self.assertTrue(torch.allclose(dense_before, expert.materialize_dense(), atol=1e-5))
+
+
+if __name__ == "__main__":
+    unittest.main()
