@@ -1,10 +1,12 @@
 # Selective-write V1 public source snapshot
 
-Reviewer-facing dependency snapshot from research branch `medtrace-selective-write-20260907`; resume implementation `c4397a7` (original training/cache binding `0c72cfe`, closure/scheduling `5106c14`).
+Current operational status: PAUSED_RESOURCE_BUSY after the user's stop/neutral-name/restart request. All old project processes stopped; neutral entrypoint tests pass, but other allocations on GPU2/3 blocked relaunch. Current queue: 12 RAW_READY, 2 PAUSED_BY_USER, 56 PENDING. The earlier running snapshot below is historical; see PROCESS_NAMING_AUDIT.json for the latest evidence.
+
+Reviewer-facing dependency snapshot from research branch `medtrace-selective-write-20260907`; neutral process entrypoint `5ef3a16`, checked at `8d3a344`; endpoint-resume implementation `c4397a7` (original training/cache binding `0c72cfe`, closure/scheduling `5106c14`).
 
 See [the in-progress review](../../reports/medtrace_selective_write_20260907/GPT_PRO_REVIEW.md) and [protocol](../../reports/medtrace_selective_write_20260907/SELECTIVE_WRITE_PROTOCOL.json).
 
-The five selective-write source/test files reuse the established runtime, hook lifecycle, queue and Judge dependencies included here. Historical pooling/verifier helpers are dependencies/reference code only; no new router is trained. Run CPU checks from this directory with `python -m unittest discover -s tests/medtrace -p test_selective_write.py -v` in the existing project-compatible Torch environment.
+The selective-write source/test files reuse the established runtime, hook lifecycle, queue and Judge dependencies included here. The neutral entrypoint adds display-only main/run/job process names without renaming source or data directories. Historical pooling/verifier helpers are dependencies/reference code only; no new router is trained. Run CPU checks from this directory with `python -m unittest discover -s tests/medtrace -p test_selective_write.py -v` in the existing project-compatible Torch environment; eight tests pass.
 
 This snapshot is not a complete research checkout or a data/model release. Original V4 runtime/source locks and authorized private manifests, images, QA, teacher distributions and checkpoints are required to execute real experiments; none are published. Do not run a public packaged directory in place of the complete research worktree. No private Git history is copied.
 
