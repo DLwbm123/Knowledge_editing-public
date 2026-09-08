@@ -1,0 +1,11 @@
+# MedTRACE Stage5 completed source snapshot
+
+See [results and scientific limitations](../../reports/medtrace_stage5_20260909/GPT_PRO_REVIEW.md). Research branch `medtrace-stage5-20260909`, results/source commit `abf0043`; Stage4 source `65185fe`. Actual writer execution `09cd564`, closeout launch `cb22fab`, numerical reporting `17e4376`; the final status-text correction and interpretation did not rerun computation.
+
+Completed: 32 BE, 32 W0, one W1 and 32 shared A2 initializations, three available-expert banks, 1094/1094 required Judge scores, and six old natural ON/OFF replays. Thirty-one W1 endpoints remain explicitly unsupported. New RC falls back to R0 due to absent H calibration. Source-derived text styles are not independent semantic families or official M3Bench generality probes; no human clinical signoff is claimed.
+
+Entrypoints are under `scripts/medtrace/`: `prepare_stage5.py`, `stage5_source_packets.py`, `start_stage5_base.py`, `coordinate_stage5_training.py`, `coordinate_stage5_closeout.py`, `stage5_existing.py`, `stage5_bank.py`, and `finalize_stage5.py`. They reuse the existing Stage2/3/4 runtime and Judge, not a new environment. Tests: `PYTHONPATH=. python -m pytest -q tests/medtrace/test_stage5_bank.py tests/test_stage5_existing.py` in the existing Torch-compatible environment.
+
+Dependencies are the already published Stage4 source snapshot plus the Stage5 changed/new modules. This is not standalone runnable without authorized private inputs, runtime configuration and model assets. Supply authorized paths; storage and local prefixes have been redacted to `/path/to/storage` and `/path/to/local`. Source packet input is private: it requires reviewed records, explicit source attributes, negative-source IDs and conflict annotations. The frozen original packets predate parameterization of the last field; do not silently regenerate them as identical to the original review. Retain original review and execution provenance.
+
+No private Git history, QA text, images, raw model answers, patient identifiers, weights, teacher tensors, credentials, or full private logs are included. Tables disclose all denominator/support limitations. Public delivery does not certify clinical safety or official M3Bench reproduction.
