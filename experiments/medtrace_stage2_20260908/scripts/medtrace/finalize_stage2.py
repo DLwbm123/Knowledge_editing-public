@@ -144,7 +144,8 @@ def lock_base_before(args):
             correct = verdicts[key]
             membership[str(i)][row['logical_id']] = dict(base_correct=correct, eqkey=row['eqkey'], tuple_key=key,
                 H_keep=correct and stratum(row) == 'H', U_keep=correct and stratum(row) == 'U')
-        for role, panel in sorted({(row['role'], stratum(row)) for row in data['rows']}):
+        panels = {(row['role'], stratum(row)) for row in data['rows']} | {(role, group) for role in ('fit', 'calibration', 'evaluation') for group in ('H', 'U')}
+        for role, panel in sorted(panels):
             rows = [r for r in data['rows'] if (r['role'], stratum(r)) == (role, panel)]
             support.append(dict(edit=i, role=role, panel=panel, inputs=len(rows), source_images=len({r['image_path'] for r in rows}),
                 base_correct_inputs=sum(membership[str(i)][r['logical_id']]['base_correct'] for r in rows)))
@@ -227,6 +228,7 @@ def finalize(args):
         data = read(run / f"private/edits/e{task['event_index']:02d}.json")
         target = data["event"]["edit_record"]["gold_answer"]
         method = "BE" if task["kind"] == "BE" else "A2" if task["kind"] == "REFERENCE" else task["parameterization"]+"-"+task["condition"]
+        system_valid = all(item.get('system_replay_valid', True) for item in result['outputs'].values())
         if data["track"] == "NEW_CONFIRMATION":
             decisions = {k: item["fixed_on"] for k, item in result["outputs"].items()}
             if task["event_index"] in gates and decisions != gates[task["event_index"]]:
@@ -236,6 +238,7 @@ def finalize(args):
             parameters=result.get("parameters"), training_seconds=result.get("training_seconds"),
             elapsed_seconds=result.get("elapsed_seconds"), storage_bytes=result.get("storage_bytes"),
             load_seconds=result.get("load_seconds"), peak_vram_bytes=result.get("peak_vram_bytes"),
+            system_status='ACTUAL_REPLAY_VALID' if system_valid else 'SYSTEM_COMBINATION_PAUSED_REPLAY_MISMATCH_FORCED_ON_RETAINED',
             forward_count=result.get("forward_count"), backward_count=result.get("backward_count")))
         for item in result["outputs"].values():
             row = item["row"]
@@ -246,6 +249,8 @@ def finalize(args):
                     raise ValueError('new Base-correct support changed after student launch')
             for mode, branch in (("BE_FORCED_ON" if method == "BE" else "FORCED_ON", "forced"),
                                  ("BE_NATIVE_ROUTED" if method == "BE" else "BE_ROUTE+"+method, "fixed"), ("BASE", "base")):
+                if branch == 'fixed' and not system_valid:
+                    continue
                 correct = score(row, row["reference"], item[branch]["raw_answer"])
                 on = branch == "forced" or branch == "fixed" and item["fixed_on"]
                 details.append(dict(track=data["track"], edit=task["event_index"], method=method, mode=mode,
@@ -275,7 +280,7 @@ def finalize(args):
     csv_write(public / "NEW_EDIT_SYSTEM_RESULTS.csv", [r for r in macros if r["track"] == "NEW_CONFIRMATION" and "FORCED_ON" not in r["mode"]])
     comparisons = []
     new_rows = [r for r in by_edit if r["track"] == "NEW_CONFIRMATION" and r["mode"] == "FORCED_ON"]
-    for candidate, control in (("P4-W1_KL_0.1", "P4-W0_TASK_ONLY"), ("P4-W2_GROUP_CONSTRAINED", "P4-W1_KL_0.1"),
+    for candidate, control in (("P4-W1_KL_0.1", "P4-W0_TASK_ONLY"), ("P4-W2_GROUP_CONSTRAINED", "P4-W0_TASK_ONLY"), ("P4-W2_GROUP_CONSTRAINED", "P4-W1_KL_0.1"),
                                ("P4-W1_KL_0.1", "A2"), ("P4-W2_GROUP_CONSTRAINED", "A2"), ("L16-W2_GROUP_CONSTRAINED", "A2")):
         for role, panel in sorted({(r["role"], r["stratum"]) for r in new_rows}):
             for metric in ("semantic", "base_correct_damage", "kl"):
@@ -288,6 +293,30 @@ def finalize(args):
                     paired_edits=len(common), delta=delta, ci_low=low, ci_high=high,
                     practical_minus_5pp_reference=(delta >= -.05) if delta is not None and metric == "semantic" else None))
     csv_write(public / "NEW_PAIRED_EDIT_EFFECTS.csv", comparisons)
+    constraints = []
+    for result in values:
+        for point in result.get('diagnostics', []):
+            for group in ('H', 'U'):
+                constraints.append(dict(task_id=result['task']['task_id'], step=point['step'], group=group,
+                    kl=point['full_fit_kl'][group], epsilon=point['epsilon'][group],
+                    residual=point['constraint_residual'][group], dual=point['dual'][group], saturation=point['saturation'][group]))
+    csv_write(public / 'NEW_CONSTRAINT_TRAJECTORIES.csv', constraints)
+    joint = []
+    for candidate, control in sorted({(r['candidate'], r['control']) for r in comparisons}):
+        pair = [r for r in comparisons if r['candidate'] == candidate and r['control'] == control]
+        positive = [r for r in pair if r['metric'] == 'semantic' and
+                    (r['role'] == 'native' or r['role'] == 'evaluation' and r['stratum'] in ('source_style_confirmation', 'cross_family_confirmation'))]
+        damage = next((r for r in pair if r['metric'] == 'base_correct_damage' and r['role'] == 'evaluation' and r['stratum'] == 'U_all'), None)
+        available = len(positive) == 3 and all(r['delta'] is not None for r in positive) and damage and damage['delta'] is not None
+        preserves = available and all(r['delta'] >= -.05 for r in positive)
+        protects = available and damage['delta'] < 0
+        conclusion = ('POINT_REFERENCE_JOINT_BENEFIT_NOT_PROVEN_NONINFERIORITY' if preserves and protects else
+                      'PROTECTION_GENERALITY_TRADEOFF' if protects else 'NO_JOINT_POINT_BENEFIT' if available else 'INSUFFICIENT_PAIRED_SUPPORT')
+        joint.append(dict(candidate=candidate, control=control, conclusion=conclusion,
+            native_and_two_text_panels_at_minus5pp=bool(preserves) if available else None,
+            U_damage_delta=damage['delta'] if damage else None,
+            min_paired_edits=min((r['paired_edits'] for r in positive), default=0)))
+    csv_write(public / 'NEW_JOINT_BEHAVIOR_ASSESSMENT.csv', joint)
     queue = vf.TaskQueue(run / "private/TASK_QUEUE.json", run)
     for result in values:
         if result["task"]["kind"] != "REFERENCE":
@@ -312,6 +341,13 @@ def finalize(args):
     vf.atomic_text(public / "BALANCEDIT_MATCHED_DEV_REPORT.md", f"# BalancEdit matched DEV16\n\nActual judged edits: {old_done}/16. Frozen V4 adaptation, independent single-edit 50-step full up-projection transforms; not author sequential reproduction. Both native routed and forced-on outputs actually generated. Low scores never gate evaluation.\n\n"+table([r for r in macros if r["track"] == "OLD_DEV16"])+"\n\nSeven old Stage1 facts use identical native/fit/cal/evaluation/H/U/challenge rows. Other DEV16 edits use their available original T0/T1G/T2G/T1L probes. Compare Stage1 FORCED_ON only with BE_FORCED_ON; routing is a separate system axis. Original Stage1 outputs were not retrained. See Stage1 full behavior addendum and METHOD_COSTS.csv. NA is zero support, not zero damage.\n")
     vf.atomic_text(public / "NEW_EDIT_CONFIRMATION_REPORT.md", f"# New-edit confirmation\n\nSource candidates={candidate_n}; frozen runnable episodes N={n}; task status {status['status']}. See the source/exposure manifest for authorization boundaries and exclusions.\n\n"+("No new-edit performance claim. N=0 runnable does NOT mean the full source scan found no candidates. Remaining readiness/identity boundaries are in the source manifest. The executable initializer is run_stage2.initialize_episode; no old fact has been renamed new.\n" if not n else table([r for r in macros if r["track"] == "NEW_CONFIRMATION"])+"\n\nEqKey to source-image to edit aggregation; paired intervals resample edits, not paraphrases. The minus-five-percentage-point margin is descriptive, not statistical or clinical proof. Native and BOTH evaluation text families must be read together with damage; KL alone cannot rank winners.\n"))
     vf.atomic_text(public / "GPT_PRO_REVIEW.md", f"# Stage2 V2 review\n\nStatus: {status['status']}. BalancEdit old DEV16 {old_done}/16 judged; source candidates={candidate_n}, frozen runnable new episodes N={n}.\n\nStage1 T2G audit found no binding correction: P4 W1(.1) protection comes with observed original-T2G loss; old qualification labels are unchanged. H-eval old Base-correct support is only 4 inputs/1 edit; U has 44/7.\n\nRead BALANCEDIT_MATCHED_DEV_REPORT.md (actual native routing vs forced-on), NEW_EDIT_CONFIRMATION_REPORT.md, paired effects and costs. No extra lambda/rank/layer sweep, LoRA gate, W3, new router, sequential or clinical claim.\n\n"+("New-fact generalization remains untested. Inspect actual source candidates and unresolved readiness/identity boundaries, not an assertion of source exhaustion.\n" if not n else "Judge protection and both cross-family generality jointly; low KL is not sufficient. Missing or failed tasks remain in the queue ledger, not dropped from the eligible cohort.\n"))
+    assessment = '\n\n## Joint behavioral reading\n\n' + '\n'.join(
+        f"- {r['candidate']} versus {r['control']}: {r['conclusion']}; paired-edit support at least {r['min_paired_edits']}; U damage delta {r['U_damage_delta']}."
+        for r in joint)
+    assessment += '\n\nThis point-estimate reading requires native and BOTH text families to stay within -5pp while U Base-correct damage decreases. It is descriptive, not a significance or noninferiority proof. H_keep support, paired intervals, original locality, full source accuracy, target consistency and W2 constraint residuals remain separate required evidence. See NEW_BASE_BEFORE_SUPPORT.csv, NEW_PAIRED_EDIT_EFFECTS.csv and NEW_CONSTRAINT_TRAJECTORIES.csv.\n'
+    for name in ('GPT_PRO_REVIEW.md', 'NEW_EDIT_CONFIRMATION_REPORT.md'):
+        path = public / name
+        vf.atomic_text(path, path.read_text()+assessment)
 
 
 def main():

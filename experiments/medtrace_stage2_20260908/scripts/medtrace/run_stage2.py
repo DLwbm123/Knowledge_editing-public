@@ -125,13 +125,19 @@ def base_for(runtime, run, data, row):
         qid = data["event"]["edit_record"]["record_id"] if row["role"] == "native" else row["logical_id"].removeprefix("formal-")
         source = canonical.get(qid)
         known = runtime.stage2_base.get(qid)
-        if known is None and row.get('base_query_ids'):
+        # Augmented positives inherit source lineage, NOT the native model input.
+        # Their original source query ID must never substitute a paraphrase Base answer.
+        if known is None and row.get('base_query_ids') and (row['role'] == 'native' or row['label'] == 'negative'):
             candidates = [runtime.stage2_base[q] for q in row['base_query_ids'] if q in runtime.stage2_base]
             if candidates and all((c['model_answer_raw'], c['raw_generated_token_ids']) == (candidates[0]['model_answer_raw'], candidates[0]['raw_generated_token_ids']) for c in candidates):
                 known = candidates[0]
                 source = row  # scanner joined source image/question/reference to the canonical query catalog
         if source and known and all(source[k] == row[k] for k in ("question", "image_path", "reference")):
-            value = dict(raw_answer=known["model_answer_raw"], raw_token_ids=known["raw_generated_token_ids"], provenance="frozen V4 Base exact query binding")
+            prepared = runtime.adapter.prepare_inputs(row['image_path'], row['question'], None)
+            bound = (prepared['input_ids'][0].tolist() == known['prompt_token_ids'] and
+                     prepared['image_sha256'] == known['image_sha256'] and not known.get('error'))
+            value = (dict(raw_answer=known["model_answer_raw"], raw_token_ids=known["raw_generated_token_ids"],
+                          provenance="frozen V4 Base exact prompt tokens and image binding") if bound else vf.scope_generate(runtime, row, None))
         else:
             value = vf.scope_generate(runtime, row, None)
     vf.atomic_json(path, value)
@@ -283,7 +289,19 @@ def initialize_episode(runtime, args, task):
     a2 = out.parent / "A2.pt"
     sw.save(a2, dict(rank=4, step=80, condition=sw.A2, record_id=record.record_id, seed=metadata["seed"], expert=cp.state_dict()))
     vf.atomic_json(out.parent / "A2_INITIALIZATION_PRIVATE.json", metadata)
-    data.update(a2=str(a2), a2_sha256=vf.sha256_file(a2), transfer_cpu=True, extra_fit=[])
+    batch = runtime.build_question_batch(record)
+    with torch.no_grad():
+        activation = runtime.extract_layer_input_features(batch, module_path=vf.LAYER).cpu()
+        fixture = torch.cat([activation[batch.key_token_index][None], activation[batch.image_token_start:batch.image_token_end][:8]])
+        cp = cp.cpu()
+        low_rank = sw.LowRankExpert(cp, vf.derive_seed(record.record_id, SEED))
+        expected, actual = cp.residual(fixture), low_rank.residual(fixture)
+        transfer_ok = bool(torch.allclose(expected, actual, rtol=2e-5, atol=2e-5))
+    vf.atomic_json(out.parent / 'A2_TRANSFER_PRIVATE.json', dict(transfer_cpu=transfer_ok,
+        actual_activation_max_abs=float((expected-actual).abs().max()),
+        actual_activation_relative_l2=float((expected-actual).norm()/expected.norm().clamp_min(1e-12)),
+        input='pre-intervention Base native prompt and first eight visual tokens', rtol=2e-5, atol=2e-5))
+    data.update(a2=str(a2), a2_sha256=vf.sha256_file(a2), transfer_cpu=transfer_ok, extra_fit=[])
     vf.atomic_json(run / f"private/edits/e{i:02d}.json", data)
     return dict(elapsed_seconds=result["timing"]["end_to_end_seconds"]+metadata["training_seconds"])
 
