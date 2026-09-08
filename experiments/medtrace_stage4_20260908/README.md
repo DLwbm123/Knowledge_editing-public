@@ -1,0 +1,11 @@
+# MedTRACE Stage4 source snapshot
+
+Stage4 is running, not complete. See the [preregistration and startup reports](../../reports/medtrace_stage4_20260908). The two interventions are fixed W01 (normalized KL lambda=.01) and calibration-only rejection RC preserving the original selected BE expert. W0/W1/BE and A2 are reused under their original cohort bindings. OLD_STAGE3_COMMON7 and SLAKE_STAGE2_BANK16 remain separate. No Stage5, additional lambda/rank/layer grid or clinical claim.
+
+The source entrypoints are `scripts/medtrace/run_stage4.py` (prepare / worker / coordinator), `scripts/medtrace/finalize_stage4.py` (prepare-judge / finalize), and the pure calibration rule `scripts/medtrace/stage4_scope.py`. Research branch: `medtrace-stage4-20260908`; preparation `f3d27e5`, initial GPU execution `1ba8b4a`. Later reporting-only changes are identified in the reviewer-facing startup report. The existing implementation and dependency snapshot are reused; no new environment/dependencies.
+
+Run `python -m pytest -q tests/medtrace/test_stage4.py` in the existing Torch-compatible environment. Three focused tests cover normalized weak KL, rejection-only calibration, fixed-support/bootstrap sensitivity, and queue phase isolation. A real CPU preflight validated 69 reusable endpoints, 8,334 historical Judge tuples and existing full-answer tokenization. First real four-GPU training advanced through step80.
+
+This is source-only and is not executable without authorized private runtime/data/config artifacts. Internal storage/local path prefixes in copied dependencies are redacted to `/path/to/storage` and `/path/to/local`; these path-default redactions are the only deliberate source-snapshot differences from the mapped research code. Supply valid authorized paths in the complete research checkout, not this public artifact directory. No private Git history, QA, images, raw answers, token IDs, weights, teacher distributions or Judge mappings are released.
+
+The independently detached four-GPU campaign is bounded at 8 wall hours / 32 GPU-hours, with at least 90 minutes reserved for Judge/closure. Source confirmation is unavailable within current fact-specific text-review authority; 32 candidates remain explicitly unsupported. No additional monitoring process is launched; final publication is checked when the user next asks after completion.
