@@ -4,7 +4,9 @@ This repository is a public, source-only research snapshot of the `Knowledge_edi
 
 ## Current experiment snapshot
 
-The latest MedTRACE release is [Stage13R: frozen evaluation on7 new edits](reports/medtrace_stage13r_20260911/GPT_PRO_REVIEW.md), with [source and reproducibility boundaries](experiments/medtrace_stage13r_20260911/README.md). All21 writer branches and Judge214/214 completed. H supervision improved forced paired correction, with a same-answer challenge cost; the predeclared fixed-RC systems tied. The historical [Stage13 N0 audit](reports/medtrace_stage13_20260911/GPT_PRO_REVIEW.md) remains valid for its old875-row source pool.
+The latest MedTRACE release is [Stage14: supervision-matched closeout](reports/medtrace_stage14_20260911/GPT_PRO_REVIEW.md), with [source and reproducibility boundaries](experiments/medtrace_stage14_20260911/README.md). Seven extra-QA controls completed; Judge1,416/1,416. Selected H facts outperform this generic extra-QA control on forced paired correction, while generic QA helps U correctness and FACT retains a same-answer challenge cost. Fixed old RC still ties all four systems. This is a post-publication supplement on the same new7 cohort, not a fresh blind confirmation.
+
+The original [Stage13R new7 confirmation](reports/medtrace_stage13r_20260911/GPT_PRO_REVIEW.md) and [Stage13 N0 audit](reports/medtrace_stage13_20260911/GPT_PRO_REVIEW.md) are unchanged. Stage14 preserves the complete old15 and new7 historical panels and does not retrain prior methods.
 
 ### Earlier recovery snapshot
 
