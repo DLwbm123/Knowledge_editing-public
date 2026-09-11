@@ -4,7 +4,11 @@ This repository is a public, source-only research snapshot of the `Knowledge_edi
 
 ## Current experiment snapshot
 
-The latest results are in the [visual-verifier R1 recovery report](reports/medtrace_visual_verifier_recovery_20260907T045800Z/GPT_PRO_REVIEW.md): 21/21 tasks and 42 verifier fits closed; none of M1–M3 passed the predeclared development retention signal. The [2026-09-07 experiment index](reports/current_experiments_20260907/README.md) preserves the earlier startup failure, LoRA-Perf `QUAL_VALIDATION_FAIL`, and the MedTRACE execution-preservation results.
+The latest MedTRACE release is [Stage13R: frozen evaluation on7 new edits](reports/medtrace_stage13r_20260911/GPT_PRO_REVIEW.md), with [source and reproducibility boundaries](experiments/medtrace_stage13r_20260911/README.md). All21 writer branches and Judge214/214 completed. H supervision improved forced paired correction, with a same-answer challenge cost; the predeclared fixed-RC systems tied. The historical [Stage13 N0 audit](reports/medtrace_stage13_20260911/GPT_PRO_REVIEW.md) remains valid for its old875-row source pool.
+
+### Earlier recovery snapshot
+
+The earlier results are in the [visual-verifier R1 recovery report](reports/medtrace_visual_verifier_recovery_20260907T045800Z/GPT_PRO_REVIEW.md): 21/21 tasks and 42 verifier fits closed; none of M1–M3 passed the predeclared development retention signal. The [2026-09-07 experiment index](reports/current_experiments_20260907/README.md) preserves the earlier startup failure, LoRA-Perf `QUAL_VALIDATION_FAIL`, and the MedTRACE execution-preservation results.
 
 The corresponding source snapshots are `experiments/lora_perf_20260905/`, `experiments/medtrace_execution_preserving_20260906/`, and [the visual-verifier recovery source](experiments/medtrace_visual_verifier_20260907T045800Z/README.md). Their checks and reproducibility limits are documented in the closeout reports.
 
