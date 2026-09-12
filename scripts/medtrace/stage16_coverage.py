@@ -343,12 +343,93 @@ def coordinate(run):
         write(run/'PIPELINE_FAILURE.json',dict(error=repr(error),traceback=traceback.format_exc()));raise
 
 
+def process_identity(pid):
+    """Read-only Linux identity; a reused PID is not the original pipeline."""
+    try:fields=Path(f'/proc/{pid}/stat').read_text().rsplit(')',1)[1].split()
+    except FileNotFoundError:return None
+    return None if fields[0]=='Z' else fields[19]
+
+
+def launch_closeout(run, gpu):
+    from scripts.medtrace.neutral_entrypoint import neutral_command
+    from scripts.medtrace import coordinate_selective_write as common
+    if gpu not in (0,1,2,3):raise ValueError('Explicit GPU required')
+    if (run/'CLOSEOUT_PIDS.json').exists():raise FileExistsError('One-off closeout already dispatched')
+    previous=read(run/'PIPELINE_PIDS.json');identity=process_identity(previous['coordinator'])
+    uuid=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=uuid','--format=csv,noheader'],text=True).strip()
+    common.GPUS.clear();common.GPUS.update({str(gpu):uuid})
+    check=common.gpu_check(str(gpu),judge=True)
+    write(run/'private/CLOSEOUT_CONFIG.json',dict(gpu=gpu,uuid=uuid,predecessor=previous['coordinator'],
+        predecessor_identity=identity,preflight=check,deadline=time.time()+24*3600,
+        policy='One-off pipeline dependency; leave live producer/coordinator untouched; reuse any complete Judge output'))
+    temporary=Path(tempfile.mkdtemp(prefix='job.'));shutil.copyfile(ROOT/'scripts/medtrace/neutral_entrypoint.py',temporary/'main.py')
+    cmd,env=neutral_command([sys.executable,str(Path(__file__).resolve()),'closeout','--run-root',str(run)],
+        dict(os.environ,JOB_ENTRYPOINT=str(temporary/'main.py'),CUDA_VISIBLE_DEVICES=''),'main')
+    with (run/'closeout.log').open('x') as f:
+        p=subprocess.Popen(cmd,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
+    write(run/'CLOSEOUT_PIDS.json',dict(coordinator=p.pid,argv=cmd,stage='WAITING_FOR_PREDECESSOR',judge_gpu=gpu))
+    print('CLOSEOUT_DETACHED',p.pid,'GPU',gpu,flush=True)
+
+
+def closeout(run):
+    from scripts.medtrace.neutral_entrypoint import neutral_command
+    from scripts.medtrace import coordinate_selective_write as common
+    cfg=read(run/'private/CLOSEOUT_CONFIG.json')
+    def wait_existing(pid,identity):
+        # This is a bounded stage dependency inside the detached pipeline, not a recurring app monitor.
+        while identity is not None and process_identity(pid)==identity:
+            if time.time()>=cfg['deadline']:raise TimeoutError('Predecessor did not finish within the one-off dependency deadline')
+            time.sleep(5)
+    try:
+        print('WAITING_FOR_EXISTING_PIPELINE',cfg['predecessor'],flush=True)
+        wait_existing(cfg['predecessor'],cfg['predecessor_identity'])
+        previous=read(run/'PIPELINE_PIDS.json')
+        if previous.get('child'):wait_existing(previous['child'],process_identity(previous['child']))
+        if (run/'RUN_COMPLETION.json').exists() and read(run/'RUN_COMPLETION.json')['status']=='A_B_COMPUTE_COMPLETE_C_D_UNSUPPORTED':
+            write(run/'CLOSEOUT_COMPLETE.json',dict(status='ALREADY_COMPLETE_NO_DUPLICATE_SCORING'));return
+        if not (run/'private/WORKER_COMPLETE.json').exists():raise RuntimeError('Generation incomplete; preserve it and do not score a partial cohort')
+        path=run/'private/judge'
+        if not (path/'PACKET.jsonl').exists():prepare_judge(run)
+        side=read(path/'SIDECAR.json');expected={}
+        for _,_,entry in prior.all_results(run):
+            for field in ('base','forced'):
+                key,_,full=prior.judge_identity(entry,entry[field],side['protocol_sha256']);expected[key]=full
+        assert expected==side['bindings'], 'Frozen Judge packet and completed output identities differ'
+        if not (path/'OUTPUT.jsonl').exists() and side['new']:
+            # A failed model initialization may leave only setup metadata, never a completed verdict.
+            leftovers=[p for p in (path/'LENGTH.json',path/'EXECUTION.json') if p.exists()]
+            if leftovers:
+                archive=path/'setup_before_closeout';archive.mkdir(exist_ok=False)
+                for p in leftovers:p.rename(archive/p.name)
+            g=str(cfg['gpu']);common.GPUS.clear();common.GPUS.update({g:cfg['uuid']})
+            env=common.environment(g,judge=True);env['JOB_ENTRYPOINT']=os.environ['JOB_ENTRYPOINT']
+            cmd,env=neutral_command([common.JUDGE_PYTHON,str(Path(__file__).resolve()),'judge','--run-root',str(run)],env,'job')
+            began=time.time()
+            with (run/'judge_closeout.log').open('x') as f:
+                p=subprocess.Popen(cmd,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
+                write(run/'CLOSEOUT_PIDS.json',dict(coordinator=os.getpid(),child=p.pid,argv=cmd,stage='JUDGING',judge_gpu=cfg['gpu']))
+                write(run/'RUN_COMPLETION.json',dict(status='A_COMPLETE_B_JUDGING_C_D_UNSUPPORTED',judge_gpu=cfg['gpu'],publication='PENDING'))
+                rc=p.wait()
+            intervals=read(run/'private/PROCESS_INTERVALS.json')
+            intervals['judge_closeout']=dict(start=began,end=time.time(),exit=rc,gpu=cfg['gpu'])
+            write(run/'private/PROCESS_INTERVALS.json',intervals)
+            if rc:raise RuntimeError('Judge closeout failed; preserve packet and setup artifacts')
+        # report() validates exact verdict coverage; incomplete existing outputs are never rescored.
+        report(run)
+        if (run/'PIPELINE_FAILURE.json').exists():(run/'PIPELINE_FAILURE.json').rename(run/'private/PRE_CLOSEOUT_PIPELINE_FAILURE.json')
+        write(run/'CLOSEOUT_COMPLETE.json',dict(status='COMPUTE_COMPLETE',judge_gpu=cfg['gpu']))
+        print('CLOSEOUT_COMPLETE',flush=True)
+    except Exception as error:
+        write(run/'CLOSEOUT_FAILURE.json',dict(error=repr(error),traceback=traceback.format_exc()));raise
+
+
 if __name__=='__main__':
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=('prepare','launch','coordinate','worker','judge','report'))
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=('prepare','launch','coordinate','worker','judge','report','launch-closeout','closeout'))
     p.add_argument('--stage15-root',type=Path);p.add_argument('--run-root',type=Path,required=True);p.add_argument('--recovered',type=Path)
     p.add_argument('--resume',action='store_true');p.add_argument('--gpu',type=int,choices=(0,1,2,3))
     a=p.parse_args()
     if a.action=='prepare':prepare(a.stage15_root,a.run_root,a.recovered)
     elif a.action=='judge':prior.judge(a.run_root)
     elif a.action=='launch':launch(a.run_root,resume=a.resume,gpu=a.gpu)
+    elif a.action=='launch-closeout':launch_closeout(a.run_root,a.gpu)
     else:globals()[a.action](a.run_root)

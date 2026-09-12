@@ -8,6 +8,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.medtrace import stage16 as a, stage16_sources as s
 from scripts.medtrace import stage16_coverage as c
+from unittest.mock import patch
 
 
 def test_contract():
@@ -48,6 +49,10 @@ def test_contract():
         except RuntimeError:pass
         else:raise AssertionError('Live process allowed to resume')
         assert (run/'PIPELINE_PIDS.json').exists() and not (run/'private/attempts').exists()
+    stat='123 (main) '+' '.join(['S']+['0']*18+['456'])
+    with patch.object(Path,'read_text',return_value=stat):assert c.process_identity(123)=='456'
+    with patch.object(Path,'read_text',return_value=stat.replace(') S ',') Z ')):assert c.process_identity(123) is None
+    with patch.object(Path,'read_text',side_effect=FileNotFoundError):assert c.process_identity(123) is None
 
 
 if __name__ == '__main__':
