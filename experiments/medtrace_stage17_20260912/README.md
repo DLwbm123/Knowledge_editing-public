@@ -1,6 +1,8 @@
-# Stage17-A: metadata and bounded mechanical handoff
+# Stage17: mechanics and authorized Base preparation
 
-This is a small source overlay, not a full formal Stage17 campaign. Read the [review](../../reports/medtrace_stage17_20260912/GPT_PRO_REVIEW.md), especially the remaining authorization, source-role and adapter work. No formal single/sequential CLI is claimed.
+This is a source overlay, not a completed formal Stage17 campaign. Read the [current continuation](../../reports/medtrace_stage17_20260912/formal/README.md) for the subsequent user approval, running Astra Base queue and remaining role/support/adapter work. No formal single/sequential CLI is claimed.
+
+The authorized continuation adds `stage17_prepare.py` (candidate Base packet assembly and cache binding) and `stage17_judge.py` (one-pass isolated Astra execution). Generic schema/validator and task-specific source helpers are reused. Preparation is already complete and the Judge queue is running; these are not instructions to duplicate it. Both logical commands take one private JSON config path through the existing neutral entrypoint. Run `python -m unittest tests.test_stage17_prepare tests.test_stage17_contract` for the seven relevant checks; macOS is required for the real OS-isolation check. The remaining sections describe the original Stage17-A milestone.
 
 ## Assemble
 
@@ -36,6 +38,6 @@ The visible detached command must use a neutral `main.py job` entrypoint, with p
 
 This runner checks exactly the first already-exposed DEV16 native, never a formal probe or old Base answer file. It performs zero training/Judge calls, four canonical generations plus one one-token lifecycle probe, and records failures rather than selecting another sample. Outputs include private inputs/tokens and must not be published; only `GPU_SMOKE.json` is public-safe. One-sample mechanical memory is not a future training/bank estimate.
 
-Judge prompt/schema/validation preparation is [documented separately](../../reports/medtrace_stage17_20260912/JUDGE_PREPARATION.md). Generic schema/validation functions are reused, but the old Stage16 prepare/merge protocol must not be mislabeled Stage17. No cloud Judge runner or formal packet has been launched.
+The original Judge prompt/schema/validation preparation is [documented separately](../../reports/medtrace_stage17_20260912/JUDGE_PREPARATION.md). Generic schema/validation functions are reused, but the old Stage16 prepare/merge protocol must not be mislabeled Stage17. The later authorized runner and packet are described in the continuation linked above.
 
-No modifications to old experiment history, sealed inputs, evaluation-to-training roles, clinical signoffs, ranks/losses/threshold candidates, or legacy performance gates are authorized by these reproduction commands.
+No modifications to old experiment history, sealed inputs, evaluation-to-training roles, clinical signoffs, or ranks/losses/threshold candidates are authorized by these reproduction commands. The approved Stage17-only performance-gate waiver does not modify any old experiment lock.
