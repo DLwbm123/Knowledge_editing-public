@@ -1,41 +1,201 @@
-# MedTRACE Stage16 — partial execution and prepared GPU2 continuation
+# MedTRACE Stage16 实验报告：冻结系统覆盖补全与 Astra 评分汇总
 
-Status: **A complete; B prepared but NOT started; C/D unsupported by current source/scope packages.** This is not a completed Stage16 GPU experiment.
+日期：2026-09-12。用途：交给 GPT Pro 审阅现有证据、判断后续研究方向；不是新实验启动指令。
 
-## Executed
+## 1. 摘要与当前完成状态
 
-- Verified the Stage15 public baseline `0c51b959c80dcda205e14c2de92b7ae43c6e8dcf` against its immutable queue, 400 checkpoint paths, 2,514 completed writer-probes, actual inputs and 2,426 frozen full-context Judge identities. No old generation or scoring was repeated.
-- Completed route/writer decomposition, all 1,354 ordered threshold breakpoints, separate positive/locality AUROCs, locality paired contingencies, source-component sensitivity, and portability-versus-Base tables. A used CPU only.
-- Recovered **all 133 missing image-locality images** by exact author-archive member names. Read only **19,395,536 bytes** using HTTP ranges, including ZIP metadata and one already-bound identity control. Native ZIP CRC was checked; the existing image control matched its historical identity. No full archive was downloaded; original images/crops were preserved.
-- Froze 133 existing edits × C_NO_H/BalancEdit = **266 new writer-probes**. Reuse the own-edit Stage15 writer and router; no training. Official questions and references are unchanged. Old-supported, newly restored and combined results will remain distinct.
+**核心结论：C_NO_H 相比现有 BalancEdit adaptation，在外部图像局部性上表现出较少的输出破坏；但绝对保护能力仍不足，旧 RC 的高保持率依赖关闭写入，完整 C_FACT 的外部 H 机制尚未得到验证。**
 
-## Not executed and why
+- Stage16-A：已完成原 Stage15 轨迹的离线路由—写入分解，没有训练、生成或重评旧 Judge。
+- Stage16-B：恢复原来缺失的 133 条官方图像局部性探针，266 个 writer-probe 生成结果完整；新增 326 个去重评分 tuple 已由 Astra 完成。本报告已将评分映射回编辑、写入器和部署模式。
+- 图像局部性可用覆盖由 67/200 扩充至 200/200；跨图泛化仍为 164/200，另外 36 条因 GMAI 来源访问限制保持 unsupported，未记为零分。
+- Stage16-C/D：没有合法、作用域明确且角色独立的新 H/G+/U 支持包；没有冻结开发/确认队列、没有新阈值、没有四臂 pilot 或独立确认。此状态是“未验证/未运行”，不是 C_FACT 性能失败。
+- Stage16-B 复用原有 200 个编辑中的 checkpoint，是同一 cohort 的评价覆盖补全，**不是 133 个新训练编辑，也不是独立外部确认**。
 
-| Branch | Verified state | Reason |
-|---|---|---|
-| B new locality generation/Judge | Prepared, **0 new outputs / 0 new judgments** | GPU2 changed from 40,445 MiB free during preparation to 4,788 MiB at launch. The existing worker guard requires 20,480 MiB; Judge later requires 34,816 MiB. The guard stopped before any project GPU process was started. |
-| B missing image-generality | 36 probes remain unsupported | Exact GMAI source unavailable under current gated access. No terms accepted or access bypassed. |
-| C new source/scoped support | Not frozen | 60 additional native records resolve in the existing assets, 56 without known Stage15 image-role overlap; these are only candidates, not a clean cohort. No newly verified H/G+ and independent fit/calibration/evaluation package is available. |
-| D four-arm pilot/confirmation | Not run | Conditional legal-support requirements not met. No H loss removed, no FACT/EXTRA negative performance conclusion inferred. |
+本次结果汇总及后续公开发布没有新增训练、生成、Judge 调用或改变标签。远程旧管线状态未回填；本公开版本收录最新报告、聚合数据与必要复现代码。推送及匿名访问验证以单独的发布回执为准。
 
-No automatic GPU polling or monitor was created. No other GPU or existing process was changed. Preparation and historical results are preserved for an explicitly requested continuation.
+## 2. 固定条件、指标与 Judge 边界
 
-## Scientific reading of A
+历史基线：`Knowledge_editing-public@0c51b959c80dcda205e14c2de92b7ae43c6e8dcf`。当前用于核对和汇总的本地 Stage16 代码提交：`bef96d2`。官方 MedMKEB 来源版本沿用 `d9f38639ec2285a0e9f541e22156ec14f87271d8`。
 
-Old RC retains only 2/164 image-general successes for either writer, versus 158/164 or 159/164 at R0. Its 67/67 image-local output preservation is achieved by turning all those probes OFF. The writer and router effects must not be conflated.
+方法保持不变：Stage14 确定的 C_FACT V1 参数化不改动；本次覆盖评价实际加载 Stage15 的 C_NO_H 和 BalancEdit checkpoint。C_NO_H 使用既有 rank-4、73,728 个 FP32 自由参数的写入器及其原 320-step continuation checkpoint；本轮没有再训练。BalancEdit 是现有 adaptation，不称作者执行环境的精确复现，也不称与 C_NO_H 等训练预算。
 
-Historical R0 locality preservation favors C_NO_H by 4 discordant pairs: +5.97 pp with the original bootstrap interval [1.49, 11.94] pp, but supplemental exact two-sided p=0.125. Source-semantic accuracy is a different endpoint (+2.99 pp; interval [0, 7.46] pp; exact p=0.5). These do not establish strong independent external FACT effectiveness.
+部署模式：
 
-The cached margins suggest that the old threshold is poorly transferred: image-general versus image-local AUROC is 0.981616 on 164/67 probes. A less restrictive **post-hoc diagnostic** region retains 152/164 image-general activations with 5/67 image-local activations. No point is adopted or renamed as a new primary; independent Base-only development data is still required.
+- `BASE`：不启用写入器。
+- `FORCED_ON`：强制启用写入器，观察写入器自身行为。
+- `R0`：原始路由，代码标签为 `BE_ROUTE_R0`，两种写入器使用相同输入、Base 输出和路由决定。
+- `旧 RC`：`RC_FIXED_OLD16`，仅进一步拒绝 R0，固定 κ=0.7696741135364367；没有改变路由表示或阈值。
 
-Portability exact and semantic outcomes diverge. One-hop exact improves from 0/73 to 1/73, while semantic accuracy drops from Base 21/73 to 7/73 or 8/73. This is not evidence of reliable multi-hop transfer.
+必须分开的指标：
 
-Known observed source connections produce 151 components across the 200 edits. These are source-image/preprocessed-image/article proxies, not 151 known patients. Unobserved near-duplicates and patient/study identity remain UNKNOWN. The single reused U-fit QA is not an independent 200-example U evaluation.
+1. **输出保持率**：局部性探针上，编辑后输出与 Base 输出是否在 NFKC、大小写与空白规范化后完全一致。不使用 Judge，保持错误答案也算“保持”。
+2. **来源答案语义一致性**：Judge 判断输出是否与固定来源参考答案语义一致。这不是输出保持率，也不是人工临床正确性认证。
+3. **编辑目标匹配**：native/generalization 对固定编辑目标的匹配；官方目标可能是反事实，不能解释成真实医学事实正确率。
 
-## Deliverables and boundaries
+Judge 协议：
 
-Public: Stage16 source, CPU contract check, frozen protocol, source/role/access audits, aggregate diagnostic tables, and this partial-status report. The coverage runner has passed CPU syntax/contract checks but **has not yet been GPU runtime-validated**. No new accuracy or GPU-completion claim is made.
+- 历史支持集：保留原 Qwen3-32B-AWQ 评分，关闭 thinking，原快照和判定不变。
+- 新恢复支持集：`gpt-6-astra`、`high`、`medtrace-stage16-astra-semantic-v1`；实际不可变模型版本未知，保留 null。
+- **禁止合并两种 Judge 的语义指标。** 旧 67 条与新 133 条分别报告。输出保持率没有 Judge 依赖，且生成/规范化规则未变，因此可以另外报告覆盖全部 200 条的输出保持率。
+- 没有同一批样本的 Astra/Qwen 双评分加人工参照，不能据此声称 Astra 在本任务已被证明更准确；也不能将新旧集分数变化归因于 Judge。
 
-Private: raw QA and images, outputs/tokens, per-item Judge/checkpoint bindings, patient information, model/checkpoint files, and environment paths. No sealed data was opened. Stage15 files were read-only. No threshold tuning, new algorithm, extra qualification gate, or next-stage run was performed.
+## 3. 新增 133 条图像局部性：主要结果
 
-Sources: [MedMKEB pinned release](https://github.com/pkusixspace/MedMKEB/tree/d9f38639ec2285a0e9f541e22156ec14f87271d8), [PMC-VQA author archive/license](https://huggingface.co/datasets/RadGenome/PMC-VQA/blob/b56ae594f794867893143b337b4118a835794647/README.md), [GMAI access and withheld TEST answers](https://huggingface.co/datasets/OpenGVLab/GMAI-MMBench).
+每个编辑一个新增 probe，每种方法 n=133；edit-macro 与 probe-micro 在此一致。表中 BE 均指现有 BalancEdit adaptation。输出保持列不依赖 Judge，来源一致性列全部由 Astra 评分。
+
+| 模式 | ON 数，两方法相同 | C_NO_H 输出保持 | BE 输出保持 | C_NO_H 来源一致性 | BE 来源一致性 |
+|---|---:|---:|---:|---:|---:|
+| BASE | 0/133 | 133/133，100% | 133/133，100% | 29/133，21.80% | 29/133，21.80% |
+| FORCED_ON | 133/133 | 20/133，15.04% | 0/133，0% | 12/133，9.02% | 0/133，0% |
+| R0 | 45/133 | 95/133，71.43% | 88/133，66.17% | 26/133，19.55% | 22/133，16.54% |
+| 旧 RC | 0/133 | 133/133，100% | 133/133，100% | 29/133，21.80% | 29/133，21.80% |
+
+### 3.1 改善主要是“较少破坏”，不是新增事实纠正
+
+R0 关闭 88 条、启用 45 条：
+
+- 88 条 OFF 两种方法均返回 Base，贡献全部 88 个输出保持。
+- 45 条 ON 中，C_NO_H 保持 7 条、改变 38 条；BE 保持 0 条、改变 45 条。
+- 因而 ON 条件下的输出改变率仍为 38/45=84.44% 对 45/45=100%。C_NO_H 相对更好，但不能称“误激活后仍可靠”。
+- Base 来源答案正确的 29 条中，R0 下 C_NO_H 破坏 3 条、BE 破坏 7 条；两者将 Base-wrong 纠正为来源正确的数量均为 0。
+- FORCED_ON 下，Base-correct 损伤为 C_NO_H 17/29、BE 29/29，仍没有 Base-wrong→correct 的纠正。
+
+因此，这批证据支持 C_NO_H 相对 BE 的较少损伤；**不支持把收益解释为已经学会纠正独立来源事实或 H 选择性机制。**
+
+### 3.2 编辑目标向局部性输入扩散
+
+按完整规范化答案是否等于该编辑的目标答案计数，不用子串匹配或语义猜测：
+
+| 模式 | C_NO_H 输出编辑目标 | BE 输出编辑目标 |
+|---|---:|---:|
+| BASE | 0/133 | 0/133 |
+| FORCED_ON | 55/133，41.35% | 123/133，92.48% |
+| R0 | 18/133，13.53% | 40/133，30.08% |
+| 旧 RC | 0/133 | 0/133 |
+
+这提供了目标答案过度扩散的直接输出证据。BE 更明显，但 C_NO_H 仍存在较大的扩散。该计数并非所有错误输出的完整归因。
+
+## 4. 配对统计与覆盖完整性
+
+下表差值均为 C_NO_H−BE，单位为百分点（pp）。沿用现有 seed=20260911 的 2,000 次 edit 配对 bootstrap；另列双侧精确配对检验。没有多重检验校正，这些是覆盖补全/诊断性统计，不是新的预注册独立确认。
+
+| 支持集与指标 | 模式 | 差值 | bootstrap 95% CI | 仅 C_NO_H 成功 / 仅 BE 成功 | 补充精确 p |
+|---|---|---:|---:|---:|---:|
+| 历史 67，输出保持 | R0 | +5.97 | [1.49, 11.94] | 4 / 0 | 0.125 |
+| 新增 133，输出保持 | R0 | +5.26 | [1.50, 9.02] | 7 / 0 | 0.015625 |
+| 全部 200，输出保持，无 Judge 混合 | R0 | +5.50 | [2.50, 9.00] | 11 / 0 | 0.0009766 |
+| 新增 133，Astra 来源一致性 | R0 | +3.01 | [0.75, 6.77] | 4 / 0 | 0.125 |
+| 新增 133，输出保持 | FORCED_ON | +15.04 | [9.02, 21.80] | 20 / 0 | 0.000001907 |
+| 新增 133，Astra 来源一致性 | FORCED_ON | +9.02 | [4.51, 13.53] | 12 / 0 | 0.0004883 |
+
+新增 R0 来源一致性只有 4 个不一致配对，精确 p=0.125。不能只根据 bootstrap 下界大于零，就将它写成强确认性语义改善。
+
+可合并的全部 200 条输出保持结果：
+
+| 模式 | C_NO_H | BE | ON 数 |
+|---|---:|---:|---:|
+| FORCED_ON | 27/200，13.50% | 0/200，0% | 200/200 |
+| R0 | 148/200，74.00% | 137/200，68.50% | 63/200 |
+| 旧 RC | 200/200，100% | 200/200，100% | 0/200 |
+
+这里的 100% 仅表示回到 Base 后输出不变；没有计算混用 Qwen/Astra 的“200 条来源语义准确率”。
+
+### 来源依赖敏感性
+
+沿用已有图像身份、预处理图像和 PMC 文章连接规则，不重新读取图像或推断患者身份。A 的历史 200 编辑为 151 个已知连接组；加入恢复探针的来源连接后为 149 个组，新 133 子集涉及其中 105 个组。新旧子集存在已知来源连接，因此不能宣称完全独立。
+
+- 新增 R0 输出保持：来源组等权差值 +5.24 pp，组均值 bootstrap 区间 [1.43, 9.52] pp；逐个移除来源组后的 edit 加权差值范围 [4.55, 5.43] pp。
+- 全部 200 的 R0 输出保持：来源组等权差值 +5.37 pp，区间 [2.35, 8.72] pp；逐组移除后范围 [5.03, 5.61] pp。
+- 这些只是已观察到的来源连接代理；患者/研究身份与未观察到的近重复关系仍为 UNKNOWN。精确配对 p 也不能消除跨编辑相关性这一限制。
+
+## 5. Stage16-A：历史路由迁移与写入能力的分解
+
+本节全部来自未重跑的 Stage15 历史结果；语义列仍由 Qwen 评分。A 核对了 400 个 checkpoint 绑定、2,514 个完成 writer-probe 和 2,426 个冻结 Judge tuple。
+
+| 历史任务与模式 | C_NO_H 精确目标匹配 | BE 精确目标匹配 | C_NO_H Qwen 语义匹配 | BE Qwen 语义匹配 |
+|---|---:|---:|---:|---:|
+| native，R0 / 旧 RC | 200/200 | 200/200 | 198/200 | 198/200 |
+| 文本泛化，R0 / 旧 RC | 195/200 | 196/200 | 196/200 | 195/200 |
+| 跨图泛化，FORCED_ON | 161/164 | 163/164 | 160/164 | 161/164 |
+| 跨图泛化，R0 | 158/164 | 159/164 | 157/164 | 157/164 |
+| 跨图泛化，旧 RC | 2/164 | 2/164 | 4/164 | 4/164 |
+
+精确和 Judge 语义结果存在不一致，包含 native 200/200 对 198/200；原始结果如实保留，不在本轮擅自修标签或重评分。精确列与语义列不能混称同一指标。
+
+### 5.1 旧 RC 牺牲跨图覆盖换取保持
+
+跨图正例 R0 ON=160/164，旧 RC ON=2/164。与此同时，历史 67 条和新恢复 133 条图像局部性在旧 RC 下均全部 OFF。
+
+旧 κ 对通常正半径相当于只接受 d/r≤0.2303258865；它不是“76.97% 置信度”。因此旧 RC 的保持收益主要来自强拒绝，不能与 R0 的高跨图泛化拼成一个“同时最好”的部署系统。
+
+### 5.2 存在阈值迁移问题的诊断证据，但没有新校准结果
+
+- 历史跨图正例/图像局部性负例的 margin AUROC=0.981616，分母分别为 164/67。
+- 检查全部 1,354 个可实现断点，仅作事后诊断。
+- 历史断点约 0.165872–0.171249 的区域可保留 152/164 个跨图激活，并将图像局部性激活控制在 5/67。
+- 这支持“旧阈值迁移不合适”的解释，但仍有重叠；**没有采用该区域的任何阈值，没有生成 RC_EXTCAL_V1，也没有将新恢复评价探针用于调参。**
+
+### 5.3 多跳迁移没有得到正面支持
+
+历史 Qwen 来源/目标语义口径下，1-hop 从 Base 21/73 降到 C_NO_H 7/73、BE 8/73；2-hop 从 Base 8/24 降到 1/24、0/24；3-hop 仅 2 条，均为 0/2。各 hop 的 FORCED_ON、R0 和旧 RC 结果在这些历史探针上相同。
+
+1-hop 精确匹配虽从 0/73 增至两方法各 1/73，但不能以此宣称可靠多跳迁移。
+
+## 6. Astra 评分与生成过程的可追溯性
+
+- 新增 133 个编辑 × 2 个写入器=266 个 writer-probe；Base/forced 绑定经完整结构化 tuple 匹配，共映射到 326 个原评分 ID，无新增哈希、无按问题文本模糊匹配。
+- Base、C_NO_H forced、BE forced 各涉及 133 个 tuple；三者有相同完整输入/输出身份的复用，因此去重总数是 326，而非 399。原 Judge 准备还复用了两个写入器之间共同的 Base 生成缓存。
+- 7 批 Astra 响应已通过严格 JSON、ID 覆盖与顺序检查。共 31 true、295 false；31/326=9.51% 是去重 tuple 的标签分布，不是任一方法的准确率。方法级分母见第 3 节。
+- 执行证据记录 7 个独立会话、同一 Astra/high 配置、正常退出、无工具调用；存在禁读项目/记忆/操作端材料的隔离检查。该证据不等于独立认证云端不可变模型版本。
+- 第一批初次响应因隔离证据不足被排除并保留，随后有明确授权的一次隔离重评；正式结果仅采用重评版本。共 8 次完成的评分尝试，接受其中 7 次；另有 7 次评分前预检失败。
+- 记录到 8 次实际路由回放全部通过，覆盖两写入器各自图像 ON/OFF 的 4 种签名；不是对 266 条逐条重生成复测。本次新增探针没有 text-only，不声称新增 text-only 回放。
+- 新增 FORCED_ON 达到生成上限的输出为 C_NO_H 4/133、BE 0/133；R0 为 1/133、0/133；Base/旧 RC 为 0。保留这些样本，不因成绩或长度删除。达到上限不自动等价于确定发生语义截断。
+
+本次汇总复用原有规范化、路由接受、统计和来源组函数，并以完整绑定断言校验；没有重新搭建评分服务或修改实验算法。
+
+## 7. 成本与运行状态说明
+
+- Stage16-A 原记录 CPU 约 73.03 秒、GPU 0 秒。
+- B 新训练步数=0。早期 GPU2 尝试已留下 19 份完成结果，GPU1 续跑保留它们，完成剩余 247 份；没有因为切换设备重做已完成 writer-probe。
+- 最后一次 GPU1 worker 记录的内部循环时间为 3,502.37 秒，约 58.37 分钟；峰值 allocated 约 14.65 GiB，reserved 约 14.76 GiB。它们只覆盖该 worker 的记录区间，不代表含此前失败尝试、模型初始化和存储等待的端到端成本，也不是所有尝试的全局显存峰值。
+- Qwen Judge 曾长时间等待，随后按用户要求停止，其等待协调器一并停止；生成结果保留。Astra 通过云端完成评分，不再占用本项目服务器 GPU 执行 Judge。
+- 接受的 7 批 Astra 调用记录时长合计约 535.94 秒（8.93 分钟）；不含预检、被排除的首次评分、人工等待或操作间隔，不能称整个 Judge 工作流只耗时 9 分钟。
+- 现有 `RUN_COMPLETION.json` 仍停留在停止 Qwen 后的状态，原本地/公开准备报告也曾写 B 尚未开始；这些是旧操作状态。此次以完成生成文件和新的 Astra 执行记录为依据完成独立汇总，未覆写旧管线状态，也未直接调用会混合两种 Judge 的旧 report 入口。
+
+## 8. 可以与不可以写入论文的结论
+
+可以支持：
+
+1. 在这一可用性选择的 MedMKEB 200-edit cohort 上，两种既有写入器具有较高的 native/跨图编辑目标匹配能力。
+2. 覆盖补全后，C_NO_H 相比现有 BE adaptation 的图像局部性输出保持优势仍存在：全部 200 条 R0 为 74.00% 对 68.50%；新增子集方向一致。
+3. 新增 Astra 子集显示 C_NO_H 破坏较少的 Base-correct 来源答案，且目标向局部性输入扩散少于 BE；但绝对保护程度仍低。
+4. 旧 RC 在外部跨图正例上接受不足，高局部性保持主要由 OFF 返回 Base 产生。
+
+不能支持：
+
+- 完整 C_FACT 的 H 机制、FACT−EXTRA_QA 的监督匹配优势或 H-eval PairCorrect 已获外部确认；这些分支未运行。
+- C_NO_H 的差异由 H 监督造成；C_NO_H 本身没有 H，该对照也不是等训练预算因果消融。
+- 系统已同时获得高跨图泛化、高来源事实正确性与低局部性损伤，或具有临床安全保证。
+- 单一新阈值已经独立校准成功、Astra 已证明比 Qwen 更准，或 200 条语义指标已用统一 Judge 完成。
+- 新恢复 133 条是独立新增训练/确认 cohort，或 200 编辑/149 来源组就是 200/149 个独立患者。
+
+C/D 的具体缺口仍是：未取得新合法 H 与通用 G、作用域明确的 G+、独立 U 及 fit/calibration/evaluation 分离包。已有 60 个额外可解析 native（其中 56 个无已知 Stage15 图像角色重叠）只是可用性候选，不是合格确认队列。没有解封保留集、把评价图像改作训练、把模型 pred 当来源 gold 或用 LLM 新造医学事实。
+
+## 9. 请 GPT Pro 审阅的问题
+
+请依据以上实测结果与证据边界给出判断，不把未运行分支当作失败，不把规划写成已完成：
+
+1. 当前最稳妥的论文定位是否应是“相对减少写入损伤与识别旧路由迁移限制”，而不是“完整事实选择性已经外部验证”？
+2. 下一阶段最关键的证据缺口是什么：合法 H/G/U 的独立机制评价，还是独立来源上的路由校准？请说明优先级和最小充分范围，不新增算法变体或事后性能资格门。
+3. 对现有证据，哪些表格可作为主结果，哪些只能作为覆盖补全或诊断？特别注意来源相关性、R0 语义仅四个不一致配对，以及 Qwen/Astra 不同评分版本。
+
+后续建议须继续保持既有封存、来源许可、隐私与明确要求的人工临床审查。没有本轮自动追加重评、pilot、阈值搜索或下一阶段训练的授权。
+
+## 10. 证据文件与交付范围
+
+本报告关联的 [STAGE16_REVIEW_AGGREGATES.json](STAGE16_REVIEW_AGGREGATES.json) 仅含汇总计数、统计方法、配对表和来源组敏感性，不含原始 QA、回答或方法到单条样本的映射。
+
+可追溯输入：历史 `STAGE16_A_READONLY_REPORT.md`、`ROUTE_WRITER_DECOMPOSITION.csv`、`STAGE16_A_AUDIT.json` 与来源/角色审计；本轮 266 份 `RESULT.json`、冻结 `QUEUE.json`、评分 `SIDECAR.json`、`VERDICTS_ASTRA.jsonl`、`EXECUTION_RECORD.json` 及各批执行证据。私有生成文件复制成功，266 份总大小 2,549,690 字节，并通过此次实际解析/绑定检查；没有声称传输逐字节校验。
+
+发送 GPT Pro 时可以只附本报告及汇总 JSON，**不要附整个 operator 目录或包含私有原始问答的评分压缩包**。公开范围仅限本报告、汇总数据、脱敏执行/协议摘要及必要代码；未上传这些私有输入、未修改 Stage15 历史结果或远程运行状态。此前 Stage16 准备版报告由 Git 历史保留，本版本更新其当前状态。

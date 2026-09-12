@@ -1,7 +1,11 @@
-# Stage16 artifacts
+# Stage16 artifacts — supported coverage complete, Astra-scored extension
 
-Start with [GPT_PRO_REVIEW.md](GPT_PRO_REVIEW.md). This is a partial release: CPU analysis is complete; newly recovered locality evaluation is prepared but has not run because GPU2 lacked memory at launch. C/D source/scope requirements remain unmet.
+Start with the updated [GPT Pro review report](GPT_PRO_REVIEW.md) and [aggregate results](STAGE16_REVIEW_AGGREGATES.json). A is complete. B restored 133 official locality probes, completed 266 writer-probes using existing checkpoints, and obtained 326 accepted Astra judgments. C/D source/scope requirements remain unmet; no four-arm pilot, new threshold or independent confirmation is claimed.
 
-`ROUTE_WRITER_DECOMPOSITION.csv`, `ROUTER_MARGIN_SUMMARY.csv`, `ROUTER_PAIRWISE_AUROC.csv`, `POSTHOC_THRESHOLD_TRADEOFF.csv`, `LOCALITY_PAIRED_CONTINGENCY.csv`, `PORTABILITY_BASE_DELTA.csv`, and `SOURCE_GROUP_SENSITIVITY.csv` describe immutable Stage15 outputs, not new experimental trials.
+The [Astra execution summary](ASTRA_EXECUTION_SUMMARY.json) and [protocol amendment](ASTRA_PROTOCOL_AMENDMENT.json) disclose the Judge change and rejected first attempt. Historical Qwen semantic scores and new Astra semantic scores remain separate. Only Judge-independent output preservation is combined across the old 67 and new 133 probes.
 
-`PROTOCOL_AND_METHOD_LOCK.json`, `H_SUPPORT_AUDIT_SUMMARY.json`, `DATA_ROLE_AND_EXPOSURE_SUMMARY.json`, `ROUTER_CALIBRATION_SUMMARY.json` and `COVERAGE_AND_COST.json` describe the frozen continuation and explicit unsupported branches. Four-arm and new-coverage result files are absent because those runs did not occur; missing results are not zero scores.
+The original A diagnostic CSV files remain unchanged. Updated source-component sensitivity for the coverage extension is in the aggregate JSON, not a rewrite of historical tables.
+
+`PROTOCOL_AND_METHOD_LOCK.json` preserves the original prelaunch lock; its Qwen-only clause is superseded for the new restored subset only by `ASTRA_PROTOCOL_AMENDMENT.json`. `COVERAGE_AND_COST.json` records current completion. H/source/role and calibration audits remain unchanged. Remote operational markers have not been relabelled; completion here is supported by actual output and scoring artifacts.
+
+See [reproduction instructions](../../experiments/medtrace_stage16_20260912/README.md). Source-only release: no images, raw QA/answers/tokens, per-item mappings, credentials or checkpoint files. Prior preparation status remains in Git history. Publication verification is recorded separately after pushing, not implied by a pre-push status field.
