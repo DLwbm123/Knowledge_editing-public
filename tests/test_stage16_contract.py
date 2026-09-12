@@ -3,8 +3,11 @@ import io
 from pathlib import Path
 import sys
 import zipfile
+import os
+import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.medtrace import stage16 as a, stage16_sources as s
+from scripts.medtrace import stage16_coverage as c
 
 
 def test_contract():
@@ -32,6 +35,19 @@ def test_contract():
         s.RemoteZip=LocalRange
         assert s.member_bytes('unused',len(data.getvalue()),info)[0] == b'image payload'
     finally: s.RemoteZip=original
+    cfg=dict(worker_gpus=[1],allowed_physical_gpus=[1],judge_gpu=1,gpu_uuids={'1':'uuid'})
+    assert c.configured_gpu(cfg)=='1'
+    try:c.configured_gpu(dict(cfg,judge_gpu=2))
+    except ValueError:pass
+    else:raise AssertionError('Unauthorized Judge GPU accepted')
+    with tempfile.TemporaryDirectory() as directory:
+        run=Path(directory)
+        a.write(run/'PIPELINE_PIDS.json',dict(coordinator=os.getpid(),child=os.getpid(),active_action='worker'))
+        a.write(run/'PIPELINE_FAILURE.json',dict(error='test'))
+        try:c.archive_failed_worker(run)
+        except RuntimeError:pass
+        else:raise AssertionError('Live process allowed to resume')
+        assert (run/'PIPELINE_PIDS.json').exists() and not (run/'private/attempts').exists()
 
 
 if __name__ == '__main__':
