@@ -1,5 +1,7 @@
 # Stage17 authorized continuation — Base Judge running
 
+Latest scheduling instruction: resume this task once at 2026-09-13 01:00 Asia/Shanghai, then complete preparation and use physical GPU1 for new experiments when ready. This supersedes earlier GPU3 launch authorization below; historical GPU3 mechanics are unchanged. The active automation is `medtrace-stage17-1-gpu1`. The existing Astra queue continues unchanged.
+
 The user approved the Stage17-only scope in [AUTHORIZATION.json](AUTHORIZATION.json). This supersedes the earlier Stage17-A pending-authorization statements, not historical results or locks. GPU authorization remains physical GPU3 only. Sealed/heldout data, T5, license acceptance and clinical signoff are not expanded.
 
 ## Verified milestone
