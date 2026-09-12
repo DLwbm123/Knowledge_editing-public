@@ -93,7 +93,7 @@ def recover(manifest_path, destination):
         if not wanted: break
         remote = RemoteZip(URL+archive, size)
         with zipfile.ZipFile(remote) as z:
-            matched = defaultdict_list = {}
+            matched = {}
             for info in z.infolist():
                 name = Path(info.filename).name
                 if name in wanted: matched.setdefault(name, []).append(info)

@@ -215,7 +215,7 @@ def analyze(old, run):
         for mode in MODES:
             for score in ('output_preservation', 'source_semantic'):
                 def outcome(r):
-                    on = mode == 'FORCED_ON' or r['r0'] if mode == 'BE_ROUTE_R0' else mode == 'FORCED_ON' or r['rc']
+                    on = mode == 'FORCED_ON' or (r['r0'] if mode == 'BE_ROUTE_R0' else r['rc'])
                     return (r['forced_preserve'] if on else True) if score == 'output_preservation' else r['forced_semantic'] if on else r['base_semantic']
                 cells = Counter(); differences = {}; by_cluster = defaultdict(list)
                 for i in left:
