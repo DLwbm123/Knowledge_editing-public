@@ -1,6 +1,6 @@
 # Stage17 progress
 
-Current status: [authorized continuation and Base Judge](formal/README.md). The user subsequently approved Stage17-only formal processing and uniform Astra scoring. GPU3 student training and final method comparisons are not complete.
+Current status: [scheduled GPU1 continuation and Base Judge interruption](formal/SCHEDULED_RESUME_REPORT.md). The user approved Stage17-only formal processing and uniform Astra scoring. The first 40 Judge batches are preserved; the network-failed remainder, formal GPU training and final method comparisons are not complete.
 
 The following Stage17-A files are historical handoff records; their pending-authorization statements are superseded only by [the new approval](formal/AUTHORIZATION.json). Historical T0 N=179 is not a newly judged Stage17 N.
 
