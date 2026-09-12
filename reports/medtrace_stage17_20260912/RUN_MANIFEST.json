@@ -1,0 +1,98 @@
+{
+  "stage": "Stage17",
+  "status": "NO_FORMAL_LAUNCH",
+  "actual_N": null,
+  "S_H": null,
+  "S_G": null,
+  "max_single_trajectories": "5N+S_H+S_G only if U covers N; task-specific queues cost separately",
+  "branches": [
+    {
+      "id": "A_CPU",
+      "status": "COMPLETE",
+      "command": "PYTHONPATH=. python -m pytest -q tests/test_stage17_contract.py tests/medtrace/test_core.py tests/medtrace/test_selective_write.py tests/medtrace/test_stage3_bank.py tests/medtrace/test_stage5_bank.py tests/editor_paperspec/test_mechanics.py tests/editor_paperspec/test_formal_state_contract.py",
+      "passed": 53
+    },
+    {
+      "id": "A_GPU_DEV",
+      "status": "COMPLETE_GPU3_PASS",
+      "command": "python scripts/medtrace/stage17_smoke.py --config \"$PRIVATE_SMOKE_CONFIG\" --out \"$NEW_SMOKE_RESULT\"",
+      "launch_rule": "execute via existing neutral entrypoint; actual detached invocation privately recorded"
+    },
+    {
+      "id": "B_BASE_COHORT",
+      "status": "NEEDS_AUTHORIZATION",
+      "needs": [
+        "unsealed T0-T4 inputs",
+        "uniform new Judge execution",
+        "source-role join/exposure ledger"
+      ],
+      "depends_on_H": false
+    },
+    {
+      "id": "B_SINGLE_BASELINES",
+      "status": "NEEDS_AUTHORIZATION_AND_INTEGRATION",
+      "methods": [
+        "BalancEdit adaptation",
+        "LoRA-Perf-v1",
+        "GRACE",
+        "BELoRA V2 effect-repaired (deviation explicit)"
+      ],
+      "needs": [
+        "new Stage17 waiver of historical performance gate",
+        "Base masks/queue",
+        "legal fit routing anchors",
+        "formal adapter config parity and output bindings"
+      ],
+      "depends_on_H": false,
+      "command": null
+    },
+    {
+      "id": "B_SINGLE_NOH",
+      "status": "NEEDS_U_PROOF_AND_AUTHORIZATION_AND_INTEGRATION",
+      "methods": [
+        "C_NO_H"
+      ],
+      "queue": "E_U",
+      "command": null
+    },
+    {
+      "id": "B_SINGLE_FACT",
+      "status": "NEEDS_H_U_PROOF_AND_AUTHORIZATION_AND_INTEGRATION",
+      "queue": "E_H",
+      "G_required": false,
+      "command": null
+    },
+    {
+      "id": "B_SINGLE_EXTRA",
+      "status": "NEEDS_H_G_U_PROOF_AND_AUTHORIZATION_AND_INTEGRATION",
+      "queue": "E_HG",
+      "command": null
+    },
+    {
+      "id": "C_SEQUENCE_BASELINES",
+      "status": "NEEDS_AUTHORIZATION_AND_INTEGRATION",
+      "queue": "E_N; separately matched E_U if necessary",
+      "depends_on_H": false,
+      "command": null
+    },
+    {
+      "id": "C_SEQUENCE_COMMON",
+      "status": "NEEDS_H_G_U_PROOF_AND_AUTHORIZATION_AND_INTEGRATION",
+      "queue": "E_HG only; no full-stream slicing",
+      "command": null
+    },
+    {
+      "id": "D_JUDGE",
+      "status": "PREPARATION_ONLY_NEEDS_CLOUD_AUTHORIZATION",
+      "command": null
+    },
+    {
+      "id": "T5",
+      "status": "NOT_AUTHORIZED_NA",
+      "command": null
+    }
+  ],
+  "commands_null_mean": "no Stage17 formal CLI is implemented or authorized; do not present old Stage3/Stage15 coordinators as new runnable campaigns",
+  "cost_ETA": "no formal ETA until actual queues/probes/masks freeze; no GPU utilization target",
+  "automatic_monitor": false
+}

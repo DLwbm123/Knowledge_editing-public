@@ -1,0 +1,102 @@
+{
+  "version": "MEDTRACE_STAGE17_M3BENCH_EVALUATION_V1_PREEXECUTION",
+  "status": "DEFINITIONS_REGISTERED__FORMAL_INPUT_AND_JUDGE_AUTHORIZATION_PENDING",
+  "paper": {
+    "url": "https://arxiv.org/html/2607.05310v1",
+    "sections": [
+      "A.5",
+      "C.2"
+    ],
+    "version": "v1"
+  },
+  "release": {
+    "repo": "https://github.com/BioMed-AI-Lab-U-Michgan/M3Bench",
+    "commit": "03c6fda3813301dab3be5831fdc94b493c10afc9",
+    "task_definitions": "TASK_DEFINITIONS.md"
+  },
+  "implementation": {
+    "private_source": "31eec55224370f1ea7a27e0f65b48c0738704ea4",
+    "public_parent": "d30536dc31ec3472a5edd143a2c7749f9ec7a727",
+    "paper_exact": false,
+    "label": "release-aligned supported subset with declared runtime/method deviations"
+  },
+  "T0": "post correctness on new frozen Judge Base-wrong requests",
+  "locality": "T1L/T2L/T3L/T4L: sum(c0*ct)/sum(c0); c2w=1-retention",
+  "generality": "T1G/T2G/T3G/T4G primary Fix=sum((1-c0)*ct)/sum(1-c0); secondary PostAcc over all legitimate probes",
+  "OutputAgreement": "separate normalized pre/post raw output agreement, never correctness",
+  "normalization": "NFKC/casefold/whitespace only; preserve medical polarity/number content",
+  "PairCorrect": "native_correct AND H_eval_correct, average within edit then edit macro; native failures remain in denominator",
+  "denominator": {
+    "zero": "NA/support=0",
+    "Base_mask": "new uniform Judge on Base once BEFORE student output; freeze for all methods/prefixes",
+    "comparison": "same task and exact common support, full cohort and H/G support separate",
+    "execution_failure": "not a semantic false or dropped row; report completion, conditional metrics and intention-to-edit failures separately"
+  },
+  "aggregation": {
+    "primary": "edit-macro",
+    "secondary": "probe-micro/counts",
+    "bootstrap_repetitions": 10000,
+    "bootstrap_seed": 20260912,
+    "source_sensitivity": true,
+    "patient_independence": "UNKNOWN",
+    "multiplicity": "exploratory descriptive intervals; no confirmatory superiority claim",
+    "order_uncertainty": "one frozen order; bootstrap does not estimate order uncertainty"
+  },
+  "task_differences": [
+    "release T1G perturbations vs paper same-semantic independent images: stratify and do not conflate",
+    "release generality PostAcc vs paper originally-wrong Fix: both reported, Fix primary",
+    "tasks may have distinct queues; no fabricated common N",
+    "no T5 permission and no ten-task Overall",
+    "no blind equivalence assumption for negation/numeric/uncertainty rewrites"
+  ],
+  "Judge": {
+    "status": "NOT_AUTHORIZED_NOT_CALLED",
+    "proposed_model": "gpt-6-astra",
+    "reasoning_effort": "high",
+    "immutable_snapshot": null,
+    "version_claim": "actual execution only; no fabricated service attestation",
+    "isolation": "fresh isolated model context, no tools or methods/results/source-private files, complete visible batch only",
+    "all_methods_and_Base_same_protocol": true,
+    "clinical_validation": false,
+    "old_verdict_reuse": false,
+    "retries": "no semantic retries; format/isolation failures quarantined; any replacement requires declared permission",
+    "visible_fields": [
+      "opaque_query_id",
+      "question",
+      "gold_answer",
+      "raw_base_answer"
+    ],
+    "response_keys": [
+      "batch_id",
+      "decisions"
+    ],
+    "decision_keys": [
+      "opaque_query_id",
+      "is_correct"
+    ],
+    "strict_boolean": true,
+    "coverage": "exact ordered IDs; reject duplicates, unknown/extra/missing IDs, extra keys and non-standard JSON",
+    "binding": "full input/image/runtime/decode/reference/raw output/tokens/Judge config/execution lineage; never answer-string only"
+  },
+  "sequence": {
+    "families": [
+      "E_N full baseline flow; C_NO_H only if U covers all E_N",
+      "otherwise separate E_U common NO_H+baseline flow, not a slice of E_N outputs",
+      "E_HG-only FACT/EXTRA/NO_H/BE flow"
+    ],
+    "prefixes": "unique valid 1/50/100/N; evaluate all preceding requests and probes",
+    "teacher": "frozen Base only, no future edit information",
+    "independent_expert_replay": "require full state/input/support/init/seed binding; insert in order and regenerate all bank outputs; report replay cost",
+    "LoRA_GRACE": "native continuous update/collision semantics; no stitching of independent single checkpoints",
+    "duplicate_conflicts": "register all exact-input equivalence/conflicts from metadata BEFORE outputs; latest authorized native target defines active-target panel at prefix; retain original-target diagnostic and role-transition counts; no performance-based removal",
+    "role_overlap": "now-edited locality ceases strict-Base role by predeclared prefix map, not post-hoc answer inspection; Base correctness masks remain frozen",
+    "formal_prefix_role_map": "PENDING_AUTHORIZED_COHORT_JOIN_AND_IMPLEMENTATION"
+  },
+  "input_roles": {
+    "official_native_and_same_image_probes": "legal task design",
+    "auxiliary_H_G_U": "source-isolated from ENTIRE formal edit/probe queue and evaluation/held-out roles",
+    "native_fit": "only approved native-derived answer-preserving fit, no official T2G derivatives",
+    "future_support": false,
+    "human_clinical_review": "cannot be agent-signed"
+  }
+}

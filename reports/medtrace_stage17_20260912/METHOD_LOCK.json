@@ -1,0 +1,227 @@
+{
+  "status": "V1_AND_BASELINE_CONFIGS_RECORDED__FORMAL_ADAPTATION_PENDING",
+  "runtime": {
+    "canonical_lane": "current_stack_v4",
+    "environment_lock_sha256": "d1c7875f79bd04b01813f2c900bbe693dc58854225c507f21b0d51433e7f02bf",
+    "generation": {
+      "batch_size": 1,
+      "do_sample": false,
+      "max_new_tokens": 1024,
+      "num_beams": 1,
+      "temperature": 0,
+      "use_cache": true
+    },
+    "historical_stack_reconstruction_permitted": false,
+    "llava_med_code_commit": "30697ca50b5c29a8e955c99330b259776aef27b9",
+    "model_snapshot_sha": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "parity": {
+      "decoded_parity": 0.9750566893424036,
+      "normalized_parity": 0.9750566893424036,
+      "semantic_parity": 0.9931972789115646
+    },
+    "selected_runtime": "runtime_b_official_native",
+    "vision_snapshot_sha": "ce19dc912ca5cd21c8a653c79e251e808ccabcd1"
+  },
+  "generation": {
+    "batch_size": 1,
+    "classification": "M3BENCH_PAPER_SPEC_INDEPENDENT_REIMPLEMENTATION_V2_EFFECT_REPAIRED",
+    "config_sha256": "a31dbfb542f142e9e7698fcc62df6dfc881f806862cfb906570e1538198ec4b2",
+    "conv_mode": "mistral_instruct",
+    "device_mapping": "one explicitly selected physical GPU (2 or 3 only for Foundation V3)",
+    "do_sample": false,
+    "dtype": "float16",
+    "eos_stop_policy": "model_eos_token_id; no answer-derived stop sequence",
+    "foundation_label": "M3BENCH_PUBLIC_RELEASE_ALIGNED__LOCAL_GENERATION_CONFIG_FROZEN",
+    "generation_output_contract": "continuation_only",
+    "gold_length_truncation": false,
+    "inference_mode": true,
+    "logical_shards": 16,
+    "max_new_tokens": 1024,
+    "model_eval": true,
+    "model_id": "llava_med_v1_5_mistral_7b",
+    "num_beams": 1,
+    "padding_side": "checkpoint_tokenizer_default; recorded at runtime",
+    "prompt_contract": "native_mistral_instruct__image_plus_question_only",
+    "raw_prediction_schema_version": "foundation-v2-raw-1",
+    "source_commit": "e5da74ae5892186835b2f431cf05345fe76f1707",
+    "target_answers_in_prompt": false,
+    "teacher_forcing": false,
+    "temperature": null,
+    "top_p": null,
+    "use_cache": true,
+    "vision_tower_id": "clip-vit-large-patch14-336"
+  },
+  "C_V1": {
+    "module": "model.layers.21.mlp.down_proj",
+    "rank": 4,
+    "FP32_parameters": 73728,
+    "initialization": "own native CP -> A2(80) -> CP-W0(320) -> function-preserving freeR4; share once per edit",
+    "continuation_steps": 320,
+    "optimizer": {
+      "name": "Adam",
+      "A_lr": 0.0001,
+      "B_lr": 0.001,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-8,
+      "weight_decay": 0,
+      "clip": 1
+    },
+    "normalization": "unchanged inherited activation/factor normalization and token/source-group averaging",
+    "NO_H_loss": ".5 native CE + .5 legal native-only fit CE + .01 full-vocab token-mean KL(Base||student) on U",
+    "FACT_loss": "NO_H + 1 H CE",
+    "EXTRA_loss": "NO_H + 1 G CE, replace same H slot and schedule",
+    "missing_U": "UNSUPPORTED; no silent KL removal",
+    "missing_H": "FACT unsupported; never relabel NO_H as FACT"
+  },
+  "LoRA_Perf_v1": {
+    "checkpoint": 80,
+    "profile": {
+      "alpha": 16,
+      "check_interval": 1,
+      "layer_scope": "all",
+      "learning_rate": 0.0005,
+      "min_steps": 1,
+      "profile_name": "LoRA-Perf-v1",
+      "rank": 16,
+      "steps_per_edit": 80,
+      "stop_rule": "fixed",
+      "target_modules": [
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "target_nll_threshold": 0.5
+    },
+    "profile_id": "profile_ebf01ad24c7f",
+    "schema_version": "lora-perf-v1-dev-selection-lock-v1",
+    "status": "DEV_UNIQUE_PROFILE_SELECTED",
+    "qualification": {
+      "candidates": [
+        {
+          "checkpoint": 80,
+          "edit_target_copy_rate_same_question_other_image": 1,
+          "empty_or_error": 0,
+          "profile_id": "profile_ebf01ad24c7f",
+          "readiness": false,
+          "runtime_seconds": 511.17806819907855,
+          "t0_correct": 16,
+          "t0_total": 16,
+          "t1g": 1,
+          "t1l_macro": 0.19999999999999998,
+          "t2g": 1,
+          "target_nll_decrease": 16,
+          "trainable_parameters": 28311552
+        }
+      ],
+      "schema_version": "lora-perf-v1-qual-summary-v1",
+      "selected": null,
+      "split": "QUAL16",
+      "status": "QUAL_VALIDATION_FAIL"
+    },
+    "qualification_is_historical": true,
+    "rerun_search": false
+  },
+  "baselines": {
+    "balancedit": {
+      "alpha": 0.2,
+      "classification": "paper-spec LLaVA-Med adaptation of locked BalanceEdit source",
+      "config_sha256": "dada602ae4b3ca4805a1866d21372fc2d36fdab270f9a63a47c517c933978c01",
+      "distance": "euclidean from minigpt4_euc source config",
+      "edited_state_precision": "float32; outputs cast to frozen backbone dtype",
+      "gradient_clip": 1,
+      "key": "mean input hidden representation at edited up_projection",
+      "learning_rate": 0.01,
+      "method": "BalanceEdit",
+      "negative": "same-size black image plus original question",
+      "optimizer": "Adam",
+      "positive": "same image plus frozen official question rephrase",
+      "radius_formula": "(1-alpha)*negative_distance + alpha*positive_distance",
+      "schema_version": "m3bench-editor-method-config-v2",
+      "scope": "final-layer LM MLP up_projection",
+      "source": "BalanceEdit @ 83749e52a1d27331d21cfec845b6089294730c2f; hparams/BalancEdit/minigpt4_euc.yaml",
+      "steps_per_edit": 50,
+      "target": "model.layers.31.mlp.up_proj"
+    },
+    "grace": {
+      "activation": "nearest_distance <= stored_radius",
+      "classification": "M3Bench-paper-spec adaptation of locked GRACE source",
+      "collision_and_radius_update": "locked source semantics",
+      "config_sha256": "31101194a5004d6fef9ce9965baf65be795e2bd46c69dc1dd6ca4a4281defd7b",
+      "distance": "1 - cosine_similarity",
+      "eps_init": 1,
+      "euclidean": "diagnostic only, not primary smoke",
+      "learning_rate": 1,
+      "method": "GRACE",
+      "optimizer": "Adam",
+      "replacement": "replace_prompt inclusive through expanded key token",
+      "schema_version": "m3bench-editor-method-config-v2",
+      "scope": "final-layer LM up_projection adaptor",
+      "source": "GRACE @ f674183f17a995d109e10ee6140d4c3e6d016115",
+      "steps_per_edit": 100,
+      "target": "model.layers.31.mlp.up_proj",
+      "trainable": "selected entry value only",
+      "value_init": "cold uniform [0,1), source lock"
+    },
+    "belora": {
+      "alpha": 0.2,
+      "author_runtime": "unavailable",
+      "batch_size": 1,
+      "classification": "independent paper-spec reimplementation; not author implementation",
+      "config_sha256": "4b350803c23d76848b3b2165e7ebead52f4a69d9d067ac60d3c3be16524a3106",
+      "deviation_reason": "approved 8-record effect gate: 5-20 steps were generation no-op; 50 was the first tested checkpoint that changed generation",
+      "distance": "euclidean from BalanceEdit minigpt4_euc source config",
+      "dropout": 0,
+      "epochs_per_edit": 50,
+      "gradient_clip": 1,
+      "implementation_label": "BELORA_PAPER_SPEC_INDEPENDENT_REIMPLEMENTATION_V2_EFFECT_REPAIRED",
+      "learning_rate": 0.00005,
+      "lora_alpha": 16,
+      "method": "BELoRA",
+      "optimizer": "AdamW",
+      "paper_spec_deviation": true,
+      "paper_spec_epochs_per_edit": 5,
+      "projector": "excluded from primary smoke",
+      "radius_formula": "(1-alpha)*negative_distance + alpha*positive_distance",
+      "rank": 16,
+      "routing": "BalanceEdit pooled-key nearest route",
+      "schema_version": "m3bench-editor-method-config-v2",
+      "scope": "final-layer LM MLP internal linears",
+      "targets": [
+        "model.layers.31.mlp.gate_proj",
+        "model.layers.31.mlp.up_proj",
+        "model.layers.31.mlp.down_proj"
+      ],
+      "update_storage": "per-edit LoRA parameters only; no full module copies",
+      "vision_encoder": "excluded"
+    }
+  },
+  "baseline_adaptation": {
+    "balancedit_positive": "native-only legal fit, NEVER official evaluation rephrase; full-linear writer capacity/budget difference declared",
+    "BELoRA": "actual frozen implementation is V2_EFFECT_REPAIRED 50 steps vs paper-spec 5. Keep explicit deviation; no silent switch, no paper-exact claim. Resolve final baseline label/acceptance before formal outputs.",
+    "LoRA": "historical generic 5-step LoRA config is not LoRA-Perf-v1; Stage17 must instantiate frozen profile and verify actual lock"
+  },
+  "routing": {
+    "C_and_BE_primary": "R0 (registered before formal output)",
+    "alpha": 0.2,
+    "anchors": "same frozen Base key/native-only fit positive/black image negative; global role proof required",
+    "secondary_RC_kappa": 0.7696741135364367,
+    "forced_own_expert": "single diagnostic only",
+    "GRACE_BELoRA": "native method routing",
+    "LoRA": "native non-routed deployment",
+    "selection": "global nearest then its radius; stable insertion/argmin tie; no second-nearest fallback; no gold/true edit ID",
+    "posthoc_kappa_region_adopted": false
+  },
+  "legacy_LoRA_first_gate": {
+    "historical_status": "QUAL_VALIDATION_FAIL",
+    "historical_readiness": false,
+    "new_stage17_performance_gate": false,
+    "waiver_approved": false,
+    "formal_run_blocked_until_explicit_amendment": true
+  },
+  "no_new_variants": true,
+  "no_hyperparameter_search": true,
+  "no_RC_EXTCAL": true
+}
