@@ -147,6 +147,9 @@ def run_batch(bundle, batch, work, siblings, repository, cli):
 
 def run(config):
     bundle = Path(config['bundle']); operator = bundle/'operator'; repository = Path(config['repository'])
+    authorization = read(repository/'reports/medtrace_stage17_20260912/formal/AUTHORIZATION.json')
+    if authorization.get('uniform_Astra_Base_and_method_judging') is not True:
+        raise ValueError('Stage17 cloud Judge authorization missing')
     manifest, lock = read(operator/'MANIFEST.json'), read(operator/'JUDGE_LOCK.json')
     if manifest['protocol'] != PROTOCOL or lock['prompt'] != PROMPT or lock['model'] != 'gpt-6-astra':
         raise ValueError('Judge protocol changed')
