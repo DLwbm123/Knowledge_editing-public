@@ -39,7 +39,7 @@ def prepare(old, run, recovered):
     cfg=read(old/'private/CAMPAIGN_CONFIG.json')
     cfg.update(stage15_root=str(old),allowed_physical_gpus=[2],worker_gpus=[2],judge_gpu=2,
                train_seconds=24*3600,campaign_epoch=None,kind='STAGE16_COVERAGE_ONLY')
-    cfg['gpu_uuids']={'2':'GPU-35be76e9-8ca5-1877-ddfe-27eb08f6721b'}
+    cfg['gpu_uuids']={'2':subprocess.check_output(['nvidia-smi','-i','2','--query-gpu=uuid','--format=csv,noheader'],text=True).strip()}
     write(run/'private/QUEUE.json',tasks); write(run/'private/CAMPAIGN_CONFIG.json',cfg)
     write(run/'private/JUDGE_LOCK.json',read(old/'private/JUDGE_LOCK.json'))
     lock=dict(status='FROZEN_SYSTEM_COVERAGE_EXTENSION',baseline_public_commit=BASELINE,
