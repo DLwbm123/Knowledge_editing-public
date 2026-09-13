@@ -36,7 +36,7 @@ class Recovery(unittest.TestCase):
             idle_approval = dict(approval,allow_sse_idle_timeout=True)
             self.assertEqual(recovery_prefix(root,batches,idle_approval,'same'),1)
             config = flags(root,explicit_proxy=True)
-            self.assertIn('features.respect_system_proxy=false',config)
+            self.assertIn('features.respect_system_proxy=true',config)
             self.assertIn('model_reasoning_effort="high"',config)
             self.assertTrue(any('stream_idle_timeout_ms=900000' in arg for arg in config))
             write_new(root/'final.json',dict(result='must not discard'))

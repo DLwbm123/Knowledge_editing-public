@@ -37,7 +37,6 @@ def flags(work, explicit_proxy=False):
     values['features.skip_host_skill_discovery'] = 'true'
     values['features.respect_system_proxy'] = 'true'
     if explicit_proxy:
-        values['features.respect_system_proxy'] = 'false'
         values['model_providers.isolated_openai'] = values['model_providers.isolated_openai'][:-1] + ',stream_idle_timeout_ms=900000}'
     return [arg for k,v in values.items() for arg in ('-c', k+'='+v)]
 
@@ -99,7 +98,7 @@ def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=No
         cli_version=subprocess.check_output([cli,'--version'],text=True).strip(),
         authentication='existing local login, no credentials read/copied by operator',
         input_binding=digest(batch),semantic_retries=0,
-        transport_mode='explicit_loopback_proxy_idle_900s' if explicit_proxy else 'inherited_system_proxy')
+        transport_mode='explicit_loopback_proxy_system_proxy_enabled_idle_900s' if explicit_proxy else 'inherited_system_proxy')
     write_new(attempt,evidence)
     print(json.dumps(dict(batch_id=name,status='STARTING')),flush=True)
     allowed = ('PATH HOME USER LOGNAME TMPDIR LANG LC_ALL SSL_CERT_FILE SSL_CERT_DIR HTTP_PROXY '
