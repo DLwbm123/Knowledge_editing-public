@@ -40,3 +40,13 @@ existing BalancEdit experts, and use the external LoRA gate before proceeding
 to GRACE/BELoRA. The existing local follower is resumed for collection,
 Astra/high judging and public aggregate reporting. The my-gpu LoRA process is
 not restarted.
+
+## Verified restart
+
+The rented GPU resumed edit 95 while preserving 94 completed edits. Its new
+native initialization receipt confirms exact same-runtime Base restoration,
+unchanged sampled Base parameters, no trainable Base parameters, and exact
+checkpoint reload replay. Historical frozen-Base parity is explicitly false.
+The worker passed the previous failure point and entered CP_W0 training.
+The dependent campaign and local follower are again waiting normally. This
+verifies recovery startup, not completion of the remaining campaign.
