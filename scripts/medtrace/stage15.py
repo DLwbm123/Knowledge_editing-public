@@ -148,7 +148,7 @@ def base_output(runtime, run, row, record):
     return out, raw, batch, key
 
 
-def train_steps(runtime, run, cfg, t, expert, name, cp_w0=False):
+def train_steps(runtime, run, cfg, t, expert, name, cp_w0=False, record=None):
     import torch
     from methods.medtrace.selective_write import optimizer_for, full_vocab_kl
     from methods.medtrace import MedTraceLayerHook
@@ -156,7 +156,8 @@ def train_steps(runtime, run, cfg, t, expert, name, cp_w0=False):
     from m3bench_repro.editors.llava_runtime import seed_everything
     from scripts.medtrace.run_realmodel_core import LAYER
     if name not in ('CP_W0', 'C_NO_H'): raise ValueError('No H/G-supported queue branch is authorized by this assembly')
-    record = record_for(t); directory = run/'private/edits'/f"e{t['order']:03d}"/name
+    record = record if record is not None else record_for(t)
+    directory = run/'private/edits'/f"e{t['order']:03d}"/name
     point = directory/'latest.pt'; seed_everything(t['seed'])
     expert.requires_grad_(True); optimizer = optimizer_for(expert, runtime.model)
     batches = [runtime.build_edit_batch(record)] + [runtime.build_edit_batch(replace(record, question=q)) for q in t['fit_questions']]
@@ -218,13 +219,14 @@ def train_steps(runtime, run, cfg, t, expert, name, cp_w0=False):
     return expert
 
 
-def initialize(runtime, run, cfg, t):
+def initialize(runtime, run, cfg, t, record=None, seed_base=SEED):
     import torch
     from scripts.medtrace.run_dev16 import run_event
     from scripts.medtrace.run_generality_ablation import train_condition
     from scripts.medtrace.run_selective_write import save, A2
     from methods.medtrace import AsymmetricCPExpert
-    record = record_for(t); directory = run/'private/edits'/f"e{t['order']:03d}"/'initial'
+    record = record if record is not None else record_for(t)
+    directory = run/'private/edits'/f"e{t['order']:03d}"/'initial'
     directory.mkdir(parents=True, exist_ok=True)
     cp = AsymmetricCPExpert(14336,4096,4).to(runtime.device)
     done = directory/'W0_COMPLETE.pt'
@@ -240,18 +242,18 @@ def initialize(runtime, run, cfg, t):
                 gold_answer=record.target, official_rephrase=record.official_rephrase, image_path=str(record.image_path),
                 relative_image_path=record.relative_image_path, formal_sequence_position=t['order'], question_type=record.question_type))
         result = run_event(runtime, event, {record.record_id:dict(raw_generated_token_ids=base['raw_token_ids'], model_answer_raw=base['raw_answer'])},
-            native_point.parent, seed_base=SEED, condition_limit=1e4)
+            native_point.parent, seed_base=seed_base, condition_limit=1e4)
         write(directory/'NATIVE_INITIALIZATION.json', result)
     native = torch.load(native_point, map_location=runtime.device, weights_only=True)
     a2_path = directory/'A2.pt'
     if not a2_path.exists():
         budget(run, cfg)
-        a2, result = train_condition(runtime, record, t['fit_questions'], native, A2, seed_base=SEED)
+        a2, result = train_condition(runtime, record, t['fit_questions'], native, A2, seed_base=seed_base)
         save(a2_path, dict(expert=a2.state_dict(), canonical_edit_id=record.record_id, seed=t['seed'], steps=80))
         write(directory/'A2_TRAINING.json', result); del a2
     state = torch.load(a2_path, map_location=runtime.device, weights_only=True)
     assert state['canonical_edit_id']==record.record_id; cp.load_state_dict(state['expert'])
-    train_steps(runtime, run, cfg, t, cp, 'CP_W0', cp_w0=True)
+    train_steps(runtime, run, cfg, t, cp, 'CP_W0', cp_w0=True, record=record)
     save(done, dict(expert=cp.state_dict(), canonical_edit_id=record.record_id, seed=t['seed'], step=320))
     return cp
 
