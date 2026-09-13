@@ -221,10 +221,11 @@ class LlavaMedAdapter(VLMAdapter):
         if count_image_token_ids(token_ids, IMAGE_TOKEN_INDEX) != 1:
             raise RuntimeError("native LLaVA-Med prompt must contain exactly one image token")
         image_tensor, seed, image_hash = deterministic_process_image(image_path, self.image_processor, self.model.config)
+        image_dtype = next(self.model.parameters()).dtype
         if isinstance(image_tensor, list):
-            image_tensor = [x.to(self.device, dtype=torch.float16) for x in image_tensor]
+            image_tensor = [x.to(self.device, dtype=image_dtype) for x in image_tensor]
         else:
-            image_tensor = image_tensor.to(self.device, dtype=torch.float16)
+            image_tensor = image_tensor.to(self.device, dtype=image_dtype)
         input_ids = input_ids.to(self.device)
         attention_mask = torch.ones_like(input_ids, dtype=torch.long, device=self.device)
         return {"prompt": prompt, "input_ids": input_ids, "attention_mask": attention_mask, "images": image_tensor,

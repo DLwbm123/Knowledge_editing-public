@@ -33,6 +33,10 @@ def validate_phase(root, cfg, mode, *, require_cleanup=True):
 def worker(cfg):
     from scripts.medtrace.stage17_campaign import cleanup, check_space, role_map, CheckpointVisibilityError
     root=Path(cfg['run'])
+    modes=cfg.get('assigned_modes',['single','sequential'])
+    if modes!=['single','sequential'] and not (modes==['sequential']
+            and cfg.get('precision_variant')=='LORA_SEQUENTIAL_BF16_STABILITY_V1'):
+        raise ValueError('Unapproved external phase selection')
     with (root/'private/campaign.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         roles=role_map(read(Path(cfg['source_run'])/'private/COHORT_AND_SUPPORT_LEDGER.json'))
@@ -41,7 +45,7 @@ def worker(cfg):
             if read(rolefile)!=roles: raise ValueError('Existing prefix role map changed')
         else: write_new(rolefile,roles)
         pending=[]
-        for mode in ('single','sequential'):
+        for mode in modes:
             check_space(root)
             directory=root/'private'/f'lora_{mode}'
             if not (directory/'COMPLETE.json').exists():

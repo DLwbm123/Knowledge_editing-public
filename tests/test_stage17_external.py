@@ -8,6 +8,22 @@ from scripts.medtrace.stage17_external import receive, validate_phase, worker
 
 
 class ExternalTests(unittest.TestCase):
+    def test_authorized_variant_runs_sequential_only(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); (root/'private').mkdir(); (root/'public').mkdir()
+            (root/'private/COHORT_AND_SUPPORT_LEDGER.json').write_text('{}')
+            cfg=dict(run=d,source_run=d,gpu=2,N=146,python='python',entry='run.py',
+                precision_variant='LORA_SEQUENTIAL_BF16_STABILITY_V1',assigned_modes=['sequential'])
+            with patch('scripts.medtrace.stage17_campaign.role_map',return_value={}), \
+                 patch('scripts.medtrace.stage17_campaign.cleanup') as cleanup, \
+                 patch('scripts.medtrace.stage17_external.validate_phase'), \
+                 patch('scripts.medtrace.stage17_external.subprocess.check_output',return_value='40000'), \
+                 patch('scripts.medtrace.stage17_external.subprocess.run') as launched:
+                worker(cfg)
+            self.assertEqual(launched.call_count,1)
+            self.assertEqual(launched.call_args.kwargs['env']['JOB_MODE'],'sequential')
+            cleanup.assert_called_once_with(cfg,'lora','sequential')
+
     def test_completed_single_is_not_retrained_when_cleanup_visibility_is_blocked(self):
         from scripts.medtrace.stage17_campaign import CheckpointVisibilityError
         with tempfile.TemporaryDirectory() as d:

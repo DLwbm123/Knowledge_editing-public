@@ -107,6 +107,21 @@ def cleanup(cfg, method, mode):
         last_consumer=f'{method}_{mode}',status='DELETED'))
 
 
+def apply_precision_amendment(runtime, cfg, method, mode):
+    """Only the explicitly authorized, separately bound BF16 sequential variant."""
+    variant=cfg.get('precision_variant')
+    if variant is None: return
+    if (variant!='LORA_SEQUENTIAL_BF16_STABILITY_V1' or (method,mode)!=('lora','sequential')
+            or cfg['runtime_lock'].get('precision_variant')!=variant
+            or cfg['methods']['generation']['dtype']!='bfloat16'):
+        raise ValueError('Unrecognized precision amendment or scope')
+    import torch
+    runtime.model.to(dtype=torch.bfloat16)
+    runtime.generation_config=dict(runtime.generation_config,dtype='bfloat16')
+    runtime.capture_base_guard()
+    runtime.resolve_module_inventory(freeze=False)
+
+
 def phase(cfg, method, mode):
     setup(cfg)
     import torch
@@ -140,8 +155,16 @@ def phase(cfg, method, mode):
     check_space(root)
     runtime=load_real_runtime(argparse.Namespace(cpu_gate=Path(cfg['cpu_gate'])))
     runtime.run_root=out/'work'
-    if runtime.generation_config != next(iter(bindings.values()))['generation']:
+    apply_precision_amendment(runtime,cfg,method,mode)
+    expected_generation=dict(next(iter(bindings.values()))['generation'])
+    if cfg.get('precision_variant'): expected_generation['dtype']='bfloat16'
+    if runtime.generation_config != expected_generation:
         raise ValueError('Generation configuration changed')
+    if cfg.get('precision_variant') and not (out/'ACTUAL_PRECISION.json').exists():
+        write_new(out/'ACTUAL_PRECISION.json',dict(variant=cfg['precision_variant'],
+            floating_parameter_dtypes=sorted({str(p.dtype) for p in runtime.model.parameters() if p.is_floating_point()}),
+            initialization='frozen official-native FP16 Base cast to BF16 before adapter creation',
+            generation=runtime.generation_config))
     base_parameters=[(p,p._version,p.data_ptr()) for p in runtime.model.parameters()]
     from m3bench_repro.editors.llava_runtime import seed_everything
     seed_everything(20260912)

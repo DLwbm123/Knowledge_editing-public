@@ -8,6 +8,24 @@ from scripts.medtrace.stage17_contract import prefix_router
 
 
 class CampaignTests(unittest.TestCase):
+    def test_precision_amendment_is_scoped_and_preserves_frozen_default(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        from scripts.medtrace.stage17_campaign import apply_precision_amendment
+        runtime=SimpleNamespace(model=torch.nn.Linear(2,2).half(),generation_config={'dtype':'float16'},
+            capture_base_guard=Mock(),resolve_module_inventory=Mock())
+        apply_precision_amendment(runtime,{},'lora','sequential')
+        self.assertEqual(next(runtime.model.parameters()).dtype,torch.float16)
+        variant='LORA_SEQUENTIAL_BF16_STABILITY_V1'
+        cfg=dict(precision_variant=variant,runtime_lock=dict(precision_variant=variant),
+            methods=dict(generation=dict(dtype='bfloat16')))
+        with self.assertRaises(ValueError): apply_precision_amendment(runtime,cfg,'lora','single')
+        apply_precision_amendment(runtime,cfg,'lora','sequential')
+        self.assertEqual(next(runtime.model.parameters()).dtype,torch.bfloat16)
+        self.assertTrue(torch.isfinite(runtime.model(torch.ones(1,2,dtype=torch.bfloat16))).all())
+        runtime.capture_base_guard.assert_called_once()
+        self.assertEqual(runtime.generation_config['dtype'],'bfloat16')
+
     def test_finite_order_and_no_future_routes(self):
         self.assertEqual(prefixes(146),[1,50,100,146])
         self.assertEqual(prefixes(1),[1])
