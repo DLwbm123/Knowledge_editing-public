@@ -13,9 +13,11 @@ from scripts.medtrace.stage17_prepare import digest, lines
 
 def relocate(path, project):
     original = Path(path)
-    prefix = Path('/remote-home/wangbomin')
-    if not original.is_relative_to(prefix):
+    if len(original.parts) < 4 or original.parts[:2] != ('/', 'remote-home'):
         raise ValueError('Unregistered source root')
+    # The owner component comes from the already-accepted private input binding,
+    # not from a public hard-coded account name.
+    prefix = Path(*original.parts[:3])
     result = project/'imported'/original.relative_to(prefix)
     if not result.is_file():
         raise FileNotFoundError(result)
