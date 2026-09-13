@@ -48,6 +48,27 @@ def prepare(bundle, destination):
     print(json.dumps(dict(records=len(rows),config_id=payload['config_id'],verdicts_exposed=0)))
 
 
+def accepted_prefix(source, cfg):
+    """Validate saved decisions without exposing them to the model's context."""
+    previous = read(source/'EXECUTION.json')
+    if (read(source/'INPUT.json') != cfg or previous['config_id'] != cfg['config_id'] or
+            previous['snapshot'] != SNAPSHOT or (source/'VERDICTS_QWEN.jsonl').exists()):
+        raise ValueError('Resume input/config/state mismatch')
+    rows = [json.loads(line) for line in (source/'VERDICTS_QWEN.pending.jsonl').read_text().splitlines()]
+    if not previous['completed'] <= len(rows) <= len(cfg['records']):
+        raise ValueError('Saved prefix coverage mismatch')
+    for index, row in enumerate(rows):
+        expected_id = cfg['records'][index]['opaque_query_id']
+        expected = dict(batch_id=f'batch_{index+1:04d}',decisions=[dict(
+            opaque_query_id=expected_id,is_correct=row['is_correct'])])
+        if (row['opaque_query_id'] != expected_id or type(row['is_correct']) is not bool or
+                row['config_id'] != cfg['config_id'] or row['snapshot'] != SNAPSHOT or
+                row['judge_model'] != cfg['model'] or json.loads(row['raw_output']) != expected or
+                not row['output_tokens']):
+            raise ValueError('Saved decision ID/order/config/format mismatch')
+    return rows
+
+
 def run(root):
     from transformers import AutoTokenizer
     from vllm import LLM, SamplingParams
@@ -57,6 +78,16 @@ def run(root):
         raise ValueError('Frozen packet changed')
     if (root/'VERDICTS_QWEN.jsonl').exists() or (root/'EXECUTION.json').exists():
         raise FileExistsError('Existing attempt; never silently rejudge')
+    inherited = []; concurrency = cfg['max_num_seqs']; amendment = None
+    if (root/'RESUME.json').exists():
+        amendment = read(root/'RESUME.json')
+        if (amendment.get('decision') != 'APPROVED_BY_USER' or
+                amendment.get('config_id') != cfg['config_id'] or
+                amendment.get('max_num_seqs') not in (1,2)):
+            raise ValueError('Explicit bounded concurrency/resume authorization required')
+        inherited = accepted_prefix(Path(amendment['source']),cfg)
+        concurrency = amendment['max_num_seqs']
+    skip = len(inherited)
     gpu = subprocess.check_output(['nvidia-smi','-i','0','--query-gpu=uuid,memory.free',
         '--format=csv,noheader,nounits'],text=True).strip().split(', ')
     if gpu[0] != os.environ['JOB_GPU_UUID'] or int(gpu[1]) < 23000:
@@ -74,9 +105,10 @@ def run(root):
         raise ValueError('Full material exceeds the 24GB lane; no truncation permitted')
     write(root/'PREFLIGHT.json',dict(records=len(prompts),max_prompt_tokens=max(lengths),
         max_model_len=model_len,no_truncation=True))
-    state = dict(status='LOADING_MODEL',completed=0,total=len(prompts),config_id=cfg['config_id'],
+    state = dict(status='LOADING_MODEL',completed=skip,total=len(prompts),config_id=cfg['config_id'],
         snapshot=SNAPSHOT,started_at_utc=datetime.now(timezone.utc).isoformat(),gpu_uuid=gpu[0],
-        peak_board_memory_mib=0,semantic_retries=0)
+        peak_board_memory_mib=0,semantic_retries=0,accepted_prefix_reused=skip,
+        effective_max_num_seqs=concurrency,resume_amendment=amendment)
     write(root/'EXECUTION.json',state)
     stop = threading.Event()
     def sample():
@@ -92,7 +124,7 @@ def run(root):
     started = time.monotonic()
     try:
         llm = LLM(model=str(model),quantization='awq',dtype='half',max_model_len=model_len,
-            gpu_memory_utilization=cfg['gpu_memory_utilization'],max_num_seqs=1,max_num_batched_tokens=512,
+            gpu_memory_utilization=cfg['gpu_memory_utilization'],max_num_seqs=concurrency,max_num_batched_tokens=512,
             enforce_eager=True,enable_chunked_prefill=True,enable_prefix_caching=False,
             generation_config='vllm',guided_decoding_backend='xgrammar')
         state.update(status='SCORING',load_seconds=time.monotonic()-started)
@@ -101,7 +133,10 @@ def run(root):
         write(root/'EXECUTION.json',state)
         pending = root/'VERDICTS_QWEN.pending.jsonl'
         with pending.open('x') as stream:
-            for offset in range(0,len(prompts),50):
+            for row in inherited:
+                stream.write(json.dumps(row)+'\n')
+            stream.flush(); os.fsync(stream.fileno())
+            for offset in range(skip,len(prompts),50):
                 params = []
                 for batch in batches[offset:offset+50]:
                     choices = [json.dumps(dict(batch_id=batch['batch_id'],decisions=[dict(
@@ -117,7 +152,9 @@ def run(root):
                     if text not in choices: raise ValueError('Invalid/truncated decision; preserve and stop')
                     decision = json.loads(text)['decisions'][0]
                     stream.write(json.dumps(dict(decision,judge_model=cfg['model'],snapshot=SNAPSHOT,
-                        config_id=cfg['config_id'],raw_output=text,output_tokens=result.outputs[0].token_ids))+'\n')
+                        config_id=cfg['config_id'],effective_max_num_seqs=concurrency,
+                        resume_amendment_id=digest(amendment) if amendment else None,
+                        raw_output=text,output_tokens=result.outputs[0].token_ids))+'\n')
                 stream.flush()
                 state.update(completed=offset+len(results),elapsed_seconds=time.monotonic()-started)
                 write(root/'EXECUTION.json',state)

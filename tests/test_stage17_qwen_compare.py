@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from scripts.medtrace.stage17_qwen_compare import prepare
+from scripts.medtrace.stage17_qwen_compare import prepare, accepted_prefix, SNAPSHOT
 
 
 class BlindPacket(unittest.TestCase):
@@ -19,6 +19,21 @@ class BlindPacket(unittest.TestCase):
             path.write_text(json.dumps(dict(records=[row])))
             prepare(root,root/'out')
             self.assertEqual(json.loads((root/'out/INPUT.json').read_text())['records'],[row])
+            out = root/'out'; cfg = json.loads((out/'INPUT.json').read_text())
+            (out/'EXECUTION.json').write_text(json.dumps(dict(completed=1,
+                config_id=cfg['config_id'],snapshot=SNAPSHOT)))
+            saved = dict(opaque_query_id='id',is_correct=False,config_id=cfg['config_id'],
+                snapshot=SNAPSHOT,judge_model=cfg['model'],output_tokens=[1],raw_output=json.dumps(dict(
+                    batch_id='batch_0001',decisions=[dict(opaque_query_id='id',is_correct=False)])))
+            pending = out/'VERDICTS_QWEN.pending.jsonl'
+            pending.write_text(json.dumps(saved)+'\n')
+            self.assertEqual(accepted_prefix(out,cfg),[saved])
+            pending.write_text(json.dumps(saved)+'\n'+json.dumps(saved)+'\n')
+            with self.assertRaises(ValueError): accepted_prefix(out,cfg)
+            pending.write_text(json.dumps(dict(saved,opaque_query_id='wrong'))+'\n')
+            with self.assertRaises(ValueError): accepted_prefix(out,cfg)
+            pending.write_text(json.dumps(saved)+'\n{"unfinished":')
+            with self.assertRaises(ValueError): accepted_prefix(out,cfg)
 
 
 if __name__ == '__main__': unittest.main()
