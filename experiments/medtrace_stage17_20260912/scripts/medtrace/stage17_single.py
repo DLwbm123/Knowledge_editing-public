@@ -64,6 +64,15 @@ def routes(distance, radius):
     return dict(R0=distance <= radius, RC=distance <= radius * 0.7696741135364367)
 
 
+def checkpoint_budget(run, tasks, bytes_per_edit):
+    """Budget only new checkpoints; existing state still undergoes normal load checks."""
+    if type(bytes_per_edit) is not int or bytes_per_edit <= 0:
+        raise ValueError('Positive checkpoint size estimate required')
+    missing = sum(not (run/'private/single_BE'/f"e{t['order']:03d}"/'state.pt').is_file()
+                  for t in tasks)
+    return missing * bytes_per_edit + 8 * 1024**3
+
+
 def worker(cfg):
     setup(cfg)
     import torch
@@ -87,7 +96,7 @@ def worker(cfg):
     if any(len(set(group) & set(ledger['main_T0'])) > 1 for group in ledger['duplicates']):
         raise ValueError('Resolve duplicate main-stream inputs before execution')
     # The first dispatch has a bounded disk budget; other tasks are NOT silently excluded.
-    required = cfg['checkpoint_bytes_per_edit'] * len(tasks) + 8 * 1024**3
+    required = checkpoint_budget(run, tasks, cfg['checkpoint_bytes_per_edit'])
     if shutil.disk_usage(run).free < required:
         raise OSError('Insufficient data-disk capacity for this frozen dispatch')
     print('LOADING_RUNTIME', flush=True)
@@ -124,7 +133,7 @@ def worker(cfg):
             raise RuntimeError('Prior failure requires explicit same-task recovery; do not silently retrain')
         if (run/'STOP').exists():
             raise RuntimeError('Explicit stop requested; preserving all completed states')
-        if shutil.disk_usage(run).free < 5 * 1024**3:
+        if shutil.disk_usage(run).free < checkpoint_budget(run, [t], cfg['checkpoint_bytes_per_edit']):
             raise OSError('Data disk reserve reached')
         editor.reset_editor_state()
         assert not editor.edit_history and len(editor.router) == 0 and not editor.wrapper.logical_to_slot
