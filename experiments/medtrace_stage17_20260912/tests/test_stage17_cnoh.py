@@ -1,8 +1,14 @@
 import unittest
-from scripts.medtrace.stage17_cnoh import training_task
+from scripts.medtrace.stage17_cnoh import binding_commit, training_task
 
 
 class Adapter(unittest.TestCase):
+    def test_recovery_preserves_completed_provenance_only(self):
+        cfg=dict(N=146,code_commit='new',recovery=dict(completed_prefix=94,previous_code_commit='old'))
+        self.assertEqual(binding_commit(cfg,94),'old')
+        self.assertEqual(binding_commit(cfg,95),'new')
+        with self.assertRaises(ValueError): binding_commit(dict(cfg,N=94),94)
+
     def test_preserve_frozen_support_and_reject_missing_u(self):
         t=dict(edit_id='native',order=1,seed=17,native={'query_id':'native'},
             U_fit=[{'question':'frozen U'}],fit_questions=['a','b','c','d'],

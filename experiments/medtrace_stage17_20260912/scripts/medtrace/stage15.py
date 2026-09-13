@@ -234,6 +234,8 @@ def initialize(runtime, run, cfg, t, record=None, seed_base=SEED):
         state = torch.load(done, map_location=runtime.device, weights_only=True)
         assert state['canonical_edit_id']==t['canonical_edit_id']; cp.load_state_dict(state['expert']); return cp
     native_point = directory/'native/expert.pt'
+    if native_point.exists() and not (directory/'NATIVE_INITIALIZATION.json').exists():
+        raise RuntimeError('Native checkpoint has no successful validation receipt; explicit recovery required')
     if not native_point.exists():
         native_point.parent.mkdir(exist_ok=True)
         row = t['probes'][0]; base, _, _, _ = base_output(runtime, run, row, record)
