@@ -8,6 +8,28 @@ from scripts.medtrace.stage17_external import receive, validate_phase, worker
 
 
 class ExternalTests(unittest.TestCase):
+    def test_assigned_baselines_keep_method_dependencies_and_import_separately(self):
+        from scripts.medtrace.stage17_external import assigned_phases
+        from scripts.medtrace.stage17_campaign import prefixes
+        cfg=dict(assigned_methods=['grace','belora'],freeze_id='f',runtime_lock={},
+            code_commit='c',methods={},order=['e'],N=1)
+        phases=assigned_phases(cfg)
+        self.assertEqual(phases,[('grace','single'),('grace','sequential'),('belora','single'),('belora','sequential')])
+        with self.assertRaises(ValueError): assigned_phases(dict(cfg,assigned_methods=['grace','lora']))
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); (root/'private').mkdir()
+            (root/'private/EXTERNAL_BASELINES.json').write_text(json.dumps(cfg))
+            for method,mode in phases:
+                p=root/'private/external-incoming-baselines/private'/f'{method}_{mode}';p.mkdir(parents=True)
+                binding=dict(freeze_id='f',method=method,mode=mode,runtime={},code_commit='c',
+                    method_lock={},order=['e'],prefixes=prefixes(1))
+                for name,value in [('BINDING',binding),('COMPLETE',dict(status='GENERATED_NOT_SCORED',N=1,phase=binding)),('CLEANUP',dict(status='DELETED'))]:
+                    (p/f'{name}.json').write_text(json.dumps(value))
+            receive(root,'EXTERNAL_BASELINES')
+            self.assertTrue((root/'private/EXTERNAL_BASELINES_IMPORTED.json').exists())
+            self.assertFalse((root/'private/EXTERNAL_LORA_IMPORTED.json').exists())
+            for method,mode in phases: validate_phase(root,cfg,mode,method=method)
+
     def test_authorized_variant_runs_sequential_only(self):
         with tempfile.TemporaryDirectory() as d:
             root=Path(d); (root/'private').mkdir(); (root/'public').mkdir()
