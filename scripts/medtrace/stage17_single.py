@@ -149,6 +149,9 @@ def worker(cfg):
                 training = editor.apply_edit(record)
                 if not training['finite_losses'] or not training['finite_gradients']:
                     raise FloatingPointError('Nonfinite BE training; keep failure')
+                # BE distance routing never needs the teacher labels; keep them
+                # out of the saved deployment bank as well as out of query inputs.
+                editor.router.labels = [()] * len(editor.router)
                 state = dict(binding=binding, training=training, method=editor.method, target=editor.target,
                     router=editor.router.export_state(), wrapper=editor.wrapper.export_state(),
                     edit_history=list(editor.edit_history))
