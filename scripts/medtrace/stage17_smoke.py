@@ -1,7 +1,8 @@
-"""One already-exposed DEV native on GPU3; zero training and zero Judge calls."""
+"""One already-exposed DEV native on the explicitly authorized GPU; no training."""
 import argparse
 import io
 import json
+import os
 from pathlib import Path
 import sys
 import time
@@ -21,7 +22,7 @@ def run(config, out):
 
     if out.exists():
         raise FileExistsError('reuse the existing mechanical result; no automatic rerun')
-    if config['scope'] != 'DEV_NATIVE_ONLY_MECHANICAL' or config['gpu'] != '3':
+    if config['scope'] != 'DEV_NATIVE_ONLY_MECHANICAL' or config['gpu'] != os.environ.get('CUDA_VISIBLE_DEVICES'):
         raise ValueError('this runner authorizes no formal input or training')
     manifest = json.loads(Path(config['dev_manifest']).read_text())
     if manifest['event_count'] != 16 or len(manifest['event_ids']) != 16:
@@ -39,6 +40,9 @@ def run(config, out):
     if any(p.requires_grad for p, _, _ in frozen):
         raise RuntimeError('Base is not frozen')
     record = EditorRecord.from_dict(event['edit_record'])
+    if config.get('relocated_project'):
+        from scripts.medtrace.stage17_freeze import relocate
+        record = replace(record, image_path=relocate(str(record.image_path), Path(config['relocated_project'])))
     query = replace(record, record_id='query', target='', official_rephrase='')
     batch = runtime.build_question_batch(query)
     raw = runtime.adapter.prepare_inputs(query.image_path, query.question, None)
@@ -102,6 +106,10 @@ def run(config, out):
         no_gold_router=router.labels == [()], self_route=decision.logical_edit_id == 'first',
         request_cleanup=not hook.enabled and not hook.generation_routing and hook._handle is None,
         base_parameter_versions_unchanged=unchanged, free_parameters=sum(p.numel() for p in expert.parameters()) == 73728)
+    if config.get('previous_smoke'):
+        previous = json.loads(Path(config['previous_smoke']).read_text())
+        checks['one_DEV_migration_token_parity'] = (previous['source_event'] == event['event_id']
+            and previous['outputs']['base']['tokens'] == base['tokens'])
     result = dict(status='PASS' if all(checks.values()) else 'MECHANICAL_FAIL', checks=checks,
         dev_edits=1, training_steps=0, judge_calls=0, generation_calls=5,
         note='four canonical generations and one 1-token lifecycle probe; no semantic qualification',
