@@ -140,6 +140,17 @@ def save_checkpoint(path: Path, payload: dict[str, Any]) -> str:
     return sha256_file(path)
 
 
+def check_base_restoration(before: dict, after: dict, frozen: dict, guard: dict | None) -> bool:
+    """A restoration invariant compares the same resident Base before/after editing."""
+    if (before['generated_token_ids'] != after['generated_token_ids']
+            or before['decoded_text'] != after['decoded_text']):
+        raise RuntimeError('Base output changed during editing')
+    if not guard or not guard['unchanged'] or guard.get('base_parameters_requiring_grad'):
+        raise RuntimeError('Base parameter guard failed')
+    return (before['generated_token_ids'] == frozen['raw_generated_token_ids']
+            and before['decoded_text'] == frozen['model_answer_raw'])
+
+
 def run_event(
     runtime: Any,
     event: dict[str, Any],
@@ -150,6 +161,9 @@ def run_event(
     condition_limit: float | None = 1e4,
 ) -> dict[str, Any]:
     record = EditorRecord.from_dict(event["edit_record"])
+    canonical_row = {"query_id": record.record_id, "question": record.question, "image_path": str(record.image_path)}
+    # Capture before editing, then reset RNG so this audit cannot change initialization.
+    base_before = generate(runtime, canonical_row, None, int(runtime.generation_config["max_new_tokens"]))
     random_lock = rng_lock(derive_seed(record.record_id, base=seed_base))
     layer = runtime.get_module(LAYER)
     if (layer.in_features, layer.out_features) != (14336, 4096):
@@ -177,7 +191,6 @@ def run_event(
     trajectory = []
     selected = None
     early_stop_reached = False
-    canonical_row = {"query_id": record.record_id, "question": record.question, "image_path": str(record.image_path)}
     for step in range(201):
         grad_norm = rho_grad_norm = 0.0
         if step:
@@ -246,14 +259,8 @@ def run_event(
     reloaded_native = generate(runtime, canonical_row, replay_hook, int(runtime.generation_config["max_new_tokens"]))
     replay_hook.detach()
     base_native = generate(runtime, canonical_row, None, int(runtime.generation_config["max_new_tokens"]))
-    expected = base[record.record_id]
-    base_restored = (
-        base_native["generated_token_ids"] == expected["raw_generated_token_ids"]
-        and base_native["decoded_text"] == expected["model_answer_raw"]
-    )
     guard = runtime.base_guard.verify() if runtime.base_guard else None
-    if not base_restored or not guard or not guard["unchanged"]:
-        raise RuntimeError("base restoration or sampled guard failed")
+    frozen_base_exact = check_base_restoration(base_before, base_native, base[record.record_id], guard)
     if reloaded_native["generated_token_ids"] != outputs[0]["generated_token_ids"]:
         raise RuntimeError("native checkpoint reload replay failed")
     result = {
@@ -281,6 +288,9 @@ def run_event(
         },
         "peak_vram_bytes": int(torch.cuda.max_memory_allocated()),
         "reload_native_exact": True, "base_restored_exact": True,
+        "base_restoration_reference": "same_runtime_before_edit",
+        "frozen_base_exact": frozen_base_exact,
+        "base_before_edit": base_before, "base_after_edit": base_native,
         "request_state_cleared": True, "base_sampled_guard": guard,
     }
     del replay_hook, reloaded, hook, expert, optimizer, batch

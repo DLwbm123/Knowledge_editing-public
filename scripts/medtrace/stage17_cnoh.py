@@ -21,6 +21,16 @@ def training_task(t):
         probes=[t['native']],U=t['U_fit'],fit_questions=t['fit_questions'])
 
 
+def binding_commit(cfg, order):
+    recovery=cfg.get('recovery')
+    if recovery:
+        if not 0 <= recovery['completed_prefix'] < cfg['N']:
+            raise ValueError('Invalid recovery prefix')
+        if order <= recovery['completed_prefix']:
+            return recovery['previous_code_commit']
+    return cfg['code_commit']
+
+
 def worker(cfg):
     setup(cfg)
     import torch
@@ -58,7 +68,7 @@ def worker(cfg):
         record=record_for(t); adapted=training_task(t)
         binding=dict(freeze_id=cfg['freeze_id'],input=t['native'],U_fit=t['U_fit'],fit=t['fit_questions'],
             seed=t['seed'],seed_base=cfg['seed_base'],runtime=cfg['runtime_lock'],generation=runtime.generation_config,
-            method=cfg['method_lock'],execution_commit=cfg['code_commit'])
+            method=cfg['method_lock'],execution_commit=binding_commit(cfg,t['order']))
         identity=directory/'BINDING.json'
         if identity.exists():
             if read(identity)!=binding: raise ValueError('Resume binding mismatch')
