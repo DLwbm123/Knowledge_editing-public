@@ -1,6 +1,6 @@
 # Stage17 progress
 
-Current status: [scheduled GPU1 continuation and Base Judge interruption](formal/SCHEDULED_RESUME_REPORT.md). The user approved Stage17-only formal processing and uniform Astra scoring. The first 40 Judge batches are preserved; the network-failed remainder, formal GPU training and final method comparisons are not complete.
+Current status: [Astra completion, frozen queues and first GPUHome launch](formal/GPUHOME_LAUNCH.md). Astra Base is complete (2,465 verdicts). The first BalancEdit single-T0-146 dispatch is running on the new RTX 4090 GPU0. Other methods, task-specific dispatches, sequential evaluation and final comparisons are not complete. The earlier GPU1 interruption report remains historical evidence.
 
 The following Stage17-A files are historical handoff records; their pending-authorization statements are superseded only by [the new approval](formal/AUTHORIZATION.json). Historical T0 N=179 is not a newly judged Stage17 N.
 

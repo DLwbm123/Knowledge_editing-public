@@ -1,6 +1,18 @@
-# Stage17: mechanics and authorized Base preparation
+# Stage17: preparation and first formal single-edit dispatch
 
-This is a source overlay, not a completed formal Stage17 campaign. Read the [current continuation](../../reports/medtrace_stage17_20260912/formal/SCHEDULED_RESUME_REPORT.md) for the GPU1 authorization, network-interrupted Astra Base queue and remaining support/adapter work. No formal single/sequential CLI is claimed.
+This is a source overlay, not a completed Stage17 campaign. Read the [current launch report](../../reports/medtrace_stage17_20260912/formal/GPUHOME_LAUNCH.md): Astra Base and cohort/support preparation are complete; the first BalancEdit single-T0-146 dispatch runs on the new RTX 4090 GPU0. The true sequential driver and other method dispatches remain pending.
+
+New logical commands, to be passed through the existing neutral launcher with private paths in its environment:
+
+```sh
+python -m scripts.medtrace.stage17_freeze --project "$PRIVATE_PROJECT" --run "$PRIVATE_RUN"
+python scripts/medtrace/stage17_single.py smoke "$PRIVATE_DISPATCH"
+python scripts/medtrace/stage17_single.py worker "$PRIVATE_DISPATCH"
+```
+
+Do not re-run completed preparation or the accepted Judge. The freeze command consumes the copied role join, source overlay, complete accepted Astra bindings and verdicts. The dispatch config binds project/run/cpu_gate, current GPU/UUID, clean source commit, frozen queue ID/N, method recipe and runtime lock. The first worker supports only `method=balancedit`, `mode=single_main_T0`; unsupported branches are not auto-launched. The smoke config is derived from that dispatch and requires the first already-exposed DEV record plus its earlier mechanical output. See the script for the exact private schema.
+
+On the migrated server, missing dependencies were installed into a separate data-disk environment; existing environments and model snapshots were preserved. CPU checks for the current overlay: `PYTHONPATH=. python -m unittest discover -s tests -p 'test_stage17*.py'` (11 passed). The sections below describe earlier preparation milestones and are not current launch instructions.
 
 The authorized continuation adds `stage17_prepare.py` (candidate Base packet assembly and cache binding), `stage17_judge.py` (one-pass isolated Astra execution), and `stage17_roles.py` (score-independent prior-evaluation source isolation). Generic schema/validator and task-specific source helpers are reused. Preparation and the role join are complete; the Judge stopped after 40 accepted batches when batch 41 failed at the transport layer. These are not instructions to duplicate accepted work or bypass its no-retry rule. All three logical commands take one private JSON config path through the existing neutral entrypoint. Run `python -m unittest tests.test_stage17_prepare tests.test_stage17_contract tests.test_stage17_roles` for the eight relevant checks; macOS is required for the real OS-isolation check. The remaining sections describe the original Stage17-A milestone.
 
