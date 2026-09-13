@@ -35,6 +35,7 @@ def flags(work):
         'workspace_dependencies personality unbounded_connection_retries').split()
     values.update({'features.'+k:'false' for k in disabled})
     values['features.skip_host_skill_discovery'] = 'true'
+    values['features.respect_system_proxy'] = 'true'
     return [arg for k,v in values.items() for arg in ('-c', k+'='+v)]
 
 
@@ -189,7 +190,8 @@ def run(config):
     if authorization.get('uniform_Astra_Base_and_method_judging') is not True:
         raise ValueError('Stage17 cloud Judge authorization missing')
     manifest, lock = read(operator/'MANIFEST.json'), read(operator/'JUDGE_LOCK.json')
-    if manifest['protocol'] != PROTOCOL or lock['prompt'] != PROMPT or lock['model'] != 'gpt-6-astra':
+    if (manifest['protocol'] != PROTOCOL or lock['prompt'] != PROMPT or
+            lock['model'] != 'gpt-6-astra' or lock['reasoning_effort'] != 'high'):
         raise ValueError('Judge protocol changed')
     if digest({k:v for k,v in lock.items() if k != 'config_sha256'}) != lock['config_sha256']:
         raise ValueError('Judge lock mismatch')
