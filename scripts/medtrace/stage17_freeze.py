@@ -110,8 +110,11 @@ def freeze(project, run, report):
         fits = paraphrases(n['question'])
         fit_ok = len(fits) == 4 and not any(normalized(f) in eval_questions for f in fits)
         h = [r for r in support if conflict(n, r)][:1]
-        u = [r for r in support if attr is not None
-             and reviewed_attribute(r['question']) not in (None, attr)][:1]
+        # U is a Base-preservation input, not an H proposition proof. Reuse the
+        # existing unrelated-source rule; an unknown native family is not a new
+        # eligibility gate for NO_H. All these images are globally role-isolated.
+        u = [r for r in support if reviewed_attribute(r['question']) not in (None, attr)
+             and normalized(r['question']) != normalized(n['question'])][:1]
         candidates = [r for r in support if attr is not None
                       and reviewed_attribute(r['question']) not in (None, attr)
                       and r not in u]
