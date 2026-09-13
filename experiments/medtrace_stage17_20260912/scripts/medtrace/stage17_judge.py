@@ -17,7 +17,7 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
-def flags(work):
+def flags(work, explicit_proxy=False):
     values = dict(project_doc_max_bytes='0', developer_instructions='""', web_search='"disabled"',
         model_reasoning_effort='"high"', model_reasoning_summary='"none"',
         sqlite_home=json.dumps(str(work/'state')), log_dir=json.dumps(str(work/'logs')),
@@ -36,6 +36,9 @@ def flags(work):
     values.update({'features.'+k:'false' for k in disabled})
     values['features.skip_host_skill_discovery'] = 'true'
     values['features.respect_system_proxy'] = 'true'
+    if explicit_proxy:
+        values['features.respect_system_proxy'] = 'false'
+        values['model_providers.isolated_openai'] = values['model_providers.isolated_openai'][:-1] + ',stream_idle_timeout_ms=900000}'
     return [arg for k,v in values.items() for arg in ('-c', k+'='+v)]
 
 
@@ -69,7 +72,7 @@ def isolation_check(work, sibling, bundle, repository, sandbox):
     return checks
 
 
-def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=None):
+def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=None, explicit_proxy=False):
     name = batch['batch_id']; operator = output_operator or bundle/'operator'
     attempt = operator/'execution_evidence'/f'{name}.json'
     destination = operator/'responses'/f'{name}.json'
@@ -88,19 +91,25 @@ def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=No
     sandbox = work/'boundary.sb'; sandbox.write_text(profile(work,siblings,bundle,repository))
     isolation = isolation_check(work,next(p for p in siblings if p != work),bundle,repository,sandbox)
     command = ['/usr/bin/sandbox-exec','-f',str(sandbox),str(cli),'exec','--ignore-user-config',
-        '--ignore-rules','--ephemeral','--skip-git-repo-check','--model','gpt-6-astra',*flags(work),
+        '--ignore-rules','--ephemeral','--skip-git-repo-check','--model','gpt-6-astra',*flags(work, explicit_proxy),
         '--output-schema',str(work/'input.schema.json'),'--output-last-message',str(work/'final.json'),'--json','-']
     evidence = dict(batch_id=name,status='STARTING',started_at_utc=now(),actual_model='gpt-6-astra',
         reasoning_effort='high',immutable_snapshot=None,isolation_checks=isolation,
         fresh_session=True,command=command,tool_event_types=[],protocol=PROTOCOL,
         cli_version=subprocess.check_output([cli,'--version'],text=True).strip(),
         authentication='existing local login, no credentials read/copied by operator',
-        input_binding=digest(batch),semantic_retries=0)
+        input_binding=digest(batch),semantic_retries=0,
+        transport_mode='explicit_loopback_proxy_idle_900s' if explicit_proxy else 'inherited_system_proxy')
     write_new(attempt,evidence)
     print(json.dumps(dict(batch_id=name,status='STARTING')),flush=True)
     allowed = ('PATH HOME USER LOGNAME TMPDIR LANG LC_ALL SSL_CERT_FILE SSL_CERT_DIR HTTP_PROXY '
         'HTTPS_PROXY ALL_PROXY NO_PROXY http_proxy https_proxy all_proxy no_proxy').split()
     env = {k:v for k,v in os.environ.items() if k in allowed}
+    if explicit_proxy:
+        # Fixed, credential-free local endpoint approved for this recovery only.
+        env = {k:v for k,v in env.items() if not k.lower().endswith('_proxy')}
+        env.update({k:'http://127.0.0.1:7897' for k in ('HTTP_PROXY','HTTPS_PROXY','http_proxy','https_proxy')})
+        env.update(NO_PROXY='localhost,127.0.0.1',no_proxy='localhost,127.0.0.1')
     diagnostics = []
     try:
         with (work/'input.prompt.md').open('rb') as prompt:
@@ -177,9 +186,11 @@ def recovery_prefix(operator, batches, approval, cli_version):
             messages = [e.get('message', e.get('error', {}).get('message', '')) for e in errors]
             command = evidence['command']
             final = Path(command[command.index('--output-last-message')+1])
+            allowed_errors = ['Transport error: network error: error decoding response body']
+            if approval.get('allow_sse_idle_timeout') is True:
+                allowed_errors.append('stream disconnected before completion: idle timeout waiting for SSE')
             if (evidence['status'] != 'FAILED_NO_RETRY' or evidence['exit_code'] != 1 or final.exists() or
-                    not messages or any('Transport error: network error: error decoding response body' not in m
-                                        for m in messages)):
+                    not messages or any(not any(error in m for error in allowed_errors) for m in messages)):
                 raise ValueError('Only a transport failure without a final response may be recovered')
     return count
 
@@ -215,7 +226,13 @@ def run(config):
             raise ValueError('Visible input changed')
     output_operator = operator; skip = 0
     if config.get('recover_transport_failure') is True:
-        approval = read(repository/'reports/medtrace_stage17_20260912/formal/RECOVERY_AUTHORIZATION.json')
+        approval = read(config.get('recovery_authorization',
+            repository/'reports/medtrace_stage17_20260912/formal/RECOVERY_AUTHORIZATION.json'))
+        if config.get('explicit_proxy') is True and (
+                approval.get('explicit_proxy_idle_900s') is not True or
+                approval.get('bundle_config_sha256') != lock['config_sha256'] or
+                approval.get('failed_input_binding') != digest(next(b for b in batches if b['batch_id'] == approval['failed_batch']))):
+            raise ValueError('Transport amendment not bound to this authorized packet')
         skip = recovery_prefix(operator,batches,approval,
             subprocess.check_output([config['cli'],'--version'],text=True).strip())
         output_operator = operator/'recovery_01'
@@ -234,7 +251,8 @@ def run(config):
     status = output_operator/'EXECUTION_RECORD.json'; write_new(status,state)
     try:
         for index,batch in enumerate(batches[skip:], start=skip):
-            run_batch(bundle,batch,siblings[index],siblings,repository,Path(config['cli']),output_operator)
+            run_batch(bundle,batch,siblings[index],siblings,repository,Path(config['cli']),output_operator,
+                explicit_proxy=config.get('explicit_proxy',False))
             state['completed_batches'] += 1
             status.write_text(json.dumps(state,indent=2)+'\n')
         decisions = [r for i,b in enumerate(batches) for r in validate(b,read(
