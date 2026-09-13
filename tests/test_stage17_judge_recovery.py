@@ -1,10 +1,11 @@
 """One synthetic prefix/failure test; no model calls or private answers."""
 from pathlib import Path
+import json
 import tempfile
 import unittest
 
 from scripts.medtrace.astra_judge_bundle import write_new
-from scripts.medtrace.stage17_judge import PROTOCOL, digest, recovery_prefix
+from scripts.medtrace.stage17_judge import PROTOCOL, digest, recovery_prefix, flags
 
 
 class Recovery(unittest.TestCase):
@@ -29,8 +30,17 @@ class Recovery(unittest.TestCase):
             for changed in (dict(approval,decision='PENDING'),dict(approval,failed_batch='batch_001')):
                 with self.assertRaises(ValueError): recovery_prefix(root,batches,changed,'same')
             with self.assertRaises(ValueError): recovery_prefix(root,batches,approval,'changed')
-            write_new(root/'final.json',dict(result='must not discard'))
+            failure['errors'] = [dict(message='stream disconnected before completion: idle timeout waiting for SSE')]
+            (root/'execution_evidence/batch_002.json').write_text(json.dumps(failure))
             with self.assertRaises(ValueError): recovery_prefix(root,batches,approval,'same')
+            idle_approval = dict(approval,allow_sse_idle_timeout=True)
+            self.assertEqual(recovery_prefix(root,batches,idle_approval,'same'),1)
+            config = flags(root,explicit_proxy=True)
+            self.assertIn('features.respect_system_proxy=false',config)
+            self.assertIn('model_reasoning_effort="high"',config)
+            self.assertTrue(any('stream_idle_timeout_ms=900000' in arg for arg in config))
+            write_new(root/'final.json',dict(result='must not discard'))
+            with self.assertRaises(ValueError): recovery_prefix(root,batches,idle_approval,'same')
 
 
 if __name__ == '__main__':
