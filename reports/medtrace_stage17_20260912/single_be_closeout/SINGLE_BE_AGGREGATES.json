@@ -1,0 +1,1208 @@
+{
+  "status": "REPORTED_SINGLE_BE_MILESTONE_STAGE17_INCOMPLETE",
+  "N": 146,
+  "student_judgments": 2378,
+  "judge_model": "gpt-6-astra",
+  "reasoning_effort": "high",
+  "immutable_snapshot": null,
+  "config_id": "dc10343f5793b518d3f2e42a66ed4ed0b4bd6420e8f0bb5dfa0a26ad08d9245a",
+  "freeze_id": "fea41e32c8b7780f45b060192343f3bb11c2e43b2e046fd709db19df6c0eef92",
+  "scope": "single BE on main T0 cohort and its attached supported tasks only",
+  "cohort": {
+    "status": "COHORT_AND_SUPPORT_FROZEN",
+    "main_T0_N": 146,
+    "unique_task_specific_natives": 594,
+    "independent_task_events": {
+      "T0": 146,
+      "T1G": 146,
+      "T1L": 85,
+      "T2G": 146,
+      "T2L": 311,
+      "T3": 1,
+      "T4G": 108,
+      "T4L": 69
+    },
+    "task_specific_counts": {
+      "T0": {
+        "edits": 146,
+        "probes": 146,
+        "Base_correct_probes": 0
+      },
+      "T1G": {
+        "edits": 146,
+        "probes": 584,
+        "Base_correct_probes": 6
+      },
+      "T1L": {
+        "edits": 85,
+        "probes": 960,
+        "Base_correct_probes": 2
+      },
+      "T2G": {
+        "edits": 146,
+        "probes": 584,
+        "Base_correct_probes": 27
+      },
+      "T2L": {
+        "edits": 311,
+        "probes": 776,
+        "Base_correct_probes": 446
+      },
+      "T3": {
+        "edits": 1,
+        "probes": 1,
+        "Base_correct_probes": 1
+      },
+      "T4G": {
+        "edits": 108,
+        "probes": 245,
+        "Base_correct_probes": 120
+      },
+      "T4L": {
+        "edits": 69,
+        "probes": 92,
+        "Base_correct_probes": 65
+      }
+    },
+    "support_masks_all_task_natives": {
+      "E_U": 594,
+      "E_H": 2,
+      "E_HG": 2,
+      "E_HG_eval": 0
+    },
+    "support_masks_main_T0": {
+      "E_U": 146,
+      "E_H": 0,
+      "E_HG": 0,
+      "E_HG_eval": 0
+    },
+    "reviewed_train_QA": 29,
+    "reviewed_train_source_groups": 3,
+    "verified_evaluation_images": 779,
+    "accepted_Base_verdicts": 2465,
+    "duplicate_complete_native_input_groups": 0,
+    "order": "prior T0 amended order; frozen candidate order within other task-specific queues",
+    "all_task_natives_are_NOT_one_common_N": true,
+    "confirmed_unseen": false,
+    "T5": "NOT_AUTHORIZED_NA",
+    "human_clinical_signoff": false,
+    "old_experiments_rerun": false,
+    "source_downloads": 0,
+    "Base_masks_frozen_before_students": true,
+    "support_selection_used_student_outputs": false,
+    "source_pool": "29 previously role-isolated reviewed train QA; no rescan of exhausted sources",
+    "initial_dispatch": "BE single main T0 queue only; all other task queues/methods/sequential remain registered pending",
+    "storage_note": "594 full BE matrix checkpoints exceed disk capacity; first dispatch limited to main T0, not a scientific exclusion"
+  },
+  "panels": [
+    {
+      "task": "T0",
+      "mode": "R0",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 0,
+        "probes": 146,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 146,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T0",
+      "mode": "RC",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 0,
+        "probes": 146,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 146,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T0",
+      "mode": "FORCED_ON",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 0,
+        "probes": 146,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 146,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 146,
+        "probes": 146,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T1G",
+      "mode": "R0",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 578,
+        "probes": 578,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 6,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.010273972602739725,
+        "macro": 0.010273972602739725
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T1G",
+      "mode": "RC",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 578,
+        "probes": 578,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 6,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.010273972602739725,
+        "macro": 0.010273972602739725
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T1G",
+      "mode": "FORCED_ON",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 578,
+        "probes": 578,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 6,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.010273972602739725,
+        "macro": 0.010273972602739725
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T1L",
+      "mode": "R0",
+      "primary_metric": "Retention",
+      "primary": {
+        "numerator": 2,
+        "probes": 2,
+        "edits": 1,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 1,
+        "c2w_micro": 0.0
+      },
+      "post_accuracy": {
+        "numerator": 496,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.5166666666666667,
+        "macro": 0.6380757151345386
+      },
+      "base_accuracy": {
+        "numerator": 2,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.0020833333333333333,
+        "macro": 0.011764705882352941
+      },
+      "output_agreement": {
+        "numerator": 21,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.021875,
+        "macro": 0.02991596638655462
+      },
+      "route_on": {
+        "numerator": 939,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.978125,
+        "macro": 0.9700840336134454
+      }
+    },
+    {
+      "task": "T1L",
+      "mode": "RC",
+      "primary_metric": "Retention",
+      "primary": {
+        "numerator": 2,
+        "probes": 2,
+        "edits": 1,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 1,
+        "c2w_micro": 0.0
+      },
+      "post_accuracy": {
+        "numerator": 496,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.5166666666666667,
+        "macro": 0.6380757151345386
+      },
+      "base_accuracy": {
+        "numerator": 2,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.0020833333333333333,
+        "macro": 0.011764705882352941
+      },
+      "output_agreement": {
+        "numerator": 56,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.058333333333333334,
+        "macro": 0.04526610644257703
+      },
+      "route_on": {
+        "numerator": 904,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.9416666666666667,
+        "macro": 0.954733893557423
+      }
+    },
+    {
+      "task": "T1L",
+      "mode": "FORCED_ON",
+      "primary_metric": "Retention",
+      "primary": {
+        "numerator": 2,
+        "probes": 2,
+        "edits": 1,
+        "micro": 1.0,
+        "macro": 1,
+        "edit_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_cluster_ci95": [
+          1.0,
+          1.0
+        ],
+        "source_groups": 1,
+        "c2w_micro": 0.0
+      },
+      "post_accuracy": {
+        "numerator": 496,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.5166666666666667,
+        "macro": 0.6380757151345386
+      },
+      "base_accuracy": {
+        "numerator": 2,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.0020833333333333333,
+        "macro": 0.011764705882352941
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 960,
+        "edits": 85,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 960,
+        "probes": 960,
+        "edits": 85,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T2G",
+      "mode": "R0",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 533,
+        "probes": 557,
+        "edits": 146,
+        "micro": 0.9569120287253142,
+        "macro": 0.958904109589041,
+        "edit_ci95": [
+          0.9383561643835616,
+          0.976027397260274
+        ],
+        "source_cluster_ci95": [
+          0.9375,
+          0.9777397260273972
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 558,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.9554794520547946,
+        "macro": 0.9554794520547946
+      },
+      "base_accuracy": {
+        "numerator": 27,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.046232876712328765,
+        "macro": 0.046232876712328765
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T2G",
+      "mode": "RC",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 533,
+        "probes": 557,
+        "edits": 146,
+        "micro": 0.9569120287253142,
+        "macro": 0.958904109589041,
+        "edit_ci95": [
+          0.9383561643835616,
+          0.976027397260274
+        ],
+        "source_cluster_ci95": [
+          0.9375,
+          0.9777397260273972
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 558,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.9554794520547946,
+        "macro": 0.9554794520547946
+      },
+      "base_accuracy": {
+        "numerator": 27,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.046232876712328765,
+        "macro": 0.046232876712328765
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T2G",
+      "mode": "FORCED_ON",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 533,
+        "probes": 557,
+        "edits": 146,
+        "micro": 0.9569120287253142,
+        "macro": 0.958904109589041,
+        "edit_ci95": [
+          0.9383561643835616,
+          0.976027397260274
+        ],
+        "source_cluster_ci95": [
+          0.9375,
+          0.9777397260273972
+        ],
+        "source_groups": 125
+      },
+      "post_accuracy": {
+        "numerator": 558,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.9554794520547946,
+        "macro": 0.9554794520547946
+      },
+      "base_accuracy": {
+        "numerator": 27,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.046232876712328765,
+        "macro": 0.046232876712328765
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 584,
+        "edits": 146,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 584,
+        "probes": 584,
+        "edits": 146,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T2L",
+      "mode": "R0",
+      "primary_metric": "Retention",
+      "primary": {
+        "numerator": 29,
+        "probes": 54,
+        "edits": 31,
+        "micro": 0.5370370370370371,
+        "macro": 0.5698924731182796,
+        "edit_ci95": [
+          0.3978494623655914,
+          0.7311827956989247
+        ],
+        "source_cluster_ci95": [
+          0.4086021505376344,
+          0.7311827956989247
+        ],
+        "source_groups": 29,
+        "c2w_micro": 0.4629629629629629
+      },
+      "post_accuracy": {
+        "numerator": 60,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.6122448979591837,
+        "macro": 0.6324786324786325
+      },
+      "base_accuracy": {
+        "numerator": 54,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.5510204081632653,
+        "macro": 0.5341880341880342
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 98,
+        "probes": 98,
+        "edits": 39,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T2L",
+      "mode": "RC",
+      "primary_metric": "Retention",
+      "primary": {
+        "numerator": 29,
+        "probes": 54,
+        "edits": 31,
+        "micro": 0.5370370370370371,
+        "macro": 0.5698924731182796,
+        "edit_ci95": [
+          0.3978494623655914,
+          0.7311827956989247
+        ],
+        "source_cluster_ci95": [
+          0.4086021505376344,
+          0.7311827956989247
+        ],
+        "source_groups": 29,
+        "c2w_micro": 0.4629629629629629
+      },
+      "post_accuracy": {
+        "numerator": 60,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.6122448979591837,
+        "macro": 0.6324786324786325
+      },
+      "base_accuracy": {
+        "numerator": 54,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.5510204081632653,
+        "macro": 0.5341880341880342
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 98,
+        "probes": 98,
+        "edits": 39,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T2L",
+      "mode": "FORCED_ON",
+      "primary_metric": "Retention",
+      "primary": {
+        "numerator": 29,
+        "probes": 54,
+        "edits": 31,
+        "micro": 0.5370370370370371,
+        "macro": 0.5698924731182796,
+        "edit_ci95": [
+          0.3978494623655914,
+          0.7311827956989247
+        ],
+        "source_cluster_ci95": [
+          0.4086021505376344,
+          0.7311827956989247
+        ],
+        "source_groups": 29,
+        "c2w_micro": 0.4629629629629629
+      },
+      "post_accuracy": {
+        "numerator": 60,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.6122448979591837,
+        "macro": 0.6324786324786325
+      },
+      "base_accuracy": {
+        "numerator": 54,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.5510204081632653,
+        "macro": 0.5341880341880342
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 98,
+        "edits": 39,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 98,
+        "probes": 98,
+        "edits": 39,
+        "micro": 1.0,
+        "macro": 1
+      }
+    },
+    {
+      "task": "T4G",
+      "mode": "R0",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 0,
+        "probes": 0,
+        "edits": 0,
+        "micro": null,
+        "macro": null,
+        "edit_ci95": null,
+        "source_cluster_ci95": null,
+        "source_groups": 0
+      },
+      "post_accuracy": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "output_agreement": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "route_on": {
+        "numerator": 0,
+        "probes": 6,
+        "edits": 2,
+        "micro": 0.0,
+        "macro": 0
+      }
+    },
+    {
+      "task": "T4G",
+      "mode": "RC",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 0,
+        "probes": 0,
+        "edits": 0,
+        "micro": null,
+        "macro": null,
+        "edit_ci95": null,
+        "source_cluster_ci95": null,
+        "source_groups": 0
+      },
+      "post_accuracy": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "base_accuracy": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "output_agreement": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "route_on": {
+        "numerator": 0,
+        "probes": 6,
+        "edits": 2,
+        "micro": 0.0,
+        "macro": 0
+      }
+    },
+    {
+      "task": "T4G",
+      "mode": "FORCED_ON",
+      "primary_metric": "Fix",
+      "primary": {
+        "numerator": 0,
+        "probes": 0,
+        "edits": 0,
+        "micro": null,
+        "macro": null,
+        "edit_ci95": null,
+        "source_cluster_ci95": null,
+        "source_groups": 0
+      },
+      "post_accuracy": {
+        "numerator": 0,
+        "probes": 6,
+        "edits": 2,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "base_accuracy": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      },
+      "output_agreement": {
+        "numerator": 0,
+        "probes": 6,
+        "edits": 2,
+        "micro": 0.0,
+        "macro": 0
+      },
+      "route_on": {
+        "numerator": 6,
+        "probes": 6,
+        "edits": 2,
+        "micro": 1.0,
+        "macro": 1
+      }
+    }
+  ],
+  "paired_route_contrasts": [
+    {
+      "task": "T0",
+      "contrast": "RC minus R0",
+      "edits": 146,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 146,
+      "macro_delta": 0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 125
+    },
+    {
+      "task": "T0",
+      "contrast": "FORCED_ON minus R0",
+      "edits": 146,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 146,
+      "macro_delta": 0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 125
+    },
+    {
+      "task": "T1G",
+      "contrast": "RC minus R0",
+      "edits": 146,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 146,
+      "macro_delta": 0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 125
+    },
+    {
+      "task": "T1G",
+      "contrast": "FORCED_ON minus R0",
+      "edits": 146,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 146,
+      "macro_delta": 0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 125
+    },
+    {
+      "task": "T1L",
+      "contrast": "RC minus R0",
+      "edits": 1,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 1,
+      "macro_delta": 0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 1
+    },
+    {
+      "task": "T1L",
+      "contrast": "FORCED_ON minus R0",
+      "edits": 1,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 1,
+      "macro_delta": 0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 1
+    },
+    {
+      "task": "T2G",
+      "contrast": "RC minus R0",
+      "edits": 146,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 146,
+      "macro_delta": 0.0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 125
+    },
+    {
+      "task": "T2G",
+      "contrast": "FORCED_ON minus R0",
+      "edits": 146,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 146,
+      "macro_delta": 0.0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 125
+    },
+    {
+      "task": "T2L",
+      "contrast": "RC minus R0",
+      "edits": 31,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 31,
+      "macro_delta": 0.0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 29
+    },
+    {
+      "task": "T2L",
+      "contrast": "FORCED_ON minus R0",
+      "edits": 31,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 31,
+      "macro_delta": 0.0,
+      "edit_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_cluster_ci95": [
+        0.0,
+        0.0
+      ],
+      "source_groups": 29
+    },
+    {
+      "task": "T4G",
+      "contrast": "RC minus R0",
+      "edits": 0,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 0,
+      "macro_delta": null,
+      "edit_ci95": null,
+      "source_cluster_ci95": null,
+      "source_groups": 0
+    },
+    {
+      "task": "T4G",
+      "contrast": "FORCED_ON minus R0",
+      "edits": 0,
+      "improved": 0,
+      "worsened": 0,
+      "tied": 0,
+      "macro_delta": null,
+      "edit_ci95": null,
+      "source_cluster_ci95": null,
+      "source_groups": 0
+    }
+  ],
+  "statistics": {
+    "bootstrap": 10000,
+    "seed": 20260912,
+    "confidence": 0.95,
+    "unit": "edit",
+    "sensitivity": "native source-group cluster resampling, edit-weighted mean; not full connected-component clustering"
+  },
+  "cost": {
+    "edits_completed": 146,
+    "edit_failures": 0,
+    "steps": 7300,
+    "summed_edit_seconds": 2168.725620031357,
+    "timing_scope": "sum of per-edit training/checkpoint and generation sections; excludes model load, between-edit cleanup and Judge time",
+    "max_allocated_bytes": 16508006400,
+    "max_reserved_bytes": 16821256192,
+    "checkpoint_bytes": 34296185560
+  },
+  "incomplete": [
+    "C_NO_H",
+    "LoRA-Perf-v1",
+    "GRACE",
+    "BELoRA",
+    "task-specific queues outside main T0",
+    "sequential",
+    "Qwen sidecar final comparison"
+  ],
+  "unsupported_main_T0": [
+    "C_FACT: H support=0",
+    "C_EXTRA_QA: H/G support=0",
+    "PairCorrect: H-eval support=0",
+    "T5: not authorized"
+  ],
+  "no_training_generation_or_judge_calls": true
+}

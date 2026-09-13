@@ -154,7 +154,7 @@ def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=No
         print(json.dumps({k:evidence[k] for k in ('batch_id','status')}),flush=True)
 
 
-def recovery_prefix(operator, batches, approval, cli_version):
+def recovery_prefix(operator, batches, approval, cli_version, inherited=()):
     """Accept an unchanged valid prefix, then exactly one approved transport failure."""
     previous = read(operator/'EXECUTION_RECORD.json')
     count = previous['completed_batches']
@@ -164,13 +164,16 @@ def recovery_prefix(operator, batches, approval, cli_version):
         raise ValueError('Explicit one-attempt recovery authorization/state required')
     if approval['failed_batch'] != batches[count]['batch_id']:
         raise ValueError('Recovery authorization targets another batch')
-    expected = {b['batch_id'] for b in batches[:count]}
+    if len(inherited) > count or previous.get('accepted_same_queue_batches_reused', 0) != len(inherited):
+        raise ValueError('Recovery predecessor prefix mismatch')
+    expected = {b['batch_id'] for b in batches[len(inherited):count]}
     if ({p.stem for p in (operator/'responses').glob('*.json')} != expected or
             {p.stem for p in (operator/'execution_evidence').glob('*.json')} !=
             expected | {batches[count]['batch_id']} or (operator/'VERDICTS_ASTRA.jsonl').exists()):
         raise ValueError('Unexpected existing attempts, responses or merged output')
     for index, batch in enumerate(batches[:count+1]):
-        evidence = read(operator/'execution_evidence'/(batch['batch_id']+'.json'))
+        source = inherited[index] if index < len(inherited) else operator
+        evidence = read(source/'execution_evidence'/(batch['batch_id']+'.json'))
         if (evidence['input_binding'] != digest(batch) or evidence['protocol'] != PROTOCOL or
                 evidence['actual_model'] != 'gpt-6-astra' or evidence['reasoning_effort'] != 'high' or
                 evidence['cli_version'] != cli_version or evidence['tool_event_types'] or
@@ -179,7 +182,7 @@ def recovery_prefix(operator, batches, approval, cli_version):
         if index < count:
             if evidence['status'] != 'FORMAT_VALID' or evidence['exit_code'] != 0 or evidence.get('errors'):
                 raise ValueError('Accepted prefix has invalid execution evidence')
-            validate(batch, read(operator/'responses'/(batch['batch_id']+'.json')))
+            validate(batch, read(source/'responses'/(batch['batch_id']+'.json')))
         else:
             errors = evidence.get('errors', [])
             messages = [e.get('message', e.get('error', {}).get('message', '')) for e in errors]
@@ -223,7 +226,7 @@ def run(config):
         if (row['question'],row['gold_answer'],row['raw_base_answer']) != (
                 full['question'],full['reference'],full['output']['model_answer_raw']):
             raise ValueError('Visible input changed')
-    output_operator = operator; skip = 0
+    output_operator = operator; skip = 0; accepted_sources = []
     if config.get('recover_transport_failure') is True:
         approval = read(config.get('recovery_authorization',
             repository/'reports/medtrace_stage17_20260912/formal/RECOVERY_AUTHORIZATION.json'))
@@ -232,9 +235,17 @@ def run(config):
                 approval.get('bundle_config_sha256') != lock['config_sha256'] or
                 approval.get('failed_input_binding') != digest(next(b for b in batches if b['batch_id'] == approval['failed_batch']))):
             raise ValueError('Transport amendment not bound to this authorized packet')
-        skip = recovery_prefix(operator,batches,approval,
-            subprocess.check_output([config['cli'],'--version'],text=True).strip())
-        output_operator = operator/'recovery_01'
+        version = subprocess.check_output([config['cli'],'--version'],text=True).strip()
+        predecessor = operator
+        if config.get('recovery_source') == 'recovery_01':
+            predecessor = operator/'recovery_01'
+            first_count = recovery_prefix(operator,batches,read(predecessor/'AUTHORIZATION.json'),version)
+            accepted_sources = [operator] * first_count
+        elif config.get('recovery_source') is not None:
+            raise ValueError('Unsupported recovery predecessor')
+        skip = recovery_prefix(predecessor,batches,approval,version,accepted_sources)
+        accepted_sources += [predecessor] * (skip-len(accepted_sources))
+        output_operator = operator/('recovery_02' if predecessor != operator else 'recovery_01')
         output_operator.mkdir()  # Write-once authorization use; no implicit second recovery.
         write_new(output_operator/'AUTHORIZATION.json',approval)
     (output_operator/'execution_evidence').mkdir(); (output_operator/'responses').mkdir()
@@ -245,8 +256,8 @@ def run(config):
         batches=len(batches),completed_batches=skip,old_verdicts_reused=0,semantic_retries=0,
         accepted_same_queue_batches_reused=skip,transport_recovery_attempts=int(output_operator != operator))
     if output_operator != operator:
-        state['predecessor_execution_record'] = '../EXECUTION_RECORD.json'
-        state['preserved_failed_attempt'] = '../execution_evidence/'+batches[skip]['batch_id']+'.json'
+        state['predecessor_execution_record'] = os.path.relpath(predecessor/'EXECUTION_RECORD.json',output_operator)
+        state['preserved_failed_attempt'] = os.path.relpath(predecessor/'execution_evidence'/(batches[skip]['batch_id']+'.json'),output_operator)
     status = output_operator/'EXECUTION_RECORD.json'; write_new(status,state)
     try:
         for index,batch in enumerate(batches[skip:], start=skip):
@@ -255,7 +266,7 @@ def run(config):
             state['completed_batches'] += 1
             status.write_text(json.dumps(state,indent=2)+'\n')
         decisions = [r for i,b in enumerate(batches) for r in validate(b,read(
-            (operator if i < skip else output_operator)/'responses'/(b['batch_id']+'.json')))]
+            (accepted_sources[i] if i < skip else output_operator)/'responses'/(b['batch_id']+'.json')))]
         pending = operator/'VERDICTS_ASTRA.jsonl.pending'
         with pending.open('x') as stream:
             for r in decisions:

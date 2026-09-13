@@ -39,6 +39,18 @@ class Recovery(unittest.TestCase):
             self.assertIn('features.respect_system_proxy=true',config)
             self.assertIn('model_reasoning_effort="high"',config)
             self.assertTrue(any('stream_idle_timeout_ms=900000' in arg for arg in config))
+            child = root/'recovery_01'
+            (child/'responses').mkdir(parents=True); (child/'execution_evidence').mkdir()
+            write_new(child/'EXECUTION_RECORD.json',dict(status='FAILED_NO_RETRY',
+                completed_batches=2,accepted_same_queue_batches_reused=1))
+            write_new(child/'responses/batch_002.json',dict(batch_id='batch_002',decisions=[
+                dict(opaque_query_id='2',is_correct=True)]))
+            write_new(child/'execution_evidence/batch_002.json',dict(evidence,
+                input_binding=digest(batches[1]),status='FORMAT_VALID',exit_code=0))
+            write_new(child/'execution_evidence/batch_003.json',dict(failure,input_binding=digest(batches[2])))
+            second_approval = dict(idle_approval,failed_batch='batch_003')
+            self.assertEqual(recovery_prefix(child,batches,second_approval,'same',[root]),2)
+            with self.assertRaises(ValueError): recovery_prefix(child,batches,second_approval,'same')
             write_new(root/'final.json',dict(result='must not discard'))
             with self.assertRaises(ValueError): recovery_prefix(root,batches,idle_approval,'same')
 
