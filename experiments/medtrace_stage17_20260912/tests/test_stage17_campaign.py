@@ -87,6 +87,15 @@ class CampaignTests(unittest.TestCase):
             self.assertEqual(len(result['panels']),16)
             self.assertTrue(all(p['primary']['micro']==1 for p in result['panels']))
             self.assertTrue(all(t['counts']=={'1_to_1':1} for t in result['insertion_to_final']))
+            (bundle/'public').rename(bundle/'before_amendment')
+            put(bundle/'source/campaign/private/EXTERNAL_LORA.json',dict(
+                acceptance_amendment={'id':'LORA_SINGLE_FP16_SEQUENTIAL_BF16_V1'}))
+            report(bundle,root/'base',be)
+            result=json.loads((bundle/'public/CAMPAIGN_RESULTS.json').read_text())
+            seq=[p for p in result['panels'] if p['method']=='lora' and p['mode']=='sequential']
+            self.assertTrue(all(p['precision']=='bfloat16' for p in seq))
+            self.assertFalse(result['protocol_amendments'][0]['same_precision_comparison'])
+            self.assertIn('not precision matched',(bundle/'public/GPT_PRO_REVIEW.md').read_text())
 
 
 if __name__=='__main__': unittest.main()
