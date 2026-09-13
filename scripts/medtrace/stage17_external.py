@@ -26,8 +26,26 @@ def assigned_phases(cfg):
     return [(method,mode) for method in methods for mode in modes]
 
 
+def phase_config(cfg, method, mode):
+    if 'phase_assignments' not in cfg: return cfg
+    amendment=cfg.get('acceptance_amendment',{})
+    if (method!='lora' or amendment.get('id')!='LORA_SINGLE_FP16_SEQUENTIAL_BF16_V1'
+            or set(cfg['phase_assignments'])!={'single','sequential'}):
+        raise ValueError('Unrecognized mixed-precision acceptance amendment')
+    selected=cfg['phase_assignments'][mode]
+    if any(selected[k]!=cfg[k] for k in ('freeze_id','N','order')):
+        raise ValueError('Amended phase cohort/order mismatch')
+    expected='float16' if mode=='single' else 'bfloat16'
+    if selected['methods']['generation']['dtype']!=expected:
+        raise ValueError('Amended phase precision mismatch')
+    if mode=='sequential' and selected.get('precision_variant')!='LORA_SEQUENTIAL_BF16_STABILITY_V1':
+        raise ValueError('Missing BF16 variant provenance')
+    return selected
+
+
 def validate_phase(root, cfg, mode, *, method='lora', require_cleanup=True):
     from scripts.medtrace.stage17_campaign import prefixes
+    cfg=phase_config(cfg,method,mode)
     directory=root/'private'/f'{method}_{mode}'
     receipt=read(directory/'COMPLETE.json')
     expected=dict(freeze_id=cfg['freeze_id'],method=method,mode=mode,
@@ -44,6 +62,7 @@ def validate_phase(root, cfg, mode, *, method='lora', require_cleanup=True):
 def worker(cfg):
     from scripts.medtrace.stage17_campaign import cleanup, check_space, role_map, CheckpointVisibilityError
     root=Path(cfg['run'])
+    if 'phase_assignments' in cfg: raise ValueError('Acceptance amendment is import-only, not a training dispatch')
     phases=assigned_phases(cfg)
     with (root/'private/campaign.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -108,6 +127,13 @@ def remote_python(ssh, program):
     return subprocess.run([*ssh,'python3 -'],input=program,text=True,check=True,timeout=60)
 
 
+def split_source_status(ssh, roots):
+    """Inspect only the assigned phase, not an unrelated failure in its source run."""
+    program='from pathlib import Path\nimport json\nroots='+repr(roots)+'\nresult={}\n'
+    program+='for name,root in roots.items():\n p=Path(root)/"private"/name\n result[name]=("COMPLETE" if (p/"CLEANUP.json").exists() and json.loads((p/"CLEANUP.json").read_text()).get("status")=="DELETED" else "CLEANUP_PENDING") if (p/"COMPLETE.json").exists() else ("FAILED" if (p/"FAILURE.json").exists() else "RUNNING")\nprint(json.dumps(result))\n'
+    return json.loads(subprocess.check_output([*ssh,'python3 -'],input=program,text=True,timeout=30))
+
+
 def relay(cfg):
     """Mac transport only; never retrains or judges. Failure is explicit on both hosts."""
     import shlex
@@ -116,9 +142,18 @@ def relay(cfg):
     assignment_name=cfg.get('assignment_name','EXTERNAL_LORA')
     assignment=read(local/'ASSIGNMENT.json')
     phases=assigned_phases(assignment)
+    if 'phase_source_roots' in cfg and set(cfg['phase_source_roots'])!={f'{m}_{mode}' for m,mode in phases}:
+        raise ValueError('Split source phase coverage mismatch')
     try:
         state(status,dict(status='WAITING_FOR_EXTERNAL_GPU'))
         while True:
+            if 'phase_source_roots' in cfg:
+                result=split_source_status(cfg['source_ssh'],cfg['phase_source_roots'])
+                if any(v=='FAILED' for v in result.values()): raise RuntimeError('Assigned phase failed: '+str(result))
+                if all(v=='COMPLETE' for v in result.values()): break
+                state(status,dict(status='WAITING_FOR_ASSIGNED_PHASES',phases=result))
+                time.sleep(60)
+                continue
             result=json.loads(subprocess.check_output([*cfg['source_ssh'],
                 'cat '+shlex.quote(cfg['source_root']+'/public/PROGRESS.json')],text=True,timeout=30))
             if result['status']=='GPU_GENERATED_NOT_SCORED': break
@@ -128,9 +163,10 @@ def relay(cfg):
         state(status,dict(status='TRANSFERRING_SMALL_OUTPUTS'))
         for method,mode in phases:
             name=method+'_'+mode
+            source_root=cfg.get('phase_source_roots',{}).get(name,cfg['source_root'])
             args=['rsync','-a','--include=*/','--include=*.json','--include=*.jsonl','--exclude=*']
             subprocess.run([*args,'-e',shlex.join(cfg['source_ssh'][:-1]),
-                cfg['source_ssh'][-1]+':'+cfg['source_root']+'/private/'+name+'/',str(local/name)+'/'],check=True)
+                cfg['source_ssh'][-1]+':'+source_root+'/private/'+name+'/',str(local/name)+'/'],check=True)
         # Validate locally using the same directory shape as the GPU run.
         incoming=local/'payload'; (incoming/'private').mkdir(parents=True,exist_ok=True)
         for method,mode in phases:

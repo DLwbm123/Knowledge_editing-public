@@ -24,6 +24,9 @@ def prepare(bundle, base_bundle, be_bundle):
     source=bundle/'source'
     # Relocated runtime ledger is the authority for output bindings.
     cfg=read(source/'campaign/private/DISPATCH.json')
+    assignment_path=source/'campaign/private/EXTERNAL_LORA.json'
+    lora_assignment=read(assignment_path) if assignment_path.exists() else {}
+    amendment=lora_assignment.get('acceptance_amendment')
     ledger=read(source/'COHORT_AND_SUPPORT_LEDGER.json')
     if digest({k:v for k,v in ledger.items() if k!='freeze_id'})!=cfg['freeze_id']:
         raise ValueError('Cohort mismatch')
@@ -40,7 +43,12 @@ def prepare(bundle, base_bundle, be_bundle):
         q=ledger['queries'][qid]; b=bb[q['opaque_Base_id']]
         if output['binding']['input']!=q or output['Base_cache_id']!=q['opaque_Base_id']:
             raise ValueError('Output/query binding mismatch')
-        if output['binding']['generation']!=b['generation']: raise ValueError('Generation mismatch')
+        generation=dict(b['generation'])
+        if method=='lora' and amendment:
+            from scripts.medtrace.stage17_external import phase_config
+            generation['dtype']=phase_config(lora_assignment,method,mode)['methods']['generation']['dtype']
+        if output['binding']['generation']!=generation: raise ValueError('Generation mismatch')
+        output_runtime=output['binding'].get('phase',{}).get('runtime',cfg['runtime_lock'])
         if (q['question'],q['reference'],q['image_sha256'])!=(b['question'],b['reference'],b['image_sha256']):
             raise ValueError('Base/realized query identity mismatch')
         refs={'original':q['reference']}
@@ -60,8 +68,8 @@ def prepare(bundle, base_bundle, be_bundle):
                     full=dict(query_id=qid,question=b['question'],reference=reference,
                         image_path=b['image_path'],image_sha256=b['image_sha256'],prompt_ids=b['prompt_ids'],
                         attention_mask=b['attention_mask'],output=dict(model_answer_raw=value['raw_answer'],
-                        raw_generated_token_ids=value['raw_token_ids']),runtime=cfg['runtime_lock'],
-                        generation=b['generation'],training=output['binding'],judge=lock,
+                        raw_generated_token_ids=value['raw_token_ids']),runtime=output_runtime,
+                        generation=generation,training=output['binding'],judge=lock,
                         source_lineage=b['source_lineage'],Base_cache_id=q['opaque_Base_id'])
                     oid=digest(full); origin='student'; bindings[oid]=full
                 mapping.append(dict(method=method,mode=mode,prefix=prefix,edit=edit,panel=panel,
@@ -85,6 +93,9 @@ def prepare(bundle, base_bundle, be_bundle):
                 {m for m,on in o['route_on'].items() if not on})
     for method,mode in schedule():
         root=source/'campaign/private'/f'{method}_{mode}'
+        if method=='lora' and amendment:
+            from scripts.medtrace.stage17_external import validate_phase
+            validate_phase(source/'campaign',lora_assignment,mode)
         receipt=read(root/'COMPLETE.json')
         if receipt['status']!='GENERATED_NOT_SCORED' or receipt['N']!=cfg['N']:
             raise ValueError('Phase incomplete')
@@ -126,6 +137,11 @@ def prepare(bundle, base_bundle, be_bundle):
 
 
 def report(bundle,base_bundle,be_bundle):
+    assignment_path=bundle/'source/campaign/private/EXTERNAL_LORA.json'
+    assignment=read(assignment_path) if assignment_path.exists() else {}
+    amendment=assignment.get('acceptance_amendment')
+    def precision(method,mode):
+        return 'bfloat16' if amendment and method=='lora' and mode=='sequential' else 'float16'
     ledger=read(bundle/'source/COHORT_AND_SUPPORT_LEDGER.json'); c0=ledger['Base_correctness']
     tasks={t['edit_id']:t for t in ledger['tasks']}; groups={e:tasks[e]['native']['source_group'] for e in ledger['main_T0']}
     op=bundle/'operator'
@@ -169,7 +185,7 @@ def report(bundle,base_bundle,be_bundle):
         selected=[r for r in allrows if not (task.endswith('L') and r['active_target'])]
         primary,values=metric(selected,'correct',lambda r:r['base'] if task.endswith('L') else not r['base'])
         primary.update(interval(values,groups)); macro[method,mode,prefix,task]=values if route in ('R0','NATIVE') else macro.get((method,mode,prefix,task),{})
-        panels.append(dict(method=method,mode=mode,prefix=prefix,task=task,route=route,
+        panels.append(dict(method=method,mode=mode,precision=precision(method,mode),prefix=prefix,task=task,route=route,
             primary_metric='Retention' if task.endswith('L') else 'Fix',primary=primary,
             post_accuracy=metric(selected,'correct')[0],active_locality_exclusions=len(allrows)-len(selected),
             c2w=None if not task.endswith('L') or primary['micro'] is None else 1-primary['micro']))
@@ -179,6 +195,8 @@ def report(bundle,base_bundle,be_bundle):
         ref=macro.get(('C_NO_H',mode,prefix,task),{}); values=macro[method,mode,prefix,task]
         common=set(ref)&set(values); delta={e:ref[e]-values[e] for e in common}
         paired.append(dict(contrast='C_NO_H minus '+method,mode=mode,prefix=prefix,task=task,
+            reference_precision='float16',comparison_precision=precision(method,mode),
+            precision_matched=precision(method,mode)=='float16',
             edits=len(common),macro_delta=sum(delta.values())/len(delta) if delta else None,**interval(delta,groups)))
     destination=bundle/'public'; destination.mkdir()
     trajectories=[]
@@ -189,7 +207,7 @@ def report(bundle,base_bundle,be_bundle):
             before=lookup[method,'sequential',index,None,'native',eid,route,'original']['correct']
             after=lookup[method,'sequential',len(ledger['main_T0']),None,'panel',eid,route,'original']['correct']
             counts[f'{int(before)}_to_{int(after)}']+=1
-        trajectories.append(dict(method=method,counts=dict(counts)))
+        trajectories.append(dict(method=method,precision=precision(method,'sequential'),counts=dict(counts)))
     costs={f'{m}_{mode}':read(bundle/'source/campaign/private'/f'{m}_{mode}'/'COMPLETE.json') for m,mode in schedule()}
     # Only numeric counters and elapsed costs are public; private phase bindings stay private.
     costs={k:{f:v for f,v in r.items() if f in ('N','seconds','replay','training_reused','peak_allocated_bytes','peak_reserved_bytes')} for k,r in costs.items()}
@@ -201,18 +219,26 @@ def report(bundle,base_bundle,be_bundle):
         limitations=['not paper exact','not a complete ten-task benchmark','source group sensitivity is not full patient independence',
             'active-target locality excluded per predeclared map; original-target outputs and active-reference verdicts retained privately',
             'no order robustness claim','historical Stage15/16 labels unchanged'])
+    if amendment:
+        result['protocol_amendments']=[dict(id=amendment['id'],single_precision='float16',
+            sequential_precision='bfloat16',original_fp16_sequential_status='FAILED_NONFINITE_EDIT17_STEP4',
+            same_precision_comparison=False)]
+        result['limitations'].append('LoRA single uses FP16; sequential uses the user-approved BF16 replacement. This is not a same-precision comparison; FP16 sequential failure is retained.')
     write_new(destination/'CAMPAIGN_RESULTS.json',result)
     with (destination/'RESULTS.csv').open('x') as stream:
-        writer=csv.DictWriter(stream,fieldnames=['method','mode','prefix','task','route','primary_metric','numerator','probes','edits','micro','macro'])
+        writer=csv.DictWriter(stream,fieldnames=['method','mode','precision','prefix','task','route','primary_metric','numerator','probes','edits','micro','macro'])
         writer.writeheader()
-        for p in panels: writer.writerow({**{k:p[k] for k in ('method','mode','prefix','task','route','primary_metric')},
+        for p in panels: writer.writerow({**{k:p[k] for k in ('method','mode','precision','prefix','task','route','primary_metric')},
             **{k:p['primary'][k] for k in ('numerator','probes','edits','micro','macro')}})
-    (destination/'GPT_PRO_REVIEW.md').write_text('# Stage17 frozen main-cohort campaign\n\n'
+    (destination/'GPT_PRO_REVIEW.md').write_text('# Stage17 main-cohort campaign\n\n'
         'Completed N=146 main-cohort single/sequential panels for C_NO_H, BalancEdit, LoRA-Perf-v1, GRACE and BELoRA. '
         'C_NO_H/BE sequential are independent-checkpoint insertion replays with new full-bank generation; other sequential methods update their native state. '
         'See CAMPAIGN_RESULTS.json and RESULTS.csv for counts, uncertainty and paired comparisons. '
         'This is not a full ten-task or paper-exact result. Unsupported H/G and additional task-specific cohorts are not filled with zeros. '
-        'Existing BE single and Base Astra verdicts were reused; historical Stage15/16 and Qwen results were not mixed.\n')
+        'Existing BE single and Base Astra verdicts were reused; historical Stage15/16 and Qwen results were not mixed.\n'
+        + ('\nUser-approved amendment: LoRA single is FP16; sequential is the BF16 stability replacement. '
+           'The original FP16 sequential run failed at edit 17, step 4 and is retained as a failure. '
+           'Single/sequential and C_NO_H/LoRA sequential comparisons are not precision matched.\n' if amendment else ''))
 
 
 def publish(cfg,bundle):

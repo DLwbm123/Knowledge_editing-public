@@ -8,6 +8,29 @@ from scripts.medtrace.stage17_external import receive, validate_phase, worker
 
 
 class ExternalTests(unittest.TestCase):
+    def test_mixed_precision_import_requires_each_original_phase_binding(self):
+        import copy
+        from scripts.medtrace.stage17_external import phase_config
+        base=dict(freeze_id='f',N=1,order=['e'],runtime_lock={'dtype':'float16'},
+            code_commit='original',methods={'generation':{'dtype':'float16'}})
+        seq=copy.deepcopy(base);seq.update(code_commit='bf16',precision_variant='LORA_SEQUENTIAL_BF16_STABILITY_V1')
+        seq['runtime_lock']['dtype']='bfloat16';seq['methods']['generation']['dtype']='bfloat16'
+        cfg=dict(base,acceptance_amendment={'id':'LORA_SINGLE_FP16_SEQUENTIAL_BF16_V1'},
+            phase_assignments={'single':base,'sequential':seq})
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)
+            for mode,source in [('single',base),('sequential',seq)]:
+                p=root/'private'/f'lora_{mode}';p.mkdir(parents=True)
+                binding=dict(freeze_id='f',method='lora',mode=mode,runtime=source['runtime_lock'],
+                    code_commit=source['code_commit'],method_lock=source['methods'],order=['e'],prefixes=[1])
+                for name,value in [('BINDING',binding),('COMPLETE',dict(status='GENERATED_NOT_SCORED',N=1,phase=binding)),('CLEANUP',dict(status='DELETED'))]:
+                    (p/f'{name}.json').write_text(json.dumps(value))
+                validate_phase(root,cfg,mode)
+            broken=copy.deepcopy(cfg);broken['phase_assignments']['sequential']['order']=['other']
+            with self.assertRaises(ValueError): phase_config(broken,'lora','sequential')
+            with self.assertRaises(ValueError): validate_phase(root,base,'sequential')
+            with self.assertRaises(ValueError): worker(dict(cfg,run=d))
+
     def test_assigned_baselines_keep_method_dependencies_and_import_separately(self):
         from scripts.medtrace.stage17_external import assigned_phases
         from scripts.medtrace.stage17_campaign import prefixes
