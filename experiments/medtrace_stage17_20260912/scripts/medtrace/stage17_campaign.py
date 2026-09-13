@@ -80,7 +80,7 @@ def cleanup(cfg, method, mode):
         validated.append(dict(path=str(p.resolve()),bytes=p.stat().st_size))
     project=Path(cfg['project']).resolve()
     mount=subprocess.check_output(['findmnt','-n','-T',str(origin),'-o','TARGET'],text=True).strip()
-    if mount!='/root/rivermind-data' or not origin.resolve().is_relative_to(project):
+    if mount!=cfg.get('storage_mount','/root/rivermind-data') or not origin.resolve().is_relative_to(project):
         raise ValueError('Unexpected checkpoint mount/project')
     # Own phase child has exited; require no process to hold an enumerated target open.
     targets={r['path'] for r in validated}
