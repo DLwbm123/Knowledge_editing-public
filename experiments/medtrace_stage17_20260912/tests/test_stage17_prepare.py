@@ -41,6 +41,7 @@ class Binding(unittest.TestCase):
             self.assertIn('features.shell_tool=false',config)
             self.assertIn('approval_policy="never"',config)
             self.assertIn('permissions.judge.network.enabled=false',config)
+            self.assertIn('features.respect_system_proxy=true',config)
 
 
 if __name__ == '__main__':
