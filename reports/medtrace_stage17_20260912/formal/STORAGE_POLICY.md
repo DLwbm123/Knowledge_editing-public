@@ -1,5 +1,10 @@
 # Bounded storage preparation — 2026-09-13
 
+Superseded lifecycle proposal: the user subsequently approved
+[dependency-ordered execution and checkpoint deletion](CHECKPOINT_LIFECYCLE.md).
+Do not default to indefinitely archiving checkpoints on my-gpu. The earlier inventory
+and implemented space checks below remain historical evidence.
+
 The data filesystem reports 118G total, 90G used and 29G available. Finite storage
 cannot retain an unlimited number of checkpoints; this is not a promise of unlimited
 unattended execution. No existing artifact, model or environment has been deleted,
