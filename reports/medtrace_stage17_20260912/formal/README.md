@@ -1,8 +1,10 @@
 # Stage17 authorized continuation
 
-Current update: [scheduled continuation and network interruption](SCHEDULED_RESUME_REPORT.md). Astra stopped after 40 accepted batches; no formal GPU training has started. The running-queue observations below describe the earlier launch milestone, not the current state.
+Current update: [recovery startup receipt](RECOVERY_START.json). Following [explicit continuation approval](RECOVERY_AUTHORIZATION.json), the remaining 465 records started in a detached process at 2026-09-13 09:39 Asia/Shanghai. The accepted 40 batches and original network failure are preserved. This is one same-configuration transport recovery, not semantic resampling or automatic retries. No formal GPU training has started. The original source-role join is complete; final support relations, cohorts and adapters remain pending.
 
-Latest scheduling instruction: resume this task once at 2026-09-13 01:00 Asia/Shanghai, then complete preparation and use physical GPU1 for new experiments when ready. This supersedes earlier GPU3 launch authorization below; historical GPU3 mechanics are unchanged. The active automation is `medtrace-stage17-1-gpu1`. The existing Astra queue continues unchanged.
+Latest GPU authorization is physical GPU1 for new experiments when ready. The 01:00 one-shot automation is paused; no new monitor was created. Historical GPU3 mechanics are unchanged. Set `recover_transport_failure: true` in the private Judge config to select the now-used, write-once `operator/recovery_01` execution; the default still refuses existing attempts. The original execution record remains unchanged, and the complete merged verdict file is exposed only after full validation.
+
+## Historical initial-launch notes (superseded by the update above)
 
 The user approved the Stage17-only scope in [AUTHORIZATION.json](AUTHORIZATION.json). This supersedes the earlier Stage17-A pending-authorization statements, not historical results or locks. GPU authorization remains physical GPU3 only. Sealed/heldout data, T5, license acceptance and clinical signoff are not expanded.
 

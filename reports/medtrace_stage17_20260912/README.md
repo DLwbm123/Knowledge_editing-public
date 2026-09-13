@@ -1,6 +1,6 @@
 # Stage17 progress
 
-Current status: [scheduled GPU1 continuation and Base Judge interruption](formal/SCHEDULED_RESUME_REPORT.md). The user approved Stage17-only formal processing and uniform Astra scoring. The first 40 Judge batches are preserved; the network-failed remainder, formal GPU training and final method comparisons are not complete.
+Current status: [authorized Base Judge recovery started](formal/RECOVERY_START.json). The first 40 batches (2,000 records) are preserved; 465 records are being recovered under the same configuration. Formal GPU1 training, final support masks/adapters and method comparisons are not complete. The [scheduled-wakeup report](formal/SCHEDULED_RESUME_REPORT.md) remains the historical failure record.
 
 The following Stage17-A files are historical handoff records; their pending-authorization statements are superseded only by [the new approval](formal/AUTHORIZATION.json). Historical T0 N=179 is not a newly judged Stage17 N.
 
