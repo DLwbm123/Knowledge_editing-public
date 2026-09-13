@@ -1,6 +1,6 @@
 # Stage17 progress
 
-Current status: [authorized Base Judge recovery started](formal/RECOVERY_START.json). The first 40 batches (2,000 records) are preserved; 465 records are being recovered under the same configuration. Formal GPU1 training, final support masks/adapters and method comparisons are not complete. The [scheduled-wakeup report](formal/SCHEDULED_RESUME_REPORT.md) remains the historical failure record.
+Current status: [Astra completion, frozen queues and first GPUHome launch](formal/GPUHOME_LAUNCH.md). Astra Base is complete (2,465 verdicts). The first BalancEdit single-T0-146 dispatch is running on the new RTX 4090 GPU0. Other methods, task-specific dispatches, sequential evaluation and final comparisons are not complete. The earlier GPU1 interruption report remains historical evidence.
 
 The following Stage17-A files are historical handoff records; their pending-authorization statements are superseded only by [the new approval](formal/AUTHORIZATION.json). Historical T0 N=179 is not a newly judged Stage17 N.
 
