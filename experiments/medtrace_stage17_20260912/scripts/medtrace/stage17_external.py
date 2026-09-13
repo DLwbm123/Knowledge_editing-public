@@ -1,4 +1,4 @@
-"""One assigned LoRA worker and a finite small-output relay to the original queue."""
+"""Assigned baseline workers and finite small-output relays to the original queue."""
 import fcntl
 import json
 import os
@@ -15,11 +15,22 @@ def state(path, value):
     temporary.replace(path)
 
 
-def validate_phase(root, cfg, mode, *, require_cleanup=True):
+def assigned_phases(cfg):
+    methods=cfg.get('assigned_methods',['lora'])
+    modes=cfg.get('assigned_modes',['single','sequential'])
+    if methods not in (['lora'],['grace','belora']):
+        raise ValueError('Unapproved external method assignment')
+    if modes!=['single','sequential'] and not (methods==['lora'] and modes==['sequential']
+            and cfg.get('precision_variant')=='LORA_SEQUENTIAL_BF16_STABILITY_V1'):
+        raise ValueError('Unapproved external phase selection')
+    return [(method,mode) for method in methods for mode in modes]
+
+
+def validate_phase(root, cfg, mode, *, method='lora', require_cleanup=True):
     from scripts.medtrace.stage17_campaign import prefixes
-    directory=root/'private'/f'lora_{mode}'
+    directory=root/'private'/f'{method}_{mode}'
     receipt=read(directory/'COMPLETE.json')
-    expected=dict(freeze_id=cfg['freeze_id'],method='lora',mode=mode,
+    expected=dict(freeze_id=cfg['freeze_id'],method=method,mode=mode,
         runtime=cfg['runtime_lock'],code_commit=cfg['code_commit'],method_lock=cfg['methods'],
         order=cfg['order'],prefixes=prefixes(cfg['N']))
     if (receipt['status']!='GENERATED_NOT_SCORED' or receipt['N']!=cfg['N']
@@ -33,10 +44,7 @@ def validate_phase(root, cfg, mode, *, require_cleanup=True):
 def worker(cfg):
     from scripts.medtrace.stage17_campaign import cleanup, check_space, role_map, CheckpointVisibilityError
     root=Path(cfg['run'])
-    modes=cfg.get('assigned_modes',['single','sequential'])
-    if modes!=['single','sequential'] and not (modes==['sequential']
-            and cfg.get('precision_variant')=='LORA_SEQUENTIAL_BF16_STABILITY_V1'):
-        raise ValueError('Unapproved external phase selection')
+    phases=assigned_phases(cfg)
     with (root/'private/campaign.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         roles=role_map(read(Path(cfg['source_run'])/'private/COHORT_AND_SUPPORT_LEDGER.json'))
@@ -45,53 +53,55 @@ def worker(cfg):
             if read(rolefile)!=roles: raise ValueError('Existing prefix role map changed')
         else: write_new(rolefile,roles)
         pending=[]
-        for mode in modes:
+        for method,mode in phases:
             check_space(root)
-            directory=root/'private'/f'lora_{mode}'
+            directory=root/'private'/f'{method}_{mode}'
             if not (directory/'COMPLETE.json').exists():
                 free=int(subprocess.check_output(['nvidia-smi','-i',str(cfg['gpu']),
                     '--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
                 if free<22000: raise RuntimeError('Insufficient GPU peak margin')
-                state(root/'public/PROGRESS.json',dict(status='RUNNING',method='lora',mode=mode,completed=0,N=cfg['N']))
-                env=dict(os.environ,JOB_ACTION='phase',JOB_METHOD='lora',JOB_MODE=mode)
-                with (root/f'lora_{mode}.log').open('ab') as log:
+                state(root/'public/PROGRESS.json',dict(status='RUNNING',method=method,mode=mode,completed=0,N=cfg['N']))
+                env=dict(os.environ,JOB_ACTION='phase',JOB_METHOD=method,JOB_MODE=mode)
+                with (root/f'{method}_{mode}.log').open('ab') as log:
                     subprocess.run([cfg['python'],'-u',cfg['entry']],env=env,
                         stdout=log,stderr=subprocess.STDOUT,check=True)
-            validate_phase(root,cfg,mode,require_cleanup=False)
-            try: cleanup(cfg,'lora',mode)
+            validate_phase(root,cfg,mode,method=method,require_cleanup=False)
+            try: cleanup(cfg,method,mode)
             except CheckpointVisibilityError as error:
                 # No deletion plan is written before this check; retain bounded state.
                 state(directory/'CLEANUP_BLOCKED.json',dict(status='BLOCKED_OPEN_FILE_VISIBILITY',
                     error=str(error),retry='next authorized hourly maintenance',no_deletion_performed=True))
-                pending.append(mode)
+                pending.append(mode if method=='lora' else f'{method}_{mode}')
         state(root/'public/PROGRESS.json',dict(status='GPU_GENERATED_CLEANUP_PENDING' if pending else 'GPU_GENERATED_NOT_SCORED',
-            method='lora',N=cfg['N'],cleanup_pending=pending))
+            phases=phases,N=cfg['N'],cleanup_pending=pending))
 
 
-def gate(root, mode):
+def gate(root, mode, *, method='lora', assignment='EXTERNAL_LORA'):
     """Called instead of GPU training by the existing queue's next child only."""
-    cfg=read(root/'private/EXTERNAL_LORA.json')
-    while not (root/'private/EXTERNAL_LORA_IMPORTED.json').exists():
-        if (root/'private/EXTERNAL_LORA_FAILURE.json').exists():
-            raise RuntimeError('External worker/relay failed; see EXTERNAL_LORA_FAILURE.json')
-        state(root/'public/PROGRESS.json',dict(status='RUNNING',method='lora',mode=mode,
+    cfg=read(root/'private'/f'{assignment}.json')
+    if (method,mode) not in assigned_phases(cfg): raise ValueError('Phase not externally assigned')
+    while not (root/'private'/f'{assignment}_IMPORTED.json').exists():
+        if (root/'private'/f'{assignment}_FAILURE.json').exists():
+            raise RuntimeError('External worker/relay failed; see '+assignment+'_FAILURE.json')
+        state(root/'public/PROGRESS.json',dict(status='RUNNING',method=method,mode=mode,
             phase='WAITING_FOR_ASSIGNED_EXTERNAL_WORKER',N=cfg['N']))
         time.sleep(60)
-    if read(root/'private/EXTERNAL_LORA_IMPORTED.json')!=cfg:
+    if read(root/'private'/f'{assignment}_IMPORTED.json')!=cfg:
         raise ValueError('External assignment/import mismatch')
-    validate_phase(root,cfg,mode)
+    validate_phase(root,cfg,mode,method=method)
 
 
-def receive(root):
-    cfg=read(root/'private/EXTERNAL_LORA.json')
-    incoming=root/'private/external-incoming'
-    for mode in ('single','sequential'):
-        validate_phase(incoming,cfg,mode)
-        if (root/'private'/f'lora_{mode}').exists():
+def receive(root, assignment='EXTERNAL_LORA'):
+    cfg=read(root/'private'/f'{assignment}.json')
+    incoming=root/'private'/('external-incoming' if assignment=='EXTERNAL_LORA' else 'external-incoming-baselines')
+    phases=assigned_phases(cfg)
+    for method,mode in phases:
+        validate_phase(incoming,cfg,mode,method=method)
+        if (root/'private'/f'{method}_{mode}').exists():
             raise RuntimeError('Refusing to overwrite existing phase')
-    for mode in ('single','sequential'):
-        (incoming/'private'/f'lora_{mode}').rename(root/'private'/f'lora_{mode}')
-    write_new(root/'private/EXTERNAL_LORA_IMPORTED.json',cfg)
+    for method,mode in phases:
+        (incoming/'private'/f'{method}_{mode}').rename(root/'private'/f'{method}_{mode}')
+    write_new(root/'private'/f'{assignment}_IMPORTED.json',cfg)
 
 
 def remote_python(ssh, program):
@@ -103,6 +113,9 @@ def relay(cfg):
     import shlex
     local=Path(cfg['local']); local.mkdir(exist_ok=True)
     status=local/'RELAY.json'
+    assignment_name=cfg.get('assignment_name','EXTERNAL_LORA')
+    assignment=read(local/'ASSIGNMENT.json')
+    phases=assigned_phases(assignment)
     try:
         state(status,dict(status='WAITING_FOR_EXTERNAL_GPU'))
         while True:
@@ -113,30 +126,29 @@ def relay(cfg):
                 raise RuntimeError('External GPU stopped: '+str(result))
             time.sleep(60)
         state(status,dict(status='TRANSFERRING_SMALL_OUTPUTS'))
-        for mode in ('single','sequential'):
-            name='lora_'+mode
+        for method,mode in phases:
+            name=method+'_'+mode
             args=['rsync','-a','--include=*/','--include=*.json','--include=*.jsonl','--exclude=*']
             subprocess.run([*args,'-e',shlex.join(cfg['source_ssh'][:-1]),
                 cfg['source_ssh'][-1]+':'+cfg['source_root']+'/private/'+name+'/',str(local/name)+'/'],check=True)
-        assignment=read(local/'ASSIGNMENT.json')
         # Validate locally using the same directory shape as the GPU run.
         incoming=local/'payload'; (incoming/'private').mkdir(parents=True,exist_ok=True)
-        for mode in ('single','sequential'):
-            (local/('lora_'+mode)).rename(incoming/'private'/('lora_'+mode))
-            validate_phase(incoming,assignment,mode)
-        destination=cfg['destination_root']+'/private/external-incoming'
+        for method,mode in phases:
+            (local/(method+'_'+mode)).rename(incoming/'private'/(method+'_'+mode))
+            validate_phase(incoming,assignment,mode,method=method)
+        destination=cfg['destination_root']+'/private/'+('external-incoming' if assignment_name=='EXTERNAL_LORA' else 'external-incoming-baselines')
         remote_python(cfg['destination_ssh'],'from pathlib import Path\nPath('+repr(destination)+').mkdir(exist_ok=False)\n')
         subprocess.run(['rsync','-a','-e',shlex.join(cfg['destination_ssh'][:-1]),str(incoming)+'/',
             cfg['destination_ssh'][-1]+':'+destination+'/'],check=True)
         program='import sys\nfrom pathlib import Path\nsys.path.insert(0,'+repr(cfg['destination_source'])+')\n'
-        program+='from scripts.medtrace.stage17_external import receive\nreceive(Path('+repr(cfg['destination_root'])+'))\n'
+        program+='from scripts.medtrace.stage17_external import receive\nreceive(Path('+repr(cfg['destination_root'])+'),'+repr(assignment_name)+')\n'
         # Use the recorded runtime, not the server's unrelated system Python.
         subprocess.run([*cfg['destination_ssh'],cfg['destination_python']+' -'],input=program,text=True,check=True,timeout=60)
         state(status,dict(status='IMPORTED_FOR_EXISTING_FOLLOWER'))
     except Exception as error:
         failure=dict(status='STOPPED_NO_COMPUTE_RETRY',error=repr(error))
         state(status,failure)
-        path=cfg['destination_root']+'/private/EXTERNAL_LORA_FAILURE.json'
+        path=cfg['destination_root']+'/private/'+assignment_name+'_FAILURE.json'
         remote_python(cfg['destination_ssh'],'from pathlib import Path\nPath('+repr(path)+').write_text('+repr(json.dumps(failure))+')\n')
         raise
 
