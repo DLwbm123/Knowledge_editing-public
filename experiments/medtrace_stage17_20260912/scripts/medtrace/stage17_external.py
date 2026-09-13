@@ -15,7 +15,7 @@ def state(path, value):
     temporary.replace(path)
 
 
-def validate_phase(root, cfg, mode):
+def validate_phase(root, cfg, mode, *, require_cleanup=True):
     from scripts.medtrace.stage17_campaign import prefixes
     directory=root/'private'/f'lora_{mode}'
     receipt=read(directory/'COMPLETE.json')
@@ -25,31 +25,43 @@ def validate_phase(root, cfg, mode):
     if (receipt['status']!='GENERATED_NOT_SCORED' or receipt['N']!=cfg['N']
             or receipt['phase']!=expected or read(directory/'BINDING.json')!=expected):
         raise ValueError('External phase provenance mismatch')
-    if read(directory/'CLEANUP.json')['status']!='DELETED':
+    if require_cleanup and read(directory/'CLEANUP.json')['status']!='DELETED':
         raise ValueError('External checkpoint lifecycle incomplete')
     return receipt
 
 
 def worker(cfg):
-    from scripts.medtrace.stage17_campaign import cleanup, check_space, role_map
+    from scripts.medtrace.stage17_campaign import cleanup, check_space, role_map, CheckpointVisibilityError
     root=Path(cfg['run'])
     with (root/'private/campaign.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-        write_new(root/'private/PREFIX_ACTIVE_TARGETS.json',role_map(
-            read(Path(cfg['source_run'])/'private/COHORT_AND_SUPPORT_LEDGER.json')))
+        roles=role_map(read(Path(cfg['source_run'])/'private/COHORT_AND_SUPPORT_LEDGER.json'))
+        rolefile=root/'private/PREFIX_ACTIVE_TARGETS.json'
+        if rolefile.exists():
+            if read(rolefile)!=roles: raise ValueError('Existing prefix role map changed')
+        else: write_new(rolefile,roles)
+        pending=[]
         for mode in ('single','sequential'):
             check_space(root)
-            free=int(subprocess.check_output(['nvidia-smi','-i',str(cfg['gpu']),
-                '--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
-            if free<22000: raise RuntimeError('Insufficient GPU peak margin')
-            state(root/'public/PROGRESS.json',dict(status='RUNNING',method='lora',mode=mode,completed=0,N=cfg['N']))
-            env=dict(os.environ,JOB_ACTION='phase',JOB_METHOD='lora',JOB_MODE=mode)
-            with (root/f'lora_{mode}.log').open('ab') as log:
-                subprocess.run([cfg['python'],'-u',cfg['entry']],env=env,
-                    stdout=log,stderr=subprocess.STDOUT,check=True)
-            cleanup(cfg,'lora',mode)
-            validate_phase(root,cfg,mode)
-        state(root/'public/PROGRESS.json',dict(status='GPU_GENERATED_NOT_SCORED',method='lora',N=cfg['N']))
+            directory=root/'private'/f'lora_{mode}'
+            if not (directory/'COMPLETE.json').exists():
+                free=int(subprocess.check_output(['nvidia-smi','-i',str(cfg['gpu']),
+                    '--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
+                if free<22000: raise RuntimeError('Insufficient GPU peak margin')
+                state(root/'public/PROGRESS.json',dict(status='RUNNING',method='lora',mode=mode,completed=0,N=cfg['N']))
+                env=dict(os.environ,JOB_ACTION='phase',JOB_METHOD='lora',JOB_MODE=mode)
+                with (root/f'lora_{mode}.log').open('ab') as log:
+                    subprocess.run([cfg['python'],'-u',cfg['entry']],env=env,
+                        stdout=log,stderr=subprocess.STDOUT,check=True)
+            validate_phase(root,cfg,mode,require_cleanup=False)
+            try: cleanup(cfg,'lora',mode)
+            except CheckpointVisibilityError as error:
+                # No deletion plan is written before this check; retain bounded state.
+                state(directory/'CLEANUP_BLOCKED.json',dict(status='BLOCKED_OPEN_FILE_VISIBILITY',
+                    error=str(error),retry='next authorized hourly maintenance',no_deletion_performed=True))
+                pending.append(mode)
+        state(root/'public/PROGRESS.json',dict(status='GPU_GENERATED_CLEANUP_PENDING' if pending else 'GPU_GENERATED_NOT_SCORED',
+            method='lora',N=cfg['N'],cleanup_pending=pending))
 
 
 def gate(root, mode):
@@ -93,7 +105,8 @@ def relay(cfg):
             result=json.loads(subprocess.check_output([*cfg['source_ssh'],
                 'cat '+shlex.quote(cfg['source_root']+'/public/PROGRESS.json')],text=True,timeout=30))
             if result['status']=='GPU_GENERATED_NOT_SCORED': break
-            if result['status']!='RUNNING': raise RuntimeError('External GPU stopped: '+str(result))
+            if result['status'] not in ('RUNNING','GPU_GENERATED_CLEANUP_PENDING'):
+                raise RuntimeError('External GPU stopped: '+str(result))
             time.sleep(60)
         state(status,dict(status='TRANSFERRING_SMALL_OUTPUTS'))
         for mode in ('single','sequential'):

@@ -47,6 +47,10 @@ def check_space(root):
         raise OSError('8GiB data-disk reserve reached')
 
 
+class CheckpointVisibilityError(RuntimeError):
+    """Deletion is blocked, but completed computation remains valid."""
+
+
 def cleanup(cfg, method, mode):
     """Delete only enumerated generated weights after all registered GPU consumers."""
     root=Path(cfg['run']); phase_root=root/'private'/f'{method}_{mode}'
@@ -92,7 +96,8 @@ def cleanup(cfg, method, mode):
                     if os.readlink(fd) in targets: raise RuntimeError('Checkpoint still open')
                 except FileNotFoundError: pass
         except FileNotFoundError: pass
-        except PermissionError: raise RuntimeError('Cannot verify checkpoint open-file safety')
+        except PermissionError as error:
+            raise CheckpointVisibilityError('Cannot verify checkpoint open-file safety: '+str(error)) from error
     plan=phase_root/'CLEANUP_PLAN.json'
     if plan.exists(): raise RuntimeError('Partial cleanup requires reviewed recovery')
     write_new(plan,validated)
