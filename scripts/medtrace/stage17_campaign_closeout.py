@@ -20,10 +20,18 @@ from scripts.medtrace.stage17_campaign import prefixes, schedule, query_ids, rol
 from scripts.medtrace.stage17_report import metric, interval
 
 
+def execution_path(operator):
+    """Read the latest supported attempt without overwriting earlier failures."""
+    for name in ('recovery_02', 'recovery_01', ''):
+        path=operator/name/'EXECUTION_RECORD.json'
+        if path.exists(): return path
+    return operator/'EXECUTION_RECORD.json'
+
+
 def accepted_priority(bundle, lock):
     """Reuse only a complete, identically bound priority queue under the same Judge."""
     op=Path(bundle)/'operator'
-    execution=read(op/'EXECUTION_RECORD.json'); manifest=read(op/'MANIFEST.json')
+    execution=read(execution_path(op)); manifest=read(op/'MANIFEST.json')
     bindings=read(op/'BINDINGS.json'); verdicts=lines(op/'VERDICTS_ASTRA.jsonl')
     if (execution['status']!='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED'
             or read(op/'JUDGE_LOCK.json')!=lock or manifest['config_sha256']!=lock['config_sha256']
@@ -177,7 +185,7 @@ def report(bundle,base_bundle,be_bundle,cnoh_only=False):
     ledger=read(bundle/'source/COHORT_AND_SUPPORT_LEDGER.json'); c0=ledger['Base_correctness']
     tasks={t['edit_id']:t for t in ledger['tasks']}; groups={e:tasks[e]['native']['source_group'] for e in ledger['main_T0']}
     op=bundle/'operator'
-    if read(op/'EXECUTION_RECORD.json')['status']!='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED':
+    if read(execution_path(op))['status']!='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED':
         raise ValueError('Judge incomplete')
     verdicts=lines(op/'VERDICTS_ASTRA.jsonl'); bounds=read(op/'BINDINGS.json')
     if len(verdicts)!=len(bounds) or {v['opaque_query_id'] for v in verdicts}!=set(bounds): raise ValueError('Judge coverage mismatch')
@@ -317,7 +325,7 @@ def run(cfg):
         if reuse:
             state(status='WAITING_FOR_PRIORITY_JUDGE')
             while True:
-                p=Path(reuse)/'operator/EXECUTION_RECORD.json'
+                p=execution_path(Path(reuse)/'operator')
                 if p.exists():
                     priority=read(p)
                     if priority['status']=='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED': break
@@ -344,7 +352,10 @@ def run(cfg):
         if not cfg.get('prepared'): prepare(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False),reuse_bundle=reuse)
         state(status='ASTRA_SCORING')
         from scripts.medtrace.stage17_judge import run as judge
-        judge(dict(bundle=str(bundle),repository=cfg['repository'],cli=cfg['cli'],explicit_proxy=True))
+        judge_config=dict(bundle=str(bundle),repository=cfg['repository'],cli=cfg['cli'],explicit_proxy=True)
+        for key in ('recover_transport_failure','recovery_authorization','recovery_source'):
+            if key in cfg: judge_config[key]=cfg[key]
+        judge(judge_config)
         state(status='REPORTING'); report(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False))
         try:
             url=publish(cfg,bundle); state(status='C_NO_H_PUBLISHED' if cfg.get('cnoh_only') else 'MAIN_COHORT_PUBLISHED',url=url)
