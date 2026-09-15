@@ -1,0 +1,11 @@
+# Astra transport recovery chain maintenance
+
+At 2026-09-15 17:10 UTC, the completed-method scoring queue stopped on batch 122 after a 900-second SSE idle timeout. The first 121 of 344 batches remained accepted. The failed attempt exited with code 1, emitted no tool events, passed all five isolation checks, and produced no final response. Prior failures and accepted responses were retained.
+
+The recovery runner previously supported only two recovery directories. Commit `f0cc2be0b1d6d0be800ecf01944c2bd6c72fb2e9` replaces that fixed limit with an explicitly selected, contiguous predecessor chain. Every predecessor still passes the existing input, model, CLI, isolation, format, and no-final-response transport checks. Missing or later attempts, invalid predecessor paths, and changed lineage fail closed. Each invocation creates one new attempt directory; this is not a persistent retry loop. Report and dependency readers select the newest attempt, including failures, rather than falling back to old success.
+
+Under the existing user authorization, recovery 03 started at 2026-09-15 17:29 UTC with all 121 accepted batches reused and batch 122 dispatched once. The dependent overall follower was restarted only after the new execution record was RUNNING. The existing LoRA generation and relay were left running. This is a recovery-start report, not a claim that batch 122 or the queue has completed. The underlying intermittent transport instability may recur; the existing proxy endpoint was reachable, which does not prove authenticated scoring service health.
+
+Validation: two synthetic recovery tests and seven campaign tests passed. They cover third-attempt prefix reuse, refusal of existing-final responses and invalid predecessor lineage, refusal of stale/newer attempt selection, and reporting/reuse of the latest recovery. Runtime deployment used an isolated clean checkout at the exact commit above; startup confirmed 121 reused batches, a fresh isolated session, and neutral process command lines.
+
+Frozen scope remains N=146, the same batch order, source-agreement prompt, gpt-6-astra/high, and scientific bindings. No accepted result was rejudged. Private answers, tokens, bindings, credentials, and runtime paths are excluded from this public report.
