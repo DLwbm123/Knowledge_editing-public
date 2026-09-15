@@ -126,6 +126,17 @@ class CampaignTests(unittest.TestCase):
             put('BINDINGS.json',{oid:full})
             put('VERDICTS_ASTRA.jsonl',dict(verdict,is_correct=1))
             with self.assertRaises(ValueError): accepted_priority(bundle,lock)
+            put('VERDICTS_ASTRA.jsonl',verdict)
+            put('EXECUTION_RECORD.json',dict(status='FAILED_NO_RETRY'))
+            (op/'recovery_01').mkdir()
+            put('recovery_01/EXECUTION_RECORD.json',dict(status='RUNNING'))
+            with self.assertRaises(ValueError): accepted_priority(bundle,lock)
+            put('recovery_01/EXECUTION_RECORD.json',dict(status='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED'))
+            self.assertEqual(accepted_priority(bundle,lock),({oid:full},[verdict]))
+            self.assertEqual(json.loads((op/'EXECUTION_RECORD.json').read_text())['status'],'FAILED_NO_RETRY')
+            (op/'recovery_02').mkdir()
+            put('recovery_02/EXECUTION_RECORD.json',dict(status='FAILED_NO_RETRY'))
+            with self.assertRaises(ValueError): accepted_priority(bundle,lock)
 
 
 if __name__=='__main__': unittest.main()
