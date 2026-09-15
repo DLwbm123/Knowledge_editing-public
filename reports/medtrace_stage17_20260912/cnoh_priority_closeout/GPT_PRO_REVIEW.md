@@ -1,0 +1,3 @@
+# Stage17 main-cohort campaign
+
+Completed N=146 main-cohort single/sequential panels for C_NO_H only. Other methods remain outside this priority report. C_NO_H/BE sequential are independent-checkpoint insertion replays with new full-bank generation; other sequential methods update their native state. See CAMPAIGN_RESULTS.json and RESULTS.csv for counts, uncertainty and paired comparisons. This is not a full ten-task or paper-exact result. Unsupported H/G and additional task-specific cohorts are not filled with zeros. Existing Base Astra verdicts were reused. Historical Stage15/16 and Qwen results were not mixed.
