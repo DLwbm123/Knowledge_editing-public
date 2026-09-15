@@ -1,14 +1,59 @@
 """One synthetic prefix/failure test; no model calls or private answers."""
 from pathlib import Path
 import json
+import os
 import tempfile
 import unittest
 
 from scripts.medtrace.astra_judge_bundle import write_new
-from scripts.medtrace.stage17_judge import PROTOCOL, digest, recovery_prefix, flags
+from scripts.medtrace.stage17_judge import PROTOCOL, digest, recovery_prefix, recovery_chain, execution_path, flags
 
 
 class Recovery(unittest.TestCase):
+    def test_third_recovery_reuses_chain_and_rejects_invalid_predecessors(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            batches = [dict(batch_id=f'batch_{i:03d}',records=[dict(opaque_query_id=str(i))])
+                for i in range(1,5)]
+            attempts = [root,root/'recovery_01',root/'recovery_02']
+            evidence = dict(protocol=PROTOCOL,actual_model='gpt-6-astra',reasoning_effort='high',
+                cli_version='same',tool_event_types=[],isolation_checks={'boundary':True})
+            approvals = [dict(decision='APPROVED_BY_USER',transport_recovery_attempts=1,
+                failed_batch=batches[i+1]['batch_id']) for i in range(3)]
+            for index, attempt in enumerate(attempts):
+                (attempt/'responses').mkdir(parents=True); (attempt/'execution_evidence').mkdir()
+                record = dict(status='FAILED_NO_RETRY',completed_batches=index+1,
+                    accepted_same_queue_batches_reused=index)
+                if index:
+                    record['predecessor_execution_record'] = os.path.relpath(
+                        attempts[index-1]/'EXECUTION_RECORD.json',attempt)
+                    write_new(attempt/'AUTHORIZATION.json',approvals[index-1])
+                write_new(attempt/'EXECUTION_RECORD.json',record)
+                batch = batches[index]
+                write_new(attempt/'responses'/(batch['batch_id']+'.json'),dict(
+                    batch_id=batch['batch_id'],decisions=[dict(opaque_query_id=str(index+1),is_correct=True)]))
+                write_new(attempt/'execution_evidence'/(batch['batch_id']+'.json'),dict(
+                    evidence,input_binding=digest(batch),status='FORMAT_VALID',exit_code=0))
+                failed = batches[index+1]
+                write_new(attempt/'execution_evidence'/(failed['batch_id']+'.json'),dict(
+                    evidence,input_binding=digest(failed),status='FAILED_NO_RETRY',exit_code=1,
+                    command=['--output-last-message',str(attempt/'final.json')],errors=[dict(
+                        message='Transport error: network error: error decoding response body')]))
+            self.assertEqual(recovery_chain(root,'recovery_02',batches,approvals[-1],'same'),
+                (attempts[-1],root/'recovery_03',attempts))
+            for invalid in (None,'recovery_01','../recovery_02','recovery_002','recovery_00'):
+                with self.assertRaises(ValueError): recovery_chain(root,invalid,batches,approvals[-1],'same')
+            (root/'recovery_03').mkdir()
+            self.assertEqual(execution_path(root),root/'recovery_03/EXECUTION_RECORD.json')
+            with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approvals[-1],'same')
+            (root/'recovery_03').rmdir()
+            write_new(root/'final.json',dict(result='must retain'))
+            with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approvals[-1],'same')
+            (root/'final.json').unlink()
+            record['predecessor_execution_record'] = '../EXECUTION_RECORD.json'
+            (attempts[-1]/'EXECUTION_RECORD.json').write_text(json.dumps(record))
+            with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approvals[-1],'same')
+
     def test_preserve_prefix_and_reject_semantic_or_completed_failure(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -197,6 +198,43 @@ def recovery_prefix(operator, batches, approval, cli_version, inherited=()):
     return count
 
 
+def recovery_directories(operator):
+    return sorted((p for p in operator.glob('recovery_*')
+        if p.is_dir() and re.fullmatch(r'recovery_[0-9]{2,}', p.name)),
+        key=lambda p: int(p.name.removeprefix('recovery_')))
+
+
+def execution_path(operator):
+    """Select the latest attempt, including a failed or incomplete recovery."""
+    attempts = recovery_directories(operator)
+    return (attempts[-1] if attempts else operator)/'EXECUTION_RECORD.json'
+
+
+def recovery_chain(operator, source, batches, approval, cli_version):
+    """Validate every predecessor; return immutable accepted-response locations."""
+    number = 0
+    if source is not None:
+        if not isinstance(source, str) or not re.fullmatch(r'recovery_[0-9]{2,}', source):
+            raise ValueError('Invalid recovery predecessor')
+        number = int(source.removeprefix('recovery_'))
+        if number < 1 or source != f'recovery_{number:02d}':
+            raise ValueError('Invalid recovery predecessor')
+    attempts = [operator] + [operator/f'recovery_{i:02d}' for i in range(1,number+1)]
+    if recovery_directories(operator) != attempts[1:]:
+        raise ValueError('Recovery chain has missing or later attempts')
+    accepted_sources = []
+    for index, predecessor in enumerate(attempts):
+        authorization = read(attempts[index+1]/'AUTHORIZATION.json') if index < number else approval
+        if index:
+            previous = read(predecessor/'EXECUTION_RECORD.json')
+            if previous.get('predecessor_execution_record') != os.path.relpath(
+                    attempts[index-1]/'EXECUTION_RECORD.json',predecessor):
+                raise ValueError('Recovery predecessor lineage mismatch')
+        count = recovery_prefix(predecessor,batches,authorization,cli_version,accepted_sources)
+        accepted_sources += [predecessor] * (count-len(accepted_sources))
+    return attempts[-1], operator/f'recovery_{number+1:02d}', accepted_sources
+
+
 def run(config):
     bundle = Path(config['bundle']); operator = bundle/'operator'; repository = Path(config['repository'])
     authorization = read(repository/'reports/medtrace_stage17_20260912/formal/AUTHORIZATION.json')
@@ -236,17 +274,10 @@ def run(config):
                 approval.get('failed_input_binding') != digest(next(b for b in batches if b['batch_id'] == approval['failed_batch']))):
             raise ValueError('Transport amendment not bound to this authorized packet')
         version = subprocess.check_output([config['cli'],'--version'],text=True).strip()
-        predecessor = operator
-        if config.get('recovery_source') == 'recovery_01':
-            predecessor = operator/'recovery_01'
-            first_count = recovery_prefix(operator,batches,read(predecessor/'AUTHORIZATION.json'),version)
-            accepted_sources = [operator] * first_count
-        elif config.get('recovery_source') is not None:
-            raise ValueError('Unsupported recovery predecessor')
-        skip = recovery_prefix(predecessor,batches,approval,version,accepted_sources)
-        accepted_sources += [predecessor] * (skip-len(accepted_sources))
-        output_operator = operator/('recovery_02' if predecessor != operator else 'recovery_01')
-        output_operator.mkdir()  # Write-once authorization use; no implicit second recovery.
+        predecessor, output_operator, accepted_sources = recovery_chain(
+            operator,config.get('recovery_source'),batches,approval,version)
+        skip = len(accepted_sources)
+        output_operator.mkdir()  # Write-once authorization use; one dispatch per invocation.
         write_new(output_operator/'AUTHORIZATION.json',approval)
     (output_operator/'execution_evidence').mkdir(); (output_operator/'responses').mkdir()
     scratch = Path(tempfile.mkdtemp(prefix='job.',dir='/private/tmp'))

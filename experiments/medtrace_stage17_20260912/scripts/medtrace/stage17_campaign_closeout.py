@@ -18,14 +18,7 @@ from scripts.medtrace.stage17_prepare import digest, lines, PROMPT, PROTOCOL
 from scripts.medtrace.stage17_freeze import accepted
 from scripts.medtrace.stage17_campaign import prefixes, schedule, query_ids, role_map
 from scripts.medtrace.stage17_report import metric, interval
-
-
-def execution_path(operator):
-    """Read the latest supported attempt without overwriting earlier failures."""
-    for name in ('recovery_02', 'recovery_01', ''):
-        path=operator/name/'EXECUTION_RECORD.json'
-        if path.exists(): return path
-    return operator/'EXECUTION_RECORD.json'
+from scripts.medtrace.stage17_judge import execution_path
 
 
 def accepted_priority(bundle, lock, seen=()):
