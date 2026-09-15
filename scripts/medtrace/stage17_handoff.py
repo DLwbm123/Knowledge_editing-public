@@ -21,6 +21,10 @@ def tick(cfg):
     campaign = Path(cfg['campaign'])
     bc = read(baseline/'private/DISPATCH.json')
     cc = read(campaign/'private/DISPATCH.json')
+    if (cc['freeze_id'], cc['N']) != (bc['freeze_id'], bc['N']):
+        raise ValueError('Transferred cohort mismatch')
+    # The original campaign dispatch predates the external order field.
+    cc = dict(cc, order=bc['order'])
     if all_phases(baseline, bc, ('grace', 'belora')):
         state(baseline/'public/PROGRESS.json', dict(status='GPU_GENERATED_NOT_SCORED', N=bc['N'],
             phases=[(m, mode) for m in ('grace', 'belora') for mode in ('single', 'sequential')]))
