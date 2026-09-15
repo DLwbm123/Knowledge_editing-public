@@ -11,6 +11,7 @@ from scripts.medtrace.astra_judge_bundle import read, write_new
 from scripts.medtrace.stage17_prepare import digest, lines
 from scripts.medtrace.stage17_freeze import accepted
 from scripts.medtrace.stage17_student_packets import mode_sources
+from scripts.medtrace.stage17_judge import execution_path
 
 
 def metric(rows, field, selector=lambda r: True):
@@ -45,7 +46,7 @@ def report(bundle, destination):
     manifest = read(op/'MANIFEST.json'); ledger=read(private/'COHORT_AND_SUPPORT_LEDGER.json')
     if manifest['freeze_id'] != ledger['freeze_id'] or digest({k:v for k,v in ledger.items() if k!='freeze_id'}) != ledger['freeze_id']:
         raise ValueError('Frozen cohort changed')
-    status=read(op/'recovery_02/EXECUTION_RECORD.json')
+    status=read(execution_path(op))
     if status['status'] != 'COMPLETE_FORMAT_AND_COVERAGE_VALIDATED': raise ValueError('Student Judge incomplete')
     bindings=read(op/'BINDINGS.json'); verdicts=lines(op/'VERDICTS_ASTRA.jsonl'); lock=read(op/'JUDGE_LOCK.json')
     scores={v['opaque_query_id']:v for v in verdicts}
