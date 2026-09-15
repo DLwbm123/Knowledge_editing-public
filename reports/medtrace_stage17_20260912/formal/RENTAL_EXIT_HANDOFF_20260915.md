@@ -1,5 +1,10 @@
 # Rented-server exit handoff — 2026-09-15
 
+Closeout update: GRACE final transfer has passed (146 native + 3213 panel outputs).
+Both temporary 146-file recovery copies were strictly cleaned after validation.
+The rented host is no longer a dependency. See GRACE_SEQUENTIAL_COMPLETION_20260915.md.
+The initial snapshot and pending-state description below records the earlier handoff.
+
 The user requested preserving the required material on the existing persistent
 server before the 24 GiB server rental ends. A bounded snapshot of nine Stage17
 run directories was transferred successfully. Its verified run payload contained
