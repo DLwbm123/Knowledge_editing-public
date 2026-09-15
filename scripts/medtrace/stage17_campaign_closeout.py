@@ -20,7 +20,27 @@ from scripts.medtrace.stage17_campaign import prefixes, schedule, query_ids, rol
 from scripts.medtrace.stage17_report import metric, interval
 
 
-def prepare(bundle, base_bundle, be_bundle):
+def accepted_priority(bundle, lock):
+    """Reuse only a complete, identically bound priority queue under the same Judge."""
+    op=Path(bundle)/'operator'
+    execution=read(op/'EXECUTION_RECORD.json'); manifest=read(op/'MANIFEST.json')
+    bindings=read(op/'BINDINGS.json'); verdicts=lines(op/'VERDICTS_ASTRA.jsonl')
+    if (execution['status']!='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED'
+            or read(op/'JUDGE_LOCK.json')!=lock or manifest['config_sha256']!=lock['config_sha256']
+            or manifest.get('cnoh_only') is not True or manifest['records']!=len(bindings)
+            or len(verdicts)!=len(bindings) or {v['opaque_query_id'] for v in verdicts}!=set(bindings)):
+        raise ValueError('Priority Judge incomplete or incompatible')
+    for oid,full in bindings.items():
+        if digest(full)!=oid or full['judge']!=lock:
+            raise ValueError('Priority scientific binding changed')
+    for v in verdicts:
+        if (type(v['is_correct']) is not bool or v['protocol']!=PROTOCOL
+                or v['judge_model']!='gpt-6-astra' or v['query_id']!=bindings[v['opaque_query_id']]['query_id']):
+            raise ValueError('Priority verdict contract mismatch')
+    return bindings,verdicts
+
+
+def prepare(bundle, base_bundle, be_bundle, cnoh_only=False, reuse_bundle=None):
     source=bundle/'source'
     # Relocated runtime ledger is the authority for output bindings.
     cfg=read(source/'campaign/private/DISPATCH.json')
@@ -92,6 +112,7 @@ def prepare(bundle, base_bundle, be_bundle):
             add(o,'C_NO_H','single',1,eid,'panel',qid,{m:o[m] for m in ('R0','RC','FORCED_ON')},
                 {m for m,on in o['route_on'].items() if not on})
     for method,mode in schedule():
+        if cnoh_only and method!='C_NO_H': continue
         root=source/'campaign/private'/f'{method}_{mode}'
         if method=='lora' and amendment:
             from scripts.medtrace.stage17_external import validate_phase
@@ -119,7 +140,16 @@ def prepare(bundle, base_bundle, be_bundle):
                         if not route['activated']: off.add('R0')
                         if route['nearest_distance']>route['radius']*.7696741135364367: off.add('RC')
                     add(o,method,mode,index if mode=='sequential' else 1,eid,panel,qid,o['modes'],off)
+    reused=None
+    if reuse_bundle:
+        if cnoh_only: raise ValueError('Priority queue cannot reuse itself')
+        previous,verdicts=accepted_priority(reuse_bundle,lock)
+        if any(bindings.get(oid)!=full for oid,full in previous.items()):
+            raise ValueError('Priority outputs differ from final campaign bindings')
+        reused=dict(bundle=str(Path(reuse_bundle).resolve()),bindings=previous,verdicts=verdicts)
+        for oid in previous: del bindings[oid]
     operator=bundle/'operator'; operator.mkdir(); (bundle/'judge_only').mkdir()
+    if reused: write_new(operator/'REUSED_PRIORITY.json',reused)
     write_new(operator/'JUDGE_LOCK.json',lock); write_new(operator/'BINDINGS.json',bindings)
     write_new(operator/'MODE_MAPPING.json',mapping)
     visible=[dict(opaque_query_id=k,question=v['question'],gold_answer=v['reference'],
@@ -133,10 +163,12 @@ def prepare(bundle, base_bundle, be_bundle):
         batches.append(dict(batch_id=name,count=len(batch['records'])))
     write_new(operator/'MANIFEST.json',dict(protocol=PROTOCOL,config_sha256=lock['config_sha256'],
         records=len(visible),batches=batches,freeze_id=cfg['freeze_id'],status='READY',
-        scope='remaining main T0 cohort single and sequential; BE single accepted separately',N=cfg['N']))
+        scope='C_NO_H single and sequential' if cnoh_only else 'remaining main T0 cohort single and sequential; BE single accepted separately',
+        cnoh_only=cnoh_only,reused_priority_records=len(reused['bindings']) if reused else 0,N=cfg['N']))
 
 
-def report(bundle,base_bundle,be_bundle):
+def report(bundle,base_bundle,be_bundle,cnoh_only=False):
+    methods=('C_NO_H',) if cnoh_only else ('C_NO_H','balancedit','lora','grace','belora')
     assignment_path=bundle/'source/campaign/private/EXTERNAL_LORA.json'
     assignment=read(assignment_path) if assignment_path.exists() else {}
     amendment=assignment.get('acceptance_amendment')
@@ -151,6 +183,13 @@ def report(bundle,base_bundle,be_bundle):
     if len(verdicts)!=len(bounds) or {v['opaque_query_id'] for v in verdicts}!=set(bounds): raise ValueError('Judge coverage mismatch')
     score={v['opaque_query_id']:v['is_correct'] for v in verdicts}
     if any(type(v) is not bool for v in score.values()): raise ValueError('Invalid verdict')
+    reused_count=0
+    if (op/'REUSED_PRIORITY.json').exists():
+        reused=read(op/'REUSED_PRIORITY.json')
+        rb,rv=accepted_priority(reused['bundle'],read(op/'JUDGE_LOCK.json'))
+        if rb!=reused['bindings'] or rv!=reused['verdicts'] or set(rb)&set(bounds):
+            raise ValueError('Reused priority evidence changed or was rejudged')
+        score.update({v['opaque_query_id']:v['is_correct'] for v in rv}); reused_count=len(rv)
     records=read(op/'MODE_MAPPING.json'); lookup={}
     for r in records:
         r['correct']=c0[r['query_id']] if r['source']=='Base' else score[r['opaque_query_id']]
@@ -164,7 +203,7 @@ def report(bundle,base_bundle,be_bundle):
             lookup['balancedit','single',1,r['edit_id'],'panel',r['query_id'],route,'original']=dict(
                 correct=c0[r['query_id']] if ref['source']=='Base' else bescores[ref['opaque_query_id']],agreement=None)
     rows=[]; roles=role_map(ledger)
-    for method in ('C_NO_H','balancedit','lora','grace','belora'):
+    for method in methods:
         for mode in ('single','sequential'):
             for prefix in ([1] if mode=='single' else prefixes(len(ledger['main_T0']))):
                 ids=ledger['main_T0'] if mode=='single' else ledger['main_T0'][:prefix]
@@ -200,7 +239,7 @@ def report(bundle,base_bundle,be_bundle):
             edits=len(common),macro_delta=sum(delta.values())/len(delta) if delta else None,**interval(delta,groups)))
     destination=bundle/'public'; destination.mkdir()
     trajectories=[]
-    for method in ('C_NO_H','balancedit','lora','grace','belora'):
+    for method in methods:
         route='R0' if method in ('C_NO_H','balancedit') else 'NATIVE'
         counts=defaultdict(int)
         for index,eid in enumerate(ledger['main_T0'],1):
@@ -208,18 +247,18 @@ def report(bundle,base_bundle,be_bundle):
             after=lookup[method,'sequential',len(ledger['main_T0']),None,'panel',eid,route,'original']['correct']
             counts[f'{int(before)}_to_{int(after)}']+=1
         trajectories.append(dict(method=method,precision=precision(method,'sequential'),counts=dict(counts)))
-    costs={f'{m}_{mode}':read(bundle/'source/campaign/private'/f'{m}_{mode}'/'COMPLETE.json') for m,mode in schedule()}
+    costs={f'{m}_{mode}':read(bundle/'source/campaign/private'/f'{m}_{mode}'/'COMPLETE.json') for m,mode in schedule() if m in methods}
     # Only numeric counters and elapsed costs are public; private phase bindings stay private.
     costs={k:{f:v for f,v in r.items() if f in ('N','seconds','replay','training_reused','peak_allocated_bytes','peak_reserved_bytes')} for k,r in costs.items()}
-    result=dict(status='MAIN_T0_COHORT_REPORTED_NOT_YET_PUBLISHED',N=len(ledger['main_T0']),panels=panels,paired=paired,
+    result=dict(status='C_NO_H_REPORTED_NOT_YET_PUBLISHED' if cnoh_only else 'MAIN_T0_COHORT_REPORTED_NOT_YET_PUBLISHED',N=len(ledger['main_T0']),panels=panels,paired=paired,
         insertion_to_final=trajectories,costs=costs,
-        judge=dict(model='gpt-6-astra',reasoning='high',new_records=len(verdicts),immutable_snapshot=None),
+        judge=dict(model='gpt-6-astra',reasoning='high',new_records=len(verdicts),reused_priority_records=reused_count,immutable_snapshot=None),
         scope='frozen main T0 queue with attached supported tasks; one fixed sequence order',
         unsupported='C_FACT/C_EXTRA main cohort lacks H/G; other task-specific support and clinical review remain separate',
         limitations=['not paper exact','not a complete ten-task benchmark','source group sensitivity is not full patient independence',
             'active-target locality excluded per predeclared map; original-target outputs and active-reference verdicts retained privately',
             'no order robustness claim','historical Stage15/16 labels unchanged'])
-    if amendment:
+    if amendment and not cnoh_only:
         result['protocol_amendments']=[dict(id=amendment['id'],single_precision='float16',
             sequential_precision='bfloat16',original_fp16_sequential_status='FAILED_NONFINITE_EDIT17_STEP4',
             same_precision_comparison=False)]
@@ -230,15 +269,18 @@ def report(bundle,base_bundle,be_bundle):
         writer.writeheader()
         for p in panels: writer.writerow({**{k:p[k] for k in ('method','mode','precision','prefix','task','route','primary_metric')},
             **{k:p['primary'][k] for k in ('numerator','probes','edits','micro','macro')}})
-    (destination/'GPT_PRO_REVIEW.md').write_text('# Stage17 main-cohort campaign\n\n'
-        'Completed N=146 main-cohort single/sequential panels for C_NO_H, BalancEdit, LoRA-Perf-v1, GRACE and BELoRA. '
+    (destination/'GPT_PRO_REVIEW.md').write_text('# Stage17 main-cohort campaign\n\n'+
+        ('Completed N=146 main-cohort single/sequential panels for C_NO_H only. Other methods remain outside this priority report. '
+         if cnoh_only else 'Completed N=146 main-cohort single/sequential panels for C_NO_H, BalancEdit, LoRA-Perf-v1, GRACE and BELoRA. ')
+        +
         'C_NO_H/BE sequential are independent-checkpoint insertion replays with new full-bank generation; other sequential methods update their native state. '
         'See CAMPAIGN_RESULTS.json and RESULTS.csv for counts, uncertainty and paired comparisons. '
         'This is not a full ten-task or paper-exact result. Unsupported H/G and additional task-specific cohorts are not filled with zeros. '
-        'Existing BE single and Base Astra verdicts were reused; historical Stage15/16 and Qwen results were not mixed.\n'
+        + ('Existing Base Astra verdicts were reused. ' if cnoh_only else 'Existing BE single and Base Astra verdicts were reused. ')
+        + 'Historical Stage15/16 and Qwen results were not mixed.\n'
         + ('\nUser-approved amendment: LoRA single is FP16; sequential is the BF16 stability replacement. '
            'The original FP16 sequential run failed at edit 17, step 4 and is retained as a failure. '
-           'Single/sequential and C_NO_H/LoRA sequential comparisons are not precision matched.\n' if amendment else ''))
+           'Single/sequential and C_NO_H/LoRA sequential comparisons are not precision matched.\n' if amendment and not cnoh_only else ''))
 
 
 def publish(cfg,bundle):
@@ -250,7 +292,8 @@ def publish(cfg,bundle):
     if git('branch','--show-current')!='main' or git('remote','get-url','origin')!='https://github.com/DLwbm123/Knowledge_editing-public.git':
         raise ValueError('Public branch/remote mismatch')
     subprocess.run(['gh','auth','status'],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    destination=release/'reports/medtrace_stage17_20260912/campaign_closeout'
+    report_name='cnoh_priority_closeout' if cfg.get('cnoh_only') else 'campaign_closeout'
+    destination=release/'reports/medtrace_stage17_20260912'/report_name
     if destination.exists(): raise FileExistsError('Public report already exists; inspect before retry')
     destination.mkdir()
     for name in ('CAMPAIGN_RESULTS.json','RESULTS.csv','GPT_PRO_REVIEW.md'):
@@ -258,7 +301,7 @@ def publish(cfg,bundle):
     git('add',str(destination)); git('commit','-m','Report frozen Stage17 main-cohort single and sequential campaign')
     commit=git('rev-parse','HEAD'); git('push','origin','main')
     if git('ls-remote','origin','refs/heads/main').split()[0]!=commit: raise RuntimeError('Remote commit not verified')
-    url='https://github.com/DLwbm123/Knowledge_editing-public/blob/'+commit+'/reports/medtrace_stage17_20260912/campaign_closeout/GPT_PRO_REVIEW.md'
+    url='https://github.com/DLwbm123/Knowledge_editing-public/blob/'+commit+'/reports/medtrace_stage17_20260912/'+report_name+'/GPT_PRO_REVIEW.md'
     with urllib.request.urlopen(url,timeout=30) as response:
         if response.status!=200: raise RuntimeError('Anonymous public access not verified')
     write_new(bundle/'public/PUBLICATION_RECEIPT.json',dict(status='PUBLISHED',commit=commit,branch='main',url=url))
@@ -270,29 +313,41 @@ def run(cfg):
     def state(**values): status.write_text(json.dumps(values,indent=2)+'\n')
     state(status='WAITING_FOR_GPU_CAMPAIGN')
     try:
+        reuse=cfg.get('priority_bundle')
+        if reuse:
+            state(status='WAITING_FOR_PRIORITY_JUDGE')
+            while True:
+                p=Path(reuse)/'operator/EXECUTION_RECORD.json'
+                if p.exists():
+                    priority=read(p)
+                    if priority['status']=='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED': break
+                    if priority['status']!='RUNNING': raise RuntimeError('Priority Judge stopped')
+                time.sleep(60)
         ssh=cfg.get('ssh') or ['ssh','-S',cfg['socket'],'-o','BatchMode=yes','-o','ConnectTimeout=15','-p','30270',cfg['host']]
-        while True:
+        while not cfg.get('cnoh_only'):
             response=subprocess.check_output([*ssh,'cat '+cfg['remote_campaign']+'/public/PROGRESS.json'],text=True,timeout=30)
             progress=json.loads(response)
             if progress['status']=='GPU_GENERATED_NOT_SCORED': break
             if progress['status'] not in ('RUNNING','WAITING_FOR_EXISTING_C_NO_H'):
                 raise RuntimeError('GPU campaign stopped: '+str(progress))
             time.sleep(60)
-        state(status='COLLECTING_SMALL_OUTPUTS')
-        source=bundle/'source'; source.mkdir()
-        transport=' '.join(ssh[:-1])
-        for remote,name in ((cfg['remote_campaign'],'campaign'),(cfg['remote_cnoh'],'cnoh')):
-            subprocess.run(['rsync','-a','--include=*/','--include=*.json','--include=*.jsonl','--exclude=*',
-                '-e',transport,cfg['host']+':'+remote+'/',str(source/name)+'/'],check=True)
-        subprocess.run([*ssh,'cat '+cfg['remote_source']+'/private/COHORT_AND_SUPPORT_LEDGER.json'],
-            stdout=(source/'COHORT_AND_SUPPORT_LEDGER.json').open('wb'),check=True)
+        if not cfg.get('prepared'):
+            state(status='COLLECTING_SMALL_OUTPUTS')
+            source=bundle/'source'; source.mkdir()
+            transport=' '.join(ssh[:-1])
+            for remote,name in ((cfg['remote_campaign'],'campaign'),(cfg['remote_cnoh'],'cnoh')):
+                subprocess.run(['rsync','-a','--include=*/','--include=*.json','--include=*.jsonl','--exclude=*',
+                    '-e',transport,cfg['host']+':'+remote+'/',str(source/name)+'/'],check=True)
+            subprocess.run([*ssh,'cat '+cfg['remote_source']+'/private/COHORT_AND_SUPPORT_LEDGER.json'],
+                stdout=(source/'COHORT_AND_SUPPORT_LEDGER.json').open('wb'),check=True)
         base=Path(cfg['base_bundle']); be=Path(cfg['be_bundle'])
-        prepare(bundle,base,be); state(status='ASTRA_SCORING')
+        if not cfg.get('prepared'): prepare(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False),reuse_bundle=reuse)
+        state(status='ASTRA_SCORING')
         from scripts.medtrace.stage17_judge import run as judge
         judge(dict(bundle=str(bundle),repository=cfg['repository'],cli=cfg['cli'],explicit_proxy=True))
-        state(status='REPORTING'); report(bundle,base,be)
+        state(status='REPORTING'); report(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False))
         try:
-            url=publish(cfg,bundle); state(status='MAIN_COHORT_PUBLISHED',url=url)
+            url=publish(cfg,bundle); state(status='C_NO_H_PUBLISHED' if cfg.get('cnoh_only') else 'MAIN_COHORT_PUBLISHED',url=url)
         except Exception as error:
             state(status='REPORTED_PUBLICATION_PENDING',report=str(bundle/'public'),error=repr(error))
     except Exception as error:

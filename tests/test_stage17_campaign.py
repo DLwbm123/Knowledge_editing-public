@@ -96,6 +96,36 @@ class CampaignTests(unittest.TestCase):
             self.assertTrue(all(p['precision']=='bfloat16' for p in seq))
             self.assertFalse(result['protocol_amendments'][0]['same_precision_comparison'])
             self.assertIn('not precision matched',(bundle/'public/GPT_PRO_REVIEW.md').read_text())
+            (bundle/'public').rename(bundle/'full_campaign')
+            report(bundle,root/'base',be,cnoh_only=True)
+            result=json.loads((bundle/'public/CAMPAIGN_RESULTS.json').read_text())
+            self.assertEqual({p['method'] for p in result['panels']},{'C_NO_H'})
+            self.assertEqual(result['paired'],[])
+            self.assertEqual(set(result['costs']),{'C_NO_H_sequential'})
+            self.assertNotIn('protocol_amendments',result)
+            self.assertIn('C_NO_H only',(bundle/'public/GPT_PRO_REVIEW.md').read_text())
+
+    def test_priority_reuse_rejects_incomplete_changed_and_nonboolean_verdicts(self):
+        from scripts.medtrace.stage17_campaign_closeout import accepted_priority
+        from scripts.medtrace.stage17_prepare import digest, PROTOCOL
+        with tempfile.TemporaryDirectory() as d:
+            bundle=Path(d); op=bundle/'operator'; op.mkdir()
+            def put(name,value): (op/name).write_text(json.dumps(value))
+            lock={'config_sha256':'fixed'}; full={'judge':lock,'query_id':'q'}; oid=digest(full)
+            put('JUDGE_LOCK.json',lock)
+            put('MANIFEST.json',dict(config_sha256='fixed',cnoh_only=True,records=1))
+            put('BINDINGS.json',{oid:full})
+            put('EXECUTION_RECORD.json',dict(status='RUNNING'))
+            verdict=dict(opaque_query_id=oid,is_correct=True,query_id='q',protocol=PROTOCOL,judge_model='gpt-6-astra')
+            put('VERDICTS_ASTRA.jsonl',verdict)
+            with self.assertRaises(ValueError): accepted_priority(bundle,lock)
+            put('EXECUTION_RECORD.json',dict(status='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED'))
+            self.assertEqual(accepted_priority(bundle,lock),({oid:full},[verdict]))
+            put('BINDINGS.json',{oid:dict(full,query_id='changed')})
+            with self.assertRaises(ValueError): accepted_priority(bundle,lock)
+            put('BINDINGS.json',{oid:full})
+            put('VERDICTS_ASTRA.jsonl',dict(verdict,is_correct=1))
+            with self.assertRaises(ValueError): accepted_priority(bundle,lock)
 
 
 if __name__=='__main__': unittest.main()
