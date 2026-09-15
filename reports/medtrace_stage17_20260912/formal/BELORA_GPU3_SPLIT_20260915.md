@@ -24,5 +24,7 @@ The bridge needs the local computer online. Engineering failures are reported an
 - Runtime packages match the recorded stack: Torch 2.6.0, Transformers 4.51.3, PEFT 0.19.1, Accelerate 1.14.0 and safetensors 0.5.3.
 - Gate regression test passes: rejects an unassigned method, stops on an explicit stop, requires completed cleanup, and propagates binding validation failure.
 - Neutral main and child command lines verified; GPU process is confined to the assigned physical GPU3.
+- Startup produced a complete first edit (1/146) and advanced to the second edit without a phase failure. GRACE remained active on the original server.
+- In the filtered public repository, controller and test files live under `experiments/medtrace_stage17_20260912/`, alongside the existing runtime snapshot.
 
 This report records a scheduling/startup change, not completed generation, judging or scientific performance. Private dispatches, raw questions/answers/tokens, image paths, credentials and weights are excluded from public delivery.
