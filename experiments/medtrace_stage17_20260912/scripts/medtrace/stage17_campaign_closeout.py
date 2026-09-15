@@ -28,14 +28,16 @@ def execution_path(operator):
     return operator/'EXECUTION_RECORD.json'
 
 
-def accepted_priority(bundle, lock):
+def accepted_priority(bundle, lock, seen=()):
     """Reuse only a complete, identically bound priority queue under the same Judge."""
-    op=Path(bundle)/'operator'
+    bundle=Path(bundle).resolve()
+    if bundle in seen: raise ValueError('Cyclic Judge reuse')
+    op=bundle/'operator'
     execution=read(execution_path(op)); manifest=read(op/'MANIFEST.json')
     bindings=read(op/'BINDINGS.json'); verdicts=lines(op/'VERDICTS_ASTRA.jsonl')
     if (execution['status']!='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED'
             or read(op/'JUDGE_LOCK.json')!=lock or manifest['config_sha256']!=lock['config_sha256']
-            or manifest.get('cnoh_only') is not True or manifest['records']!=len(bindings)
+            or not (manifest.get('cnoh_only') is True or manifest.get('phase_subset')) or manifest['records']!=len(bindings)
             or len(verdicts)!=len(bindings) or {v['opaque_query_id'] for v in verdicts}!=set(bindings)):
         raise ValueError('Priority Judge incomplete or incompatible')
     for oid,full in bindings.items():
@@ -45,10 +47,27 @@ def accepted_priority(bundle, lock):
         if (type(v['is_correct']) is not bool or v['protocol']!=PROTOCOL
                 or v['judge_model']!='gpt-6-astra' or v['query_id']!=bindings[v['opaque_query_id']]['query_id']):
             raise ValueError('Priority verdict contract mismatch')
+    if (op/'REUSED_PRIORITY.json').exists():
+        previous=read(op/'REUSED_PRIORITY.json')
+        rb,rv=accepted_priority(previous['bundle'],lock,(*seen,bundle))
+        if rb!=previous['bindings'] or rv!=previous['verdicts'] or set(rb)&set(bindings):
+            raise ValueError('Reused Judge evidence changed or overlaps')
+        bindings.update(rb); verdicts+=rv
     return bindings,verdicts
 
 
-def prepare(bundle, base_bundle, be_bundle, cnoh_only=False, reuse_bundle=None):
+def selected_phases(cnoh_only=False, phase_subset=None):
+    phases=[p for p in schedule() if not cnoh_only or p[0]=='C_NO_H']
+    if phase_subset is not None:
+        requested=[tuple(p) for p in phase_subset]
+        if cnoh_only or not requested or len(set(requested))!=len(requested) or not set(requested)<=set(phases):
+            raise ValueError('Invalid completed-phase selection')
+        phases=[p for p in phases if p in requested]
+    return phases
+
+
+def prepare(bundle, base_bundle, be_bundle, cnoh_only=False, reuse_bundle=None, phase_subset=None):
+    phases=selected_phases(cnoh_only,phase_subset)
     source=bundle/'source'
     # Relocated runtime ledger is the authority for output bindings.
     cfg=read(source/'campaign/private/DISPATCH.json')
@@ -119,8 +138,7 @@ def prepare(bundle, base_bundle, be_bundle, cnoh_only=False, reuse_bundle=None):
                 raise ValueError('C_NO_H output/training binding mismatch')
             add(o,'C_NO_H','single',1,eid,'panel',qid,{m:o[m] for m in ('R0','RC','FORCED_ON')},
                 {m for m,on in o['route_on'].items() if not on})
-    for method,mode in schedule():
-        if cnoh_only and method!='C_NO_H': continue
+    for method,mode in phases:
         root=source/'campaign/private'/f'{method}_{mode}'
         if method=='lora' and amendment:
             from scripts.medtrace.stage17_external import validate_phase
@@ -172,10 +190,13 @@ def prepare(bundle, base_bundle, be_bundle, cnoh_only=False, reuse_bundle=None):
     write_new(operator/'MANIFEST.json',dict(protocol=PROTOCOL,config_sha256=lock['config_sha256'],
         records=len(visible),batches=batches,freeze_id=cfg['freeze_id'],status='READY',
         scope='C_NO_H single and sequential' if cnoh_only else 'remaining main T0 cohort single and sequential; BE single accepted separately',
-        cnoh_only=cnoh_only,reused_priority_records=len(reused['bindings']) if reused else 0,N=cfg['N']))
+        cnoh_only=cnoh_only,phase_subset=phase_subset,reused_priority_records=len(reused['bindings']) if reused else 0,N=cfg['N']))
 
 
-def report(bundle,base_bundle,be_bundle,cnoh_only=False):
+def report(bundle,base_bundle,be_bundle,cnoh_only=False,phase_subset=None):
+    phases=selected_phases(cnoh_only,phase_subset)
+    included=set(phases)|{('C_NO_H','single')}
+    if not cnoh_only: included.add(('balancedit','single'))
     methods=('C_NO_H',) if cnoh_only else ('C_NO_H','balancedit','lora','grace','belora')
     assignment_path=bundle/'source/campaign/private/EXTERNAL_LORA.json'
     assignment=read(assignment_path) if assignment_path.exists() else {}
@@ -213,6 +234,7 @@ def report(bundle,base_bundle,be_bundle,cnoh_only=False):
     rows=[]; roles=role_map(ledger)
     for method in methods:
         for mode in ('single','sequential'):
+            if (method,mode) not in included: continue
             for prefix in ([1] if mode=='single' else prefixes(len(ledger['main_T0']))):
                 ids=ledger['main_T0'] if mode=='single' else ledger['main_T0'][:prefix]
                 routes=('R0','RC','FORCED_ON') if method in ('C_NO_H','balancedit') and mode=='single' else ('R0','RC') if method in ('C_NO_H','balancedit') else ('NATIVE',)
@@ -248,6 +270,7 @@ def report(bundle,base_bundle,be_bundle,cnoh_only=False):
     destination=bundle/'public'; destination.mkdir()
     trajectories=[]
     for method in methods:
+        if (method,'sequential') not in included: continue
         route='R0' if method in ('C_NO_H','balancedit') else 'NATIVE'
         counts=defaultdict(int)
         for index,eid in enumerate(ledger['main_T0'],1):
@@ -255,7 +278,7 @@ def report(bundle,base_bundle,be_bundle,cnoh_only=False):
             after=lookup[method,'sequential',len(ledger['main_T0']),None,'panel',eid,route,'original']['correct']
             counts[f'{int(before)}_to_{int(after)}']+=1
         trajectories.append(dict(method=method,precision=precision(method,'sequential'),counts=dict(counts)))
-    costs={f'{m}_{mode}':read(bundle/'source/campaign/private'/f'{m}_{mode}'/'COMPLETE.json') for m,mode in schedule() if m in methods}
+    costs={f'{m}_{mode}':read(bundle/'source/campaign/private'/f'{m}_{mode}'/'COMPLETE.json') for m,mode in phases}
     # Only numeric counters and elapsed costs are public; private phase bindings stay private.
     costs={k:{f:v for f,v in r.items() if f in ('N','seconds','replay','training_reused','peak_allocated_bytes','peak_reserved_bytes')} for k,r in costs.items()}
     result=dict(status='C_NO_H_REPORTED_NOT_YET_PUBLISHED' if cnoh_only else 'MAIN_T0_COHORT_REPORTED_NOT_YET_PUBLISHED',N=len(ledger['main_T0']),panels=panels,paired=paired,
@@ -271,6 +294,11 @@ def report(bundle,base_bundle,be_bundle,cnoh_only=False):
             sequential_precision='bfloat16',original_fp16_sequential_status='FAILED_NONFINITE_EDIT17_STEP4',
             same_precision_comparison=False)]
         result['limitations'].append('LoRA single uses FP16; sequential uses the user-approved BF16 replacement. This is not a same-precision comparison; FP16 sequential failure is retained.')
+    if phase_subset is not None:
+        result['status']='COMPLETED_PHASES_REPORTED_NOT_YET_PUBLISHED'
+        result['included_phases']=sorted(included)
+        result['pending_phases']=[p for p in schedule() if p not in phases]
+        result['limitations'].append('Only the explicitly selected completed phases are included; pending phases are not zero-scored or declared complete.')
     write_new(destination/'CAMPAIGN_RESULTS.json',result)
     with (destination/'RESULTS.csv').open('x') as stream:
         writer=csv.DictWriter(stream,fieldnames=['method','mode','precision','prefix','task','route','primary_metric','numerator','probes','edits','micro','macro'])
@@ -278,7 +306,8 @@ def report(bundle,base_bundle,be_bundle,cnoh_only=False):
         for p in panels: writer.writerow({**{k:p[k] for k in ('method','mode','precision','prefix','task','route','primary_metric')},
             **{k:p['primary'][k] for k in ('numerator','probes','edits','micro','macro')}})
     (destination/'GPT_PRO_REVIEW.md').write_text('# Stage17 main-cohort campaign\n\n'+
-        ('Completed N=146 main-cohort single/sequential panels for C_NO_H only. Other methods remain outside this priority report. '
+        ('Completed phase report: '+', '.join(m+' '+mode for m,mode in sorted(included))+'. Remaining phases are pending. '
+         if phase_subset is not None else 'Completed N=146 main-cohort single/sequential panels for C_NO_H only. Other methods remain outside this priority report. '
          if cnoh_only else 'Completed N=146 main-cohort single/sequential panels for C_NO_H, BalancEdit, LoRA-Perf-v1, GRACE and BELoRA. ')
         +
         'C_NO_H/BE sequential are independent-checkpoint insertion replays with new full-bank generation; other sequential methods update their native state. '
@@ -300,7 +329,7 @@ def publish(cfg,bundle):
     if git('branch','--show-current')!='main' or git('remote','get-url','origin')!='https://github.com/DLwbm123/Knowledge_editing-public.git':
         raise ValueError('Public branch/remote mismatch')
     subprocess.run(['gh','auth','status'],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    report_name='cnoh_priority_closeout' if cfg.get('cnoh_only') else 'campaign_closeout'
+    report_name='cnoh_priority_closeout' if cfg.get('cnoh_only') else 'ready_methods_closeout' if cfg.get('phase_subset') else 'campaign_closeout'
     destination=release/'reports/medtrace_stage17_20260912'/report_name
     if destination.exists(): raise FileExistsError('Public report already exists; inspect before retry')
     destination.mkdir()
@@ -332,7 +361,8 @@ def run(cfg):
                     if priority['status']!='RUNNING': raise RuntimeError('Priority Judge stopped')
                 time.sleep(60)
         ssh=cfg.get('ssh') or ['ssh','-S',cfg['socket'],'-o','BatchMode=yes','-o','ConnectTimeout=15','-p','30270',cfg['host']]
-        while not cfg.get('cnoh_only'):
+        while not (cfg.get('cnoh_only') or cfg.get('phase_subset')):
+            state(status='WAITING_FOR_GPU_CAMPAIGN')
             response=subprocess.check_output([*ssh,'cat '+cfg['remote_campaign']+'/public/PROGRESS.json'],text=True,timeout=30)
             progress=json.loads(response)
             if progress['status']=='GPU_GENERATED_NOT_SCORED': break
@@ -349,16 +379,16 @@ def run(cfg):
             subprocess.run([*ssh,'cat '+cfg['remote_source']+'/private/COHORT_AND_SUPPORT_LEDGER.json'],
                 stdout=(source/'COHORT_AND_SUPPORT_LEDGER.json').open('wb'),check=True)
         base=Path(cfg['base_bundle']); be=Path(cfg['be_bundle'])
-        if not cfg.get('prepared'): prepare(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False),reuse_bundle=reuse)
+        if not cfg.get('prepared'): prepare(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False),reuse_bundle=reuse,phase_subset=cfg.get('phase_subset'))
         state(status='ASTRA_SCORING')
         from scripts.medtrace.stage17_judge import run as judge
         judge_config=dict(bundle=str(bundle),repository=cfg['repository'],cli=cfg['cli'],explicit_proxy=True)
         for key in ('recover_transport_failure','recovery_authorization','recovery_source'):
             if key in cfg: judge_config[key]=cfg[key]
         judge(judge_config)
-        state(status='REPORTING'); report(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False))
+        state(status='REPORTING'); report(bundle,base,be,cnoh_only=cfg.get('cnoh_only',False),phase_subset=cfg.get('phase_subset'))
         try:
-            url=publish(cfg,bundle); state(status='C_NO_H_PUBLISHED' if cfg.get('cnoh_only') else 'MAIN_COHORT_PUBLISHED',url=url)
+            url=publish(cfg,bundle); state(status='C_NO_H_PUBLISHED' if cfg.get('cnoh_only') else 'COMPLETED_PHASES_PUBLISHED' if cfg.get('phase_subset') else 'MAIN_COHORT_PUBLISHED',url=url)
         except Exception as error:
             state(status='REPORTED_PUBLICATION_PENDING',report=str(bundle/'public'),error=repr(error))
     except Exception as error:

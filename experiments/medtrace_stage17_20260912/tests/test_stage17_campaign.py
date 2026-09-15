@@ -104,6 +104,14 @@ class CampaignTests(unittest.TestCase):
             self.assertEqual(set(result['costs']),{'C_NO_H_sequential'})
             self.assertNotIn('protocol_amendments',result)
             self.assertIn('C_NO_H only',(bundle/'public/GPT_PRO_REVIEW.md').read_text())
+            (bundle/'public').rename(bundle/'cnoh_only')
+            ready=[p for p in schedule() if p!=('lora','sequential')]
+            report(bundle,root/'base',be,phase_subset=ready)
+            result=json.loads((bundle/'public/CAMPAIGN_RESULTS.json').read_text())
+            self.assertEqual(result['pending_phases'],[['lora','sequential']])
+            self.assertFalse(any(p['method']=='lora' and p['mode']=='sequential' for p in result['panels']))
+            self.assertNotIn('lora_sequential',result['costs'])
+            self.assertFalse(any(p['method']=='lora' for p in result['insertion_to_final']))
 
     def test_priority_reuse_rejects_incomplete_changed_and_nonboolean_verdicts(self):
         from scripts.medtrace.stage17_campaign_closeout import accepted_priority
@@ -137,6 +145,24 @@ class CampaignTests(unittest.TestCase):
             (op/'recovery_02').mkdir()
             put('recovery_02/EXECUTION_RECORD.json',dict(status='FAILED_NO_RETRY'))
             with self.assertRaises(ValueError): accepted_priority(bundle,lock)
+            put('recovery_02/EXECUTION_RECORD.json',dict(status='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED'))
+            ready=bundle/'ready'; rop=ready/'operator';rop.mkdir(parents=True)
+            full2=dict(full,query_id='new');oid2=digest(full2)
+            verdict2=dict(verdict,opaque_query_id=oid2,query_id='new')
+            for name,value in {
+                'JUDGE_LOCK.json':lock,'MANIFEST.json':dict(config_sha256='fixed',records=1,phase_subset=[['grace','single']]),
+                'BINDINGS.json':{oid2:full2},'VERDICTS_ASTRA.jsonl':verdict2,
+                'EXECUTION_RECORD.json':dict(status='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED'),
+                'REUSED_PRIORITY.json':dict(bundle=str(bundle),bindings={oid:full},verdicts=[verdict]),
+            }.items(): (rop/name).write_text(json.dumps(value))
+            self.assertEqual(accepted_priority(ready,lock),({oid2:full2,oid:full},[verdict2,verdict]))
+
+    def test_phase_subset_is_registered_and_ordered(self):
+        from scripts.medtrace.stage17_campaign_closeout import selected_phases
+        self.assertEqual(selected_phases(phase_subset=[['grace','single'],['C_NO_H','sequential']]),
+                         [('C_NO_H','sequential'),('grace','single')])
+        for invalid in ([],[['unknown','single']],[['grace','single'],['grace','single']]):
+            with self.assertRaises(ValueError): selected_phases(phase_subset=invalid)
 
 
 if __name__=='__main__': unittest.main()
