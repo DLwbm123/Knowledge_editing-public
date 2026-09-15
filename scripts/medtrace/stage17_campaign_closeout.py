@@ -270,7 +270,7 @@ def run(cfg):
     def state(**values): status.write_text(json.dumps(values,indent=2)+'\n')
     state(status='WAITING_FOR_GPU_CAMPAIGN')
     try:
-        ssh=['ssh','-S',cfg['socket'],'-o','BatchMode=yes','-o','ConnectTimeout=15','-p','30270',cfg['host']]
+        ssh=cfg.get('ssh') or ['ssh','-S',cfg['socket'],'-o','BatchMode=yes','-o','ConnectTimeout=15','-p','30270',cfg['host']]
         while True:
             response=subprocess.check_output([*ssh,'cat '+cfg['remote_campaign']+'/public/PROGRESS.json'],text=True,timeout=30)
             progress=json.loads(response)
