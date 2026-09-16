@@ -50,6 +50,34 @@ class Recovery(unittest.TestCase):
             write_new(root/'final.json',dict(result='must retain'))
             with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approvals[-1],'same')
             (root/'final.json').unlink()
+            # An explicit user interruption is distinct from a transport timeout.
+            failure_path = attempts[-1]/'execution_evidence/batch_004.json'
+            interrupted = json.loads(failure_path.read_text())
+            interrupted.update(exit_code=-15,errors=[])
+            failure_path.write_text(json.dumps(interrupted))
+            approved = dict(approvals[-1],allow_user_interruption=True,
+                failed_input_binding=digest(batches[-1]))
+            approval_path = root/'user_approval.json'; write_new(approval_path,approved)
+            receipt = dict(status='TERMINATED_BY_USER',decision='APPROVED_BY_USER',
+                batch_id='batch_004',input_binding=digest(batches[-1]),signal=15,exit_code=-15,
+                processes_exited=True,final_exists_before_signal=False,final_exists_after_exit=False,
+                authorization=str(approval_path))
+            receipt_path = attempts[-1]/'USER_INTERRUPTION.json'; write_new(receipt_path,receipt)
+            with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approvals[-1],'same')
+            self.assertEqual(recovery_chain(root,'recovery_02',batches,approved,'same'),
+                (attempts[-1],root/'recovery_03',attempts))
+            for change in ({'processes_exited':False},{'input_binding':'wrong'},
+                    {'final_exists_after_exit':True}):
+                receipt_path.write_text(json.dumps(dict(receipt,**change)))
+                with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approved,'same')
+            receipt_path.write_text(json.dumps(receipt))
+            for change in ({'exit_code':0},{'errors':[{'message':'semantic failure'}]},
+                    {'tool_event_types':['command_execution']},{'isolation_checks':{'boundary':False}}):
+                failure_path.write_text(json.dumps(dict(interrupted,**change)))
+                with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approved,'same')
+            failure_path.write_text(json.dumps(interrupted))
+            write_new(attempts[-1]/'final.json',dict(result='must retain'))
+            with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approved,'same')
             record['predecessor_execution_record'] = '../EXECUTION_RECORD.json'
             (attempts[-1]/'EXECUTION_RECORD.json').write_text(json.dumps(record))
             with self.assertRaises(ValueError): recovery_chain(root,'recovery_02',batches,approvals[-1],'same')

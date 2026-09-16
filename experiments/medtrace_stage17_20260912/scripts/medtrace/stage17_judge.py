@@ -156,7 +156,7 @@ def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=No
 
 
 def recovery_prefix(operator, batches, approval, cli_version, inherited=()):
-    """Accept an unchanged valid prefix, then exactly one approved transport failure."""
+    """Accept a valid prefix, then one approved transport failure or user interruption."""
     previous = read(operator/'EXECUTION_RECORD.json')
     count = previous['completed_batches']
     if (approval.get('decision') != 'APPROVED_BY_USER' or
@@ -192,9 +192,24 @@ def recovery_prefix(operator, batches, approval, cli_version, inherited=()):
             allowed_errors = ['Transport error: network error: error decoding response body']
             if approval.get('allow_sse_idle_timeout') is True:
                 allowed_errors.append('stream disconnected before completion: idle timeout waiting for SSE')
-            if (evidence['status'] != 'FAILED_NO_RETRY' or evidence['exit_code'] != 1 or final.exists() or
-                    not messages or any(not any(error in m for error in allowed_errors) for m in messages)):
-                raise ValueError('Only a transport failure without a final response may be recovered')
+            transport_failure = (evidence['exit_code'] == 1 and bool(messages) and
+                all(any(error in m for error in allowed_errors) for m in messages))
+            user_interruption = False
+            if approval.get('allow_user_interruption') is True:
+                receipt = read(operator/'USER_INTERRUPTION.json')
+                user_interruption = (evidence['exit_code'] == -15 and not errors and
+                    receipt.get('status') == 'TERMINATED_BY_USER' and
+                    receipt.get('decision') == 'APPROVED_BY_USER' and
+                    receipt.get('batch_id') == batch['batch_id'] and
+                    receipt.get('input_binding') == digest(batch) == approval.get('failed_input_binding') and
+                    receipt.get('signal') == 15 and receipt.get('exit_code') == -15 and
+                    receipt.get('processes_exited') is True and
+                    receipt.get('final_exists_before_signal') is False and
+                    receipt.get('final_exists_after_exit') is False and
+                    read(receipt['authorization']) == approval)
+            if (evidence['status'] != 'FAILED_NO_RETRY' or final.exists() or
+                    not (transport_failure or user_interruption)):
+                raise ValueError('Only an approved transport failure or user interruption without a final response may be recovered')
     return count
 
 
@@ -287,6 +302,7 @@ def run(config):
         batches=len(batches),completed_batches=skip,old_verdicts_reused=0,semantic_retries=0,
         accepted_same_queue_batches_reused=skip,transport_recovery_attempts=int(output_operator != operator))
     if output_operator != operator:
+        state['recovery_reason'] = 'USER_REQUESTED_INTERRUPTION' if approval.get('allow_user_interruption') else 'TRANSPORT_FAILURE'
         state['predecessor_execution_record'] = os.path.relpath(predecessor/'EXECUTION_RECORD.json',output_operator)
         state['preserved_failed_attempt'] = os.path.relpath(predecessor/'execution_evidence'/(batches[skip]['batch_id']+'.json'),output_operator)
     status = output_operator/'EXECUTION_RECORD.json'; write_new(status,state)
