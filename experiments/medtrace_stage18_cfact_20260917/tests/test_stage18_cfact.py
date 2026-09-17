@@ -59,6 +59,19 @@ class Stage18Test(unittest.TestCase):
         with self.assertRaises(ValueError):validate_dispatch(dict(cfg,mode='SOURCE_LABEL_SMOKE'),tasks,gate)
         with self.assertRaises(ValueError):validate_dispatch(dict(cfg,freeze_id='changed'),tasks,gate)
 
+    def test_pilot_metrics_keep_failed_native_and_shared_H_denominator(self):
+        from scripts.medtrace.stage18_score import aggregate,score_key
+        rows=[dict(edit_id='a',role='H_eval',query_id='shared',image='image',base_correct=True,post_correct=True,native_correct=False,agreement=True,on=False),
+              dict(edit_id='b',role='H_eval',query_id='shared',image='image',base_correct=True,post_correct=True,native_correct=True,agreement=True,on=False)]
+        value=aggregate(rows)
+        self.assertEqual(value['PairCorrect']['edit_macro'],.5)
+        self.assertEqual(value['PairCorrect']['supported_edits'],2)
+        self.assertEqual(value['H_eval']['unique_QA'],1)
+        self.assertIsNone(value['U_eval']['retention']['edit_macro'])
+        q=dict(image_sha256='image',question='Q?',reference='Yes');out=dict(raw_answer='Yes')
+        self.assertNotEqual(score_key(q,out),score_key(dict(q,reference='No'),out))
+        self.assertEqual(score_key(q,out),score_key(q,dict(out,seconds=1.)))
+
     def test_actual_H_G_gradient_and_zero_weight(self):
         runtime,template,batches,teacher=toy(); states={}
         for role,index,weight in [('none',None,1),('H0',2,0),('G0',3,0),('H',2,1),('G',3,1)]:

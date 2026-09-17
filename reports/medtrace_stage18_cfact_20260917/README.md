@@ -1,4 +1,4 @@
-> 最新：仅用现有数据已冻结 16 条探索 DEV，并在 GPU3 启动后台 pilot；151 条 fresh Base 已判定，患者独立性未知。见 [V2 数据构建与运行](CURRENT_DATA_DEV_V2_ZH.md) 和 [计数](CURRENT_DATA_DEV_V2.json)。下文为 V1 历史交付。
+> 最新：DEV16 四方法训练、生成、Astra 评分完成。最终 R0 PairCorrect：FACT 56.25%，其余三方法 31.25%。见 [结果及限制](DEV16_RESULTS_ZH.md)。
 
 # Stage18 两份交付
 
