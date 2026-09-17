@@ -1,0 +1,85 @@
+{
+  "status": "PREPARATION_AND_DIAGNOSTICS_COMPLETE_NO_NEW_TRAINING",
+  "GPU3_jobs": [
+    {
+      "run": "5191",
+      "purpose": "FACT128matrix",
+      "new_pairs": 87,
+      "reused_pairs": 41,
+      "checks": 11,
+      "wall_seconds": 293.197
+    },
+    {
+      "run": "5194",
+      "purpose": "Basequalification",
+      "outputs": 93,
+      "wall_seconds": 90.016
+    },
+    {
+      "run": "5196",
+      "purpose": "HSICmechanics",
+      "edits": 1,
+      "updates": 0,
+      "wall_seconds": 23.353
+    },
+    {
+      "run": "5197",
+      "purpose": "ExtensionBase",
+      "outputs": 17,
+      "wall_seconds": 26.365
+    }
+  ],
+  "new_GPU_seconds_approx": 432.931,
+  "new_GPU_hours_approx": 0.12025861111111111,
+  "Judge": [
+    {
+      "scope": "MATRIX_JUDGE",
+      "seconds": 11.665299,
+      "usage": {
+        "input_tokens": 8370,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 160,
+        "reasoning_output_tokens": 0
+      },
+      "new_texts": 3,
+      "semantic_retries": 0
+    },
+    {
+      "scope": "BASE_JUDGE",
+      "seconds": 93.043268,
+      "usage": {
+        "input_tokens": 15526,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 2879,
+        "reasoning_output_tokens": 25
+      },
+      "new_texts": 60,
+      "semantic_retries": 0
+    },
+    {
+      "scope": "EXTENSION_JUDGE",
+      "seconds": 30.892317,
+      "usage": {
+        "input_tokens": 10071,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 809,
+        "reasoning_output_tokens": 0
+      },
+      "new_texts": 17,
+      "semantic_retries": 0
+    }
+  ],
+  "clinical_review": "AI only",
+  "new_training_updates": 0,
+  "source_checkout_binding": "diagnostic f3afd51; Base frozen f3afd51; HSIC mechanical f30cad3",
+  "failures": [
+    {
+      "phase": "source deployment before GPU startup",
+      "error": "bundle ref name HEAD differed from local branch name",
+      "resolution": "fetched verified bundle HEAD; no GPU work or semantic retry occurred"
+    }
+  ]
+}

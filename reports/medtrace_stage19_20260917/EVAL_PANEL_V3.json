@@ -1,0 +1,80 @@
+{
+  "status": "FROZEN_BASE_SCORED_NO_STUDENT",
+  "core": {
+    "native": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 11,
+      "Base_correct": 0
+    },
+    "H_fit": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 7
+    },
+    "G_fit": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 7
+    },
+    "U_fit": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 11
+    },
+    "H_eval": {
+      "slots": 17,
+      "unique_QA": 6,
+      "source_images": 2,
+      "Base_correct": 4
+    },
+    "U_eval": {
+      "slots": 9,
+      "unique_QA": 9,
+      "source_images": 4,
+      "Base_correct": 8
+    }
+  },
+  "extensions": {
+    "native_text_extension": {
+      "unique_QA": 11,
+      "Base_correct": 3,
+      "source_images": 11
+    },
+    "hard_text_extension": {
+      "unique_QA": 6,
+      "Base_correct": 4,
+      "source_images": 2
+    },
+    "independent_image_positive_extension": {
+      "unique_QA": 4,
+      "slots": 14,
+      "source_images": 2,
+      "Base_correct": 1
+    }
+  },
+  "pure_text": {
+    "unique_QA": 0,
+    "status": "NO_IMAGE_INDEPENDENT_AUTHORIZED_SOURCE_QA_FOUND"
+  },
+  "panel_identity": "c3e067969e3babbb429e54bfadaae555033f168a13ea2b8d70eb9cd40d2d5459",
+  "extension_identity": "5f52c1239c33852ac23eb610fe13c178d40a1eed813e0e8a60c38e64db2df25d",
+  "roles_overlap": "Independent-image positives and core H can share source images but are separate QA/conditional edit associations; never sum them as independent subjects",
+  "positive_interpretation": "Source-image-isolated author-label same-question/same-answer proposal; AI image reference review, patient/study independence unknown",
+  "text_interpretation": "Deterministic semantic rewrites of supported questions; unchanged references; excluded from native-fit; not official benchmark variants",
+  "clinical_signoff": false,
+  "main": "final natural R0 PairCorrect, native failures kept in denominator",
+  "secondary": [
+    "Base-correct H retention/c2w",
+    "Base-wrong H repair",
+    "unique U retention",
+    "native Fix",
+    "text-positive extension",
+    "independent-image positive extension",
+    "hard-text extension",
+    "unique-QA and source-balanced"
+  ],
+  "zero_denominator": "NA",
+  "old_method_scores_reused_in_new_table": false,
+  "exact_same_input_reference_answer_Judge_reuse_permitted": true
+}

@@ -1,0 +1,89 @@
+{
+  "configurations": [
+    {
+      "name": "C_NO_H@L21",
+      "branch": "C_NO_H",
+      "writer_layer": 21,
+      "steps": 320,
+      "supervision": "C_NO_H",
+      "initialize_group": "same-edit-L21-W0",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_EXTRA@L21",
+      "branch": "C_EXTRA",
+      "writer_layer": 21,
+      "steps": 320,
+      "supervision": "C_EXTRA",
+      "initialize_group": "same-edit-L21-W0",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_FACT@L21",
+      "branch": "C_FACT",
+      "writer_layer": 21,
+      "steps": 320,
+      "supervision": "C_FACT",
+      "initialize_group": "same-edit-L21-W0",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "BalancEdit",
+      "branch": "BalancEdit",
+      "writer_layer": "model.layers.31.mlp.up_proj",
+      "steps": 50,
+      "recipe": "Stage18 locked original",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_NO_H@HSIC",
+      "branch": "C_NO_H",
+      "writer_layer": "native-only frozen-Base HIB Top1",
+      "steps": 320,
+      "supervision": "C_NO_H",
+      "initialize_group": "same-edit-selected-layer-W0",
+      "order": 2,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_EXTRA@HSIC",
+      "branch": "C_EXTRA",
+      "writer_layer": "native-only frozen-Base HIB Top1",
+      "steps": 320,
+      "supervision": "C_EXTRA",
+      "initialize_group": "same-edit-selected-layer-W0",
+      "order": 2,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_FACT@HSIC",
+      "branch": "C_FACT",
+      "writer_layer": "native-only frozen-Base HIB Top1",
+      "steps": 320,
+      "supervision": "C_FACT",
+      "initialize_group": "same-edit-selected-layer-W0",
+      "order": 2,
+      "status": "REGISTERED_NOT_RUN"
+    }
+  ],
+  "config_count": 7,
+  "launched": 0,
+  "completed": 0,
+  "N": 11,
+  "approval_required_by": "User Stage19 task: new training after cohort and budget approval",
+  "primitive": "scripts.medtrace.stage19_train.train_triplet",
+  "pipeline": [
+    "Validate approved cohort, budget and tokenizer H/G length strata",
+    "Fixed21 shared-W0 three branches and original BalancEdit",
+    "HSIC frozen-Base selection per edit; shared selected-layer W0 and three branches",
+    "Three fixed bank orders, full-prefix evaluation, extensions, frozen Judge",
+    "Aggregate all successes/failures and complete registered checkpoint consumers"
+  ],
+  "not_claimed": "No end-to-end seven-configuration campaign has been qualified or run; existing primitives and mechanical tests do not constitute campaign completion",
+  "entrypoint": "scripts/medtrace/stage19_campaign.py",
+  "entrypoint_validation": "CPU dispatch rejection tests passed; no end-to-end trained campaign run"
+}

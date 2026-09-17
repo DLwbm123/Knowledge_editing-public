@@ -1,0 +1,700 @@
+{
+  "status": "EXISTING_OUTPUT_AUDIT_COMPLETE",
+  "old_results_unchanged": true,
+  "N": 16,
+  "H_unique_QA": 7,
+  "H_images": 4,
+  "transitions": {
+    "C_NO_H": {
+      "correct_to_correct": 0,
+      "correct_to_wrong": 0,
+      "wrong_to_correct": 5,
+      "wrong_to_wrong": 13,
+      "selected_expert_changed": 16,
+      "slots": 18,
+      "final_unique_QA_accuracy": 0.2857142857142857,
+      "final_source_macro": 0.25,
+      "final_original_weighted": 0.3125,
+      "single_unique_QA_context_macro": 0
+    },
+    "C_EXTRA": {
+      "correct_to_correct": 0,
+      "correct_to_wrong": 0,
+      "wrong_to_correct": 5,
+      "wrong_to_wrong": 13,
+      "selected_expert_changed": 16,
+      "slots": 18,
+      "final_unique_QA_accuracy": 0.2857142857142857,
+      "final_source_macro": 0.25,
+      "final_original_weighted": 0.3125,
+      "single_unique_QA_context_macro": 0
+    },
+    "C_FACT": {
+      "correct_to_correct": 7,
+      "correct_to_wrong": 5,
+      "wrong_to_correct": 2,
+      "wrong_to_wrong": 4,
+      "selected_expert_changed": 16,
+      "slots": 18,
+      "final_unique_QA_accuracy": 0.42857142857142855,
+      "final_source_macro": 0.5,
+      "final_original_weighted": 0.5625,
+      "single_unique_QA_context_macro": 0.5833333333333334
+    },
+    "BalancEdit": {
+      "correct_to_correct": 0,
+      "correct_to_wrong": 0,
+      "wrong_to_correct": 5,
+      "wrong_to_wrong": 13,
+      "selected_expert_changed": 16,
+      "slots": 18,
+      "final_unique_QA_accuracy": 0.2857142857142857,
+      "final_source_macro": 0.25,
+      "final_original_weighted": 0.3125,
+      "single_unique_QA_context_macro": 0
+    }
+  },
+  "FACT_improvement_dependencies": [
+    {
+      "control": "C_NO_H",
+      "improved_edits": 4,
+      "distinct_improved_H_QA": 1,
+      "distinct_H_images": 1,
+      "improved_QA": [
+        "H01"
+      ],
+      "improved_expert_aliases": [
+        "E08",
+        "E09",
+        "E10",
+        "E11"
+      ]
+    },
+    {
+      "control": "C_EXTRA",
+      "improved_edits": 4,
+      "distinct_improved_H_QA": 1,
+      "distinct_H_images": 1,
+      "improved_QA": [
+        "H01"
+      ],
+      "improved_expert_aliases": [
+        "E08",
+        "E09",
+        "E10",
+        "E11"
+      ]
+    },
+    {
+      "control": "BalancEdit",
+      "improved_edits": 4,
+      "distinct_improved_H_QA": 1,
+      "distinct_H_images": 1,
+      "improved_QA": [
+        "H01"
+      ],
+      "improved_expert_aliases": [
+        "E08",
+        "E09",
+        "E10",
+        "E11"
+      ]
+    }
+  ],
+  "QA_weights": [
+    {
+      "method": "C_NO_H",
+      "QA": "H04",
+      "image": "I02",
+      "associations": 3,
+      "edit_macro_weight": 0.1875,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": true,
+      "final_expert": "E15"
+    },
+    {
+      "method": "C_NO_H",
+      "QA": "H02",
+      "image": "I03",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "C_NO_H",
+      "QA": "H07",
+      "image": "I02",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E15"
+    },
+    {
+      "method": "C_NO_H",
+      "QA": "H06",
+      "image": "I03",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "C_NO_H",
+      "QA": "H01",
+      "image": "I04",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E10"
+    },
+    {
+      "method": "C_NO_H",
+      "QA": "H03",
+      "image": "I01",
+      "associations": 1,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E13"
+    },
+    {
+      "method": "C_NO_H",
+      "QA": "H05",
+      "image": "I01",
+      "associations": 2,
+      "edit_macro_weight": 0.125,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": true,
+      "final_expert": "E13"
+    },
+    {
+      "method": "C_EXTRA",
+      "QA": "H04",
+      "image": "I02",
+      "associations": 3,
+      "edit_macro_weight": 0.1875,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": true,
+      "final_expert": "E15"
+    },
+    {
+      "method": "C_EXTRA",
+      "QA": "H02",
+      "image": "I03",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "C_EXTRA",
+      "QA": "H07",
+      "image": "I02",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E15"
+    },
+    {
+      "method": "C_EXTRA",
+      "QA": "H06",
+      "image": "I03",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "C_EXTRA",
+      "QA": "H01",
+      "image": "I04",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E10"
+    },
+    {
+      "method": "C_EXTRA",
+      "QA": "H03",
+      "image": "I01",
+      "associations": 1,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E13"
+    },
+    {
+      "method": "C_EXTRA",
+      "QA": "H05",
+      "image": "I01",
+      "associations": 2,
+      "edit_macro_weight": 0.125,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": true,
+      "final_expert": "E13"
+    },
+    {
+      "method": "C_FACT",
+      "QA": "H04",
+      "image": "I02",
+      "associations": 3,
+      "edit_macro_weight": 0.1875,
+      "Base": false,
+      "single_context_accuracy": 0.3333333333333333,
+      "final": true,
+      "final_expert": "E15"
+    },
+    {
+      "method": "C_FACT",
+      "QA": "H02",
+      "image": "I03",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0.5,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "C_FACT",
+      "QA": "H07",
+      "image": "I02",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0.5,
+      "final": false,
+      "final_expert": "E15"
+    },
+    {
+      "method": "C_FACT",
+      "QA": "H06",
+      "image": "I03",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": false,
+      "single_context_accuracy": 0.75,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "C_FACT",
+      "QA": "H01",
+      "image": "I04",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": true,
+      "single_context_accuracy": 1,
+      "final": true,
+      "final_expert": "E10"
+    },
+    {
+      "method": "C_FACT",
+      "QA": "H03",
+      "image": "I01",
+      "associations": 1,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E13"
+    },
+    {
+      "method": "C_FACT",
+      "QA": "H05",
+      "image": "I01",
+      "associations": 2,
+      "edit_macro_weight": 0.125,
+      "Base": false,
+      "single_context_accuracy": 1,
+      "final": true,
+      "final_expert": "E13"
+    },
+    {
+      "method": "BalancEdit",
+      "QA": "H04",
+      "image": "I02",
+      "associations": 3,
+      "edit_macro_weight": 0.1875,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": true,
+      "final_expert": "E15"
+    },
+    {
+      "method": "BalancEdit",
+      "QA": "H02",
+      "image": "I03",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "BalancEdit",
+      "QA": "H07",
+      "image": "I02",
+      "associations": 2,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E15"
+    },
+    {
+      "method": "BalancEdit",
+      "QA": "H06",
+      "image": "I03",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E16"
+    },
+    {
+      "method": "BalancEdit",
+      "QA": "H01",
+      "image": "I04",
+      "associations": 4,
+      "edit_macro_weight": 0.25,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E10"
+    },
+    {
+      "method": "BalancEdit",
+      "QA": "H03",
+      "image": "I01",
+      "associations": 1,
+      "edit_macro_weight": 0.0625,
+      "Base": true,
+      "single_context_accuracy": 0,
+      "final": false,
+      "final_expert": "E13"
+    },
+    {
+      "method": "BalancEdit",
+      "QA": "H05",
+      "image": "I01",
+      "associations": 2,
+      "edit_macro_weight": 0.125,
+      "Base": false,
+      "single_context_accuracy": 0,
+      "final": true,
+      "final_expert": "E13"
+    }
+  ],
+  "U_unique": [
+    {
+      "method": "C_NO_H",
+      "unique_inputs": 1,
+      "Base": true,
+      "final": false,
+      "selected_expert": "E10",
+      "activated": true
+    },
+    {
+      "method": "C_EXTRA",
+      "unique_inputs": 1,
+      "Base": true,
+      "final": true,
+      "selected_expert": "E10",
+      "activated": true
+    },
+    {
+      "method": "C_FACT",
+      "unique_inputs": 1,
+      "Base": true,
+      "final": true,
+      "selected_expert": "E10",
+      "activated": true
+    },
+    {
+      "method": "BalancEdit",
+      "unique_inputs": 1,
+      "Base": true,
+      "final": false,
+      "selected_expert": "E10",
+      "activated": true
+    }
+  ],
+  "anchors": [
+    {
+      "method": "C_NO_H",
+      "anchor_edits": 1,
+      "H_slots": 1,
+      "prefix": {
+        "1": 0,
+        "10": 1,
+        "16": 1
+      },
+      "expert_changes": [
+        {
+          "prefix": 1,
+          "selected": [
+            "E01"
+          ]
+        },
+        {
+          "prefix": 10,
+          "selected": [
+            "E06"
+          ]
+        },
+        {
+          "prefix": 16,
+          "selected": [
+            "E15"
+          ]
+        }
+      ]
+    },
+    {
+      "method": "C_EXTRA",
+      "anchor_edits": 1,
+      "H_slots": 1,
+      "prefix": {
+        "1": 0,
+        "10": 1,
+        "16": 1
+      },
+      "expert_changes": [
+        {
+          "prefix": 1,
+          "selected": [
+            "E01"
+          ]
+        },
+        {
+          "prefix": 10,
+          "selected": [
+            "E06"
+          ]
+        },
+        {
+          "prefix": 16,
+          "selected": [
+            "E15"
+          ]
+        }
+      ]
+    },
+    {
+      "method": "C_FACT",
+      "anchor_edits": 1,
+      "H_slots": 1,
+      "prefix": {
+        "1": 0,
+        "10": 1,
+        "16": 1
+      },
+      "expert_changes": [
+        {
+          "prefix": 1,
+          "selected": [
+            "E01"
+          ]
+        },
+        {
+          "prefix": 10,
+          "selected": [
+            "E06"
+          ]
+        },
+        {
+          "prefix": 16,
+          "selected": [
+            "E15"
+          ]
+        }
+      ]
+    },
+    {
+      "method": "BalancEdit",
+      "anchor_edits": 1,
+      "H_slots": 1,
+      "prefix": {
+        "1": 0,
+        "10": 1,
+        "16": 1
+      },
+      "expert_changes": [
+        {
+          "prefix": 1,
+          "selected": [
+            "E01"
+          ]
+        },
+        {
+          "prefix": 10,
+          "selected": [
+            "E06"
+          ]
+        },
+        {
+          "prefix": 16,
+          "selected": [
+            "E15"
+          ]
+        }
+      ]
+    }
+  ],
+  "reference_review": {
+    "type": "AI",
+    "supported": 15,
+    "unverified": 2,
+    "affected_H_QA": [
+      "H01"
+    ],
+    "all_method_sensitivity": [
+      {
+        "method": "C_NO_H",
+        "excluded": "UNVERIFIED_REFERENCE_EXCLUDED_DESCRIPTIVE_ONLY",
+        "remaining_edits": 12,
+        "H_slots": 14,
+        "unique_QA": 6,
+        "source_images": 3,
+        "edit_macro": 0.4166666666666667,
+        "unique_QA_macro": 0.3333333333333333,
+        "source_macro": 0.3333333333333333,
+        "original_weights_renormalized": 0.4166666666666667
+      },
+      {
+        "method": "C_EXTRA",
+        "excluded": "UNVERIFIED_REFERENCE_EXCLUDED_DESCRIPTIVE_ONLY",
+        "remaining_edits": 12,
+        "H_slots": 14,
+        "unique_QA": 6,
+        "source_images": 3,
+        "edit_macro": 0.4166666666666667,
+        "unique_QA_macro": 0.3333333333333333,
+        "source_macro": 0.3333333333333333,
+        "original_weights_renormalized": 0.4166666666666667
+      },
+      {
+        "method": "C_FACT",
+        "excluded": "UNVERIFIED_REFERENCE_EXCLUDED_DESCRIPTIVE_ONLY",
+        "remaining_edits": 12,
+        "H_slots": 14,
+        "unique_QA": 6,
+        "source_images": 3,
+        "edit_macro": 0.4166666666666667,
+        "unique_QA_macro": 0.3333333333333333,
+        "source_macro": 0.3333333333333333,
+        "original_weights_renormalized": 0.4166666666666667
+      },
+      {
+        "method": "BalancEdit",
+        "excluded": "UNVERIFIED_REFERENCE_EXCLUDED_DESCRIPTIVE_ONLY",
+        "remaining_edits": 12,
+        "H_slots": 14,
+        "unique_QA": 6,
+        "source_images": 3,
+        "edit_macro": 0.4166666666666667,
+        "unique_QA_macro": 0.3333333333333333,
+        "source_macro": 0.3333333333333333,
+        "original_weights_renormalized": 0.4166666666666667
+      }
+    ],
+    "original_references_and_scores_unchanged": true
+  },
+  "inference_boundary": "No patient-population CI from four evaluation images; leave-one changes are sensitivity only; single contexts are not identical inputs to identical banks",
+  "early10_fixed_anchors": [
+    {
+      "method": "C_NO_H",
+      "edits": 10,
+      "H_slots": 12,
+      "unique_QA": 5,
+      "prefix": {
+        "10": {
+          "H_slot_accuracy": 0.16666666666666666,
+          "edit_macro": 0.2
+        },
+        "16": {
+          "H_slot_accuracy": 0.16666666666666666,
+          "edit_macro": 0.2
+        }
+      },
+      "selected_expert_changes": 9
+    },
+    {
+      "method": "C_EXTRA",
+      "edits": 10,
+      "H_slots": 12,
+      "unique_QA": 5,
+      "prefix": {
+        "10": {
+          "H_slot_accuracy": 0.16666666666666666,
+          "edit_macro": 0.2
+        },
+        "16": {
+          "H_slot_accuracy": 0.16666666666666666,
+          "edit_macro": 0.2
+        }
+      },
+      "selected_expert_changes": 9
+    },
+    {
+      "method": "C_FACT",
+      "edits": 10,
+      "H_slots": 12,
+      "unique_QA": 5,
+      "prefix": {
+        "10": {
+          "H_slot_accuracy": 0.4166666666666667,
+          "edit_macro": 0.5
+        },
+        "16": {
+          "H_slot_accuracy": 0.4166666666666667,
+          "edit_macro": 0.5
+        }
+      },
+      "selected_expert_changes": 9
+    },
+    {
+      "method": "BalancEdit",
+      "edits": 10,
+      "H_slots": 12,
+      "unique_QA": 5,
+      "prefix": {
+        "10": {
+          "H_slot_accuracy": 0.16666666666666666,
+          "edit_macro": 0.2
+        },
+        "16": {
+          "H_slot_accuracy": 0.16666666666666666,
+          "edit_macro": 0.2
+        }
+      },
+      "selected_expert_changes": 9
+    }
+  ]
+}

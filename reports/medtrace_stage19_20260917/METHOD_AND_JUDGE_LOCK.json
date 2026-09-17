@@ -1,0 +1,290 @@
+{
+  "status": "COHORT_AND_BUDGET_APPROVAL_PENDING",
+  "training_freeze": "15d70386b441af576b7133e03be9cab3c562e2a13d3f791a20237fed042b743d",
+  "evaluation_freeze": "c3e067969e3babbb429e54bfadaae555033f168a13ea2b8d70eb9cd40d2d5459",
+  "extension_freeze": "5f52c1239c33852ac23eb610fe13c178d40a1eed813e0e8a60c38e64db2df25d",
+  "N": 11,
+  "formal_confirmation": false,
+  "configs": [
+    {
+      "name": "C_NO_H@L21",
+      "branch": "C_NO_H",
+      "writer_layer": 21,
+      "steps": 320,
+      "supervision": "C_NO_H",
+      "initialize_group": "same-edit-L21-W0",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_EXTRA@L21",
+      "branch": "C_EXTRA",
+      "writer_layer": 21,
+      "steps": 320,
+      "supervision": "C_EXTRA",
+      "initialize_group": "same-edit-L21-W0",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_FACT@L21",
+      "branch": "C_FACT",
+      "writer_layer": 21,
+      "steps": 320,
+      "supervision": "C_FACT",
+      "initialize_group": "same-edit-L21-W0",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "BalancEdit",
+      "branch": "BalancEdit",
+      "writer_layer": "model.layers.31.mlp.up_proj",
+      "steps": 50,
+      "recipe": "Stage18 locked original",
+      "order": 1,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_NO_H@HSIC",
+      "branch": "C_NO_H",
+      "writer_layer": "native-only frozen-Base HIB Top1",
+      "steps": 320,
+      "supervision": "C_NO_H",
+      "initialize_group": "same-edit-selected-layer-W0",
+      "order": 2,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_EXTRA@HSIC",
+      "branch": "C_EXTRA",
+      "writer_layer": "native-only frozen-Base HIB Top1",
+      "steps": 320,
+      "supervision": "C_EXTRA",
+      "initialize_group": "same-edit-selected-layer-W0",
+      "order": 2,
+      "status": "REGISTERED_NOT_RUN"
+    },
+    {
+      "name": "C_FACT@HSIC",
+      "branch": "C_FACT",
+      "writer_layer": "native-only frozen-Base HIB Top1",
+      "steps": 320,
+      "supervision": "C_FACT",
+      "initialize_group": "same-edit-selected-layer-W0",
+      "order": 2,
+      "status": "REGISTERED_NOT_RUN"
+    }
+  ],
+  "training": {
+    "backbone": "FP16 frozen",
+    "writer": "FP32 low-rank4",
+    "native_weight": 0.5,
+    "native_fit_weight": 0.5,
+    "U_weight": 0.01,
+    "extra_weight": 1.0,
+    "steps": 320,
+    "common_native_fit_U_schedule": true,
+    "H_G_source_slot_schedule": "Frozen source-balanced pair schedule; same slot index for FACT and EXTRA",
+    "H_G_matching": "Same source image; different proposition; yes/no versus open stratum; actual tokenizer length stratum checked before training; no equal-FLOPs claim",
+    "optimizer": "Existing selective_write.optimizer_for; fresh per branch",
+    "tokens_forwards": "Record actual values by component",
+    "shared_W0": "Once per same-edit same-layer; cross-layer initialization never identical by assertion"
+  },
+  "BalancEdit": {
+    "schema_version": "m3bench-editor-method-config-v2",
+    "method": "BalanceEdit",
+    "classification": "paper-spec LLaVA-Med adaptation of locked BalanceEdit source",
+    "scope": "final-layer LM MLP up_projection",
+    "target": "model.layers.31.mlp.up_proj",
+    "key": "mean input hidden representation at edited up_projection",
+    "positive": "same image plus frozen official question rephrase",
+    "negative": "same-size black image plus original question",
+    "distance": "euclidean from minigpt4_euc source config",
+    "radius_formula": "(1-alpha)*negative_distance + alpha*positive_distance",
+    "alpha": 0.2,
+    "optimizer": "Adam",
+    "learning_rate": 0.01,
+    "gradient_clip": 1.0,
+    "steps_per_edit": 50,
+    "edited_state_precision": "float32; outputs cast to frozen backbone dtype",
+    "source": "BalanceEdit @ 83749e52a1d27331d21cfec845b6089294730c2f; hparams/BalancEdit/minigpt4_euc.yaml"
+  },
+  "router": {
+    "feature_layer": "model.layers.31.mlp.up_proj",
+    "distance": "euclidean",
+    "radius_alpha": 0.2,
+    "radius": "Stage18 positive/black-image formula unchanged",
+    "gold_eval_labels": false,
+    "main": "natural R0",
+    "single": "FORCED_OWN mechanism only"
+  },
+  "judge": {
+    "protocol": "MEDTRACE_STAGE17_SOURCE_AGREEMENT_V1",
+    "model": "gpt-6-astra",
+    "reasoning": "high",
+    "snapshot": null,
+    "isolated": true,
+    "method_bank_labels_visible": false,
+    "exact_text_cache": true,
+    "semantic_retries": 0,
+    "unavailable": "NA",
+    "failures": "retained separately from conditional performance"
+  },
+  "HSIC": {
+    "reference": "neu-spiral/LOKI@bbb5819be8af00ff5ae9708bb02734cc70958c4c",
+    "formula": "0.001*nCCA(Z_layer,Z_final)-0.001*nCCA(X_input,Z_layer)",
+    "kernel": "exp(-abs(||xi||^2+||xj||^2-2xi.xj)/(2*d))",
+    "sigma": 1.0,
+    "center": "K@H matching author implementation",
+    "regularization": "1e-5*n",
+    "normalization": "trace(Rx Ry), R=Kc(Kc+1e-5*n*I)^-1",
+    "numerics": "CPU float64 linear solve; author uses float32 inverse",
+    "observation_axis": "5 distinct prompts: current native plus4 frozen native-only wrappers; each yields one pooled vector",
+    "token_rule": "Mean over all expanded nonpadding question-only prefill tokens; no answer tokens; log visual/text counts",
+    "input": "layer0 block input",
+    "final": "layer31 block output",
+    "candidate": "down_proj input at zero-based layers1..30",
+    "candidate_adaptation": "Author Mistral config uses offset4, i.e.4..26; this preregistered adaptation expands to1..30 and Top1 instead of Top3",
+    "tie": "smallest layer_id for exact tie",
+    "degenerate": "reject duplicates/constant variance<=1e-12/nonfinite/<4 samples; exclude invalid layer; all invalid=UNSUPPORTED, no fallback",
+    "forbidden": [
+      "H_fit",
+      "G_fit",
+      "H_eval",
+      "U_eval",
+      "future edit",
+      "student output"
+    ],
+    "known_limitations": [
+      "five correlated wrappers are not independent samples",
+      "pooled visual tokens dominate",
+      "Base final features may encode the wrong answer",
+      "correlation is not causal importance"
+    ]
+  },
+  "orders": {
+    "canonical": [
+      "E01",
+      "E02",
+      "E03",
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10",
+      "E11"
+    ],
+    "18001": [
+      "E11",
+      "E04",
+      "E06",
+      "E07",
+      "E05",
+      "E03",
+      "E02",
+      "E10",
+      "E09",
+      "E08",
+      "E01"
+    ],
+    "18002": [
+      "E04",
+      "E07",
+      "E05",
+      "E09",
+      "E02",
+      "E08",
+      "E06",
+      "E03",
+      "E11",
+      "E10",
+      "E01"
+    ]
+  },
+  "prefixes": [
+    1,
+    10,
+    11
+  ],
+  "early_anchors": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "E05",
+    "E06",
+    "E07",
+    "E08",
+    "E09",
+    "E10"
+  ],
+  "order_repeats": "Fixed expert states, not independent training repetitions",
+  "controls": {
+    "status": "PREREGISTERED_NOT_RUN",
+    "calibration_edits": [
+      "E01",
+      "E02",
+      "E03"
+    ],
+    "fixed_layer_candidates": [
+      8,
+      16,
+      21,
+      28
+    ],
+    "fixed_winner": "Highest calibration final R0 PairCorrect; ties lower layer; retain every candidate result",
+    "comparison_edits": [
+      "E04",
+      "E05",
+      "E06",
+      "E07",
+      "E08",
+      "E09",
+      "E10",
+      "E11"
+    ],
+    "random_layer": "seed19002 uniform among1..30 per edit, freeze before training",
+    "branch": "C_FACT",
+    "shared_eval_source_warning": "Calibration and remaining edit panels share evaluation sources; development comparison only, no independent confirmation",
+    "frozen_random_layers": {
+      "E01": 6,
+      "E02": 21,
+      "E03": 21,
+      "E04": 30,
+      "E05": 21,
+      "E06": 20,
+      "E07": 1,
+      "E08": 17,
+      "E09": 19,
+      "E10": 29,
+      "E11": 18
+    },
+    "random_layer_assignment_unit": "one layer per canonical edit; same assignment across all order replays"
+  },
+  "budget_proposal": {
+    "approved": false,
+    "physical_gpu": 3,
+    "seven_configs_hours_estimate": [
+      2.5,
+      4.5
+    ],
+    "seven_configs_hard_cap_hours": 5,
+    "registered_controls_hard_cap_hours": 3,
+    "total_hard_cap_hours": 8,
+    "Judge_new_unique_texts_cap": 500,
+    "on_cap": "Stop and retain evidence; no automatic expansion/retry",
+    "basis": "Historical fixed four-method DEV16 wall7808.07s; extra HSIC initialization, orders and evaluation increase cost; estimates are not a deadline"
+  },
+  "execution_state": {
+    "new_training": 0,
+    "training_primitive": "scripts.medtrace.stage19_train.train_triplet",
+    "mechanical_tests": "CPU and one-edit real GPU PASS",
+    "seven_configuration_campaign": "Not dispatched; final scheduler/configuration must bind approved cohort and budget before launch",
+    "clinical_signoff": false
+  },
+  "entrypoint": "scripts/medtrace/stage19_campaign.py",
+  "entrypoint_validation": "CPU dispatch rejection tests passed; no end-to-end trained campaign run"
+}

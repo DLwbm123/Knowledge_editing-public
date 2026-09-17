@@ -1,0 +1,133 @@
+{
+  "status": "EXISTING_DATA_BOUNDED_CONSTRUCTION_COMPLETE",
+  "raw_training_QA": 9835,
+  "raw_training_groups": 586,
+  "English_train_candidates": 1154,
+  "English_candidate_images": 113,
+  "metadata_allowed_groups": 164,
+  "groups_without_English_rows": 51,
+  "source_role_fresh_pool": {
+    "images": 16,
+    "adaptation_images": 10,
+    "evaluation_images": 6,
+    "evaluation_QA": 60
+  },
+  "evaluation_reference_review": {
+    "SUPPORTED": 45,
+    "UNVERIFIED": 13,
+    "UNSUPPORTED": 2,
+    "patient_study": "UNKNOWN",
+    "clinical_signoff": false
+  },
+  "currently_exposure_verified_evaluation_upper_bound": {
+    "unique_QA": 45,
+    "source_images": 6,
+    "H_structural_QA": 21,
+    "H_sources": 5,
+    "Base_correct_H": 12,
+    "Base_correct_all": 21
+  },
+  "upper_bound_scope": "Only the six existing evaluation-only groups with closed training-exposure evidence; not proof that every historical nonsealed source has been exhausted",
+  "training_reference_review": {
+    "record_count": 157,
+    "source_image_count": 85,
+    "actually_viewed_source_image_count": 85,
+    "contact_sheet_count": 15,
+    "individually_reopened_image_count": 14,
+    "verdict_counts": {
+      "SUPPORTED": 127,
+      "UNVERIFIED": 26,
+      "UNSUPPORTED": 4
+    },
+    "uncertain_count": 26,
+    "by_input_role": {
+      "G_fit": {
+        "SUPPORTED": 30,
+        "UNVERIFIED": 11,
+        "UNSUPPORTED": 2
+      },
+      "H_fit": {
+        "SUPPORTED": 28,
+        "UNSUPPORTED": 1,
+        "UNVERIFIED": 3
+      },
+      "U_fit": {
+        "SUPPORTED": 26,
+        "UNVERIFIED": 7,
+        "UNSUPPORTED": 1
+      },
+      "native": {
+        "UNVERIFIED": 5,
+        "SUPPORTED": 43
+      }
+    }
+  },
+  "near_duplicate": {
+    "method": "256-bit horizontal dHash, LANCZOS17x16, distance<=8",
+    "screened_images": 119,
+    "automated_candidate_pairs": 1,
+    "AI_additional_candidate_pairs": 1,
+    "all_candidate_images_quarantined": true,
+    "limitations": "Conservative screen can miss transformed images and adjacent slices; no patient identity or near-duplicate claim for unopened sealed content"
+  },
+  "role_isolation": {
+    "current_and_future_native_separate_from_auxiliary": true,
+    "train_eval_image_and_existing_identity_closure": true,
+    "historical_eval_reserved_exclusions_inherited": true,
+    "sealed_content_opened": false,
+    "new_external_downloads": 0
+  },
+  "actual_cohort": {
+    "native": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 11,
+      "Base_correct": 0
+    },
+    "H_fit": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 7
+    },
+    "G_fit": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 7
+    },
+    "U_fit": {
+      "slots": 11,
+      "unique_QA": 11,
+      "source_images": 11
+    },
+    "H_eval": {
+      "slots": 17,
+      "unique_QA": 6,
+      "source_images": 2,
+      "Base_correct": 4
+    },
+    "U_eval": {
+      "slots": 9,
+      "unique_QA": 9,
+      "source_images": 4,
+      "Base_correct": 8
+    }
+  },
+  "qualified_N": 11,
+  "targets_not_met": {
+    "edits": 21,
+    "H_QA": 26,
+    "H_sources": 14,
+    "U_QA": 23,
+    "U_sources": 12,
+    "Base_correct_H": 16,
+    "Base_correct_U": 12
+  },
+  "additional_source_gap_at_least": 10,
+  "candidate_search_limit": "Fixed48 source-diverse candidates; 14 Base-wrong,42 source-review-supported,11 intersection. Not a proven global maximum over1154 QA.",
+  "construction_next_steps": [
+    "Audit existing nonsealed historical evaluation exposure metadata for additional legal source groups; keep reserved groups excluded",
+    "Verify suspected duplicate/adjacent-slice relations and patient/study identifiers if source records exist",
+    "Find genuine authorized text-only QA and independent positive-image sources; do not invent facts",
+    "Clinical review remains absent; AI review cannot sign clinical safety conclusions"
+  ]
+}

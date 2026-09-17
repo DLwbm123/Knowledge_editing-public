@@ -1,0 +1,18 @@
+# Stage19 source overlay
+
+Completed: 128-combination retained-FACT diagnostic (41 reused,87 generated), frozen Judge scoring, source/reference/exposure construction,110 Base outputs, CPU and one-edit real GPU HSIC mechanics. No new seven-configuration training has run.
+
+See [diagnostic report](../../reports/medtrace_stage19_20260917/DIAGNOSTIC_REPORT_ZH.md), [actual11-edit proposal and gaps](../../reports/medtrace_stage19_20260917/DATA_CONSTRUCTION_AND_GAPS_ZH.md), and [HSIC specification](../../reports/medtrace_stage19_20260917/HSIC_REFERENCE_AND_MECHANICS_ZH.md). The earlier four-edit gain collapses to one unverified reference; old Stage18 results remain unchanged.
+
+Assemble the published Stage15/16/17 and Stage18 overlays as documented in their READMEs, then overlay this directory onto the same runtime checkout. This adds methods/medtrace/hsic.py and the Stage19 scripts, plus optional-layer plumbing in four reused training files. Their historical default layer remains21; previously committed Stage18 artifacts are untouched. Approved private image/question manifests and a compatible preinstalled LLaVA-Med runtime are required; no data, images, answers, tokens, model or checkpoints are distributed.
+
+Validation: `PYTHONPATH=. python -m scripts.medtrace.test_stage19`; existing Stage18 regression: `PYTHONPATH=. python -m unittest discover -s tests -p test_stage18_cfact.py -q` (13 checks passed). Dispatch tests exercise refusal of missing/changed approval, budget, cohort, extension and GPU contracts. End-to-end training has not been run under Stage19.
+
+- `stage19_audit.audit` recomputes old-source weighting, transitions, early anchors and uniform reference sensitivities; `matrix_report` joins the bounded expert matrix and isolated Judge records.
+- `stage19_diagnose.py` restores the retained final FACT bank for a frozen at-most128 pair plan, excluding already bound outputs. It checks eight Base outputs, two restored experts and OFF.
+- `stage19_sources.build/finalize` uses fixed source partitioning, AI-reviewed source labels and then the frozen Base decisions. The48 source candidates yield11 qualified edits; this is not an exhaustive maximum over1154 candidate QA. It includes the bounded duplicate-screen and deterministic untrained rephrase templates. Private role ledgers preserve source identity and exposure limitations.
+- `hsic.py` implements the explicitly documented LOKI normalized-CCA HIB adaptation and per-layer hook context; `stage19_hsic_check.py` runs one-edit real-model mechanics, never method training.
+- `stage19_train.train_triplet` computes or reuses one same-edit/same-layer W0, clones it for three independently optimized branches, and binds layer identity. `stage19_campaign.py` is the seven-configuration entrypoint: fixed21 C, original BE, then HSIC C, with fixed orders and natural R0. It requires exact approved private cohort, Base, extension and numeric budget bindings before loading the GPU runtime. It is not an executed or fully GPU-qualified campaign. Registered fixed/random controls require their separate approved schedule; the entrypoint does not silently add them.
+- Future campaign inputs are private `TRAINING_TASKS_V3.json`, `DEV_EVALUATION_V3.json`, `EXTENSIONS_V3.json`, `BASE_OUTPUTS.json`, `EXTENSION_BASE_OUTPUTS.json`, and an approved dispatch. Use the existing neutral process entrypoint and JOB_CONFIG mechanism, as for prior stages. Judge is a separate frozen-protocol consumer; generation success is not scoring/completion.
+
+The corresponding weights and raw provenance stay private. The retained5MB own-method FACT bank is preserved; only the consumed synthetic mechanical-test expert was removed. AI reference review is not clinical signoff or patient independence.
