@@ -1,0 +1,35 @@
+{
+  "status": "CPU_AND_REAL_GPU_SMOKE_PASS",
+  "implementation_commit": "0d54456c96742c1e8d32aef5976c4d55030e9077",
+  "CPU_passed": 14,
+  "checks": [
+    {
+      "command": "/opt/miniconda3/bin/python -m unittest discover -s tests -p test_stage18_cfact.py -v",
+      "count": 7,
+      "passed": true
+    },
+    {
+      "command": "/opt/miniconda3/bin/python -m unittest discover -s tests/medtrace -p test_core.py -v",
+      "count": 6,
+      "passed": true
+    },
+    {
+      "command": "PYTHONPATH=.:tests/medtrace /opt/miniconda3/bin/python -m unittest test_selective_write.SelectiveWriteTest.test_lossless_transfer_and_optimizer -v",
+      "count": 1,
+      "passed": true
+    }
+  ],
+  "source_assembly": "594 task-native metadata + full future/eval/protected/reserved exclusion; approved 29 QA only; passed",
+  "remote_source_check": "Three source qids, own image/question/answer exactly match existing train.json; three required images readable",
+  "gradient_scope": "actual common update function, nondegenerate CPU fixture, both H/G contribute and zero weight gives identical NO_H update",
+  "remaining": [
+    "human source relation/patient review",
+    "fresh scored Base masks",
+    "formal performance"
+  ],
+  "initial_test_invocation_error": "tests is not an import package; used unittest discover, no implementation change for discovery",
+  "remote_added_tests_passed": 6,
+  "startup_check": "Neutral ps and nvidia-smi argv; GPU2 worker2089544 loading frozen model, no immediate runtime error",
+  "GPU": "2/2 edits, 6/6 branches, exit0; SMOKE_ACCEPTANCE.json",
+  "additional_check": "global future-native and hash-alias pilot isolation test passed"
+}

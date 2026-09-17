@@ -1,0 +1,134 @@
+{
+  "status": "PASS_MECHANICAL_SMOKE_ONLY",
+  "execution_commit": "0d54456c96742c1e8d32aef5976c4d55030e9077",
+  "edits": 2,
+  "completed_branches": 6,
+  "continuation_updates": 1920,
+  "H_gradient_nonzero_updates": 640,
+  "G_gradient_nonzero_updates": 640,
+  "checks": {
+    "same_W0_per_edit": true,
+    "same_native_fit_U_schedule": true,
+    "same_H_G_extra_schedule": true,
+    "correct_loss_weights": true,
+    "CP_transfer": true,
+    "zero_residual": true,
+    "Base_OFF": true,
+    "Base_route_isolation": true,
+    "save_load": true
+  },
+  "CPU_zero_weight_and_resume": "13 relevant checks passed; see TEST_RESULTS.json. Controlled weight-zero and interrupted resume were CPU tests, not separate GPU experiments.",
+  "source_identity": "worker verifies each H/G/U original image/question/answer against approved train.json",
+  "rows": [
+    {
+      "edit_ordinal": 1,
+      "branch": "C_NO_H",
+      "updates": 320,
+      "extra_nonzero_updates": 0,
+      "extra_gradient_min": null,
+      "extra_gradient_max": null,
+      "tokens": {
+        "U": 8320,
+        "fit": 1280,
+        "native": 1280
+      },
+      "parameters": 73728,
+      "shared_W0": "82ecfdda78b5614fd02b3863dd24beb78a70e790b4f1f3a99e37f111e9c814af",
+      "session_seconds": 104.67971348762512
+    },
+    {
+      "edit_ordinal": 1,
+      "branch": "C_EXTRA",
+      "updates": 320,
+      "extra_nonzero_updates": 320,
+      "extra_gradient_min": 0.00023184942256193608,
+      "extra_gradient_max": 51.20396041870117,
+      "tokens": {
+        "U": 8320,
+        "extra": 960,
+        "fit": 1280,
+        "native": 1280
+      },
+      "parameters": 73728,
+      "shared_W0": "82ecfdda78b5614fd02b3863dd24beb78a70e790b4f1f3a99e37f111e9c814af",
+      "session_seconds": 139.00947403907776
+    },
+    {
+      "edit_ordinal": 1,
+      "branch": "C_FACT",
+      "updates": 320,
+      "extra_nonzero_updates": 320,
+      "extra_gradient_min": 0.00023264452465809882,
+      "extra_gradient_max": 40.34513473510742,
+      "tokens": {
+        "U": 8320,
+        "extra": 960,
+        "fit": 1280,
+        "native": 1280
+      },
+      "parameters": 73728,
+      "shared_W0": "82ecfdda78b5614fd02b3863dd24beb78a70e790b4f1f3a99e37f111e9c814af",
+      "session_seconds": 139.07576036453247
+    },
+    {
+      "edit_ordinal": 2,
+      "branch": "C_NO_H",
+      "updates": 320,
+      "extra_nonzero_updates": 0,
+      "extra_gradient_min": null,
+      "extra_gradient_max": null,
+      "tokens": {
+        "U": 8320,
+        "fit": 1280,
+        "native": 1280
+      },
+      "parameters": 73728,
+      "shared_W0": "493016271db98f739d2d35508e0ce16c2cf834940568aeab6465d7541c26ad36",
+      "session_seconds": 105.61349511146545
+    },
+    {
+      "edit_ordinal": 2,
+      "branch": "C_EXTRA",
+      "updates": 320,
+      "extra_nonzero_updates": 320,
+      "extra_gradient_min": 0.00032583021675236523,
+      "extra_gradient_max": 48.183719635009766,
+      "tokens": {
+        "U": 8320,
+        "extra": 960,
+        "fit": 1280,
+        "native": 1280
+      },
+      "parameters": 73728,
+      "shared_W0": "493016271db98f739d2d35508e0ce16c2cf834940568aeab6465d7541c26ad36",
+      "session_seconds": 139.33254671096802
+    },
+    {
+      "edit_ordinal": 2,
+      "branch": "C_FACT",
+      "updates": 320,
+      "extra_nonzero_updates": 320,
+      "extra_gradient_min": 0.0003308670420665294,
+      "extra_gradient_max": 31.23371124267578,
+      "tokens": {
+        "U": 8320,
+        "extra": 960,
+        "fit": 1280,
+        "native": 1280
+      },
+      "parameters": 73728,
+      "shared_W0": "493016271db98f739d2d35508e0ce16c2cf834940568aeab6465d7541c26ad36",
+      "session_seconds": 139.01086020469666
+    }
+  ],
+  "exit_code": 0,
+  "worker_wall_seconds": 1173.202987909317,
+  "peak_allocated_GiB": 15.44795560836792,
+  "formal_results": false,
+  "semantic_Judge_calls": 0,
+  "independent_H_eval_evaluated": 0,
+  "failures": [
+    "First launcher syntax failure before model/worker start; corrected run_v2, original evidence retained"
+  ],
+  "retained_checkpoints": "W0/init, six writer/optimizer states and two routers retained for registered review; no cleanup"
+}

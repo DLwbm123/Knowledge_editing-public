@@ -1,0 +1,127 @@
+{
+  "status": "IMPLEMENTED_CPU_AND_REAL_GPU_SMOKE_PASSED_NOT_FORMAL",
+  "authority": [
+    "user Stage18 prompt and plan 2026-09-16",
+    "Stage17 METHOD_LOCK C_V1, R0 amendment"
+  ],
+  "baseline": "DLwbm123/Knowledge_editing-public@6a35c7512dabf100347fdb962951ff8760ce79a4",
+  "implementation_commit": "0d54456c96742c1e8d32aef5976c4d55030e9077",
+  "runtime": {
+    "canonical_lane": "current_stack_v4",
+    "environment_lock_sha256": "d1c7875f79bd04b01813f2c900bbe693dc58854225c507f21b0d51433e7f02bf",
+    "generation": {
+      "batch_size": 1,
+      "do_sample": false,
+      "max_new_tokens": 1024,
+      "num_beams": 1,
+      "temperature": 0,
+      "use_cache": true
+    },
+    "historical_stack_reconstruction_permitted": false,
+    "llava_med_code_commit": "30697ca50b5c29a8e955c99330b259776aef27b9",
+    "model_snapshot_sha": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "parity": {
+      "decoded_parity": 0.9750566893424036,
+      "normalized_parity": 0.9750566893424036,
+      "semantic_parity": 0.9931972789115646
+    },
+    "selected_runtime": "runtime_b_official_native",
+    "vision_snapshot_sha": "ce19dc912ca5cd21c8a653c79e251e808ccabcd1"
+  },
+  "generation": {
+    "batch_size": 1,
+    "classification": "M3BENCH_PAPER_SPEC_INDEPENDENT_REIMPLEMENTATION_V2_EFFECT_REPAIRED",
+    "config_sha256": "a31dbfb542f142e9e7698fcc62df6dfc881f806862cfb906570e1538198ec4b2",
+    "conv_mode": "mistral_instruct",
+    "device_mapping": "one explicitly selected physical GPU (2 or 3 only for Foundation V3)",
+    "do_sample": false,
+    "dtype": "float16",
+    "eos_stop_policy": "model_eos_token_id; no answer-derived stop sequence",
+    "foundation_label": "M3BENCH_PUBLIC_RELEASE_ALIGNED__LOCAL_GENERATION_CONFIG_FROZEN",
+    "generation_output_contract": "continuation_only",
+    "gold_length_truncation": false,
+    "inference_mode": true,
+    "logical_shards": 16,
+    "max_new_tokens": 1024,
+    "model_eval": true,
+    "model_id": "llava_med_v1_5_mistral_7b",
+    "num_beams": 1,
+    "padding_side": "checkpoint_tokenizer_default; recorded at runtime",
+    "prompt_contract": "native_mistral_instruct__image_plus_question_only",
+    "raw_prediction_schema_version": "foundation-v2-raw-1",
+    "source_commit": "e5da74ae5892186835b2f431cf05345fe76f1707",
+    "target_answers_in_prompt": false,
+    "teacher_forcing": false,
+    "temperature": null,
+    "top_p": null,
+    "use_cache": true,
+    "vision_tower_id": "clip-vit-large-patch14-336"
+  },
+  "C_V1": {
+    "module": "model.layers.21.mlp.down_proj",
+    "rank": 4,
+    "FP32_parameters": 73728,
+    "initialization": "own native CP -> A2(80) -> CP-W0(320) -> function-preserving freeR4; share once per edit",
+    "continuation_steps": 320,
+    "optimizer": {
+      "name": "Adam",
+      "A_lr": 0.0001,
+      "B_lr": 0.001,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "weight_decay": 0,
+      "clip": 1
+    },
+    "normalization": "unchanged inherited activation/factor normalization and token/source-group averaging",
+    "NO_H_loss": ".5 native CE + .5 legal native-only fit CE + .01 full-vocab token-mean KL(Base||student) on U",
+    "FACT_loss": "NO_H + 1 H CE",
+    "EXTRA_loss": "NO_H + 1 G CE, replace same H slot and schedule",
+    "missing_U": "UNSUPPORTED; no silent KL removal",
+    "missing_H": "FACT unsupported; never relabel NO_H as FACT"
+  },
+  "branches": [
+    "C_NO_H",
+    "C_EXTRA",
+    "C_FACT"
+  ],
+  "primary_route": "R0",
+  "secondary_kappa": 0.7696741135364367,
+  "single_diagnostic": "FORCED_OWN",
+  "shared_initialization": "native CP -> A2 80 -> CP-W0 320 -> freeR4; each branch clone same saved W0 and fresh Adam",
+  "native_A2_seed": "run_dev16.derive_seed(canonical_id,20260912), unchanged Stage17",
+  "continuation_seed": "first 8 hex digits SHA256 canonical JSON [20260912,canonical_id], unchanged Stage17",
+  "schedule": {
+    "native": 1,
+    "fit": "seeded permutation of original four wrappers, cyclic",
+    "U": "original cyclic rows",
+    "extra": "source-balanced H indices paired with G; 320 updates",
+    "HG_length_bins": [
+      4,
+      8,
+      16,
+      "greater than 16"
+    ]
+  },
+  "teacher": {
+    "all_editing": "OFF",
+    "temperature": 1,
+    "direction": "Base||student",
+    "vocabulary": "FULL",
+    "token_average": true,
+    "answer_cap": 128,
+    "no_truncation": true,
+    "cap_source": "inherited teacher_batch; long teacher response fails rather than truncates"
+  },
+  "full_cache_binding": [
+    "runtime/model/code/environment",
+    "image tensor and source identity",
+    "prompt IDs",
+    "teacher IDs including actual EOS",
+    "attention, positions, predictor mask",
+    "FP32 full-vocabulary logp, temperature, direction"
+  ],
+  "scope": "Two existing source-label supported edits only; no formal main results"
+}
