@@ -1,0 +1,98 @@
+{
+  "gpu_seconds_limit": 28800,
+  "gpu_seconds_used": 6662.967099189758,
+  "gpu_sessions": [
+    {
+      "started_epoch": 1789655909.2183995,
+      "phase": "base",
+      "code": "c3ba8f4fea5bed122020d41a5dfda058535b777c",
+      "pid": 734,
+      "ended_epoch": 1789655998.6265314,
+      "seconds": 89.408132314682,
+      "exit_code": 0
+    },
+    {
+      "started_epoch": 1789656030.850089,
+      "phase": "train",
+      "code": "c3ba8f4fea5bed122020d41a5dfda058535b777c",
+      "pid": 793,
+      "ended_epoch": 1789656324.550345,
+      "seconds": 293.7002568244934,
+      "exit_code": 1
+    },
+    {
+      "started_epoch": 1789658314.1332102,
+      "phase": "train",
+      "code": "d894afa373471e17e632c27d125da4e226f4eb46",
+      "pid": 884,
+      "ended_epoch": 1789664593.9919188,
+      "seconds": 6279.858710050583,
+      "exit_code": 0
+    }
+  ],
+  "new_judgment_limit": 500,
+  "new_judgment_items_reserved": 0,
+  "new_judgment_items_dispatched": 124,
+  "qualification_limit": 100,
+  "qualification_items_reserved": 0,
+  "qualification_items_dispatched": 75,
+  "exact_reuse_count": 175,
+  "judgment_batches": [
+    {
+      "kind": "AI_SOURCE_REFERENCE",
+      "items": 63,
+      "status": "COMPLETE",
+      "reused": 12,
+      "supported": 53,
+      "unverified": 10,
+      "unsupported": 0,
+      "usage": null,
+      "usage_availability": "Agent token/API cost not exposed"
+    },
+    {
+      "name": "qualification",
+      "items": 12,
+      "reused": 119,
+      "input_binding": "9aa57b03ee46cac4d586f5ef4d0330acf46701c4b7265c350d188bbe7cea8d69",
+      "status": "COMPLETE",
+      "usage": {
+        "input_tokens": 9492,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 581,
+        "reasoning_output_tokens": 0
+      },
+      "execution_binding": "d50f58a8e758468dcac8c000ac17a2bcef3a54df83da42810aacdd9187d845b3"
+    },
+    {
+      "name": "prefix11",
+      "items": 34,
+      "reused": 13,
+      "input_binding": "456951d30aec6e6f58ebd24b7641af84c86fc7c742a7a91fcfe6d256d020eb66",
+      "status": "COMPLETE",
+      "usage": {
+        "input_tokens": 11837,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 1775,
+        "reasoning_output_tokens": 162
+      },
+      "execution_binding": "3bf116cd26db09eab98302b4e914a8e4eed58ce6cb960b8dd0249925716c6596"
+    },
+    {
+      "name": "final32",
+      "items": 15,
+      "reused": 43,
+      "input_binding": "bfd7f2e78755d725bc470b0d3302c2989e665b557e811a0019ecc1ca46302351",
+      "status": "COMPLETE",
+      "usage": {
+        "input_tokens": 9660,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 738,
+        "reasoning_output_tokens": 26
+      },
+      "execution_binding": "be2452b2d4aa525e9e85190fea3446e40bb7993fe933d6ee1bfebb237a611062"
+    }
+  ]
+}

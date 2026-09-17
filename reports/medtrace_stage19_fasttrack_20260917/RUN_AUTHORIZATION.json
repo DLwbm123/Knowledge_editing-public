@@ -1,0 +1,29 @@
+{
+  "version": "STAGE19_FASTTRACK_V1",
+  "authorization": "User supplied FASTTRACK execution prompt and advisor plan and explicitly requested migration and execution on new server",
+  "arms": [
+    "C_FACT+HSIC_Top1",
+    "BalancEdit_original"
+  ],
+  "anchor_count": 11,
+  "tracks": [
+    "P_pure_FACT_if_at_least_50_feasible",
+    "S_11_FACT_anchors_shared_C_NO_H_R4_L21_background_otherwise"
+  ],
+  "gpu_seconds_limit": 28800,
+  "new_judgment_limit": 500,
+  "qualification_limit": 100,
+  "training_reserve_seconds": 7200,
+  "new_task_cost_origin": "First new GPU worker process start; all attempts cumulative",
+  "hardware_override": {
+    "reason": "User new-server execution request supersedes old GPU3 pointer in attachments",
+    "physical_gpu": 0,
+    "model": "NVIDIA RTX 4090 D",
+    "uuid": "GPU-ccc69848-6553-ad18-65b4-09227b59cfa0"
+  },
+  "no_downloads": true,
+  "old_results_unchanged": true,
+  "student_score_selection": false,
+  "clinical_signoff": false,
+  "patient_study": "UNKNOWN"
+}
