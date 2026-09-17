@@ -45,6 +45,20 @@ def toy():
 
 
 class Stage18Test(unittest.TestCase):
+    def test_dev_dispatch_requires_exact_reviewed_cohort(self):
+        from scripts.medtrace.stage18_smoke import validate_dispatch
+        from scripts.medtrace.stage18_cfact import BRANCHES
+        tasks=dict(scope='REVIEWED_EXISTING_DATA_DEV_V2',tasks=[dict(canonical_edit_id='fictional')])
+        tasks['freeze_id']=digest(tasks['tasks'])
+        cfg=dict(mode='EXPLORATORY_DEV_PILOT',branches=list(BRANCHES),freeze_id=tasks['freeze_id'])
+        gate=dict(training_freeze=tasks['freeze_id'],formal_eligible=False,selected=[dict(candidate_id='fictional',Base_wrong=True,native_supported=True,relations_supported=True,support_supported=True)])
+        self.assertFalse(validate_dispatch(cfg,tasks,gate))
+        for field in ('Base_wrong','native_supported','relations_supported','support_supported'):
+            bad=copy.deepcopy(gate);bad['selected'][0][field]=False
+            with self.assertRaises(ValueError):validate_dispatch(cfg,tasks,bad)
+        with self.assertRaises(ValueError):validate_dispatch(dict(cfg,mode='SOURCE_LABEL_SMOKE'),tasks,gate)
+        with self.assertRaises(ValueError):validate_dispatch(dict(cfg,freeze_id='changed'),tasks,gate)
+
     def test_actual_H_G_gradient_and_zero_weight(self):
         runtime,template,batches,teacher=toy(); states={}
         for role,index,weight in [('none',None,1),('H0',2,0),('G0',3,0),('H',2,1),('G',3,1)]:
@@ -124,6 +138,20 @@ class Stage18Test(unittest.TestCase):
         self.assertEqual(len(rows_for(packet)),1)
         packet['candidate_packages'][0]['evaluation'][0]['reference']='No'
         with self.assertRaises(ValueError):rows_for(packet)
+
+    def test_original_binary_labels_are_candidates_not_rewritten_answers(self):
+        from scripts.medtrace.stage18_support import conflict
+        a=dict(dataset='SLAKE',image_path='/imgs/xmlab9001/source.jpg',source_group='a',question='Does the picture contain heart?',reference='No')
+        b=dict(a,image_path='/imgs/xmlab9002/source.jpg',source_group='b',reference='Yes')
+        self.assertTrue(conflict(a,b))
+        self.assertFalse(conflict(a,dict(b,reference='No')))
+        self.assertFalse(conflict(a,dict(b,question='Does the picture contain liver?')))
+        self.assertFalse(conflict(a,dict(b,image_path=a['image_path'])))
+        self.assertEqual(a['reference'],'No')
+
+    def test_existing_source_identity_covers_derived_images(self):
+        from scripts.medtrace.stage18_existing import source_groups
+        self.assertEqual(source_groups(dict(dataset='SLAKE',rows=[dict(image_path='/derived/xmlab9001/source_blur.jpg'),dict(image_path='/imgs/xmlab9001/source.jpg')])),{('SLAKE','xmlab9001')})
 
     def test_qualification_keeps_review_and_base_gates(self):
         from scripts.medtrace.stage18_pilot import qualify

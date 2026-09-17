@@ -1,4 +1,4 @@
-"""Two source-label smoke edits; no formal cohort, cloud Judge, or implicit expansion."""
+"""Shared-W0 C training for frozen two-edit smoke or reviewed existing-data DEV."""
 from dataclasses import asdict, replace
 from pathlib import Path
 import argparse
@@ -18,6 +18,25 @@ from scripts.medtrace.stage17_single import setup
 from scripts.medtrace.stage18_support import validate_task
 
 
+def validate_dispatch(cfg,tasks,gate=None):
+    from scripts.medtrace.stage18_cfact import BRANCHES
+    if digest(tasks['tasks'])!=tasks['freeze_id'] or tasks['freeze_id']!=cfg['freeze_id']:
+        raise ValueError('Dispatch input changed')
+    is_smoke=cfg['mode']=='SOURCE_LABEL_SMOKE'
+    if is_smoke:
+        if tasks['scope']!='TWO_SOURCE_LABEL_SMOKES_ONLY' or [t['canonical_edit_id'] for t in tasks['tasks']]!=['core9q-1d96e59c0f64404d1cd49434','core9q-24ba2d3222c8a4ef7adedee8']:
+            raise ValueError('Only the two authorized smoke edits accepted')
+    elif cfg['mode']=='EXPLORATORY_DEV_PILOT':
+        if (tasks['scope']!='REVIEWED_EXISTING_DATA_DEV_V2' or gate['training_freeze']!=tasks['freeze_id']
+                or not 1<=len(tasks['tasks'])<=16 or gate['formal_eligible'] is not False
+                or [r['candidate_id'] for r in gate['selected']]!=[t['canonical_edit_id'] for t in tasks['tasks']]
+                or any(r[k] is not True for r in gate['selected'] for k in ('Base_wrong','native_supported','relations_supported','support_supported'))):
+            raise ValueError('DEV qualification gate failed')
+    else:raise ValueError('Unauthorized scope')
+    if cfg['branches']!=list(BRANCHES):raise ValueError('Branch scope changed')
+    return is_smoke
+
+
 def worker(cfg):
     setup(cfg)
     import torch
@@ -30,10 +49,8 @@ def worker(cfg):
     from scripts.medtrace import stage15
     from scripts.medtrace.stage18_cfact import LAYER,BRANCHES,assert_base_off,state_hash,teachers_for,train
     root=Path(cfg['run']); tasks=read(root/'private/TRAINING_TASKS.json')
-    if tasks['scope']!='TWO_SOURCE_LABEL_SMOKES_ONLY' or digest(tasks['tasks'])!=tasks['freeze_id'] or tasks['freeze_id']!=cfg['freeze_id']: raise ValueError('Dispatch input changed')
-    if [t['canonical_edit_id'] for t in tasks['tasks']]!=['core9q-1d96e59c0f64404d1cd49434','core9q-24ba2d3222c8a4ef7adedee8']:
-        raise ValueError('Only the two authorized smoke edits accepted')
-    if cfg['mode']!='SOURCE_LABEL_SMOKE' or cfg['branches']!=list(BRANCHES): raise ValueError('Unauthorized scope')
+    is_smoke=validate_dispatch(cfg,tasks,read(root/'private/DEV_QUALIFICATION.json') if cfg['mode']=='EXPLORATORY_DEV_PILOT' else None)
+    N=len(tasks['tasks'])
     if shutil.disk_usage(root).free<12*1024**3: raise OSError('Storage budget insufficient')
     old_budget=stage15.budget
     def budget(run,settings):
@@ -46,12 +63,12 @@ def worker(cfg):
         validate_task(t)
         for row in [t['native']]+t['U_fit']+t['H_fit']+t['G_fit']:
             if not Path(row['image_path']).is_file(): raise FileNotFoundError(row['image_path'])
-            if row['role']!='native':
+            if row['role']!='native' or not is_smoke:
                 raw=source_rows[str(row['source_qid'])]
                 if raw['question']!=row['question'] or raw['answer']!=row['reference'] or Path(row['image_path']).parent.name!=Path(raw['img_name']).parent.name:
                     raise ValueError('Own source image/question/answer mismatch')
     status=root/'public/PROGRESS.json'
-    write_json_atomic(status,dict(status='RUNNING',phase='LOADING_RUNTIME',N=2,completed=0))
+    write_json_atomic(status,dict(status='RUNNING',phase='LOADING_RUNTIME',N=N,completed=0))
     print('LOADING_RUNTIME',flush=True)
     runtime=load_real_runtime(argparse.Namespace(cpu_gate=Path(cfg['cpu_gate'])))
     runtime.run_root=root/'private/work'
@@ -77,7 +94,7 @@ def worker(cfg):
         record=EditorRecord(task['canonical_edit_id'],n['dataset'],n['question'],n['reference'],task['fit_questions'][0],Path(n['image_path']),n['image_path'],order,'VERIFIED_SOURCE_ANSWER','NATIVE_ONLY_CONSERVATIVE_FIT_NOT_OFFICIAL_EVALUATION_REPHRASE')
         adapted=dict(canonical_edit_id=task['canonical_edit_id'],order=order,seed=task['seed'],probes=[n],U=task['U_fit'],fit_questions=task['fit_questions'])
         try:
-            write_json_atomic(status,dict(status='RUNNING',phase='SHARED_NATIVE_A2_W0',order=order,completed=completed,N=2))
+            write_json_atomic(status,dict(status='RUNNING',phase='SHARED_NATIVE_A2_W0',order=order,completed=completed,N=N))
             print('INITIALIZE',order,flush=True)
             cp=stage15.initialize(runtime,root,cfg,adapted,record=record,seed_base=20260912)
             template=LowRankExpert(cp,task['seed'],rank=4).to(runtime.device)
@@ -135,16 +152,20 @@ def worker(cfg):
                 finally: hook.detach()
             if any(p._version!=v or p.data_ptr()!=ptr or p.requires_grad for p,v,ptr in frozen): raise ValueError('Frozen Base mutated')
             write_new(directory/'DIAGNOSTICS.json',diagnostics)
-            write_new(directory/'COMPLETE.json',dict(status='SMOKE_PASS_NOT_SCORED',branches=list(BRANCHES),W0=w0,CP_transfer=True,zero_residual=True,Base_OFF=True,
+            write_new(directory/'COMPLETE.json',dict(status='SMOKE_PASS_NOT_SCORED' if is_smoke else 'C_TRAINED_NOT_SCORED',branches=list(BRANCHES),W0=w0,CP_transfer=True,zero_residual=True,Base_OFF=True,
                 Base_route_isolation=True,save_load=True,seconds=time.time()-began,peak_allocated_bytes=torch.cuda.max_memory_allocated(),independent_H_eval=0))
             completed+=1; del template,initial,teachers,prepared,diagnostics; gc.collect(); torch.cuda.empty_cache()
-            print('EDIT_COMPLETE',completed,2,flush=True)
+            print('EDIT_COMPLETE',completed,N,flush=True)
         except Exception as error:
             write_new(directory/'FAILURE.json',dict(error=repr(error),code=cfg['code_commit'])); raise
-    write_json_atomic(status,dict(status='SMOKE_PASS_NOT_SCORED',completed=completed,N=2,formal_N=0))
-    write_new(root/'public/SMOKE_RESULT.json',dict(status='PASS',N=2,branches=list(BRANCHES),independent_H_eval=0,formal_results=False))
-    write_new(root/'public/GPU3_FOLLOWUP.json',dict(status='BLOCKED_DATA_CONTRACT',requested_gpu=3,compute_authorized=True,
-        reasons=['No independent H_eval','No source-isolated DEV16','No fresh scored Base mask; cloud Judge budget not granted'],automatic_formal_start=False))
+    write_json_atomic(status,dict(status='SMOKE_PASS_NOT_SCORED' if is_smoke else 'C_TRAINED_NOT_SCORED',completed=completed,N=N,formal_N=0))
+    if is_smoke:
+        write_new(root/'public/SMOKE_RESULT.json',dict(status='PASS',N=N,branches=list(BRANCHES),independent_H_eval=0,formal_results=False))
+        write_new(root/'public/GPU3_FOLLOWUP.json',dict(status='BLOCKED_DATA_CONTRACT',requested_gpu=3,compute_authorized=True,
+            reasons=['No independent H_eval','No source-isolated DEV16','No fresh scored Base mask; cloud Judge budget not granted'],automatic_formal_start=False))
+    else:
+        write_new(root/'public/C_TRAINING_RESULT.json',dict(status='TRAINED_NOT_SCORED',N=N,branches=list(BRANCHES),formal_results=False))
+    return runtime
 
 
 if __name__=='__main__':

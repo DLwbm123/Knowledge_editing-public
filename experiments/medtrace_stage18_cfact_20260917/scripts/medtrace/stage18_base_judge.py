@@ -14,7 +14,8 @@ from scripts.medtrace.stage17_judge import run_batch
 
 def run(cfg):
     source = read(cfg['base_outputs'])
-    if cfg['authorization'] != 'USER_AUTHORIZED_ASTRA_DEV_REVIEW' or len(source['records']) != 13:
+    count=cfg.get('N_queries',13)
+    if cfg['authorization'] != 'USER_AUTHORIZED_ASTRA_DEV_REVIEW' or len(source['records']) != count:
         raise ValueError('Unexpected review scope')
     bundle = Path(cfg['bundle'])
     bundle.mkdir()
@@ -24,10 +25,10 @@ def run(cfg):
         (operator/name).mkdir()
     rows = [dict(opaque_query_id=digest(r), question=r['source']['question'],
         gold_answer=r['source']['reference'], raw_base_answer=r['output']['raw_answer']) for r in source['records']]
-    if len({r['opaque_query_id'] for r in rows}) != 13:
+    if len({r['opaque_query_id'] for r in rows}) != count:
         raise ValueError('Duplicate Judge inputs')
     batch = dict(batch_id='b000', records=rows)
-    write_new(operator/'MANIFEST.json', dict(protocol=PROTOCOL, model='gpt-6-astra', records=13,
+    write_new(operator/'MANIFEST.json', dict(protocol=PROTOCOL, model='gpt-6-astra', records=count,
         source_binding=digest(source), authorization=cfg['authorization'], semantic_retries=0))
     write_new(operator/'BINDINGS.json', {digest(r): r for r in source['records']})
     write_new(visible/'b000.input.json', batch)

@@ -1,4 +1,4 @@
-> 最新状态：Astra 已审完 10 条关系，GPU3 已生成并判定 13 条 Base；严格合格队列为 0。见 [审阅与筛选报告](ASTRA_REVIEW_AND_BASE_ZH.md)。下文原始建设数量保留为历史快照。
+> 最新：仅用现有数据已冻结 16 条探索 DEV，并在 GPU3 启动后台 pilot；151 条 fresh Base 已判定，患者独立性未知。见 [V2 数据构建与运行](CURRENT_DATA_DEV_V2_ZH.md) 和 [计数](CURRENT_DATA_DEV_V2.json)。下文为 V1 历史交付。
 
 # Stage18 两份交付
 

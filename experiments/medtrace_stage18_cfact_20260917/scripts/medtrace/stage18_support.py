@@ -2,11 +2,19 @@
 from pathlib import Path
 from scripts.medtrace.astra_judge_bundle import read, write_new
 from scripts.medtrace.stage17_prepare import digest
-from scripts.medtrace.stage13r_sources import canonical, conflict
+from scripts.medtrace.stage13r_sources import canonical, conflict as legacy_conflict
 from scripts.medtrace.prepare_stage2_sources import normalized, reviewed_attribute
 
 ROW_FIELDS={'dataset','image_path','image_sha256','source_group','question','reference','role','source_qid'}
 TASK_FIELDS={'canonical_edit_id','order','seed','native','fit_questions','U_fit','H_fit','G_fit'}
+
+
+def conflict(a,b):
+    """Structural proposal only; original yes/no labels still require image review."""
+    if legacy_conflict(a,b):return True
+    return (canonical(a['dataset'],a['image_path'])!=canonical(b['dataset'],b['image_path'])
+        and normalized(a['question'])==normalized(b['question'])
+        and {normalized(a['reference']),normalized(b['reference'])}=={'yes','no'})
 
 
 def validate_task(t):

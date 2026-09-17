@@ -1,0 +1,96 @@
+{
+  "version": "EXISTING_DATA_DEV_V2",
+  "status": "GPU3_TRAINING_STARTED",
+  "new_external_downloads": 0,
+  "raw_author_train_rows": 9835,
+  "raw_source_groups": 586,
+  "eligible_existing_English_QA": 1154,
+  "eligible_source_groups": 113,
+  "source_candidates_before_Base": 116,
+  "fresh_Base_queries": 151,
+  "native_Base_wrong": 36,
+  "support_review_pass_among_Base_wrong": 20,
+  "selected_DEV": 16,
+  "native_images": 13,
+  "H_fit": {
+    "slots": 16,
+    "unique_QA": 6,
+    "images": 4
+  },
+  "G_fit": {
+    "slots": 16,
+    "unique_QA": 4,
+    "images": 4
+  },
+  "U_fit": {
+    "slots": 16,
+    "unique_QA": 1,
+    "images": 1
+  },
+  "H_eval": {
+    "slots": 18,
+    "unique_QA": 7,
+    "images": 4
+  },
+  "U_eval": {
+    "slots": 16,
+    "unique_QA": 1,
+    "images": 1
+  },
+  "patient_study_independence": "UNKNOWN",
+  "formal_eligible": false,
+  "training_evaluation_source_overlap": 0,
+  "shared_support": true,
+  "prior_training_exposure": "Permitted for versioned DEV; prior evaluation-only/calibration/sealed/reserved groups excluded from training",
+  "review": {
+    "model": "gpt-6-astra",
+    "type": "AI_NOT_PHYSICIAN",
+    "support_QA": {
+      "SUPPORTED": 32,
+      "UNVERIFIED": 3,
+      "UNSUPPORTED": 0
+    },
+    "native_and_relations": {
+      "SUPPORTED": 16,
+      "UNVERIFIED": 2,
+      "UNSUPPORTED": 2
+    }
+  },
+  "training_freeze": "c9fcf427ddec38a653a6cc03dc44012434cba35f5f955c8d42847dae00896a58",
+  "methods": [
+    "C_NO_H",
+    "C_EXTRA",
+    "C_FACT",
+    "BalancEdit"
+  ],
+  "modes": [
+    "single",
+    "sequential"
+  ],
+  "main_order": "canonical-ID ascending",
+  "prefixes": [
+    1,
+    10,
+    16
+  ],
+  "extra_orders": false,
+  "CPU_checks_passed": 12,
+  "Base_run_id": "job-20260917-1804",
+  "planned_student_run_id": "job-20260917-1805",
+  "generation_or_scoring_complete": false,
+  "student_run_id": "job-20260917-1805",
+  "implementation_commit": "0e9e8458ac7dab5018930837047d549aa294d20b",
+  "startup": {
+    "worker_pid": 2117565,
+    "coordinator_pid": 2117564,
+    "started_epoch": 1789634194.3115077,
+    "gpu": 3,
+    "neutral_ps_and_nvidia_smi_verified": true,
+    "phase": "SHARED_NATIVE_A2_W0",
+    "completed": 0,
+    "first_CP_W0_step_observed": 80,
+    "total_CP_W0_steps": 320,
+    "runtime_ready": true
+  },
+  "log_alias": "/tmp/job-5185/worker.log"
+}
