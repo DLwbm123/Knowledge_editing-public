@@ -13,6 +13,36 @@ from scripts.medtrace.prepare_stage2_sources import reviewed_attribute
 def group(r):return canonical(r['dataset'],r['image_path'])
 
 
+def qualify(packet, reviews, base, verdicts):
+    """Join fresh Base decisions and image review; never reinterpret an unknown as pass."""
+    from scripts.medtrace.astra_judge_bundle import validate
+    if digest({k:v for k,v in packet.items() if k!='freeze_id'})!=packet['freeze_id']:
+        raise ValueError('Source packet changed')
+    if base['packet_binding']!=digest(packet) or verdicts['source_binding']!=digest(base):
+        raise ValueError('Base/Judge lineage changed')
+    batch=dict(batch_id='qualification',records=[dict(opaque_query_id=digest(r)) for r in base['records']])
+    decisions=validate(batch,dict(batch_id='qualification',decisions=verdicts['decisions']))
+    correct={r['opaque_query_id']:r['is_correct'] for r in decisions}
+    by_query={r['query_id']:r for r in base['records']}
+    relation={r['review_id']:r for r in reviews['records']}
+    if len(relation)!=len(reviews['records']):raise ValueError('Duplicate review IDs')
+    expected=set(); results=[]
+    for p in packet['candidate_packages']:
+        t=p['training']; n=t['native']; selected={}
+        for role,rows in [('H_fit',t['H_fit']),('H_eval',[r for r in p['evaluation'] if r['role']=='H_eval'])]:
+            ids=[digest([t['canonical_edit_id'],role,r])[:20] for r in rows];expected.update(ids)
+            selected[role]=sum(relation[i]['verdict']=='SUPPORTED' for i in ids)
+        row=by_query[digest([n['image_sha256'],n['question']])]
+        if row['source']['reference']!=n['reference']:raise ValueError('Native reference changed')
+        wrong=not correct[digest(row)]
+        results.append(dict(candidate_id=p['candidate_id'],native_Base_wrong=wrong,
+            reviewed_H_fit=selected['H_fit'],reviewed_H_eval=selected['H_eval'],
+            strict_image_level_DEV_eligible=wrong and selected['H_fit']>0 and selected['H_eval']>0,
+            patient_study_independence='UNKNOWN',formal_eligible=False))
+    if expected!=set(relation):raise ValueError('Review coverage mismatch')
+    return results
+
+
 def isolation(training,evaluation):
     train_groups={group(r) for r in training};train_hashes={r['image_sha256'] for r in training}
     native={group(r) for r in training if r['role']=='native'}

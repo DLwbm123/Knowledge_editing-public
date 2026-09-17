@@ -116,6 +116,33 @@ class Stage18Test(unittest.TestCase):
         with self.assertRaises(ValueError):isolation([native,aux,row(2,'two','native')],[evaluation])
         with self.assertRaises(ValueError):isolation([native,aux],[row(9,'two','H_eval')])
 
+    def test_base_deduplicates_without_accepting_label_conflicts(self):
+        from scripts.medtrace.stage18_base import rows_for
+        row=dict(image_sha256='fictional',question='Question?',reference='Yes')
+        task=dict(native=row,H_fit=[dict(row)],G_fit=[],U_fit=[])
+        packet=dict(candidate_packages=[dict(training=task,evaluation=[dict(row)])])
+        self.assertEqual(len(rows_for(packet)),1)
+        packet['candidate_packages'][0]['evaluation'][0]['reference']='No'
+        with self.assertRaises(ValueError):rows_for(packet)
+
+    def test_qualification_keeps_review_and_base_gates(self):
+        from scripts.medtrace.stage18_pilot import qualify
+        n=dict(image_sha256='fictional-native',question='Question?',reference='A')
+        h=dict(n,image_sha256='fictional-fit',reference='B')
+        e=dict(h,image_sha256='fictional-eval',role='H_eval')
+        t=dict(canonical_edit_id='fictional-edit',native=n,H_fit=[h])
+        packet=dict(candidate_packages=[dict(candidate_id=t['canonical_edit_id'],training=t,evaluation=[e])])
+        packet['freeze_id']=digest(packet)
+        reviews=dict(records=[dict(review_id=digest([t['canonical_edit_id'],role,row])[:20],verdict='SUPPORTED')
+            for role,row in [('H_fit',h),('H_eval',e)]])
+        base=dict(packet_binding=digest(packet),records=[dict(query_id=digest([n['image_sha256'],n['question']]),source=n)])
+        verdicts=dict(source_binding=digest(base),decisions=[dict(opaque_query_id=digest(base['records'][0]),is_correct=False)])
+        self.assertTrue(qualify(packet,reviews,base,verdicts)[0]['strict_image_level_DEV_eligible'])
+        reviews['records'][0]['verdict']='UNVERIFIED'
+        self.assertFalse(qualify(packet,reviews,base,verdicts)[0]['strict_image_level_DEV_eligible'])
+        verdicts['source_binding']='wrong'
+        with self.assertRaises(ValueError):qualify(packet,reviews,base,verdicts)
+
     def test_schema_rejects_eval_missingH_and_wrong_fit(self):
         # Fictional image/qid identities; these fixtures are not source patient records.
         n=dict(dataset='SLAKE',image_path='/imgs/xmlab9001/source.jpg',image_sha256='n',source_group='SLAKE:xmlab9001',question='What is the largest organ in the picture?',reference='Lung',role='native',source_qid=None)

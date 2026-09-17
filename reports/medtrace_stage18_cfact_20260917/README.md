@@ -1,3 +1,5 @@
+> 最新状态：Astra 已审完 10 条关系，GPU3 已生成并判定 13 条 Base；严格合格队列为 0。见 [审阅与筛选报告](ASTRA_REVIEW_AND_BASE_ZH.md)。下文原始建设数量保留为历史快照。
+
 # Stage18 两份交付
 
 1. [真实H/G smoke验收结果](SMOKE_ACCEPTANCE_ZH.md)：2/2编辑、6/6分支完成，退出0；H/G各640次更新贡献非零梯度。功能验收通过，非正式效果结论。
