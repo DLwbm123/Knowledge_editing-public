@@ -1,0 +1,3 @@
+# Stage20 pure-stream extension
+
+Apply the previously published Stage15-19 source overlays, then these files. The Stage20 finite controller uses the frozen original training and isolated source-agreement Judge. Run `python -m scripts.medtrace.test_stage20` for CPU checks. Authorized private source manifests, models and images are required and are not distributed. Natural routing, full-precision experts and independent resource ledgers are retained. Final writers, router, W0 and bindings remain private on the authorized data disk; no final-bank cleanup is invoked. No patient-independence or clinical-validation claim. See reports for actual common N, coverage and unfinished items.
