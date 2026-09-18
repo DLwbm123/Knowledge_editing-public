@@ -4,10 +4,10 @@
   "main_limit": 1200,
   "ablation_limit": 200,
   "recovery_limit": 100,
-  "new_judgment_items_dispatched": 462,
+  "new_judgment_items_dispatched": 463,
   "qualification_items_dispatched": 360,
-  "exact_reuse_count": 525,
-  "gpu_seconds_used": 9274.853561639786,
+  "exact_reuse_count": 561,
+  "gpu_seconds_used": 10096.155446767807,
   "gpu_seconds_limit": 28800,
   "judgment_batches": [
     {
@@ -844,6 +844,23 @@
         "reasoning_output_tokens": 0
       },
       "execution_binding": "920090efe3f5fb53beb5e133671059d0fa7edf01b190f3099e0381893fbea4ba"
+    },
+    {
+      "name": "ablation11_000",
+      "category": "ablation",
+      "items": 1,
+      "input_binding": "8417526da9a19a884c5b88f1f1123eebef2d1120b51103704abbc12f8b636572",
+      "status": "COMPLETE",
+      "actual_cost": null,
+      "cost_status": "Provider currency billing unavailable; never treated as zero",
+      "usage": {
+        "input_tokens": 8156,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 68,
+        "reasoning_output_tokens": 0
+      },
+      "execution_binding": "b3ac9286ee30a71183a1922bf0f20c79ce2a53c14da20fc53a123278b94ad2df"
     }
   ],
   "actual_cost": null,
@@ -876,7 +893,17 @@
       "ended_epoch": 1789734970.300859,
       "seconds": 196.87126636505127,
       "exit_code": 1
+    },
+    {
+      "started_epoch": 1789738458.1137614,
+      "phase": "ablation_noh",
+      "code": "d3a377d1caf947742ec49a429797adf1e5d09df7",
+      "pid": 2294,
+      "ended_epoch": 1789739279.4156458,
+      "seconds": 821.3018851280212,
+      "exit_code": 0
     }
   ],
-  "main_items_dispatched": 98
+  "main_items_dispatched": 98,
+  "ablation_items_dispatched": 1
 }
