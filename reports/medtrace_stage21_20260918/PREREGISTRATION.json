@@ -1,0 +1,73 @@
+{
+  "stage": 21,
+  "title": "MECHANISM CLOSURE",
+  "source_public_commit": "41d5bc0ea6b7a702e28ad7acc5920c9aa35c0892",
+  "stream_binding": "12f264ea4e560347577011f2eba156f822f536e4281eecc46f96e8e3ace66272",
+  "registered_prefixes": [
+    11,
+    19,
+    32,
+    45
+  ],
+  "N": 45,
+  "priority": [
+    "NO_H_HSIC",
+    "B after layer clarification",
+    "mechanism closeout"
+  ],
+  "evaluation_banks": {
+    "11": {
+      "native": 11,
+      "old_core": 26,
+      "new_panel": 0,
+      "positive_image": 0
+    },
+    "19": {
+      "native": 19,
+      "old_core": 26,
+      "new_panel": 0,
+      "positive_image": 0
+    },
+    "32": {
+      "native": 32,
+      "old_core": 26,
+      "new_panel": 0,
+      "positive_image": 0
+    },
+    "45": {
+      "native": 45,
+      "old_core": 26,
+      "new_panel": 38,
+      "positive_image": 4
+    }
+  },
+  "missing_early_new_panel": "NA: exact Stage20 prefix banks, not zero",
+  "statistics": {
+    "Wilson": "Descriptive marginal QA-binomial intervals only; same-source dependence prevents independent-sample interpretation",
+    "source_macro": true,
+    "leave_one_source_out": true,
+    "p_values": false,
+    "old_H_sources": 2
+  },
+  "stopping": {
+    "GPU_process_seconds": 12600,
+    "new_judgments": 800,
+    "budget_includes": "loads, selection, failures, restoration, training, generation",
+    "no_score_based_stopping": true
+  },
+  "checkpoint_consumers": [
+    "all saved prefix and insertion outputs",
+    "save/load OFF parity",
+    "resource profiling",
+    "registered Stage21 comparison and bounded follow-on design"
+  ],
+  "EXTRA": "EXTRA_FULL11_UNSUPPORTED",
+  "future_authorization": {
+    "shared_across_all_later_stages": true,
+    "GPU_seconds": 28800,
+    "new_judgments": 2000,
+    "preregister_before_execution": true,
+    "no_automatic_100_146": true
+  },
+  "Stage20_immutable": true
+}

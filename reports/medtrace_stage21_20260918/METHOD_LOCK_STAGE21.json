@@ -1,0 +1,191 @@
+{
+  "stage": 21,
+  "inherited": {
+    "inherited": {
+      "arms": {
+        "A": "C_FACT+HSIC_Top1",
+        "B": "BalancEdit_original"
+      },
+      "writer": {
+        "type": "CP_to_low_rank_rank4",
+        "base_dtype": "float16",
+        "writer_dtype": "float32",
+        "native_weight": 0.5,
+        "fit_weight": 0.5,
+        "U_KL_weight": 0.01,
+        "H_weight": 1.0,
+        "continuation_steps": 320,
+        "clip_norm": 1.0,
+        "initialization": "unchanged native CP <=200 / A2 80 / CP_W0 320",
+        "optimizer": {
+          "type": "Adam",
+          "input_factor_lr": 0.0001,
+          "output_factor_lr": 0.001,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "epsilon": 1e-08,
+          "weight_decay": 0
+        }
+      },
+      "HSIC": {
+        "candidates": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30
+        ],
+        "input": "5 Base-only inputs: native plus four fixed native-fit wrappers",
+        "selection": "existing normalized CCA HSIC Top1; tie lower layer; no fallback",
+        "evaluation_labels_used": false
+      },
+      "BalancEdit": {
+        "target": "original locked final-layer up_proj",
+        "steps": 50,
+        "learning_rate": 0.01,
+        "alpha": 0.2,
+        "dtype": "float32",
+        "H_supervision": false
+      },
+      "router": {
+        "features": "frozen Base original BalancEdit target input mean; independent of selected writer layer",
+        "distance": "euclidean",
+        "alpha": 0.2,
+        "policy": "R0 one active expert; Base OFF before every key",
+        "gold_in_key": false
+      },
+      "mixed_background": {
+        "enabled": false,
+        "method": null
+      },
+      "not_included": [
+        "C_EXTRA",
+        "random/fixed-best layer controls",
+        "extra orders",
+        "full expert matrix",
+        "zero-space modules",
+        "low-curvature modules",
+        "trajectory-invariance modules"
+      ],
+      "evaluation": {
+        "core_non_native": 26,
+        "H_QA": 6,
+        "H_sources": 2,
+        "U_QA": 9,
+        "native_untrained_rephrases": 11,
+        "judging": "MEDTRACE_STAGE17_SOURCE_AGREEMENT_V1 gpt-6-astra/high, no semantic retries"
+      },
+      "checkpoints": {
+        "BE_expected_bytes_each": 234881024,
+        "minimum_free_GiB": 8,
+        "consumers": [
+          "insertion generation",
+          "paired full-bank prefix generation",
+          "save/load and ON/OFF integration"
+        ],
+        "retain_until_consumers_complete": true
+      },
+      "comparison_identity": "combined systems; unequal supervision and compute; exploratory DEV",
+      "execution_commit": "780f559bcbda12ab62dd53e0211ac5d5743dab51",
+      "experiment": "SMALL_PURE_STREAM_ALL_FACT_VS_ALL_BE",
+      "pure_only": true,
+      "FACT_coverage": "Every admitted edit; actual N after current-device Base qualification",
+      "anchor_count": 11,
+      "shared_background": false,
+      "writer_reuse": 0,
+      "predecessor_execution_commit": "d894afa373471e17e632c27d125da4e226f4eb46"
+    },
+    "stage20_changes": "Scope/panels/accounting only; no scientific method changes",
+    "main_all_FACT": true,
+    "baseline_all_original_BE": true,
+    "no_shared_writers": true,
+    "HSIC_reads_H_G_eval": false,
+    "router_feature_layer_unchanged": true,
+    "steps": 320
+  },
+  "stream_binding": "12f264ea4e560347577011f2eba156f822f536e4281eecc46f96e8e3ace66272",
+  "runtime": {
+    "canonical_lane": "current_stack_v4",
+    "environment_lock_sha256": "d1c7875f79bd04b01813f2c900bbe693dc58854225c507f21b0d51433e7f02bf",
+    "generation": {
+      "batch_size": 1,
+      "do_sample": false,
+      "max_new_tokens": 1024,
+      "num_beams": 1,
+      "temperature": 0,
+      "use_cache": true
+    },
+    "historical_stack_reconstruction_permitted": false,
+    "llava_med_code_commit": "30697ca50b5c29a8e955c99330b259776aef27b9",
+    "model_snapshot_sha": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "parity": {
+      "decoded_parity": 0.9750566893424036,
+      "normalized_parity": 0.9750566893424036,
+      "semantic_parity": 0.9931972789115646
+    },
+    "selected_runtime": "runtime_b_official_native",
+    "vision_snapshot_sha": "ce19dc912ca5cd21c8a653c79e251e808ccabcd1",
+    "actual_environment": {
+      "torch": "2.6.0",
+      "torchvision": "0.21.0",
+      "transformers": "4.51.3",
+      "tokenizers": "0.21.1",
+      "peft": "0.19.1",
+      "accelerate": "1.14.0",
+      "sentencepiece": "0.2.1",
+      "safetensors": "0.5.3",
+      "pillow": "10.4.0",
+      "numpy": "1.26.4"
+    },
+    "backbone": "float16",
+    "writer": "float32"
+  },
+  "A": {
+    "name": "NO_H_HSIC",
+    "only_change": "H slot absent, H weight 0",
+    "reuse_complete_NO_H11": true,
+    "HSIC": "Fresh native-only five observations, unchanged rule, selected layer recorded for all45"
+  },
+  "B": {
+    "status": "WAITING_LAYER_CLARIFICATION",
+    "requested_writer": "model.layers.21.mlp.down_proj",
+    "actual_frozen_BE_writer": "model.layers.31.mlp.up_proj",
+    "router_feature": "model.layers.31.mlp.up_proj input mean",
+    "issue": "L21 is not a same-layer BE control; no B GPU until resolution"
+  },
+  "initialization": "Exact Stage20 CP W0 converted on CPU to identical FP32 R4 tensor state, checked against each original continuation W0 hash; no CP retraining",
+  "judging": {
+    "protocol": "MEDTRACE_STAGE17_SOURCE_AGREEMENT_V1",
+    "model": "gpt-6-astra",
+    "reasoning": "high",
+    "semantic_retries": 0,
+    "exact_reuse": "Exact image/question/reference/output under same protocol only"
+  }
+}
