@@ -90,4 +90,32 @@ def audit(previous, source, destination):
     return summary
 
 
+def finalize(root):
+    """Freeze only the predeclared pure candidates using this run's Base mask."""
+    root=Path(root);p=root/'private';stream=read(p/'STREAM_CANDIDATES.json')
+    authorization=read(root/'public/RUN_AUTHORIZATION.json')
+    if not authorization['approved'] or digest(stream)!=authorization['candidate_stream_binding']:
+        raise ValueError('Pure stream authorization/binding changed')
+    base={r['query_id']:r for r in read(p/'FRESH_BASE_OUTPUTS.json')['records']}
+    scores=read(p/'QUALIFIED_SCORE_CACHE.json')['scores'];selected=[];flow=[]
+    for task in stream['tasks']:
+        validate_task(task,fasttrack_branch='C_FACT')
+        correct=scores.get(score_key(task['native'],base[query_id(task['native'])]['output']))
+        if type(correct) is not bool:raise ValueError('Incomplete pure qualification')
+        flow.append(dict(task=task['canonical_edit_id'],Base_correct=correct,reason='BASE_CORRECT' if correct else 'ELIGIBLE_FULL_FACT'))
+        if not correct:selected.append(task)
+    if [t['canonical_edit_id'] for t in selected[:11]]!=stream['anchors']:
+        raise ValueError('Fixed anchor eligibility changed; preserve evidence for review')
+    for i,t in enumerate(selected,1):t['order']=i
+    ids={t['canonical_edit_id'] for t in selected}
+    for r in stream['role_transitions']:r['U_scope_overlap_edits']=[e for e in r['U_scope_overlap_edits'] if e in ids]
+    stream.update(tasks=selected,status='FROZEN_PURE_FOR_TRAINING',qualification_binding=digest(base),qualification_note='Fresh Base revalidated on the currently authorized physical GPU before student training')
+    summary=dict(track='P',N=len(selected),K=len(selected),anchor_count=11,pure_FACT_qualified=len(selected),
+        native_sources=len({t['native']['source_group'] for t in selected}),background_newly_trained=0,
+        excluded_Base_correct=len(flow)-len(selected),stream_binding=digest(stream),status='FROZEN_FOR_TRAINING',clinical_signoff=False,patient_study='UNKNOWN')
+    write_new(p/'STREAM.json',stream);write_new(p/'TRAINING_ELIGIBILITY.json',dict(flow=flow,stream_binding=digest(stream),selection_before_students=True))
+    write_new(root/'public/STREAM_MANIFEST.json',summary);write_new(root/'public/TRAINING_ELIGIBILITY.json',summary)
+    return summary
+
+
 if __name__=='__main__':print(json.dumps(audit(*sys.argv[1:]),indent=2))

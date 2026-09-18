@@ -1,0 +1,62 @@
+{
+  "gpu_seconds_limit": 28800,
+  "gpu_seconds_used": 3832.3660447597504,
+  "gpu_sessions": [
+    {
+      "started_epoch": 1789697288.0964952,
+      "phase": "base",
+      "code": "780f559bcbda12ab62dd53e0211ac5d5743dab51",
+      "pid": 1171,
+      "ended_epoch": 1789697323.225279,
+      "seconds": 35.12878465652466,
+      "exit_code": 0
+    },
+    {
+      "started_epoch": 1789697335.9846656,
+      "phase": "train",
+      "code": "780f559bcbda12ab62dd53e0211ac5d5743dab51",
+      "pid": 1214,
+      "ended_epoch": 1789701133.2219243,
+      "seconds": 3797.2372601032257,
+      "exit_code": 0
+    }
+  ],
+  "new_judgment_limit": 300,
+  "new_judgment_items_reserved": 0,
+  "new_judgment_items_dispatched": 11,
+  "qualification_limit": 45,
+  "qualification_items_reserved": 0,
+  "qualification_items_dispatched": 0,
+  "exact_reuse_count": 136,
+  "judgment_batches": [
+    {
+      "name": "qualification",
+      "items": 0,
+      "reused": 45,
+      "input_binding": "0fbdc236f66b041750af9a8b1e01caafff9c4c57c95f11d1dc4f99c411ae431f",
+      "status": "COMPLETE"
+    },
+    {
+      "name": "prefix11",
+      "items": 0,
+      "reused": 47,
+      "input_binding": "e485b0b5e98ca45e44ce1b52b007fcc1649480b7b88115f845b9dc3c0819a404",
+      "status": "COMPLETE"
+    },
+    {
+      "name": "final19",
+      "items": 11,
+      "reused": 44,
+      "input_binding": "fbea76da91c875f83606217957fc68eb09355acb77c0b74fe0ab48b32141af90",
+      "status": "COMPLETE",
+      "usage": {
+        "input_tokens": 9335,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 647,
+        "reasoning_output_tokens": 104
+      },
+      "execution_binding": "9a87cf100f32f255647236c417d78ce96b3e951763f21fbcc39521eeaa1f982b"
+    }
+  ]
+}

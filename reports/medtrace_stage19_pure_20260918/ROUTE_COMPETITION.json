@@ -1,0 +1,80 @@
+{
+  "rows": [
+    {
+      "arm": "A",
+      "N": 11,
+      "queries": 37,
+      "selected": {
+        "ANCHOR": 37
+      },
+      "all_endpoint_selected_kinds": {
+        "C_FACT": 37
+      },
+      "switch_is_not_necessarily_error": true
+    },
+    {
+      "arm": "B",
+      "N": 11,
+      "queries": 37,
+      "selected": {
+        "ANCHOR": 37
+      },
+      "all_endpoint_selected_kinds": {
+        "BE": 37
+      },
+      "switch_is_not_necessarily_error": true
+    },
+    {
+      "arm": "A",
+      "N": 19,
+      "queries": 37,
+      "selected": {
+        "ANCHOR": 26,
+        "NON_ANCHOR": 11
+      },
+      "all_endpoint_selected_kinds": {
+        "C_FACT": 45
+      },
+      "switch_is_not_necessarily_error": true,
+      "expert_switches": 11,
+      "common_inputs": 37,
+      "scored_correctness_transitions": {
+        "True_to_True": 27,
+        "False_to_False": 7,
+        "False_to_True": 3
+      },
+      "switched_only_correctness_transitions": {
+        "False_to_False": 3,
+        "True_to_True": 5,
+        "False_to_True": 3
+      }
+    },
+    {
+      "arm": "B",
+      "N": 19,
+      "queries": 37,
+      "selected": {
+        "ANCHOR": 26,
+        "NON_ANCHOR": 11
+      },
+      "all_endpoint_selected_kinds": {
+        "BE": 45
+      },
+      "switch_is_not_necessarily_error": true,
+      "expert_switches": 11,
+      "common_inputs": 37,
+      "scored_correctness_transitions": {
+        "True_to_True": 22,
+        "False_to_False": 10,
+        "True_to_False": 3,
+        "False_to_True": 2
+      },
+      "switched_only_correctness_transitions": {
+        "True_to_False": 3,
+        "False_to_False": 6,
+        "False_to_True": 2
+      }
+    }
+  ],
+  "oracle_matrix_run": false
+}
