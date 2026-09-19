@@ -1,0 +1,73 @@
+{
+  "stage": "24R",
+  "historical_public_commit": "9cb722992129e87959fd9b2b862f436045bfdcae",
+  "fixed": {
+    "writer": "model.layers.30.mlp.down_proj",
+    "router": "model.layers.31.mlp.up_proj",
+    "H": 0.25,
+    "U": 0.01,
+    "support": "S0",
+    "rank": 4,
+    "steps": 320,
+    "lambda_x": 0.001,
+    "lambda_y": 0.001,
+    "sigma": 1,
+    "epsilon": 1e-05,
+    "observations": 5,
+    "pooling": "all valid expanded tokens; unchanged assistant predictor writer mask",
+    "regularizer_frequency": "every update",
+    "X": "frozen layer0 input",
+    "Z_patch": "post-hook L30 down output",
+    "Z_final": "same-forward layer31 block output"
+  },
+  "mechanical_positions": [
+    8,
+    1
+  ],
+  "updates": [
+    3,
+    20
+  ],
+  "sample_cycle": "native constant; wrappers 1+step%4; original teachers step%count",
+  "repeats": [
+    "original1",
+    "zero1",
+    "original2",
+    "zero2",
+    "on"
+  ],
+  "numeric_scales": [
+    1,
+    256,
+    4096,
+    65536
+  ],
+  "main_scale": 65536,
+  "scale_stability": {
+    "relative_difference_max": 0.01,
+    "cosine_min": 0.999
+  },
+  "cumulative_GPU_limit": 28800,
+  "cumulative_Judge_limit": 2000,
+  "prior_GPU_seconds": 14805.753370761871,
+  "prior_Judge_items": 51,
+  "phase_GPU_caps": {
+    "24R": 900
+  },
+  "phase_Judge_caps": {
+    "24R": 0
+  },
+  "new_Judge": 0,
+  "formal_training": false,
+  "auto_24C_25": false,
+  "performance_sequence": [
+    "diagnostics only at steps 1/3/20 for mechanical; formal forecast 1/80/160/320",
+    "hidden-only same expanded batch",
+    "prefix cache only if hidden forecast exceeds 4800; require exact parity"
+  ],
+  "gate": "finite stable nonzero isolated combined VJP and accumulation, exact OFF repeats, effective delta signal exceeds OFF noise, Base/router/save-load unchanged",
+  "cost_target_seconds": 4800,
+  "diagnostic_forecast_steps": 4,
+  "safety_margin": 1.2,
+  "binding": "f8cd741fb27ad2743c44140a5e1b361f62560964962901c14cb00d093e6d69ff"
+}

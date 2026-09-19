@@ -1,0 +1,109 @@
+{
+  "cases": [
+    {
+      "position": 8,
+      "strict_deterministic_diagnostic": true,
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+      "attention_implementation": "sdpa",
+      "same_graph_same_scale_repeat": [
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 0.9999999999999999
+        },
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 0.9999999999999999
+        }
+      ],
+      "plateau": {
+        "maxabs": 1.6165769523013296e-07,
+        "L2": 3.3437498056383395e-07,
+        "nonzero": 73728,
+        "relative": 0.12419738520788946,
+        "cosine": 0.9923325398800534
+      },
+      "strict_OFF_repeats": [
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 0.9999999999999981
+        },
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 0.9999999999999981
+        }
+      ],
+      "strict_loss_curves_equal": [
+        true,
+        true
+      ],
+      "Base_OFF_exact": true,
+      "base_unchanged": true
+    },
+    {
+      "position": 1,
+      "strict_deterministic_diagnostic": true,
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+      "attention_implementation": "sdpa",
+      "same_graph_same_scale_repeat": [
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 1.0
+        },
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 1.0
+        }
+      ],
+      "plateau": {
+        "maxabs": 2.138924628525274e-07,
+        "L2": 3.6981306857980794e-07,
+        "nonzero": 73724,
+        "relative": 0.09215602874987837,
+        "cosine": 0.9957893441705379
+      },
+      "strict_OFF_repeats": [
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 0.9999999999999972
+        },
+        {
+          "maxabs": 0.0,
+          "L2": 0.0,
+          "nonzero": 0,
+          "relative": 0.0,
+          "cosine": 0.9999999999999972
+        }
+      ],
+      "strict_loss_curves_equal": [
+        true,
+        true
+      ],
+      "Base_OFF_exact": true,
+      "base_unchanged": true
+    }
+  ],
+  "code": "7630794aedd38bdc655abe538ad66ad4f7831db1",
+  "frozen_main_runtime_modified": false,
+  "new_Judge": 0
+}

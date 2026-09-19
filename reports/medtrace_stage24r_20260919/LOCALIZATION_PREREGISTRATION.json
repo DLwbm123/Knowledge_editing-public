@@ -1,0 +1,24 @@
+{
+  "trigger": "Frozen runtime mechanical test failed scale plateau and OFF reproducibility; hidden ordinary cost exceeds4800 with20percent margin",
+  "preserve_first_attempt": true,
+  "phase": "24R",
+  "total_phase_cap_seconds": 900,
+  "additional_Judge": 0,
+  "positions": [
+    8,
+    1
+  ],
+  "prefix": "input of entire L30block; current-edit detached prefix only",
+  "verify": [
+    "full/hidden/cached features loss gradients",
+    "20step hidden/cached ON andOFF",
+    "BaseOFF generation unchanged",
+    "all19 actual expanded token lengths"
+  ],
+  "backend_diagnostic": "Separate process CUBLAS_WORKSPACE_CONFIG=:4096:8 and torch deterministic_algorithms(True); report only, do not replace frozen-runtime gates",
+  "same_graph_VJP_repeats": 3,
+  "strict_OFF_repeats": 3,
+  "steps": 20,
+  "no_formal_training": true,
+  "strict_effect_extension": "After strict OFF reproducibility check, repeat the identical3/20step mechanical protocol in a separate diagnostic output root with deterministic settings; never replace original frozen-runtime gate; still same900second cumulative cap"
+}

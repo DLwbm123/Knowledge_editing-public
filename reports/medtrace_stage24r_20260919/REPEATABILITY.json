@@ -1,0 +1,488 @@
+{
+  "runtime": {
+    "python": "3.12.7",
+    "torch": "2.6.0+cu124",
+    "cuda": "12.4",
+    "numpy": "1.26.4",
+    "model_class": "<class 'llava.model.language_model.llava_mistral.LlavaMistralForCausalLM'>",
+    "backbone_class": "<class 'llava.model.language_model.llava_mistral.LlavaMistralModel'>",
+    "imports": {
+      "training": {
+        "file": "/root/rivermind-data/job-524r/code/reports/medtrace_stage24r_20260919/training.py",
+        "sha256": "55799aee42781e31cedd5af2221f17682d4d606aabaaed00ca9337ea2f908f9a"
+      },
+      "regularizer": {
+        "file": "/root/rivermind-data/job-524r/code/reports/medtrace_stage24r_20260919/regularizer.py",
+        "sha256": "ae78390a6aa3360f2bf9ec424666f588c9b81d3ffb120fd53a61bab70e8c7643"
+      },
+      "scaled_regularizer": {
+        "file": "/root/rivermind-data/job-524r/code/reports/medtrace_stage24r_20260919/scaled_regularizer.py",
+        "sha256": "f1840ba5dd5ec7b6547ec2575b94b3ee87ec36f2793de456e885bbae67741759"
+      },
+      "original22": {
+        "file": "/root/rivermind-data/job-524r/code/reports/medtrace_stage22_20260919/training.py",
+        "sha256": "edd8a7dbbd5113e51a522a6ae28db9dc86823e972359fce4964ab14816b275fc"
+      }
+    },
+    "model_eval": true,
+    "training_dropout_modules": [],
+    "deterministic_algorithms": false,
+    "cudnn_deterministic": false,
+    "cudnn_benchmark": false,
+    "tf32_matmul": false,
+    "stream": 0,
+    "CUBLAS_WORKSPACE_CONFIG": null
+  },
+  "cases": [
+    {
+      "position": 8,
+      "comparisons": {
+        "3": {
+          "original1_vs_zero1": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0005128941466336949,
+                "maxabs": 0.0001387355150654912,
+                "nonzero": 72979,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 4.4300607527833954e-05,
+              "cosine": 0.999999999018746
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.08417800208795746,
+                "maxabs": 0.0018613934516906738,
+                "nonzero": 12288150,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 5.271970185259656e-05,
+              "cosine": 0.9999999986110758
+            }
+          },
+          "original2_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999999977
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999995945
+            }
+          },
+          "zero1_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0005128941466336949,
+                "maxabs": 0.0001387355150654912,
+                "nonzero": 72979,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 4.43005987738105e-05,
+              "cosine": 0.999999999018746
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.08417800208795746,
+                "maxabs": 0.0018613934516906738,
+                "nonzero": 12288150,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 5.271978378518651e-05,
+              "cosine": 0.9999999986110758
+            }
+          },
+          "original1_vs_original2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999999977
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999995945
+            }
+          }
+        },
+        "20": {
+          "original1_vs_zero1": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.002033808627808808,
+                "maxabs": 0.0001825280487537384,
+                "nonzero": 73714,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.00017501463302810444,
+              "cosine": 0.99999998468955
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 1.5636692119885398,
+                "maxabs": 0.005723297595977783,
+                "nonzero": 12300059,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.001098413027249451,
+              "cosine": 0.999999694145869
+            }
+          },
+          "original2_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999999983
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999996212
+            }
+          },
+          "zero1_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0025085093420448776,
+                "maxabs": 0.00019019469618797302,
+                "nonzero": 73725,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.00021586333744874443,
+              "cosine": 0.999999976704725
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 2.49883778041178,
+                "maxabs": 0.009381294250488281,
+                "nonzero": 12300190,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0017528624365632456,
+              "cosine": 0.9999994512901057
+            }
+          },
+          "original1_vs_original2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0013142752692787943,
+                "maxabs": 0.00010585412383079529,
+                "nonzero": 73718,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.00011309658736275592,
+              "cosine": 0.999999993604689
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 1.0532720348645108,
+                "maxabs": 0.004012972116470337,
+                "nonzero": 12300022,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0007388398718272519,
+              "cosine": 0.999999929316674
+            }
+          }
+        }
+      },
+      "initial_RNG": {
+        "original1": "5bdc4521f0f52ff85d006dbfd13440c97c33e95d75be455895ef228210b9a9e6",
+        "zero1": "5bdc4521f0f52ff85d006dbfd13440c97c33e95d75be455895ef228210b9a9e6",
+        "original2": "5bdc4521f0f52ff85d006dbfd13440c97c33e95d75be455895ef228210b9a9e6",
+        "zero2": "5bdc4521f0f52ff85d006dbfd13440c97c33e95d75be455895ef228210b9a9e6",
+        "on": "5bdc4521f0f52ff85d006dbfd13440c97c33e95d75be455895ef228210b9a9e6"
+      },
+      "historical_transient_OFF_failure": "Preserved; old run did not persist maxdiff; current repeats do not erase it"
+    },
+    {
+      "position": 1,
+      "comparisons": {
+        "3": {
+          "original1_vs_zero1": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 6.035101068117222e-05,
+                "maxabs": 1.740269362926483e-05,
+                "nonzero": 52491,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 4.099813755082705e-06,
+              "cosine": 0.9999999999915918
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.036542395564096025,
+                "maxabs": 0.0003674030303955078,
+                "nonzero": 12234508,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 2.7591845084098004e-05,
+              "cosine": 0.999999999651179
+            }
+          },
+          "original2_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 6.035101068117222e-05,
+                "maxabs": 1.740269362926483e-05,
+                "nonzero": 52491,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 4.099813755082705e-06,
+              "cosine": 0.9999999999915918
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.036542395564096025,
+                "maxabs": 0.0003674030303955078,
+                "nonzero": 12234508,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 2.7591845084098004e-05,
+              "cosine": 0.999999999651179
+            }
+          },
+          "zero1_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999999963
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999996181
+            }
+          },
+          "original1_vs_original2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.999999999999995
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999995776
+            }
+          }
+        },
+        "20": {
+          "original1_vs_zero1": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0013948392996985712,
+                "maxabs": 0.00014426419511437416,
+                "nonzero": 73706,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 9.458759095819821e-05,
+              "cosine": 0.9999999955273758
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.9465578382443338,
+                "maxabs": 0.004743099212646484,
+                "nonzero": 12299979,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0008452932525740875,
+              "cosine": 0.9999997922662809
+            }
+          },
+          "original2_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0011392084664205962,
+                "maxabs": 0.00012406893074512482,
+                "nonzero": 73612,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 7.725261573945744e-05,
+              "cosine": 0.9999999970160379
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.26392652992846627,
+                "maxabs": 0.002414226531982422,
+                "nonzero": 12298960,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.00023569116002210757,
+              "cosine": 0.9999999722247421
+            }
+          },
+          "zero1_vs_zero2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999999983
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.0,
+                "maxabs": 0.0,
+                "nonzero": 0,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0,
+              "cosine": 0.9999999999995995
+            }
+          },
+          "original1_vs_original2": {
+            "parameters": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.001036579133729777,
+                "maxabs": 8.488562889397144e-05,
+                "nonzero": 73701,
+                "elements": 73728,
+                "finite": true
+              },
+              "relative_difference": 7.029307569067657e-05,
+              "cosine": 0.9999999975299757
+            },
+            "delta": {
+              "difference": {
+                "dtype": "torch.float64",
+                "L2": 0.8487654219439413,
+                "maxabs": 0.0036530494689941406,
+                "nonzero": 12299933,
+                "elements": 12300288,
+                "finite": true
+              },
+              "relative_difference": 0.0007579622642575913,
+              "cosine": 0.9999998618071179
+            }
+          }
+        }
+      },
+      "initial_RNG": {
+        "original1": "b4c2ef10afa69b159a5e7549cacb98c04455b633b7a6f58c551e6ebea26ee062",
+        "zero1": "b4c2ef10afa69b159a5e7549cacb98c04455b633b7a6f58c551e6ebea26ee062",
+        "original2": "b4c2ef10afa69b159a5e7549cacb98c04455b633b7a6f58c551e6ebea26ee062",
+        "zero2": "b4c2ef10afa69b159a5e7549cacb98c04455b633b7a6f58c551e6ebea26ee062",
+        "on": "b4c2ef10afa69b159a5e7549cacb98c04455b633b7a6f58c551e6ebea26ee062"
+      },
+      "historical_transient_OFF_failure": "Preserved; old run did not persist maxdiff; current repeats do not erase it"
+    }
+  ]
+}

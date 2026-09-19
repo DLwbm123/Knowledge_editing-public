@@ -1,0 +1,17 @@
+{
+  "source_commit": "9cb722992129e87959fd9b2b862f436045bfdcae",
+  "source_git_blob": "d78cd122b4f85ba9f296929b9b8bed9e28e3484a",
+  "training_sha256": "ca8232416cbbb92334ec3921903deb60fc1ba66851bae11b5475f63c285c78e6",
+  "numeric_scale": 65536,
+  "changes": "isolated scaled VJP plus unscale before FP32 CE/H/U accumulation",
+  "stage24_history_modified": false,
+  "real_GPU_acceptance": "EXECUTED_NOT_PASS_SEE_MECHANICAL_GATE_STAGE24R",
+  "package_members_SHA256_verified_before_execution": 7,
+  "training_sha256_after_instrumentation": "55799aee42781e31cedd5af2221f17682d4d606aabaaed00ca9337ea2f908f9a",
+  "supplementary_changes": [
+    "diagnostic-only masks/norms and FP64 gradient diagnostics",
+    "pre/post clip/Adam/normalization observer",
+    "hidden-only capture and independently tested current-edit prefix cache",
+    "separate deterministic-backend diagnostics"
+  ]
+}
