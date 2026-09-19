@@ -1,0 +1,54 @@
+{
+  "stage": "24",
+  "parent": "c85df124e99ba60bab1924f8a5ea9891b229134b",
+  "fixed": {
+    "writer": "model.layers.30.mlp.down_proj",
+    "router": "model.layers.31.mlp.up_proj",
+    "H": 0.25,
+    "U": 0.01,
+    "support": "S0",
+    "rank": 4,
+    "steps": 320,
+    "lambda_x": 0.001,
+    "lambda_y": 0.001,
+    "sigma": 1,
+    "epsilon": 1e-05,
+    "observations": 5,
+    "pooling": "all valid expanded tokens; unchanged assistant predictor writer mask",
+    "regularizer_frequency": "every update",
+    "X": "frozen layer0 input",
+    "Z_patch": "post-hook L30 down output",
+    "Z_final": "same-forward layer31 block output"
+  },
+  "mechanical_positions": [
+    8,
+    1
+  ],
+  "mechanical_rule": "first two canonical IDs within original19, before new semantic scores",
+  "mechanical_updates_per_case": 3,
+  "CPU_only_counterfactual_selected": false,
+  "cumulative_GPU_limit": 28800,
+  "cumulative_Judge_limit": 2000,
+  "prior_GPU_seconds": 14729.182081222534,
+  "prior_Judge_items": 51,
+  "phase_GPU_caps": {
+    "24A": 600,
+    "24B": 1200,
+    "24C": 4800,
+    "25": 5700,
+    "recovery24": 1770.8179187774658
+  },
+  "phase_Judge_caps": {
+    "24A": 300,
+    "24B": 0,
+    "24C": 200,
+    "25": 1200,
+    "recovery24": 249
+  },
+  "stage25_requires": "DEV promotion plus qualified new panel plus conservative resource reserve",
+  "no_semantic_retry": true,
+  "old_CONFIRM": "Viewed regression only for new methods",
+  "optional_counterfactual": "Not scheduled; avoid optional GPU cost",
+  "new_confirm_status": "INSUFFICIENT_NEW_CONFIRM_SUPPORT",
+  "binding": "edc2453f4780cbf6326614b031cea095cd3b9a9ec58228ebcf61516f5adf374a"
+}

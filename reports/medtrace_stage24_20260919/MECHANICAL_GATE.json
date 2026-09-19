@@ -1,0 +1,159 @@
+{
+  "status": "FAIL_MECHANICAL_GATES",
+  "cases": [
+    {
+      "position": 8,
+      "lambda0_exact": true,
+      "lambda0_max_difference": 0.0,
+      "Base_OFF_exact": true,
+      "router_key_exact": true,
+      "base_unchanged": true,
+      "save_load_exact": true,
+      "parameter_elements_changed": 0,
+      "effective_delta_difference_norm": 0.0,
+      "effective_change_pass": false,
+      "on_step_seconds": [
+        0.846609422005713,
+        0.7252237260108814,
+        0.7165313980076462
+      ],
+      "off_step_seconds": [
+        0.31405199199798517,
+        0.31532907800283283,
+        0.313815888017416
+      ],
+      "peak_allocated_bytes": 16027257856,
+      "teacher_rows": 1
+    },
+    {
+      "position": 1,
+      "lambda0_exact": true,
+      "lambda0_max_difference": 0.0,
+      "Base_OFF_exact": true,
+      "router_key_exact": true,
+      "base_unchanged": true,
+      "save_load_exact": true,
+      "parameter_elements_changed": 0,
+      "effective_delta_difference_norm": 0.0,
+      "effective_change_pass": false,
+      "on_step_seconds": [
+        0.7848167060001288,
+        0.7261781529814471,
+        0.7180861679953523
+      ],
+      "off_step_seconds": [
+        0.3211595920147374,
+        0.31717460698564537,
+        0.3149918580020312
+      ],
+      "peak_allocated_bytes": 16027675648,
+      "teacher_rows": 1
+    }
+  ],
+  "regularizer_components": [
+    {
+      "position": 8,
+      "D_x": 0.002334445818822113,
+      "D_y": 0.0044087877447263335,
+      "loss": -2.0743419259042205e-06,
+      "x_gradient_norm": 3.130309323751135e-06,
+      "y_gradient_norm": 3.1166625831247075e-06,
+      "combined_gradient_norm": 0.0,
+      "cosines": {
+        "native": null,
+        "fit": null,
+        "U": null,
+        "extra": null
+      },
+      "kernels": {
+        "input": {
+          "observations": 5,
+          "width": 4096,
+          "offdiag_min": 0.9999930361757643,
+          "offdiag_max": 0.9999999999710305,
+          "offdiag_mean": 0.9999972172914342,
+          "condition": 1.2685627692987478,
+          "ridge": 5e-05,
+          "centered_norm": 1.1963277117178084e-05
+        },
+        "patch": {
+          "observations": 5,
+          "width": 4096,
+          "offdiag_min": 0.9999995536274211,
+          "offdiag_max": 0.9999998791739085,
+          "offdiag_mean": 0.9999997324453042,
+          "condition": 1.0137458277396976,
+          "ridge": 5e-05,
+          "centered_norm": 7.161550600359382e-07
+        },
+        "final": {
+          "observations": 5,
+          "width": 4096,
+          "offdiag_min": 0.9999859027360443,
+          "offdiag_max": 0.9999975633925648,
+          "offdiag_mean": 0.9999922663278316,
+          "condition": 1.4597236735480312,
+          "ridge": 5e-05,
+          "centered_norm": 2.2563032858905495e-05
+        }
+      },
+      "accumulated_gradient_increment_norm": 0.0,
+      "accumulated_gradient_changed_elements": 0
+    },
+    {
+      "position": 1,
+      "D_x": 0.003370816392792397,
+      "D_y": 0.005257468176674437,
+      "loss": -1.8866517838820397e-06,
+      "x_gradient_norm": 3.792909637923003e-06,
+      "y_gradient_norm": 3.157543460474699e-06,
+      "combined_gradient_norm": 0.0,
+      "cosines": {
+        "native": null,
+        "fit": null,
+        "U": null,
+        "extra": null
+      },
+      "kernels": {
+        "input": {
+          "observations": 5,
+          "width": 4096,
+          "offdiag_min": 0.9999895688842383,
+          "offdiag_max": 0.9999999999710306,
+          "offdiag_mean": 0.999995831739496,
+          "condition": 1.4086406269306264,
+          "ridge": 5e-05,
+          "centered_norm": 1.7920023089151645e-05
+        },
+        "patch": {
+          "observations": 5,
+          "width": 4096,
+          "offdiag_min": 0.9999995287166948,
+          "offdiag_max": 0.999999878438382,
+          "offdiag_mean": 0.9999997195422186,
+          "condition": 1.0145678787072963,
+          "ridge": 5e-05,
+          "centered_norm": 7.561971667183955e-07
+        },
+        "final": {
+          "observations": 5,
+          "width": 4096,
+          "offdiag_min": 0.9999829701097682,
+          "offdiag_max": 0.9999975279261706,
+          "offdiag_mean": 0.9999910536224779,
+          "condition": 1.5782331768110098,
+          "ridge": 5e-05,
+          "centered_norm": 2.7488579523657122e-05
+        }
+      },
+      "accumulated_gradient_increment_norm": 0.0,
+      "accumulated_gradient_changed_elements": 0
+    }
+  ],
+  "conservative_writer_seconds": 325.0980180501938,
+  "DEV19_training_seconds": 6176.862342953682,
+  "full45_training_seconds": 14629.41081225872,
+  "regularizer_every_update": true,
+  "precision": "backbone float16/writer float32; kernel float64",
+  "no_new_semantic_judgments": true
+}

@@ -1,0 +1,27 @@
+{
+  "historical_stage23_HSIC_training_regularizer": false,
+  "evidence": [
+    "Stage22 training.update accumulates native .5, fit .5, U KL, H CE then clips/steps; no HSIC objective",
+    "Stage23 final_runtime imports that same Stage22 train; frozen E2 weights .25/.01 and original S0",
+    "Historical methods/medtrace/hsic.py detaches and returns Python float; selection only, never reused as training loss"
+  ],
+  "new_implementation": {
+    "kernel": "Gaussian exp(-abs(pairwise squared distance)/(2*sigma^2*feature_width))",
+    "centering": "K @ (I - 11T/n), author right-centering, not H K H",
+    "ridge": "n * 1e-5 * I",
+    "dependence": "trace(Rx Ry), R=Kc @ inverse(Kc+ridge), evaluated by differentiable right solve",
+    "normalization": "No (n-1)^2 factor; normalized-CCA route not ordinary HSIC appendix formula",
+    "kernel_dtype": "float64 with differentiable conversion, frozen FP16 backbone and FP32 master writer unchanged",
+    "loss_sign": "+.001 D(X,Z_patch) - .001 D(Z_patch,Z_final)",
+    "observations": "five correlated native/wrapper teacher-forced observations; hidden width is not sample count",
+    "X": "layer0 input, detached",
+    "Z_patch": "L30 down output captured after MedTraceLayerHook",
+    "Z_final": "same forward layer31 block output, retains autograd",
+    "mask": "all valid expanded tokens, exclude padding; original assistant-predictor writer mask unchanged",
+    "cross_observation_graph": "all five graphs retained until single combined regularizer backward"
+  },
+  "author_reference": "https://github.com/neu-spiral/LOKI/blob/bbb5819/easyeditor/models/loki/hsic.py",
+  "paper": "https://arxiv.org/html/2606.19679v1",
+  "precision_note": "float64 small-kernel solve is documented numerical adaptation; no backbone or expert precision change",
+  "claim": "No Stage23 gain attributed to this newly implemented regularizer; no null-space projection or dynamic layer selection added"
+}
