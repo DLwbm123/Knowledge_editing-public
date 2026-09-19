@@ -1,0 +1,82 @@
+{
+  "arms": [
+    {
+      "arm": "S1",
+      "trained_edits": 19,
+      "updates": 6080,
+      "training_seconds": 1988.2780475616455,
+      "tokens": {
+        "U": 128640,
+        "extra": 19840,
+        "fit": 19840,
+        "native": 19840
+      },
+      "nonzero_H_gradient_steps": 6080,
+      "cosines": {
+        "H_U": {
+          "N": 76,
+          "mean": -0.029408987047836968,
+          "negative": 33
+        },
+        "H_edit": {
+          "N": 76,
+          "mean": -0.3300967863025634,
+          "negative": 54
+        }
+      }
+    },
+    {
+      "arm": "S2",
+      "trained_edits": 19,
+      "updates": 6080,
+      "training_seconds": 1985.0055272579193,
+      "tokens": {
+        "U": 128640,
+        "extra": 19040,
+        "fit": 19840,
+        "native": 19840
+      },
+      "nonzero_H_gradient_steps": 6080,
+      "cosines": {
+        "H_U": {
+          "N": 76,
+          "mean": 0.0926862648798545,
+          "negative": 25
+        },
+        "H_edit": {
+          "N": 76,
+          "mean": -0.48972151739718883,
+          "negative": 58
+        }
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "arm": "S1",
+      "selected_support_slots": 76,
+      "within_own_radius": 56,
+      "naturally_selects_own_expert_at19": 3
+    },
+    {
+      "arm": "S2",
+      "selected_support_slots": 76,
+      "within_own_radius": 75,
+      "naturally_selects_own_expert_at19": 7
+    }
+  ],
+  "GPU_sessions": [
+    {
+      "started_epoch": 1789812941.0436757,
+      "phase": "22C",
+      "code": "72a61ea709d2bc6242a0df75463ed85e0fa75e4b",
+      "pid": 2266,
+      "ended_epoch": 1789816995.0092843,
+      "seconds": 4053.965609550476,
+      "exit_code": 0
+    }
+  ],
+  "peak_gpu_memory_bytes": 15575064576,
+  "S0": "Exact E2 writer and DEV output reuse; no S0 retraining",
+  "compute_matching": "Same320 updates and one H slot per step; actual tokens differ and are disclosed"
+}
