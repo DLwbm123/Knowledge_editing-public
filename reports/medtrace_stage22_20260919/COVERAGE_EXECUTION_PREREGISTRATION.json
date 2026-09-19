@@ -1,0 +1,33 @@
+{
+  "stage": "22C",
+  "status": "REGISTERED_BEFORE_WEIGHT_SELECTION_AND_NEW_STUDENTS",
+  "hypothesis": "Expanded train-only H support may improve protection; S2-S1 isolates selection within the same pool and S1-S0 includes extra support content.",
+  "weight_gate": "All six Stage22B arms generated and scored; preregistered feasible candidate or H1/U0.01 fallback, never an unsupported winner",
+  "pool_binding": "02bb4f4c15b849238bce2b91e87662fb6cfe1918fa9070ceaede04d3b850923e",
+  "native_N": 19,
+  "new_arm_order": ["S1", "S2"],
+  "S0": "Exact compatible Stage22B bank and same frozen DEV outputs",
+  "S1": "Seed22002 source-deduplicated random support matched to S2 coarse answer-token-length quota",
+  "S2": "Frozen Base L31up mean key, own radius first then nearest distance; one support per source",
+  "matching": "k=min(4,qualified sources); same source count and coarse token-length bins; disclose actual tokens and compute",
+  "training": "Original edit-specific L30 CP-W0; unchanged rank4, optimizer, seed, native/fit/U, 320 updates and one H slot per update",
+  "routing": "Unchanged natural R0; frozen original keys and radii; no forced-expert replacement",
+  "unsupported": "If all first19 selections coincide, no S1/S2 training; retain S0 and report UNSUPPORTED",
+  "evaluation": "Complete DEV66 per new arm; fixed isolated source-agreement protocol; all valid arms and negative results retained",
+  "judgment_reservation": {"22A_reference_relation":7,"22C_student":132,"23_reserved":1200},
+  "gpu_phase_cap_seconds":5400,
+  "all_follow_on_gpu_cap_seconds":28800,
+  "all_follow_on_judgment_cap":2000,
+  "budget": "Use existing job522 GPU and local Judge components; no initialization or reset",
+  "CONFIRM": "Reference/member qualification before final candidate lock, no Base/student probe outputs until Stage23 full45 regression",
+  "stop": "Hard phase/cumulative resource limit; unexpected UUID, insufficient free VRAM/storage, incompatible binding, nonfinite state or failed exit requires bounded engineering audit",
+  "checkpoint_consumers": {
+    "old_W0_and_routes":"Read-only inputs for coverage and final45 extension",
+    "six_weight_banks":"S0 reuse, matching controls and Stage23 prefix extension; retain",
+    "S1_S2_final_writers":"Stage23 candidate prefix reuse, recovery and reproducibility; retain",
+    "coverage_features_selection":"Stage23 support reconstruction and route-coverage audit; retain",
+    "optimizer_resume":"Retain until successful stage exit and registered recovery needs are resolved"
+  },
+  "clinical_signoff":false,
+  "patient_study":"UNKNOWN"
+}

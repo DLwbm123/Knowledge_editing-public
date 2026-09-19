@@ -1,0 +1,55 @@
+{
+  "phase_order": [
+    "22A",
+    "22B"
+  ],
+  "arm_order": [
+    "E0",
+    "E1",
+    "E3",
+    "E2",
+    "E4",
+    "E5"
+  ],
+  "N": 19,
+  "DEV_binding": "cdda52a36cb0c8ad568664fe2dae9af96255b5e5854da75636330a594ab3d0e7",
+  "student_outputs": 396,
+  "Base_outputs": 66,
+  "Base_generation": "All66 DEV sources in current GPU lane; require historical raw-token parity before comparisons",
+  "reuse": {
+    "E0": "Stage21A NO_H L30 full compatibility audit",
+    "E1": "Stage20 FACT_H L30 full compatibility audit"
+  },
+  "new_training": [
+    "E3",
+    "E2",
+    "E4",
+    "E5"
+  ],
+  "initialization": "Same original per-edit L30 W0_R4, not trained FACT checkpoint",
+  "GPU_limits": {
+    "22A": 1800,
+    "22B": 8400,
+    "22C": 5400,
+    "23": 9600,
+    "recovery": 3600
+  },
+  "judgment_limits": {
+    "22A": 100,
+    "22B": 420,
+    "22C": 180,
+    "23": 1200,
+    "recovery": 100
+  },
+  "diagnostic_steps": [
+    1,
+    80,
+    160,
+    320
+  ],
+  "diagnostics": "Only incremental gradient vectors from existing backward passes; no extra model forwards or update changes",
+  "tests": "CPU exact original H1/NOH update parity, all six weights, diagnostic invariance, matching-U gates/tie-break/no-winner",
+  "GPU_start_gate": "Stage21B exit and public delivery verified; physical GPU0 UUID and memory; no surviving prior worker",
+  "reference_and_confirmation": "Frozen five structural source candidates still await source/relation review; no confirmation model outputs until final configuration lock",
+  "stop": "Cumulative/stage hard limits; preserve partial valid arms and all failures, never omit valid arms based on score"
+}

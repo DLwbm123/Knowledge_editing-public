@@ -1,0 +1,30 @@
+{
+  "time": "2026-09-19T07:21:26.602605+00:00",
+  "status": "BEFORE_ALL_FOLLOW_ON_GPU_AND_JUDGMENT_DISPATCH",
+  "total_GPU_seconds_unchanged": 28800,
+  "total_judgments_unchanged": 2000,
+  "original_suggested_GPU": {
+    "22A": 1800,
+    "22B": 7200,
+    "22C": 5400,
+    "23": 10800,
+    "recovery": 3600
+  },
+  "new_GPU": {
+    "22A": 1800,
+    "22B": 8400,
+    "22C": 5400,
+    "23": 9600,
+    "recovery": 3600
+  },
+  "judgments": {
+    "22A": 100,
+    "22B": 420,
+    "22C": 180,
+    "23": 1200,
+    "recovery": 100
+  },
+  "reason": "Observed ~101-second full H continuation and ~180-second fresh-initialized B edit; allow load/generation/diagnostics for four new DEV arms inside existing total; 1200 seconds redistributed from Stage23 allocation before any follow-on outcomes",
+  "score_based": false,
+  "new_resources_requested": false
+}

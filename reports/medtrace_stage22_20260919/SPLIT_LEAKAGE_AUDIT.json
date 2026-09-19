@@ -1,0 +1,89 @@
+{
+  "status": "EXISTING_ROLE_BOUNDARIES_AUDITED__NEW_DEV_CONFIRM_PENDING",
+  "training": {
+    "native": {
+      "rows": 45,
+      "unique_QA": 45,
+      "sources": 30,
+      "images": 30
+    },
+    "H_fit": {
+      "rows": 45,
+      "unique_QA": 23,
+      "sources": 13,
+      "images": 13
+    },
+    "U_fit": {
+      "rows": 45,
+      "unique_QA": 36,
+      "sources": 25,
+      "images": 25
+    }
+  },
+  "existing_panels": [
+    {
+      "panel": "core_rows",
+      "role": "H_eval",
+      "QA": 6,
+      "sources": 2,
+      "train_source_overlap": 0,
+      "train_image_overlap": 0,
+      "exposure": "VIEWED_DEV_REGRESSION; NOT CONFIRM",
+      "same_native_image_intentional": false
+    },
+    {
+      "panel": "core_rows",
+      "role": "U_eval",
+      "QA": 9,
+      "sources": 4,
+      "train_source_overlap": 0,
+      "train_image_overlap": 0,
+      "exposure": "VIEWED_DEV_REGRESSION; NOT CONFIRM",
+      "same_native_image_intentional": false
+    },
+    {
+      "panel": "core_rows",
+      "role": "native_text_extension",
+      "QA": 11,
+      "sources": 11,
+      "train_source_overlap": 11,
+      "train_image_overlap": 11,
+      "exposure": "VIEWED_DEV_REGRESSION; NOT CONFIRM",
+      "same_native_image_intentional": true
+    },
+    {
+      "panel": "new_rows",
+      "role": "H_eval",
+      "QA": 24,
+      "sources": 8,
+      "train_source_overlap": 0,
+      "train_image_overlap": 0,
+      "exposure": "VIEWED_DEV_REGRESSION; NOT CONFIRM",
+      "same_native_image_intentional": false
+    },
+    {
+      "panel": "new_rows",
+      "role": "U_eval",
+      "QA": 14,
+      "sources": 8,
+      "train_source_overlap": 0,
+      "train_image_overlap": 0,
+      "exposure": "VIEWED_DEV_REGRESSION; NOT CONFIRM",
+      "same_native_image_intentional": false
+    },
+    {
+      "panel": "positive_rows",
+      "role": "positive_image",
+      "QA": 4,
+      "sources": 2,
+      "train_source_overlap": 0,
+      "train_image_overlap": 0,
+      "exposure": "VIEWED_DEV_REGRESSION; NOT CONFIRM",
+      "same_native_image_intentional": false
+    }
+  ],
+  "CONFIRM": "NOT_BUILT; never relabel old/new panel as unseen",
+  "patient_study_identity": "UNKNOWN",
+  "new_GPU_seconds": 0,
+  "new_judgments": 0
+}
