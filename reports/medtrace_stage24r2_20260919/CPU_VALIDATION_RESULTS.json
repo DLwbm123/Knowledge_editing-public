@@ -1,0 +1,107 @@
+{
+  "scope": "CPU_SYNTHETIC_ONLY_NOT_PRIVATE_GPU_VALIDATION",
+  "torch_version": "2.6.0",
+  "cuda_available": false,
+  "scalar": {
+    "x_norm": 4.76837158203125e-07,
+    "y_norm": 4.76837158203125e-07,
+    "combined_unscaled_norm": 0.0,
+    "recovered_norm": 1.25030055642128e-07,
+    "analytic_norm": 1.2500000000000002e-07,
+    "relative_error": 0.000240445137023971
+  },
+  "hsic": [
+    {
+      "seed": 1,
+      "observations": 5,
+      "valid_tokens": 600,
+      "active_tokens": 3,
+      "feature_width": 128,
+      "rank": 4,
+      "D_x": 0.001580074326023221,
+      "D_y": 0.0015306225160789026,
+      "x_norm": 1.0451026217761672e-06,
+      "y_norm": 9.327955975596592e-07,
+      "combined_unscaled_norm": 0.0,
+      "recovered_norms": {
+        "256": 3.2176668236322444e-07,
+        "4096": 3.217487807994408e-07,
+        "65536": 3.2172535327151513e-07
+      },
+      "analytic_local_vjp_norm": 3.2173662386694516e-07,
+      "relative_error": 0.0002704617752678387,
+      "scale_plateau_relative_error": 0.0009997850654120566,
+      "accumulation": {
+        "regularizer_grad_scale": 65536.0,
+        "applied_regularizer_gradient_norm": 3.2172535327151523e-07,
+        "applied_regularizer_nonzero_elements": 1024,
+        "accumulated_gradient_increment_norm": 3.217251059088168e-07,
+        "accumulated_gradient_changed_elements": 1022
+      }
+    },
+    {
+      "seed": 2,
+      "observations": 5,
+      "valid_tokens": 600,
+      "active_tokens": 3,
+      "feature_width": 128,
+      "rank": 4,
+      "D_x": 0.00155460921830636,
+      "D_y": 0.0014778343696041116,
+      "x_norm": 9.411854724462817e-07,
+      "y_norm": 7.710195404412157e-07,
+      "combined_unscaled_norm": 0.0,
+      "recovered_norms": {
+        "256": 3.327200155196136e-07,
+        "4096": 3.329259721998192e-07,
+        "65536": 3.3291835134520187e-07
+      },
+      "analytic_local_vjp_norm": 3.329131492677664e-07,
+      "relative_error": 0.00029012991275012486,
+      "scale_plateau_relative_error": 0.00095213433214784,
+      "accumulation": {
+        "regularizer_grad_scale": 65536.0,
+        "applied_regularizer_gradient_norm": 3.3291835134520197e-07,
+        "applied_regularizer_nonzero_elements": 1024,
+        "accumulated_gradient_increment_norm": 3.3291320750289036e-07,
+        "accumulated_gradient_changed_elements": 1024
+      }
+    },
+    {
+      "seed": 3,
+      "observations": 5,
+      "valid_tokens": 600,
+      "active_tokens": 3,
+      "feature_width": 128,
+      "rank": 4,
+      "D_x": 0.001559857954412635,
+      "D_y": 0.001439661128162817,
+      "x_norm": 9.071069319571131e-07,
+      "y_norm": 7.777890182872485e-07,
+      "combined_unscaled_norm": 0.0,
+      "recovered_norms": {
+        "256": 2.4171930313532107e-07,
+        "4096": 2.419598899706725e-07,
+        "65536": 2.420023168396589e-07
+      },
+      "analytic_local_vjp_norm": 2.419962271708144e-07,
+      "relative_error": 0.000309908301306277,
+      "scale_plateau_relative_error": 0.001255919978222056,
+      "accumulation": {
+        "regularizer_grad_scale": 65536.0,
+        "applied_regularizer_gradient_norm": 2.42002316839659e-07,
+        "applied_regularizer_nonzero_elements": 1024,
+        "accumulated_gradient_increment_norm": 2.419986618711607e-07,
+        "accumulated_gradient_changed_elements": 1023
+      }
+    }
+  ],
+  "checks": {
+    "float64_equivalence": true,
+    "zero_lambda_no_effect": true,
+    "nonfinite_atomic_failure": true,
+    "disconnected_rejected": true,
+    "half_loss_rejected": true
+  },
+  "status": "PASS"
+}

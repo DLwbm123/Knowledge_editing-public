@@ -1,0 +1,90 @@
+{
+  "stage": "24C",
+  "authorization": "Latest user asks autonomous repair then launch within existing limits",
+  "resource_choice": "DEV_ONLY_NO_R0_NO_STAGE25",
+  "N": 19,
+  "arms": [
+    "E0",
+    "E2",
+    "R_H"
+  ],
+  "new_training": "R_H19 from original per-edit CP-W0",
+  "controls": "E0/E2 exact bank/task/step/W0 compatibility audit; real generation79 each",
+  "control_limitation": "Historical control training did not enforce new deterministic backend; no claim strict HSIC-only causal isolation",
+  "fixed": {
+    "writer": "model.layers.30.mlp.down_proj",
+    "router": "model.layers.31.mlp.up_proj",
+    "H": 0.25,
+    "U": 0.01,
+    "support": "S0",
+    "rank": 4,
+    "steps": 320,
+    "lambda_x": 0.001,
+    "lambda_y": 0.001,
+    "sigma": 1,
+    "epsilon": 1e-05,
+    "observations": 5,
+    "pooling": "all valid expanded tokens; unchanged assistant predictor writer mask",
+    "regularizer_frequency": "every update",
+    "X": "frozen layer0 input",
+    "Z_patch": "post-hook L30 down output",
+    "Z_final": "same-forward layer31 block output"
+  },
+  "numeric_version": "R2_FIXED_2POW24",
+  "main_scale": 16777216,
+  "scale_pair": [
+    1048576,
+    16777216
+  ],
+  "diagnostics": [
+    1,
+    80,
+    160,
+    320
+  ],
+  "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+  "deterministic_algorithms": true,
+  "cache": "Full frozen L30 block input; current edit only; two-case full20 update parity accepted",
+  "cumulative_GPU_limit": 28800,
+  "cumulative_Judge_limit": 2000,
+  "prior_GPU_seconds": 15370.834305047989,
+  "prior_Judge_items": 51,
+  "phase_GPU_caps": {
+    "24C": 4800
+  },
+  "phase_Judge_caps": {
+    "24C": 256
+  },
+  "judge_reallocation": {
+    "from_unused_25": 56,
+    "old_24C": 200,
+    "new_24C": 256,
+    "old_25": 1200,
+    "new_25": 1144,
+    "total_change": 0
+  },
+  "DEV_binding": "c1753cd6e71d420feb9401ed1eb12301de5f81297ab0a7895839712b01a4edec",
+  "panel_counts": {
+    "native": 19,
+    "DEV_H": 16,
+    "old_H": 6,
+    "DEV_U": 16,
+    "old_U": 9,
+    "DEV_rewrite": 11,
+    "old_rewrite": 11,
+    "DEV_positive": 4
+  },
+  "expected_outputs": 256,
+  "cost_forecast": 3524.462618728297,
+  "mechanical_acceptance": "f724652af1288b0443195c8d774df10fb74b78e22f344202c8bfef72a699fa60",
+  "promotion": "Native19; each H source macro retention and overall accuracy >= E2, each strict U panel >= E2, rewrite/positive >=E2, >=1 strict H/U retention or rewrite gain; ties E2; full coverage. New CONFIRM unavailable so stop at DEV.",
+  "stop_rules": [
+    "GPU phase4800 or cumulative28800",
+    "Judge phase256 or cumulative2000",
+    "Nonfinite or failed scale plateau at sparse diagnostics",
+    "Base/router/weight binding mismatch",
+    "Storage reserve8GiB"
+  ],
+  "checkpoint_policy": "Retain final19 bank, router, W0 bindings and small outputs; active resume retained. No automatic historical cleanup.",
+  "binding": "8ccf6558a8bfbc134d914308ce16e258ebb1dabec3bad54ca0cb0d517bf9f393"
+}
