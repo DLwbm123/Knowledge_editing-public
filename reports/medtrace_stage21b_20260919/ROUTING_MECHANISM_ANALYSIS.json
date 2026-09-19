@@ -1,0 +1,494 @@
+{
+  "aggregate": [
+    {
+      "arm": "FACT_FIXED_L31_DOWN",
+      "N": 11,
+      "queries": 37,
+      "activated": 37,
+      "transitions": {}
+    },
+    {
+      "arm": "FACT_FIXED_L31_DOWN",
+      "N": 19,
+      "queries": 45,
+      "activated": 45,
+      "transitions": {
+        "1->0|switch=True": 2,
+        "0->1|switch=True": 2,
+        "0->0|switch=True": 5,
+        "1->1|switch=False": 26,
+        "1->1|switch=True": 2
+      }
+    },
+    {
+      "arm": "FACT_FIXED_L31_DOWN",
+      "N": 32,
+      "queries": 58,
+      "activated": 58,
+      "transitions": {
+        "0->0|switch=False": 7,
+        "1->1|switch=False": 34,
+        "1->0|switch=True": 4
+      }
+    },
+    {
+      "arm": "FACT_FIXED_L31_DOWN",
+      "N": 45,
+      "queries": 113,
+      "activated": 113,
+      "transitions": {
+        "0->0|switch=False": 11,
+        "1->1|switch=False": 47
+      }
+    },
+    {
+      "arm": "NO_H_HSIC",
+      "N": 11,
+      "queries": 37,
+      "activated": 37,
+      "transitions": {}
+    },
+    {
+      "arm": "NO_H_HSIC",
+      "N": 19,
+      "queries": 45,
+      "activated": 45,
+      "transitions": {
+        "1->0|switch=True": 4,
+        "0->1|switch=True": 4,
+        "1->1|switch=False": 23,
+        "0->0|switch=False": 3,
+        "1->1|switch=True": 3
+      }
+    },
+    {
+      "arm": "NO_H_HSIC",
+      "N": 32,
+      "queries": 58,
+      "activated": 58,
+      "transitions": {
+        "0->0|switch=False": 4,
+        "1->1|switch=False": 37,
+        "0->0|switch=True": 1,
+        "0->1|switch=True": 2,
+        "1->1|switch=True": 1
+      }
+    },
+    {
+      "arm": "NO_H_HSIC",
+      "N": 45,
+      "queries": 113,
+      "activated": 113,
+      "transitions": {
+        "0->0|switch=False": 5,
+        "1->1|switch=False": 53
+      }
+    },
+    {
+      "arm": "Stage20_BE",
+      "N": 11,
+      "queries": 37,
+      "activated": 37,
+      "transitions": {}
+    },
+    {
+      "arm": "Stage20_BE",
+      "N": 19,
+      "queries": 45,
+      "activated": 45,
+      "transitions": {
+        "0->0|switch=True": 6,
+        "1->0|switch=True": 3,
+        "1->1|switch=False": 22,
+        "0->0|switch=False": 4,
+        "0->1|switch=True": 2
+      }
+    },
+    {
+      "arm": "Stage20_BE",
+      "N": 32,
+      "queries": 58,
+      "activated": 58,
+      "transitions": {
+        "0->0|switch=False": 9,
+        "1->1|switch=False": 32,
+        "0->0|switch=True": 4
+      }
+    },
+    {
+      "arm": "Stage20_BE",
+      "N": 45,
+      "queries": 113,
+      "activated": 113,
+      "transitions": {
+        "0->0|switch=False": 13,
+        "1->1|switch=False": 45
+      }
+    },
+    {
+      "arm": "Stage20_FACT_H",
+      "N": 11,
+      "queries": 37,
+      "activated": 37,
+      "transitions": {}
+    },
+    {
+      "arm": "Stage20_FACT_H",
+      "N": 19,
+      "queries": 45,
+      "activated": 45,
+      "transitions": {
+        "1->1|switch=True": 5,
+        "0->1|switch=True": 3,
+        "0->0|switch=True": 3,
+        "1->1|switch=False": 22,
+        "0->0|switch=False": 4
+      }
+    },
+    {
+      "arm": "Stage20_FACT_H",
+      "N": 32,
+      "queries": 58,
+      "activated": 58,
+      "transitions": {
+        "1->1|switch=False": 38,
+        "0->0|switch=False": 3,
+        "0->0|switch=True": 4
+      }
+    },
+    {
+      "arm": "Stage20_FACT_H",
+      "N": 45,
+      "queries": 113,
+      "activated": 113,
+      "transitions": {
+        "1->1|switch=False": 51,
+        "0->0|switch=False": 7
+      }
+    }
+  ],
+  "paired_same_transitions": [
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "NO_H_HSIC",
+      "counts": {
+        "A|switch=False|1->1": 107,
+        "B|switch=False|1->1": 113,
+        "B|switch=False|0->0": 12,
+        "A|switch=False|0->0": 18,
+        "A|switch=True|0->0": 5,
+        "B|switch=True|0->1": 6,
+        "A|switch=True|1->0": 6,
+        "B|switch=True|1->0": 4,
+        "B|switch=True|1->1": 4,
+        "A|switch=True|1->1": 2,
+        "A|switch=True|0->1": 2,
+        "B|switch=True|0->0": 1
+      }
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_BE",
+      "counts": {
+        "A|switch=False|1->1": 107,
+        "B|switch=False|1->1": 99,
+        "B|switch=False|0->0": 26,
+        "A|switch=False|0->0": 18,
+        "A|switch=True|0->0": 5,
+        "B|switch=True|0->0": 10,
+        "A|switch=True|1->0": 6,
+        "B|switch=True|1->0": 3,
+        "B|switch=True|0->1": 2,
+        "A|switch=True|1->1": 2,
+        "A|switch=True|0->1": 2
+      }
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_FACT_H",
+      "counts": {
+        "A|switch=False|1->1": 107,
+        "B|switch=False|1->1": 111,
+        "A|switch=False|0->0": 18,
+        "B|switch=False|0->0": 14,
+        "A|switch=True|0->0": 5,
+        "B|switch=True|1->1": 5,
+        "A|switch=True|1->0": 6,
+        "B|switch=True|0->0": 7,
+        "A|switch=True|1->1": 2,
+        "B|switch=True|0->1": 3,
+        "A|switch=True|0->1": 2
+      }
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_BE",
+      "counts": {
+        "A|switch=False|1->1": 113,
+        "B|switch=False|1->1": 99,
+        "A|switch=False|0->0": 12,
+        "B|switch=False|0->0": 26,
+        "A|switch=True|0->1": 6,
+        "B|switch=True|0->0": 10,
+        "A|switch=True|1->0": 4,
+        "B|switch=True|1->0": 3,
+        "A|switch=True|1->1": 4,
+        "B|switch=True|0->1": 2,
+        "A|switch=True|0->0": 1
+      }
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_FACT_H",
+      "counts": {
+        "A|switch=False|1->1": 113,
+        "B|switch=False|1->1": 111,
+        "A|switch=False|0->0": 12,
+        "B|switch=False|0->0": 14,
+        "A|switch=True|0->1": 6,
+        "B|switch=True|1->1": 5,
+        "A|switch=True|1->0": 4,
+        "B|switch=True|0->0": 7,
+        "A|switch=True|1->1": 4,
+        "B|switch=True|0->1": 3,
+        "A|switch=True|0->0": 1
+      }
+    },
+    {
+      "A": "Stage20_BE",
+      "B": "Stage20_FACT_H",
+      "counts": {
+        "A|switch=False|1->1": 99,
+        "B|switch=False|1->1": 111,
+        "A|switch=False|0->0": 26,
+        "B|switch=False|0->0": 14,
+        "A|switch=True|0->0": 10,
+        "B|switch=True|1->1": 5,
+        "A|switch=True|1->0": 3,
+        "B|switch=True|0->0": 7,
+        "A|switch=True|0->1": 2,
+        "B|switch=True|0->1": 3
+      }
+    }
+  ],
+  "output_differences": [
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "NO_H_HSIC",
+      "N": 11,
+      "queries": 37,
+      "same_routing": 37,
+      "different_tokens": 10,
+      "different_text": 10
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_BE",
+      "N": 11,
+      "queries": 37,
+      "same_routing": 37,
+      "different_tokens": 13,
+      "different_text": 13
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_FACT_H",
+      "N": 11,
+      "queries": 37,
+      "same_routing": 37,
+      "different_tokens": 9,
+      "different_text": 9
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_BE",
+      "N": 11,
+      "queries": 37,
+      "same_routing": 37,
+      "different_tokens": 5,
+      "different_text": 5
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_FACT_H",
+      "N": 11,
+      "queries": 37,
+      "same_routing": 37,
+      "different_tokens": 10,
+      "different_text": 10
+    },
+    {
+      "A": "Stage20_BE",
+      "B": "Stage20_FACT_H",
+      "N": 11,
+      "queries": 37,
+      "same_routing": 37,
+      "different_tokens": 10,
+      "different_text": 10
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "NO_H_HSIC",
+      "N": 19,
+      "queries": 45,
+      "same_routing": 45,
+      "different_tokens": 11,
+      "different_text": 11
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_BE",
+      "N": 19,
+      "queries": 45,
+      "same_routing": 45,
+      "different_tokens": 13,
+      "different_text": 13
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_FACT_H",
+      "N": 19,
+      "queries": 45,
+      "same_routing": 45,
+      "different_tokens": 8,
+      "different_text": 8
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_BE",
+      "N": 19,
+      "queries": 45,
+      "same_routing": 45,
+      "different_tokens": 6,
+      "different_text": 6
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_FACT_H",
+      "N": 19,
+      "queries": 45,
+      "same_routing": 45,
+      "different_tokens": 9,
+      "different_text": 9
+    },
+    {
+      "A": "Stage20_BE",
+      "B": "Stage20_FACT_H",
+      "N": 19,
+      "queries": 45,
+      "same_routing": 45,
+      "different_tokens": 10,
+      "different_text": 10
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "NO_H_HSIC",
+      "N": 32,
+      "queries": 58,
+      "same_routing": 58,
+      "different_tokens": 12,
+      "different_text": 12
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_BE",
+      "N": 32,
+      "queries": 58,
+      "same_routing": 58,
+      "different_tokens": 11,
+      "different_text": 11
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_FACT_H",
+      "N": 32,
+      "queries": 58,
+      "same_routing": 58,
+      "different_tokens": 5,
+      "different_text": 5
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_BE",
+      "N": 32,
+      "queries": 58,
+      "same_routing": 58,
+      "different_tokens": 8,
+      "different_text": 8
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_FACT_H",
+      "N": 32,
+      "queries": 58,
+      "same_routing": 58,
+      "different_tokens": 10,
+      "different_text": 10
+    },
+    {
+      "A": "Stage20_BE",
+      "B": "Stage20_FACT_H",
+      "N": 32,
+      "queries": 58,
+      "same_routing": 58,
+      "different_tokens": 10,
+      "different_text": 10
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "NO_H_HSIC",
+      "N": 45,
+      "queries": 113,
+      "same_routing": 113,
+      "different_tokens": 46,
+      "different_text": 46
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_BE",
+      "N": 45,
+      "queries": 113,
+      "same_routing": 113,
+      "different_tokens": 46,
+      "different_text": 46
+    },
+    {
+      "A": "FACT_FIXED_L31_DOWN",
+      "B": "Stage20_FACT_H",
+      "N": 45,
+      "queries": 113,
+      "same_routing": 113,
+      "different_tokens": 22,
+      "different_text": 22
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_BE",
+      "N": 45,
+      "queries": 113,
+      "same_routing": 113,
+      "different_tokens": 26,
+      "different_text": 26
+    },
+    {
+      "A": "NO_H_HSIC",
+      "B": "Stage20_FACT_H",
+      "N": 45,
+      "queries": 113,
+      "same_routing": 113,
+      "different_tokens": 41,
+      "different_text": 41
+    },
+    {
+      "A": "Stage20_BE",
+      "B": "Stage20_FACT_H",
+      "N": 45,
+      "queries": 113,
+      "same_routing": 113,
+      "different_tokens": 44,
+      "different_text": 44
+    }
+  ],
+  "natural_R0": true,
+  "conditioned_results_do_not_replace_main": true
+}

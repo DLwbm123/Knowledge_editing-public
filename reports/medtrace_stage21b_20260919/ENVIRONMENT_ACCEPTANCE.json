@@ -1,0 +1,92 @@
+{
+  "status": "PASS",
+  "device_lane": "B_GPU0_20260919_UUID_97f3d420",
+  "gpu_uuid": "GPU-97f3d420-f399-c351-e161-927263614dee",
+  "Base_OFF_replay": [
+    {
+      "position": 1,
+      "exact_tokens": true,
+      "seconds": 0.7464046478271484
+    },
+    {
+      "position": 19,
+      "exact_tokens": true,
+      "seconds": 0.6193482875823975
+    },
+    {
+      "position": 45,
+      "exact_tokens": true,
+      "seconds": 0.38837647438049316
+    }
+  ],
+  "runtime": {
+    "canonical_lane": "current_stack_v4",
+    "environment_lock_sha256": "d1c7875f79bd04b01813f2c900bbe693dc58854225c507f21b0d51433e7f02bf",
+    "generation": {
+      "batch_size": 1,
+      "do_sample": false,
+      "max_new_tokens": 1024,
+      "num_beams": 1,
+      "temperature": 0,
+      "use_cache": true
+    },
+    "historical_stack_reconstruction_permitted": false,
+    "llava_med_code_commit": "30697ca50b5c29a8e955c99330b259776aef27b9",
+    "model_snapshot_sha": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+    "parity": {
+      "decoded_parity": 0.9750566893424036,
+      "normalized_parity": 0.9750566893424036,
+      "semantic_parity": 0.9931972789115646
+    },
+    "selected_runtime": "runtime_b_official_native",
+    "vision_snapshot_sha": "ce19dc912ca5cd21c8a653c79e251e808ccabcd1",
+    "actual_environment": {
+      "torch": "2.6.0",
+      "torchvision": "0.21.0",
+      "transformers": "4.51.3",
+      "tokenizers": "0.21.1",
+      "peft": "0.19.1",
+      "accelerate": "1.14.0",
+      "sentencepiece": "0.2.1",
+      "safetensors": "0.5.3",
+      "pillow": "10.4.0",
+      "numpy": "1.26.4"
+    },
+    "backbone": "float16",
+    "writer": "float32"
+  },
+  "generation": {
+    "batch_size": 1,
+    "classification": "M3BENCH_PAPER_SPEC_INDEPENDENT_REIMPLEMENTATION_V2_EFFECT_REPAIRED",
+    "config_sha256": "a31dbfb542f142e9e7698fcc62df6dfc881f806862cfb906570e1538198ec4b2",
+    "conv_mode": "mistral_instruct",
+    "device_mapping": "one explicitly selected physical GPU (2 or 3 only for Foundation V3)",
+    "do_sample": false,
+    "dtype": "float16",
+    "eos_stop_policy": "model_eos_token_id; no answer-derived stop sequence",
+    "foundation_label": "M3BENCH_PUBLIC_RELEASE_ALIGNED__LOCAL_GENERATION_CONFIG_FROZEN",
+    "generation_output_contract": "continuation_only",
+    "gold_length_truncation": false,
+    "inference_mode": true,
+    "logical_shards": 16,
+    "max_new_tokens": 1024,
+    "model_eval": true,
+    "model_id": "llava_med_v1_5_mistral_7b",
+    "num_beams": 1,
+    "padding_side": "checkpoint_tokenizer_default; recorded at runtime",
+    "prompt_contract": "native_mistral_instruct__image_plus_question_only",
+    "raw_prediction_schema_version": "foundation-v2-raw-1",
+    "source_commit": "e5da74ae5892186835b2f431cf05345fe76f1707",
+    "target_answers_in_prompt": false,
+    "teacher_forcing": false,
+    "temperature": null,
+    "top_p": null,
+    "use_cache": true,
+    "vision_tower_id": "clip-vit-large-patch14-336"
+  },
+  "tokenizer": "LlamaTokenizerFast",
+  "EOS": 2,
+  "backbone_dtype": "torch.float16",
+  "writer_dtype": "torch.float32",
+  "model_and_vision": "Pinned local snapshots through unchanged runtime loader"
+}

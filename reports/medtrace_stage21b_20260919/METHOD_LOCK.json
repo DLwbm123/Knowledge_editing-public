@@ -1,0 +1,25 @@
+{
+  "arm": "FACT_FIXED_L31_DOWN",
+  "writer": "model.layers.31.mlp.down_proj",
+  "BE_writer": "model.layers.31.mlp.up_proj",
+  "causal_scope": "same Transformer block, different projection modules",
+  "routing_feature": "Frozen Base OFF model.layers.31.mlp.up_proj input mean",
+  "routing": "natural R0 euclidean",
+  "alpha": 0.2,
+  "rank": 4,
+  "continuation_steps": 320,
+  "loss": {
+    "native": 0.5,
+    "fit": 0.5,
+    "U_full_Base_student_KL": 0.01,
+    "H_reference_CE": 1.0
+  },
+  "optimizer": "original independent per-edit optimizer, clip norm 1, normalize factors",
+  "HSIC": "off for fixed-L31 control only; historical labels untouched",
+  "initialization": "fresh native CP -> A2 -> CP-W0 at L31, not transplanted from L30",
+  "task_order_seeds": "exact original pure45",
+  "stream_binding": "12f264ea4e560347577011f2eba156f822f536e4281eecc46f96e8e3ace66272",
+  "generation": "original frozen current_stack_v4 exact runtime/generation dictionaries",
+  "judge": "original isolated gpt-6-astra/high source-agreement; exact-key reuse only",
+  "H_improvement_layer_prelocked": "L30 down_proj; independent of B results"
+}

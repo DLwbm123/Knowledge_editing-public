@@ -1,0 +1,80 @@
+{
+  "scope": "All stages after Stage21 combined, fixed L30",
+  "gpu_seconds_limit": 28800,
+  "new_judgments_limit": 2000,
+  "categories": {
+    "22A": [
+      1800,
+      100
+    ],
+    "22B": [
+      7200,
+      420
+    ],
+    "22C": [
+      5400,
+      180
+    ],
+    "23": [
+      10800,
+      1200
+    ],
+    "recovery": [
+      3600,
+      100
+    ]
+  },
+  "arms": [
+    {
+      "id": "E0",
+      "H": 0,
+      "U": 0.01
+    },
+    {
+      "id": "E1",
+      "H": 1,
+      "U": 0.01
+    },
+    {
+      "id": "E2",
+      "H": 0.25,
+      "U": 0.01
+    },
+    {
+      "id": "E3",
+      "H": 0,
+      "U": 0.05
+    },
+    {
+      "id": "E4",
+      "H": 1,
+      "U": 0.05
+    },
+    {
+      "id": "E5",
+      "H": 0.25,
+      "U": 0.05
+    }
+  ],
+  "N_development": 19,
+  "N_regression": 45,
+  "training_steps": 320,
+  "rank": 4,
+  "initialization": "same original per-edit L30 CP-W0",
+  "old_panels": "viewed DEV/regression only",
+  "CONFIRM": "must be source and image isolated, sealed before final method lock, generated and judged only once after selection",
+  "data": "existing authorized non-sealed data only; no downloads or privacy expansion",
+  "promotion": "native 19/19; U source macro retention >= matching-U NOH; H accuracy and positive-image >= matching NOH; sort H macro retention, H macro accuracy, smaller H, smaller U, arm id",
+  "coverage": "S0 original, S1 seeded stratified expanded, S2 same pool Base route-nearest; min(4,distinct sources); same slots/steps; unsupported if no selection difference",
+  "fallback": "No feasible H weight: declare failure and coverage baseline H1/U.01",
+  "confirmation": "one frozen candidate plus matching-U NOH and H1; deduplicate identical; full45 then sealed probes, no retune",
+  "stop": "preregistered resource/support constraints only, never outcome-based omission of valid arms",
+  "cost_reservation": "Conservative un-cached coverage before each launch; reference/Base/student/diagnostic all counted; CONFIRM Base charged Stage23 not Stage22A",
+  "new_diagnostic_steps": [
+    1,
+    80,
+    160,
+    320
+  ],
+  "gradient_cosines": "future new training only, no update effects; never invent from norms"
+}
