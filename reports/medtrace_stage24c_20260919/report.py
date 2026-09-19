@@ -20,10 +20,11 @@ def report(root,common):
     for arm in ('E0','E2','R_H'):
         rr=[r for r in rows if r['arm']==arm and r['mode']=='DEV79'];d={r['query_id']:r for r in rr}
         if len(rr)!=79 or set(d)!=expected or any(correct(r) is None for r in rr):continue
-        by[arm]=d;out={}
+        by[arm]=d;out={};positions={t['canonical_edit_id']:t['order'] for t in stream['tasks'][:19]}
         for name,ids in panel.items():
             sub=[d[q] for q in ids]
             out[name+'_accuracy']=clean(metric(sub,scores))
+            out[name+'_routing']=dict(activated=sum(r['route']['activated'] for r in sub),N=len(sub),selected_position_counts={str(i):sum(r['route']['logical_edit_id']==e for r in sub) for e,i in positions.items()})
             if name=='native':out['native_Fix']=clean(metric(sub,scores,False))
             if 'H' in name or 'U' in name:
                 out[name+'_Retention']=clean(metric(sub,scores,True));out[name+'_Fix']=clean(metric(sub,scores,False))
