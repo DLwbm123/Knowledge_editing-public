@@ -1,0 +1,56 @@
+{
+  "evidence_commit": "00e251552f433b1178eb032d82172ce80c701060",
+  "is_runtime_audit_result": false,
+  "issues": [
+    {
+      "evidence": "worker_e.py slot_by_t dict; duplicate-prefix slots in plan=5",
+      "id": "F01",
+      "name": "同前缀维护槽覆盖",
+      "required_fix": "list slots preserve order/identity",
+      "runtime_status": "UNRESOLVED",
+      "static_review": "CONFIRMED"
+    },
+    {
+      "evidence": "teacher_map.get(..., next(iter(...)))",
+      "id": "F02",
+      "name": "U teacher静默回退",
+      "required_fix": "exact U teacher binding, missing/mismatch hard error",
+      "runtime_status": "UNRESOLVED",
+      "static_review": "CONFIRMED"
+    },
+    {
+      "evidence": "U_masks present for 19 prefixes; update path has no mask state",
+      "id": "F03",
+      "name": "U masks调用链接入",
+      "required_fix": "apply mask on arrival and maintenance paths",
+      "runtime_status": "UNRESOLVED",
+      "static_review": "CONFIRMED"
+    },
+    {
+      "evidence": "291 generation rows but no independent runtime event/teacher/early-stop ledger",
+      "id": "F04",
+      "name": "全native/双端点/支持评价覆盖",
+      "required_fix": "consumer to event and verdict release binding",
+      "runtime_status": "UNRESOLVED",
+      "static_review": "CONFIRMED_PARTIAL_COVERAGE"
+    },
+    {
+      "evidence": "key=(arm,n,q,mode) excludes event/version",
+      "id": "F05",
+      "name": "维护前后输出状态去重",
+      "required_fix": "event/version in consumer identity",
+      "runtime_status": "UNRESOLVED",
+      "static_review": "CONFIRMED"
+    },
+    {
+      "evidence": "no release barrier/event idempotence in worker",
+      "id": "F06",
+      "name": "执行身份及在线语义早停",
+      "required_fix": "controller barrier before writes",
+      "runtime_status": "UNRESOLVED",
+      "static_review": "CONFIRMED"
+    }
+  ],
+  "overall": "PROTOCOL_DEVIATION_CONFIRMED_STATIC_RUNTIME_UNRESOLVED",
+  "schema_version": "1.0"
+}
