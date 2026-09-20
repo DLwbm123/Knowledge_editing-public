@@ -1,0 +1,46 @@
+{
+  "stage": "24D",
+  "evidence_commit": "36baf4897c6f9b1d46fdc1f3f3efa3285fa70693",
+  "purpose": "Mechanism diagnosis only; original reports unchanged",
+  "training": false,
+  "mechanical_training": "Not needed: existing same-backend R2 two-case ON/OFF valid; no new training",
+  "scope": {
+    "19": [
+      "E0",
+      "E2",
+      "R_H"
+    ],
+    "45": [
+      "E0",
+      "E2"
+    ]
+  },
+  "diagnostic_inputs": "ALL original H_fit/U_fit support with exact QA ownership; no selection using correctness",
+  "forced": "Each supervised owner separately; all retained; E0 H-slot is counterfactual owner control without H supervision",
+  "prefix_contract": "For each QA begin at its first owner; prefix k routes only first k experts and ownership known by k; no future expert or ownership in prefix decisions",
+  "primary_method_results": "Unchanged Stage24C natural DEV79 only; all new probes are trained-support diagnostics, never official scores",
+  "budget": {
+    "GPU_limit": 900,
+    "Judge_limit": 650,
+    "outputs_upper_bound": 560,
+    "existing_shared_GPU_limit": 28800,
+    "existing_shared_Judge_limit": 2000,
+    "source": "Existing unused follow-on balance; no new budget"
+  },
+  "cumulative_GPU_limit": 28800,
+  "phase_GPU_caps": {
+    "24D": 900
+  },
+  "phase_Judge_caps": {
+    "24D": 650
+  },
+  "stop": [
+    "GPU or Judge shared/phase cap",
+    "binding/environment failure",
+    "8GiB reserve"
+  ],
+  "next_stage": "No auto24E or25",
+  "responsibility_hypothesis": "Separate per-slot displacement from any-current-owner displacement. Evidence for functional mismatch requires forced-owner improvement over natural on displaced H, with Base correctness and source-weighted outcomes. Null/harmful forcing does not support causal rescue; do not infer from routing alone.",
+  "checkpoint_policy": "Preserve all historical and current banks; no deletion",
+  "binding": "fe8531c7d3971e79b6fc81cb9af9f92dd6be80bba9df1f1f76fc168ea7c73730"
+}
