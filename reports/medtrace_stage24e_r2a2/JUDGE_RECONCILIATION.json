@@ -1,0 +1,35 @@
+{
+  "evidence_commit": "7b18b8f07c28b84ec714e13de2894bf9b75c5671",
+  "gpu": {
+    "hard_cap_seconds": 28800,
+    "historical_reported_remaining_seconds": 3315.48431634903,
+    "historical_shared_used_seconds": 25484.51568365097,
+    "new_r2a2_seconds": 0
+  },
+  "judge": {
+    "reason": "scope and namespace mismatch between R1 receipt and remote common snapshot; no reliable physical usage upper bound",
+    "remaining": null
+  },
+  "logical_tasks": {
+    "exact_cache_reuse_reported": 92,
+    "final_expected_consumers": 237,
+    "final_matched_existing_cache": 197,
+    "final_unmatched": 40,
+    "new_judge_items_reported": 30,
+    "r1_output_rows": 291
+  },
+  "mappings": {
+    "cache_reuse_to_request": "not_counted_as_new_request",
+    "consumer_to_judge_key": "partial_score_key_only",
+    "judge_key_to_physical_request": "UNAVAILABLE"
+  },
+  "physical_requests": {
+    "attempt_retry_cost_records": "UNAVAILABLE",
+    "r1_request_log": "UNAVAILABLE",
+    "remote_common_snapshot_dispatched": 0,
+    "remote_snapshot_scope": "UNRESOLVED",
+    "request_ids": "UNAVAILABLE"
+  },
+  "prohibition": "Do not infer remaining from shared cap or published totals.",
+  "status": "UNRESOLVED"
+}

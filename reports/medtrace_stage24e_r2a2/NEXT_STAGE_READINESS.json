@@ -1,0 +1,42 @@
+{
+  "disk_budget": {
+    "remote_free_gib": 8.4,
+    "reserve_gib": 8.0,
+    "status": "OBSERVED_RESERVE_NEAR_THRESHOLD"
+  },
+  "gpu_budget": {
+    "historical_remaining_seconds": 3315.48431634903,
+    "new_seconds": 0,
+    "status": "NO_NEW_WORK"
+  },
+  "historical_evidence": {
+    "r1_preserved": true,
+    "status": "LIMITED",
+    "unrecoverable_runtime_bindings": [
+      "event transaction trace",
+      "teacher trace",
+      "mask trace",
+      "consumer release trace",
+      "physical judge request mapping"
+    ]
+  },
+  "integrated_worker_cpu": {
+    "status": "PASS_NOT_DEPLOYED",
+    "tests": 8
+  },
+  "judge_budget": {
+    "remaining": null,
+    "status": "UNRESOLVED"
+  },
+  "next_stage_gates": [
+    "reconcile physical Judge requests and namespaces",
+    "review isolated worker in code review",
+    "separate explicit authorization for real model canary"
+  ],
+  "phase": "R2-A2_RECONCILIATION_AND_ISOLATED_INTEGRATION",
+  "real_model_acceptance": {
+    "requires_separate_authorization": true,
+    "status": "NOT_RUN"
+  },
+  "status": "NOT_READY_FOR_R2B"
+}
