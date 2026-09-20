@@ -1,0 +1,30 @@
+{
+  "name": "VERIFIED_REFERENCE_OVER_BASE",
+  "status": "POLICY_ONLY_NOT_TRAINER_ACCEPTANCE",
+  "rules": [
+    "Only already-arrived verified references take priority.",
+    "Preserve immutable Base teachers; mask conflicting U in every arm only after reference availability.",
+    "Semantic agreement preserves U despite textual difference.",
+    "No verified reference: preserve Base.",
+    "Conflicting legitimate references without version rule stop affected candidate."
+  ],
+  "CPU_temporal_tests": "PASS",
+  "cases": [
+    {
+      "H_first": 8,
+      "U_first": 40,
+      "masked_at": 40
+    },
+    {
+      "H_first": 6,
+      "U_first": 42,
+      "masked_at": 42
+    },
+    {
+      "H_first": 12,
+      "U_first": 45,
+      "masked_at": 45
+    }
+  ],
+  "limitation": "Historical temporal cases only; no N45 training, new semantic judgments, or implicit validation of U-only reference provenance."
+}
