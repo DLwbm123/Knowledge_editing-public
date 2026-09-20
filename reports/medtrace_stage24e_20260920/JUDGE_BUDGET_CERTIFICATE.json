@@ -1,0 +1,30 @@
+{
+  "status": "CPU_CONDITIONAL_BOUND_NOT_RUNTIME_ACCEPTANCE",
+  "native_state_count": 103,
+  "native_by_arm": {
+    "B0": 19,
+    "B1": 42,
+    "B2": 42
+  },
+  "native_generation_consumers": 1052,
+  "additional_reservations": {
+    "nonnative_endpoints": 360,
+    "support_correctness": 96,
+    "teacher_consistency": 51,
+    "Base_cache_missing": 0,
+    "acceptance": 20,
+    "failed_attempt_and_closeout": 40
+  },
+  "worst_case_new_items": 670,
+  "cap": 800,
+  "headroom": 130,
+  "shared_remaining": 1812,
+  "arithmetic_pass": true,
+  "native_self_routing": true,
+  "CPU_route_cases": 190,
+  "single_selected_hook_code": "methods/medtrace/hsic.py:bound_hook + stage15.generate, no bank argument in forward",
+  "runtime_invariance": "PENDING finite all-path acceptance; certificate cannot authorize GPU until all CPU resource gates pass",
+  "future_arm_parameter_equality_assumed": false,
+  "historical_hit_rate_assumed": false,
+  "all_native_checks_regenerated": true
+}

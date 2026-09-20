@@ -1,0 +1,22 @@
+{
+  "status": "STATIC_CODE_DEPENDENCY_AUDIT_ONLY",
+  "source_bindings": {
+    "m3bench_repro/editors/routing.py": "0b31e82532f306b42638af037fa01c42c0ac43b8c379c36b157dfd31cfeee3e0",
+    "methods/medtrace/hsic.py": "4997f4893b25f78fd96f3c973a828d0a5ed0aabf13645bcd1db5dc9a4621876e",
+    "methods/medtrace/core.py": "d2041ceaf65a71c55841e26110fc2514f597939bf1091086f1533f0a6d2f6919",
+    "methods/medtrace/selective_write.py": "dd8635d47d7022537222c912d1b78ecb3b79c2ab3675255384946ae60f738c01",
+    "scripts/medtrace/stage15.py": "1971fb9a3c080b83ea9c44e0d3337170cea0e25c35a824cbb5a861a07c91d2fa",
+    "scripts/medtrace/stage18_base_judge.py": "c4fc5935746549080af878fe661737463cc142d60b015d6fed6c74b72f2d888a",
+    "scripts/medtrace/stage17_judge.py": "68de34adc45779d31c3d5203ae9ed93b0a106e0f4b2ada8a83314dfe57275c62",
+    "scripts/medtrace/stage18_score.py": "fc4df933a4d96aa0a084e0695b7a073b19197ee3321ac76b318e1a2366af04a2",
+    "reports/medtrace_stage22_20260919/training.py": "edd8a7dbbd5113e51a522a6ae28db9dc86823e972359fce4964ab14816b275fc"
+  },
+  "router": "FP32 euclidean nearest, first argmin tie break, winner activated by distance<=radius; CPU all190 native self with one zero distance each",
+  "forward": "bound_hook accepts one expert only; rejects another MedTrace hook; residual reads only expert.A/B and selected layer input; generation resets request mask/cache boundaries. No bank size or unselected expert is consumed by this forward.",
+  "base_key": "Must extract with all editing hooks OFF; fresh runtime re-extraction and buffer/parameter invariance acceptance still pending.",
+  "new_worker": "Not implemented or accepted: resource precondition failed first. No claim that historical worker is a tested Stage24E trainer.",
+  "symbolic_parameter_versions": 103,
+  "native_consumers": 1052,
+  "invalidation_tests": "execution_identity.py self_check passed; changes to any declared dependency, target or scoring task invalidate; same exec with changed tokens/text/Judge key throws.",
+  "runtime_tests": "NOT_RUN_GPU_BOUND_EXCEEDS_CAP"
+}

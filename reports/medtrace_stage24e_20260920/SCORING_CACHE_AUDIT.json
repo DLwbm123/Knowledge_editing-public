@@ -1,0 +1,16 @@
+{
+  "protocol": "MEDTRACE_STAGE17_SOURCE_AGREEMENT_V1",
+  "prompt_binding": "674a622c2dbb85707e1fe37848b934a10f3c9d90b5e2041897eab9aa6f254981",
+  "model": "gpt-6-astra",
+  "reasoning": "high",
+  "Base_required": 110,
+  "Base_completed": 110,
+  "Base_missing": 0,
+  "teacher_count": 17,
+  "teacher_tokens_immutable": true,
+  "teacher_reference_consistency": "Existing Stage24D exact teacher-to-Base replay plus frozen reference judgments",
+  "judge_payload": "question, gold_answer, actual decoded candidate; source-agreement protocol does not visually inspect image. Image identity remains conservative cache namespace.",
+  "legacy_key": "image hash/question/reference/actual raw_answer",
+  "R1_key": "legacy key plus frozen prompt/model/protocol/normalizer/source-reference task namespace; teacher-consistency task separately reserved",
+  "prospective_hit_rate_assumed": false
+}

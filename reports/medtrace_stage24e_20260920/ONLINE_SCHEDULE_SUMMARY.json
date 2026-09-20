@@ -1,0 +1,41 @@
+{
+  "slots": 23,
+  "current": 8,
+  "old": 15,
+  "maintenance_steps_per_replay_arm": 460,
+  "remaining_pending": 1,
+  "contrast_slots": 32,
+  "contrast_times": 17,
+  "contrast_sources": 18,
+  "contrast_pass": true,
+  "token_bins": [
+    4,
+    8,
+    16,
+    "above16"
+  ],
+  "sampling": "seeded uniform subsets with fixed rejection limit; matching source count, uniqueQA and length-bin counts; fallback to aligned subset does not create contrast",
+  "mask_counts_by_prefix": {
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1,
+    "8": 2,
+    "9": 3,
+    "10": 3,
+    "11": 3,
+    "12": 3,
+    "13": 3,
+    "14": 3,
+    "15": 3,
+    "16": 3,
+    "17": 3,
+    "18": 3,
+    "19": 3
+  },
+  "U_policy": "All original U references already SUPPORTED; their own arrival makes reference available. Base-wrong U is masked at that arrival, not only when an H role later appears.",
+  "masked_U_final": 3
+}
