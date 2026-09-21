@@ -1,0 +1,600 @@
+{
+  "run_id": "stage24e-r2-20260920-job525",
+  "arm_panel_composition": {
+    "B0": {
+      "total_outputs": 97,
+      "insertions": 19,
+      "final_n19_panel": {
+        "native": 19,
+        "H_eval": 22,
+        "U_eval": 23,
+        "native_text_extension": 11,
+        "positive_image": 4
+      },
+      "process_vs_endpoint": "prefixes 1-18 are insertion checks; prefix19 contains native endpoint plus H/U/text/positive panel"
+    },
+    "B1": {
+      "total_outputs": 97,
+      "insertions": 19,
+      "final_n19_panel": {
+        "native": 19,
+        "H_eval": 22,
+        "U_eval": 23,
+        "native_text_extension": 11,
+        "positive_image": 4
+      },
+      "process_vs_endpoint": "prefixes 1-18 are insertion checks; prefix19 contains native endpoint plus H/U/text/positive panel"
+    },
+    "B2": {
+      "total_outputs": 97,
+      "insertions": 19,
+      "final_n19_panel": {
+        "native": 19,
+        "H_eval": 22,
+        "U_eval": 23,
+        "native_text_extension": 11,
+        "positive_image": 4
+      },
+      "process_vs_endpoint": "prefixes 1-18 are insertion checks; prefix19 contains native endpoint plus H/U/text/positive panel"
+    }
+  },
+  "arms": {
+    "B0": {
+      "per_arm_total_outputs": 97,
+      "insertion_native_prefixes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "insertion_native_scored": 18,
+      "final_n19_panel_composition": {
+        "native": 19,
+        "H_eval": 22,
+        "U_eval": 23,
+        "native_text_extension": 11,
+        "positive_image": 4
+      },
+      "N11": {
+        "native_insertion_check": {
+          "correct": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "full_panel_metrics": null,
+        "reason": "runtime has only the single prefix-11 native insertion check; no full N11 H/U/text/positive panel"
+      },
+      "N19": {
+        "native": {
+          "overall": {
+            "correct": 19,
+            "total": 19,
+            "rate": 1.0
+          },
+          "base_correct": {
+            "correct": 0,
+            "total": 19,
+            "rate": 0.0
+          },
+          "keep": {
+            "correct": 0,
+            "total": 19,
+            "rate": 0.0
+          },
+          "repair": {
+            "correct": 19,
+            "total": 19,
+            "rate": 1.0
+          },
+          "coverage": 19
+        },
+        "H_eval": {
+          "overall": {
+            "correct": 13,
+            "total": 22,
+            "rate": 0.5909090909090909
+          },
+          "base_correct": {
+            "correct": 16,
+            "total": 22,
+            "rate": 0.7272727272727273
+          },
+          "keep": {
+            "correct": 9,
+            "total": 22,
+            "rate": 0.4090909090909091
+          },
+          "repair": {
+            "correct": 4,
+            "total": 22,
+            "rate": 0.18181818181818182
+          },
+          "coverage": 22
+        },
+        "U_eval": {
+          "overall": {
+            "correct": 18,
+            "total": 23,
+            "rate": 0.782608695652174
+          },
+          "base_correct": {
+            "correct": 21,
+            "total": 23,
+            "rate": 0.9130434782608695
+          },
+          "keep": {
+            "correct": 18,
+            "total": 23,
+            "rate": 0.782608695652174
+          },
+          "repair": {
+            "correct": 0,
+            "total": 23,
+            "rate": 0.0
+          },
+          "coverage": 23
+        },
+        "native_text_extension": {
+          "overall": {
+            "correct": 10,
+            "total": 11,
+            "rate": 0.9090909090909091
+          },
+          "base_correct": {
+            "correct": 3,
+            "total": 11,
+            "rate": 0.2727272727272727
+          },
+          "keep": {
+            "correct": 2,
+            "total": 11,
+            "rate": 0.18181818181818182
+          },
+          "repair": {
+            "correct": 8,
+            "total": 11,
+            "rate": 0.7272727272727273
+          },
+          "coverage": 11
+        },
+        "positive_image": {
+          "overall": {
+            "correct": 4,
+            "total": 4,
+            "rate": 1.0
+          },
+          "base_correct": {
+            "correct": 1,
+            "total": 4,
+            "rate": 0.25
+          },
+          "keep": {
+            "correct": 1,
+            "total": 4,
+            "rate": 0.25
+          },
+          "repair": {
+            "correct": 3,
+            "total": 4,
+            "rate": 0.75
+          },
+          "coverage": 4
+        },
+        "H_source_weighted": {
+          "groups": 10,
+          "mean_rate": 0.5833333333333333,
+          "group_sizes": {
+            "2": 8,
+            "3": 2
+          }
+        },
+        "U_source_weighted": {
+          "groups": 12,
+          "mean_rate": 0.8125,
+          "group_sizes": {
+            "2": 8,
+            "1": 3,
+            "4": 1
+          }
+        },
+        "final_panel_total": 79
+      },
+      "base_cache_hits": 97,
+      "judge_coverage": 97,
+      "historical_published_97_summary": {
+        "correct": 82,
+        "total": 97,
+        "rate": 0.845360824742268,
+        "definition": "18 prefix insertion native process checks + 79 prefix19 final panel; preserved from existing R2 result"
+      }
+    },
+    "B1": {
+      "per_arm_total_outputs": 97,
+      "insertion_native_prefixes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "insertion_native_scored": 18,
+      "final_n19_panel_composition": {
+        "native": 19,
+        "H_eval": 22,
+        "U_eval": 23,
+        "native_text_extension": 11,
+        "positive_image": 4
+      },
+      "N11": {
+        "native_insertion_check": {
+          "correct": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "full_panel_metrics": null,
+        "reason": "runtime has only the single prefix-11 native insertion check; no full N11 H/U/text/positive panel"
+      },
+      "N19": {
+        "native": {
+          "overall": {
+            "correct": 19,
+            "total": 19,
+            "rate": 1.0
+          },
+          "base_correct": {
+            "correct": 0,
+            "total": 19,
+            "rate": 0.0
+          },
+          "keep": {
+            "correct": 0,
+            "total": 19,
+            "rate": 0.0
+          },
+          "repair": {
+            "correct": 19,
+            "total": 19,
+            "rate": 1.0
+          },
+          "coverage": 19
+        },
+        "H_eval": {
+          "overall": {
+            "correct": 16,
+            "total": 22,
+            "rate": 0.7272727272727273
+          },
+          "base_correct": {
+            "correct": 16,
+            "total": 22,
+            "rate": 0.7272727272727273
+          },
+          "keep": {
+            "correct": 10,
+            "total": 22,
+            "rate": 0.45454545454545453
+          },
+          "repair": {
+            "correct": 6,
+            "total": 22,
+            "rate": 0.2727272727272727
+          },
+          "coverage": 22
+        },
+        "U_eval": {
+          "overall": {
+            "correct": 17,
+            "total": 23,
+            "rate": 0.7391304347826086
+          },
+          "base_correct": {
+            "correct": 21,
+            "total": 23,
+            "rate": 0.9130434782608695
+          },
+          "keep": {
+            "correct": 17,
+            "total": 23,
+            "rate": 0.7391304347826086
+          },
+          "repair": {
+            "correct": 0,
+            "total": 23,
+            "rate": 0.0
+          },
+          "coverage": 23
+        },
+        "native_text_extension": {
+          "overall": {
+            "correct": 11,
+            "total": 11,
+            "rate": 1.0
+          },
+          "base_correct": {
+            "correct": 3,
+            "total": 11,
+            "rate": 0.2727272727272727
+          },
+          "keep": {
+            "correct": 3,
+            "total": 11,
+            "rate": 0.2727272727272727
+          },
+          "repair": {
+            "correct": 8,
+            "total": 11,
+            "rate": 0.7272727272727273
+          },
+          "coverage": 11
+        },
+        "positive_image": {
+          "overall": {
+            "correct": 2,
+            "total": 4,
+            "rate": 0.5
+          },
+          "base_correct": {
+            "correct": 1,
+            "total": 4,
+            "rate": 0.25
+          },
+          "keep": {
+            "correct": 0,
+            "total": 4,
+            "rate": 0.0
+          },
+          "repair": {
+            "correct": 2,
+            "total": 4,
+            "rate": 0.5
+          },
+          "coverage": 4
+        },
+        "H_source_weighted": {
+          "groups": 10,
+          "mean_rate": 0.7333333333333333,
+          "group_sizes": {
+            "2": 8,
+            "3": 2
+          }
+        },
+        "U_source_weighted": {
+          "groups": 12,
+          "mean_rate": 0.7708333333333334,
+          "group_sizes": {
+            "2": 8,
+            "1": 3,
+            "4": 1
+          }
+        },
+        "final_panel_total": 79
+      },
+      "base_cache_hits": 97,
+      "judge_coverage": 97,
+      "historical_published_97_summary": {
+        "correct": 83,
+        "total": 97,
+        "rate": 0.8556701030927835,
+        "definition": "18 prefix insertion native process checks + 79 prefix19 final panel; preserved from existing R2 result"
+      }
+    },
+    "B2": {
+      "per_arm_total_outputs": 97,
+      "insertion_native_prefixes": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19
+      ],
+      "insertion_native_scored": 18,
+      "final_n19_panel_composition": {
+        "native": 19,
+        "H_eval": 22,
+        "U_eval": 23,
+        "native_text_extension": 11,
+        "positive_image": 4
+      },
+      "N11": {
+        "native_insertion_check": {
+          "correct": 1,
+          "total": 1,
+          "rate": 1.0
+        },
+        "full_panel_metrics": null,
+        "reason": "runtime has only the single prefix-11 native insertion check; no full N11 H/U/text/positive panel"
+      },
+      "N19": {
+        "native": {
+          "overall": {
+            "correct": 19,
+            "total": 19,
+            "rate": 1.0
+          },
+          "base_correct": {
+            "correct": 0,
+            "total": 19,
+            "rate": 0.0
+          },
+          "keep": {
+            "correct": 0,
+            "total": 19,
+            "rate": 0.0
+          },
+          "repair": {
+            "correct": 19,
+            "total": 19,
+            "rate": 1.0
+          },
+          "coverage": 19
+        },
+        "H_eval": {
+          "overall": {
+            "correct": 14,
+            "total": 22,
+            "rate": 0.6363636363636364
+          },
+          "base_correct": {
+            "correct": 16,
+            "total": 22,
+            "rate": 0.7272727272727273
+          },
+          "keep": {
+            "correct": 8,
+            "total": 22,
+            "rate": 0.36363636363636365
+          },
+          "repair": {
+            "correct": 6,
+            "total": 22,
+            "rate": 0.2727272727272727
+          },
+          "coverage": 22
+        },
+        "U_eval": {
+          "overall": {
+            "correct": 19,
+            "total": 23,
+            "rate": 0.8260869565217391
+          },
+          "base_correct": {
+            "correct": 21,
+            "total": 23,
+            "rate": 0.9130434782608695
+          },
+          "keep": {
+            "correct": 19,
+            "total": 23,
+            "rate": 0.8260869565217391
+          },
+          "repair": {
+            "correct": 0,
+            "total": 23,
+            "rate": 0.0
+          },
+          "coverage": 23
+        },
+        "native_text_extension": {
+          "overall": {
+            "correct": 11,
+            "total": 11,
+            "rate": 1.0
+          },
+          "base_correct": {
+            "correct": 3,
+            "total": 11,
+            "rate": 0.2727272727272727
+          },
+          "keep": {
+            "correct": 3,
+            "total": 11,
+            "rate": 0.2727272727272727
+          },
+          "repair": {
+            "correct": 8,
+            "total": 11,
+            "rate": 0.7272727272727273
+          },
+          "coverage": 11
+        },
+        "positive_image": {
+          "overall": {
+            "correct": 2,
+            "total": 4,
+            "rate": 0.5
+          },
+          "base_correct": {
+            "correct": 1,
+            "total": 4,
+            "rate": 0.25
+          },
+          "keep": {
+            "correct": 0,
+            "total": 4,
+            "rate": 0.0
+          },
+          "repair": {
+            "correct": 2,
+            "total": 4,
+            "rate": 0.5
+          },
+          "coverage": 4
+        },
+        "H_source_weighted": {
+          "groups": 10,
+          "mean_rate": 0.6333333333333333,
+          "group_sizes": {
+            "2": 8,
+            "3": 2
+          }
+        },
+        "U_source_weighted": {
+          "groups": 12,
+          "mean_rate": 0.8541666666666666,
+          "group_sizes": {
+            "2": 8,
+            "1": 3,
+            "4": 1
+          }
+        },
+        "final_panel_total": 79
+      },
+      "base_cache_hits": 97,
+      "judge_coverage": 97,
+      "historical_published_97_summary": {
+        "correct": 83,
+        "total": 97,
+        "rate": 0.8556701030927835,
+        "definition": "18 prefix insertion native process checks + 79 prefix19 final panel; preserved from existing R2 result"
+      }
+    }
+  },
+  "limitations": [
+    "No full N11 evaluation panel exists in runtime outputs.",
+    "Base correctness is exact-reuse from frozen QUALIFIED_SCORE_CACHE; no new Base Judge requests.",
+    "H/U/text/positive metrics are only final prefix19 panel; insertion native checks are process checks."
+  ]
+}

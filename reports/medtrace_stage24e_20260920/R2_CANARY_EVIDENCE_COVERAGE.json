@@ -1,0 +1,40 @@
+{
+  "run_id": "stage24e-r2-20260920-job525",
+  "canary_phase": "R2-B",
+  "status": "CANARY_EVIDENCE_ONLY",
+  "judge": {
+    "correct": 7,
+    "total": 7,
+    "rate": 1.0,
+    "source": "existing B_CANARY_PASS.json and VERDICTS_R2B.json",
+    "new_judge_items": 7
+  },
+  "engineering_assertions": {
+    "r2b_exit0": {
+      "status": "EVIDENCE",
+      "source": "public/EXIT_R2B.json"
+    },
+    "seven_canary_outputs_present": {
+      "status": "EVIDENCE",
+      "source": "existing R2-B outputs/VERDICTS_R2B.json"
+    },
+    "save_load_event_recovery": {
+      "status": "NO_EVIDENCE"
+    },
+    "duplicate_write_prevention": {
+      "status": "NO_EVIDENCE"
+    },
+    "unselected_and_base_untouched": {
+      "status": "NO_EVIDENCE"
+    },
+    "pre_post_consumer_binding": {
+      "status": "NO_EVIDENCE"
+    }
+  },
+  "failed_attempts": {
+    "count": 5,
+    "status": "PRESERVED_IN_GPU_LEDGER",
+    "note": "engineering failures before successful canary; not re-run"
+  },
+  "note": "No canary assertions were re-run for this closeout."
+}

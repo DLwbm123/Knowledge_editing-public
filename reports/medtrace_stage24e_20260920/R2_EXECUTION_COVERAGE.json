@@ -1,0 +1,542 @@
+{
+  "run_id": "stage24e-r2-20260920-job525",
+  "fixed_public_commit": "4610eecef5b432bbbccee9483e2f69464a509150",
+  "scope": "read-only reconstruction from existing runtime events, outputs, ledgers and verdicts",
+  "arms": {
+    "B0": {
+      "initial_writer_count": 19,
+      "initial_W0": "NO_EVIDENCE: W0 identity is referenced by binding/checkpoint artifacts but no per-writer W0 hash list is in EVENTS.jsonl",
+      "initial_update_steps": "NO_EVIDENCE: runtime event stream records insertion prepare/generate but no per-writer optimizer-step trace",
+      "insert_prepared_by_prefix": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 2
+      },
+      "insert_generated_by_prefix": {
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 1,
+        "5": 1,
+        "6": 1,
+        "7": 1,
+        "8": 1,
+        "9": 1,
+        "10": 1,
+        "11": 1,
+        "12": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "16": 1,
+        "17": 1,
+        "18": 1,
+        "19": 2
+      },
+      "native_runtime_outputs": 18,
+      "final_n19_native_outputs": 19,
+      "maintenance_slots_expected": 0,
+      "maintenance_prepared_slots": 0,
+      "maintenance_executed_slots": 0,
+      "maintenance_step_events": 0,
+      "maintenance_slots": [],
+      "double_slot_prefixes": [],
+      "teacher_binding": {
+        "status": "PARTIAL_EVIDENCE",
+        "evidence": "private/TEACHER_REPLAY.json: 36/36 rows teacher_tokens_equal_current_Base=true, teacher_kind=FROZEN_BASE_ALL_EDITING_OFF; no per-maintenance event teacher binding"
+      },
+      "mask_state": {
+        "status": "NO_EVIDENCE",
+        "evidence": "not present in runtime event fields"
+      },
+      "native_checks": {
+        "status": "EVIDENCE",
+        "details": "18 prefix insertion native outputs plus 19 final prefix19 native rows"
+      },
+      "N11_endpoint": {
+        "status": "NOT_EXECUTED",
+        "details": "only prefix11 insertion native check exists; no full N11 panel"
+      },
+      "N19_endpoint": {
+        "status": "EXECUTED_AND_SCORED",
+        "details": "prefix19 panel 79 rows; all 79 have verdicts"
+      },
+      "training_support_and_teacher_tasks": {
+        "status": "PARTIAL_EVIDENCE",
+        "details": "teacher replay 36 rows; no separate support-task event inventory"
+      },
+      "judge_release_barrier_order": {
+        "status": "NO_EVIDENCE",
+        "details": "EVENTS.jsonl has no Judge barrier events; verdicts were available after generation"
+      },
+      "next_write_order": {
+        "status": "PARTIAL_EVIDENCE",
+        "details": "insert/maintenance event order is recorded; no online judge-before-next-write event"
+      }
+    },
+    "B1": {
+      "initial_writer_count": 19,
+      "initial_W0": "NO_EVIDENCE: W0 identity is referenced by binding/checkpoint artifacts but no per-writer W0 hash list is in EVENTS.jsonl",
+      "initial_update_steps": "NO_EVIDENCE: runtime event stream records insertion prepare/generate but no per-writer optimizer-step trace",
+      "insert_prepared_by_prefix": {
+        "1": 1,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2,
+        "10": 2,
+        "11": 2,
+        "12": 2,
+        "13": 2,
+        "14": 2,
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 2,
+        "19": 3
+      },
+      "insert_generated_by_prefix": {
+        "1": 1,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2,
+        "10": 2,
+        "11": 2,
+        "12": 2,
+        "13": 2,
+        "14": 2,
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 2,
+        "19": 3
+      },
+      "native_runtime_outputs": 18,
+      "final_n19_native_outputs": 19,
+      "maintenance_slots_expected": 23,
+      "maintenance_prepared_slots": 18,
+      "maintenance_executed_slots": 16,
+      "maintenance_step_events": 400,
+      "maintenance_slots": [
+        {
+          "slot_id": "t2",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t3",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t4",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t5",
+          "prepared_events": 1,
+          "step_events": 0,
+          "actual_steps": 0,
+          "status": "NOT_EXECUTED"
+        },
+        {
+          "slot_id": "t6",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t7",
+          "prepared_events": 2,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t8",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t9",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t10",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t11",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t12",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t13",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t14",
+          "prepared_events": 1,
+          "step_events": 0,
+          "actual_steps": 0,
+          "status": "NOT_EXECUTED"
+        },
+        {
+          "slot_id": "t15",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t16",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t17",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t18",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t19",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        }
+      ],
+      "double_slot_prefixes": [
+        "7",
+        "9",
+        "11",
+        "12",
+        "13"
+      ],
+      "teacher_binding": {
+        "status": "PARTIAL_EVIDENCE",
+        "evidence": "private/TEACHER_REPLAY.json: 36/36 rows teacher_tokens_equal_current_Base=true, teacher_kind=FROZEN_BASE_ALL_EDITING_OFF; no per-maintenance event teacher binding"
+      },
+      "mask_state": {
+        "status": "NO_EVIDENCE",
+        "evidence": "not present in runtime event fields"
+      },
+      "native_checks": {
+        "status": "EVIDENCE",
+        "details": "18 prefix insertion native outputs plus 19 final prefix19 native rows"
+      },
+      "N11_endpoint": {
+        "status": "NOT_EXECUTED",
+        "details": "only prefix11 insertion native check exists; no full N11 panel"
+      },
+      "N19_endpoint": {
+        "status": "EXECUTED_AND_SCORED",
+        "details": "prefix19 panel 79 rows; all 79 have verdicts"
+      },
+      "training_support_and_teacher_tasks": {
+        "status": "PARTIAL_EVIDENCE",
+        "details": "teacher replay 36 rows; no separate support-task event inventory"
+      },
+      "judge_release_barrier_order": {
+        "status": "NO_EVIDENCE",
+        "details": "EVENTS.jsonl has no Judge barrier events; verdicts were available after generation"
+      },
+      "next_write_order": {
+        "status": "PARTIAL_EVIDENCE",
+        "details": "insert/maintenance event order is recorded; no online judge-before-next-write event"
+      }
+    },
+    "B2": {
+      "initial_writer_count": 19,
+      "initial_W0": "NO_EVIDENCE: W0 identity is referenced by binding/checkpoint artifacts but no per-writer W0 hash list is in EVENTS.jsonl",
+      "initial_update_steps": "NO_EVIDENCE: runtime event stream records insertion prepare/generate but no per-writer optimizer-step trace",
+      "insert_prepared_by_prefix": {
+        "1": 1,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2,
+        "10": 2,
+        "11": 2,
+        "12": 2,
+        "13": 2,
+        "14": 2,
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 2,
+        "19": 3
+      },
+      "insert_generated_by_prefix": {
+        "1": 1,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2,
+        "10": 2,
+        "11": 2,
+        "12": 2,
+        "13": 2,
+        "14": 2,
+        "15": 2,
+        "16": 2,
+        "17": 2,
+        "18": 2,
+        "19": 3
+      },
+      "native_runtime_outputs": 18,
+      "final_n19_native_outputs": 19,
+      "maintenance_slots_expected": 23,
+      "maintenance_prepared_slots": 18,
+      "maintenance_executed_slots": 16,
+      "maintenance_step_events": 420,
+      "maintenance_slots": [
+        {
+          "slot_id": "t2",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t3",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t4",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t5",
+          "prepared_events": 1,
+          "step_events": 0,
+          "actual_steps": 0,
+          "status": "NOT_EXECUTED"
+        },
+        {
+          "slot_id": "t6",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t7",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t8",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t9",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t10",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t11",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t12",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t13",
+          "prepared_events": 2,
+          "step_events": 40,
+          "actual_steps": 40,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t14",
+          "prepared_events": 1,
+          "step_events": 0,
+          "actual_steps": 0,
+          "status": "NOT_EXECUTED"
+        },
+        {
+          "slot_id": "t15",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t16",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t17",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t18",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        },
+        {
+          "slot_id": "t19",
+          "prepared_events": 1,
+          "step_events": 20,
+          "actual_steps": 20,
+          "status": "EXECUTED"
+        }
+      ],
+      "double_slot_prefixes": [
+        "7",
+        "9",
+        "11",
+        "12",
+        "13"
+      ],
+      "teacher_binding": {
+        "status": "PARTIAL_EVIDENCE",
+        "evidence": "private/TEACHER_REPLAY.json: 36/36 rows teacher_tokens_equal_current_Base=true, teacher_kind=FROZEN_BASE_ALL_EDITING_OFF; no per-maintenance event teacher binding"
+      },
+      "mask_state": {
+        "status": "NO_EVIDENCE",
+        "evidence": "not present in runtime event fields"
+      },
+      "native_checks": {
+        "status": "EVIDENCE",
+        "details": "18 prefix insertion native outputs plus 19 final prefix19 native rows"
+      },
+      "N11_endpoint": {
+        "status": "NOT_EXECUTED",
+        "details": "only prefix11 insertion native check exists; no full N11 panel"
+      },
+      "N19_endpoint": {
+        "status": "EXECUTED_AND_SCORED",
+        "details": "prefix19 panel 79 rows; all 79 have verdicts"
+      },
+      "training_support_and_teacher_tasks": {
+        "status": "PARTIAL_EVIDENCE",
+        "details": "teacher replay 36 rows; no separate support-task event inventory"
+      },
+      "judge_release_barrier_order": {
+        "status": "NO_EVIDENCE",
+        "details": "EVENTS.jsonl has no Judge barrier events; verdicts were available after generation"
+      },
+      "next_write_order": {
+        "status": "PARTIAL_EVIDENCE",
+        "details": "insert/maintenance event order is recorded; no online judge-before-next-write event"
+      }
+    }
+  },
+  "overall_findings": [
+    "B0 has 19 insertion prefixes and no maintenance events.",
+    "B1/B2 each prepare 23 maintenance slots, but t5 and t14 have no MAINTENANCE_STEP events.",
+    "B1 executes 400 maintenance steps across 20 slots; B2 executes 420 across 21 slots.",
+    "All three arms have 97 output rows: 18 prefix insertion natives plus a 79-row prefix19 panel.",
+    "The full N11 panel was not executed.",
+    "Missing event fields are marked NO_EVIDENCE; absent step events are marked NOT_EXECUTED."
+  ]
+}
