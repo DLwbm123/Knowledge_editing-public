@@ -87,7 +87,8 @@ def main():
         phase('CANARY_DEPENDENCIES');wait_jobs(dev)
         import hashlib
         stage=ROOT/'source/scripts/medtrace/stage15.py'
-        write(ROOT/'private/CANARY_SOURCE_VERSION.json',dict(stage15_sha256=hashlib.sha256(stage.read_bytes()).hexdigest(),note='Initial BP canary before additional diagnostics-only logging and configurable VERIFY stopping'))
+        if not (ROOT/'private/CANARY_SOURCE_VERSION.json').exists():
+            write(ROOT/'private/CANARY_SOURCE_VERSION.json',dict(stage15_sha256=hashlib.sha256(stage.read_bytes()).hexdigest(),note='Initial BP canary before additional diagnostics-only logging and configurable VERIFY stopping'))
         stage.write_bytes((ROOT/'stage15_next.py').read_bytes())
         ps=launch(job('r2-canary-ps',[1,2],['P+S']),3);wait_jobs([ps]);dev.append(ps)
         cross=[launch(job('cross-g2',[1,2],[],mode='crosscheck'),2),launch(job('cross-g3',[1,2],[],mode='crosscheck'),3)]

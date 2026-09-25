@@ -262,6 +262,14 @@ def main():
                     router.add(t['canonical_edit_id'],key,radius)
                     for step in ([320] if arm=='B0' else job.get('steps',[80,160,320])):
                         label=arm if arm=='B0' else f'{arm}@{step}'
+                        receipt=folder/label/f'p{t["order"]:03d}'/'CONSUMERS.json'
+                        if receipt.exists():
+                            saved=read(receipt)
+                            expected={(r['task'],r['query_id']) for r in t['evaluation']}
+                            if ({(r['task'],r['query_id']) for r in saved}!=expected or len(saved)!=len(t['evaluation'])
+                                or any(r['arm']!=label or r['seed']!=seed or r['edit']!=t['canonical_edit_id'] or r['mode']!='single' for r in saved)):
+                                raise ValueError('Saved generation binding changed')
+                            continue
                         chosen=expert if step==320 else load_expert(runtime,t,seed,arm,step)
                         old.evaluate(runtime,[t],{t['canonical_edit_id']:chosen},router,label,seed,'single',1,
                                      folder/label/f'p{t["order"]:03d}')
