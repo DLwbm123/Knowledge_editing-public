@@ -88,8 +88,9 @@ def make_protection(runtime, task, run, expert):
                 old_loss=float(a.detach()),callback_old_component_doubled=float(b.detach()),max_abs_grad_delta=max_abs))
             if not same:raise ValueError('Old U KL and callback old component differ')
         finally:hook.detach()
-    trace=[]
+    trace=read(run/'U_TRACE.json') if (run/'U_TRACE.json').exists() else []
     def callback(_runtime, hook, selected_expert, step, stage):
+        while trace and trace[-1]['step']>=step:trace.pop()
         params=list(selected_expert.parameters())
         before=[p.grad.detach().clone() for p in params]
         old_losses=[]
