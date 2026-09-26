@@ -135,5 +135,10 @@ def final_report():
         '逐题变化与私有评分保留在 private/reports；公开仅聚合。配对区间以编辑为重采样单位，来源聚类敏感性单独提供；重复观测不增加病例数。',
         'loss/梯度曲线仅用于训练诊断，不等于自由生成性能提升。输出token一致性与参考答案正确性分别计算。',
         '保留本轮 B0/P/候选专家及关键初始化，用于配对复现与部署；基线临时权重在最后消费者完成后按清单清理。']
+    extension=ROOT/'public/WALLCLOCK_EXTENSION.json'
+    if extension.exists():
+        ext=read(extension)
+        lines+=['','用户授权延期：原始计时与资源消耗未重置；本轮不再满足最初16小时墙钟限制。',
+                f"延期停训 UTC {ext['new_train_stop']}；硬截止 UTC {ext['new_deadline']}。累计16 GPU小时和6000 Judge提交上限保持。"]
     if state.get('error'):lines+=['','运行遇到技术或预算阻塞，详细证据保留在私有状态回执。']
     (ROOT/'public/REPORT_ZH.md').write_text('\n'.join(lines)+'\n')

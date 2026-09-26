@@ -52,9 +52,9 @@ def wait_jobs(ids):
 def score_wait(ids):
     from report_r2 import collect
     keys={r[k] for r in collect(ids) for k in ['judge_key','base_judge_key']}
-    blocked=set(read(ROOT/'private/judge/JUDGE_MISSING_LOCK.json')['keys'])
     while True:
         guard()
+        blocked=set(read(ROOT/'private/judge/JUDGE_MISSING_LOCK.json')['keys'])
         missing={k for k in keys if not (ROOT/'private/judge/scores'/f'{k}.json').exists()}
         if not missing-blocked:return
         time.sleep(15)
