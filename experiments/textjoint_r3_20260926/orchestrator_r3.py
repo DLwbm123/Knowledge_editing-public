@@ -78,8 +78,10 @@ def main():
  active=[]
  try:
   # The first two-edit canary was explicitly launched after source/data audit.
-  canary=read(ROOT/'ACTIVE_GPU2.json');canary.setdefault('reserved_seconds',600)
-  wait([canary]);wait_scores(canary=True)
+  if read(ROOT/'jobs/canary/STATUS.json')['status']!='GPU_COMPLETE':
+   canary=read(ROOT/'ACTIVE_GPU2.json');assert canary['job']=='canary';canary.setdefault('reserved_seconds',600)
+   wait([canary])
+  if not (ROOT/'CANARY_CLOSURE.json').exists():wait_scores(canary=True)
   write(ROOT/'CANARY_CLOSURE.json',dict(status='PASS',Judge='complete or exact-input reuse',GPU=read(ROOT/'jobs/canary/CANARY.json')))
   write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase='CAL_ROUTE',epoch=time.time()))
   wait([launch(dict(id='calibration',mode='calibration',orders=list(range(1,25))),3,600)])

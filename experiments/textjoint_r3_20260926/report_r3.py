@@ -86,7 +86,7 @@ def report(final=False):
  active_seconds=sum(time.time()-s['started_epoch'] for s in ledger['gpu_sessions'] if s.get('ended_epoch') is None)
  used=ledger['gpu_seconds_used']+active_seconds
  write(ROOT/'public/RESOURCE_LEDGER_AGGREGATE.json',dict(historical_gpu_seconds=ledger['historical_gpu_seconds'],new_gpu_seconds=used-ledger['historical_gpu_seconds'],cumulative_gpu_seconds=used,remaining_gpu_seconds=57600-used,historical_judge_attempt_items=ledger['historical_judge_attempt_items'],new_judge_attempt_items=ledger['judge_submission_attempt_items']-ledger['historical_judge_attempt_items'],cumulative_judge_attempt_items=ledger['judge_submission_attempt_items'],remaining_judge_attempt_items=6000-ledger['judge_submission_attempt_items'],active_sessions=sum(s.get('ended_epoch') is None for s in ledger['gpu_sessions'])))
- write(ROOT/'public/DIAGNOSTIC_AGGREGATE.json',route_summary(diagnostics,scores))
+ write(ROOT/'public/DIAGNOSTIC_AGGREGATE.json',dict(FORCED_ON_performance=summarize(diagnostics,scores),note='All diagnostic outputs force the associated expert; recorded R0 decisions are counterfactual routing metadata, not actual activation. Base OFF uses the frozen Base scores and outputs.'))
  # Compare bank transitions to single only on matching input/edit/arm identities.
  transitions=[]
  for (panel,mode,prefix),rows in cohorts.items():
