@@ -29,7 +29,7 @@ def main():
   for chunk,orders in enumerate([list(range(3,13)),list(range(13,25))]):
    write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase=f'DEV_DOSES_{chunk}',epoch=time.time()))
    guard_reserve(4400,True);active=[]
-   for i,arm in enumerate(['B125','B25']):active.append(launch(dict(id=f'dev-{arm}-{chunk}',mode='single',orders=orders,writer=arm,prefixes=[]),2+(i+chunk)%2,2200))
+   for i,arm in enumerate(['B125','B25']):active.append(launch(dict(id=f'dev-{arm}-{chunk}'+('-resume1' if chunk==0 else ''),mode='single',orders=orders,writer=arm,prefixes=[]),2+(i+chunk)%2,2200))
    wait(active);active=[];report()
   guard_reserve(3000,True);write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase='DEV_SEQ24',epoch=time.time()))
   for i,arm in enumerate(['B125','B25']):active.append(launch(dict(id=f'dev-seq-{arm}',mode='sequential',orders=list(range(1,25)),writer=arm,prefixes=[24]),2+i,1500))

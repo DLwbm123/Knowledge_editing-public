@@ -7,9 +7,9 @@ from datetime import datetime
 
 def epoch(s):return datetime.fromisoformat(s).timestamp()
 def gpu(index):
- rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.used','--format=csv,noheader,nounits'],text=True)
+ rows=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.free','--format=csv,noheader,nounits'],text=True)
  row=next(r.split(', ') for r in rows.splitlines() if r.split(', ')[0]==str(index))
- if int(row[2])>=100:raise RuntimeError(f'GPU {index} is not idle; do not disturb other tasks')
+ if int(row[2])<24000:raise RuntimeError(f'GPU {index} lacks 24 GB free memory; do not disturb other tasks')
  return row[1]
 def command(pid):
  try:return Path(f'/proc/{pid}/cmdline').read_bytes().replace(b'\0',b' ').decode()
