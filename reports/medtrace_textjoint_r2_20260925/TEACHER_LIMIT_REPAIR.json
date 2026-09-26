@@ -1,0 +1,9 @@
+{
+  "reason": "Legacy hardcoded teacher limit128 conflicts with frozen max_new_tokens1024",
+  "actual_failed_prefix_tokens": 158,
+  "repair": "Validate against runtime generation cap; no truncation, no generation or KL change",
+  "test": "PASS 1/128/158/1024 tokens EOS causal shift and invalid boundaries",
+  "budget_reset": false,
+  "deadline_changed": false,
+  "epoch": 1790393851.885487
+}
