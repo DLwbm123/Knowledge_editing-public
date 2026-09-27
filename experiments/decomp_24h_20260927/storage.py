@@ -88,6 +88,14 @@ class Store:
  def commit(self,rel):
   with self.lock() as d:self._finish(d,rel,d['artifacts'][rel])
  def _write(self,rel,data,kind,consumers,pin,verify=None,fault=None,exclusive=False):
+  # Serialize the entire transaction for a shared artifact, not just its reservation.
+  self.path(rel);locks=self.root/'WRITE_LOCKS';locks.mkdir(exist_ok=True)
+  with (locks/(hashlib.sha256(rel.encode()).hexdigest()+'.lock')).open('a') as f:
+   fcntl.flock(f,fcntl.LOCK_EX)
+   with self.lock() as d:pending=d['artifacts'].get(rel,{}).get('status')=='WRITING'
+   if pending:self.reconcile(rel)
+   return self._write_locked(rel,data,kind,consumers,pin,verify,fault,exclusive)
+ def _write_locked(self,rel,data,kind,consumers,pin,verify=None,fault=None,exclusive=False):
   tx=self.reserve(rel,len(data),kind,consumers,pin,hashlib.sha256(data).hexdigest())
   with self.lock() as d:tmp=self.path(d['artifacts'][rel]['tmp_path'])
   p=self.path(rel);p.parent.mkdir(parents=True,exist_ok=True)

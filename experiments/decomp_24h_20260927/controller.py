@@ -125,7 +125,11 @@ def main():
   time.sleep(15)
  if time.time()>=deadline:reason='HARD_DEADLINE'
  if reason:
-  for x in active:stop(x['pid'])
+  if reason=='WORKER_FAILURE':
+   from storage import atomic_control
+   atomic_control(ROOT/'ADMISSION_STOP',b'Worker failure; preserve healthy current units, stop further admission')
+  else:
+   for x in active:stop(x['pid'])
  write(ROOT/'RUN_STATUS.json',dict(status='BLOCKED' if reason else 'GPU_QUEUE_FINISHED',reason=reason,epoch=time.time()))
  report(final=not reason)
  if not reason:

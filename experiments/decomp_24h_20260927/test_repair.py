@@ -32,6 +32,23 @@ def judge_test():
   d=json.loads((r/'RESOURCE_LEDGER.json').read_text());assert d['judge_submission_attempt_items']==1 and d['judge_attempts'][0]['status']=='FORMAT_VALID'
  return dict(interrupted_publication_recovered=True,idempotent=True,new_judge_calls=0)
 
+def concurrent_writer(root,ready,slow):
+ import time
+ def pause(point):
+  if slow and point=='reserve':ready.set();time.sleep(.3)
+ if not slow:assert ready.wait(5)
+ Store(root)._write('private/judge/pending/shared.json',b'{"key":"same"}','evidence',(),False,fault=pause)
+
+def concurrency_test():
+ with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as td:
+  r=Path(td);(r/'STORAGE_POLICY.json').write_text(json.dumps(dict(hard_bytes=10**7,soft_bytes=8*10**6,checkpoint_bytes=10**7,teacher_bytes=10**7,min_free_bytes=0)))
+  ready=mp.Event();children=[mp.Process(target=concurrent_writer,args=(r,ready,slow)) for slow in [True,False]]
+  for p in children:p.start()
+  for p in children:p.join(10);assert p.exitcode==0
+  assert json.loads((r/'private/judge/pending/shared.json').read_text())=={'key':'same'}
+  assert json.loads((r/'STORAGE_LEDGER.json').read_text())['artifacts']['private/judge/pending/shared.json']['status']=='READY'
+ return True
+
 def main():
  results=[]
  for point in ['reserve','fsync','verify','replace']:
@@ -56,5 +73,5 @@ def main():
  from paired_stats import interaction,summarize_values
  assert not summarize_values([])['estimable']
  assert not interaction([],{},lambda task:True)['metric_estimable']
- print(json.dumps(dict(status='PASS',faults=results,mixed_order_namespace=True,judge=judge_test(),empty_metrics_not_complete=True)))
+ print(json.dumps(dict(status='PASS',faults=results,mixed_order_namespace=True,judge=judge_test(),concurrent_shared_write=concurrency_test(),empty_metrics_not_complete=True)))
 if __name__=='__main__':main()
