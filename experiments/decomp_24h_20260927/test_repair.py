@@ -49,6 +49,16 @@ def concurrency_test():
   assert json.loads((r/'STORAGE_LEDGER.json').read_text())['artifacts']['private/judge/pending/shared.json']['status']=='READY'
  return True
 
+def quota_test():
+ with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as td:
+  r=Path(td);policy=dict(hard_bytes=10,soft_bytes=8,checkpoint_bytes=10,teacher_bytes=10,min_free_bytes=0,quotas_enabled=False)
+  (r/'STORAGE_POLICY.json').write_text(json.dumps(policy));Store(r).write('evidence.json',b'x'*100)
+  policy['quotas_enabled']=True;(r/'STORAGE_POLICY.json').write_text(json.dumps(policy))
+  try:Store(r).write('other.json',b'x'*100)
+  except RuntimeError:pass
+  else:raise AssertionError('Enabled quota did not enforce limit')
+ return True
+
 def main():
  results=[]
  for point in ['reserve','fsync','verify','replace']:
@@ -73,5 +83,5 @@ def main():
  from paired_stats import interaction,summarize_values
  assert not summarize_values([])['estimable']
  assert not interaction([],{},lambda task:True)['metric_estimable']
- print(json.dumps(dict(status='PASS',faults=results,mixed_order_namespace=True,judge=judge_test(),concurrent_shared_write=concurrency_test(),empty_metrics_not_complete=True)))
+ print(json.dumps(dict(status='PASS',faults=results,mixed_order_namespace=True,judge=judge_test(),concurrent_shared_write=concurrency_test(),quota_waiver=quota_test(),empty_metrics_not_complete=True)))
 if __name__=='__main__':main()

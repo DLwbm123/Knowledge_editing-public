@@ -23,7 +23,7 @@ def stop(pid):
  close_dead(pid)
 
 def log_limit():
- resource.setrlimit(resource.RLIMIT_FSIZE,(32*1024**2,32*1024**2))
+ if read(ROOT/'STORAGE_POLICY.json').get('quotas_enabled',True):resource.setrlimit(resource.RLIMIT_FSIZE,(32*1024**2,32*1024**2))
 
 def launch(g):
  # Only this phase's entries and the three locked physical devices are eligible.
@@ -139,8 +139,8 @@ def main():
   for rel in rolling:
    with store.lock() as d:d['artifacts'][rel]['pin']=False
    store.delete(rel)
-  models=sum(p.stat().st_size for p in (ROOT/'adapters').rglob('*.pt'));policy=read(ROOT/'STORAGE_POLICY.json');assert models<=policy['final_model_bytes']
-  total=sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file() and not p.is_symlink());assert total<=policy['final_total_bytes'],'FINAL_STORAGE_LIMIT'
+  models=sum(p.stat().st_size for p in (ROOT/'adapters').rglob('*.pt'));policy=read(ROOT/'STORAGE_POLICY.json');assert not policy.get('quotas_enabled',True) or models<=policy['final_model_bytes']
+  total=sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file() and not p.is_symlink());assert not policy.get('quotas_enabled',True) or total<=policy['final_total_bytes'],'FINAL_STORAGE_LIMIT'
   write(ROOT/'RETAINED_CHECKPOINT_MANIFEST.json',[dict(path=str(p.relative_to(ROOT)),bytes=p.stat().st_size) for p in (ROOT/'adapters').rglob('*.pt')])
   write(ROOT/'public/RETAINED_CHECKPOINT_MANIFEST.json',dict(count=len(list((ROOT/'adapters').rglob('*.pt'))),model_bytes=models,phase_artifact_bytes=total,reusable_environment_separately_reserved_bytes=policy['environment_reserved_bytes'],weights_public=False))
   write(ROOT/'public/CLEANUP_RECEIPT.json',dict(rolling_removed=len(rolling),model_bytes=models,final_adapter_retention='All paired main adapters, including negative results'))

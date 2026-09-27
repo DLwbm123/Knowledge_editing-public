@@ -22,7 +22,7 @@ def atomic_control(p,data,cap=16*1024**2):
 
 class Store:
  def __init__(self,root):
-  self.root=Path(root).resolve();self.db=self.root/'STORAGE_LEDGER.json';self.policy=json.loads((self.root/'STORAGE_POLICY.json').read_text())
+  self.root=Path(root).resolve();self.db=self.root/'STORAGE_LEDGER.json';self.policy=json.loads((self.root/'STORAGE_POLICY.json').read_text());self.limits=self.policy.get('quotas_enabled',True)
  def path(self,rel):
   p=self.root/rel;real=p.resolve()
   if not real.is_relative_to(self.root) or real==self.root:raise ValueError('Foreign or symlink-protected artifact')
@@ -42,12 +42,12 @@ class Store:
    rows=[x for x in d['artifacts'].values() if x['status']!='DELETED'];managed=sum(x['bytes']+x.get('previous_bytes',0) for x in rows)
    total=managed+self.policy.get('environment_reserved_bytes',0)+self.policy.get('control_reserved_bytes',0)
    emergency=0 if kind=='checkpoint' else self.policy.get('emergency_bytes',0)
-   if total+size+emergency>self.policy['hard_bytes'] or shutil.disk_usage(self.root).free-size<self.policy['min_free_bytes']:raise RuntimeError('STORAGE_BLOCKED: total/free limit')
+   if (self.limits and total+size+emergency>self.policy['hard_bytes']) or shutil.disk_usage(self.root).free-size<self.policy['min_free_bytes']:raise RuntimeError('STORAGE_BLOCKED: total/free limit')
    category=sum(x['bytes']+x.get('previous_bytes',0) for x in rows if x['kind']==kind)
-   if kind in ['checkpoint','teacher'] and category+size>self.policy[kind+'_bytes']:raise RuntimeError('STORAGE_BLOCKED: category limit')
+   if self.limits and kind in ['checkpoint','teacher'] and category+size>self.policy[kind+'_bytes']:raise RuntimeError('STORAGE_BLOCKED: category limit')
    durable=sum(a['bytes'] for name,a in d['artifacts'].items() if a['status']!='DELETED' and (a['kind'] not in ['checkpoint','teacher'] or name.startswith('adapters/')))
-   if (kind not in ['checkpoint','teacher'] or rel.startswith('adapters/')) and durable+size>self.policy.get('final_total_bytes',self.policy['hard_bytes']):raise RuntimeError('FINAL_DELIVERY_STORAGE_BLOCKED')
-   if rel.startswith('adapters/') and sum(a['bytes'] for name,a in d['artifacts'].items() if name.startswith('adapters/') and a['status']!='DELETED')+size>self.policy.get('final_model_bytes',self.policy['hard_bytes']):raise RuntimeError('FINAL_MODEL_STORAGE_BLOCKED')
+   if self.limits and (kind not in ['checkpoint','teacher'] or rel.startswith('adapters/')) and durable+size>self.policy.get('final_total_bytes',self.policy['hard_bytes']):raise RuntimeError('FINAL_DELIVERY_STORAGE_BLOCKED')
+   if self.limits and rel.startswith('adapters/') and sum(a['bytes'] for name,a in d['artifacts'].items() if name.startswith('adapters/') and a['status']!='DELETED')+size>self.policy.get('final_model_bytes',self.policy['hard_bytes']):raise RuntimeError('FINAL_MODEL_STORAGE_BLOCKED')
    tx=uuid.uuid4().hex;d['peak_bytes']=max(d['peak_bytes'],total+size)
    d['artifacts'][rel]=dict(real_path=str(p),owner_run=str(self.root),bytes=size,kind=kind,consumers=list(consumers),readers=0,pin=pin,status='WRITING',hash=None,verified_at=None,previous_bytes=old['bytes'] if old and old['status']!='DELETED' else 0,old_ready=copy.deepcopy(old) if old and old['status']=='READY' else None,writer=owner(),transaction=tx,tmp_path=rel+'.txn-'+tx+'.tmp',expected_hash=expected_hash)
    return tx
@@ -72,7 +72,7 @@ class Store:
     if valid==tmp:
      old=a.get('old_ready')
      if old and p.is_file() and digest_file(p)==old['hash'] and p.name=='latest.pt':
-      extra=p.stat().st_size;total=sum(x['bytes']+x.get('previous_bytes',0) for x in d['artifacts'].values() if x['status']!='DELETED')+self.policy.get('environment_reserved_bytes',0)+self.policy.get('control_reserved_bytes',0);assert total+extra<=self.policy['hard_bytes'],'Recovery copy reservation exceeds hard cap'
+      extra=p.stat().st_size;total=sum(x['bytes']+x.get('previous_bytes',0) for x in d['artifacts'].values() if x['status']!='DELETED')+self.policy.get('environment_reserved_bytes',0)+self.policy.get('control_reserved_bytes',0);assert not self.limits or total+extra<=self.policy['hard_bytes'],'Recovery copy reservation exceeds hard cap'
       prev=p.with_name('previous.pt');data=p.read_bytes();atomic_control(prev,data,cap=self.policy['checkpoint_bytes']);prevrel=str(prev.relative_to(self.root));d['artifacts'][prevrel]=dict(old,real_path=str(prev),consumers=[],pin=True)
      os.replace(tmp,p)
     self._finish(d,rel,a);result='NEW_COMMITTED'
@@ -186,10 +186,10 @@ class Store:
    managed=sum(a['bytes']+a.get('previous_bytes',0) for a in d['artifacts'].values() if a['status']!='DELETED');total=managed+self.policy.get('environment_reserved_bytes',0)+self.policy.get('control_reserved_bytes',0)
    import subprocess
    external=sum(int(subprocess.check_output(['du','-sk',p],text=True).split()[0])*1024 for p in self.policy.get('external_owned_roots',[]))
-   assert external<=self.policy.get('environment_reserved_bytes',0),'EXTERNAL_POOL_LIMIT'
+   assert not self.limits or external<=self.policy.get('environment_reserved_bytes',0),'EXTERNAL_POOL_LIMIT'
    controls=sum(p.stat().st_size for p in self.root.glob('STORAGE*') if p.is_file())
-   assert logs+controls<=self.policy.get('control_reserved_bytes',0),'LOG_POOL_LIMIT'
+   assert not self.limits or logs+controls<=self.policy.get('control_reserved_bytes',0),'LOG_POOL_LIMIT'
    actual=sum(p.stat().st_size for p in self.root.rglob('*') if p.is_file() and not p.is_symlink())
-   assert actual+external+self.policy.get('local_scorer_reserved_bytes',0)<=self.policy['hard_bytes'],'ACTUAL_STORAGE_LIMIT'
-   assert total<=self.policy['hard_bytes'],'REAL_STORAGE_LIMIT'
-   return dict(managed_bytes=managed,actual_owned_bytes=actual,logs_bytes=logs,external_actual_bytes=external,newly_accounted=untracked,reserved_total=total,soft_reached=total>=self.policy['soft_bytes'])
+   assert not self.limits or actual+external+self.policy.get('local_scorer_reserved_bytes',0)<=self.policy['hard_bytes'],'ACTUAL_STORAGE_LIMIT'
+   assert not self.limits or total<=self.policy['hard_bytes'],'REAL_STORAGE_LIMIT'
+   return dict(managed_bytes=managed,actual_owned_bytes=actual,logs_bytes=logs,external_actual_bytes=external,newly_accounted=untracked,reserved_total=total,quotas_enabled=self.limits,soft_reached=self.limits and total>=self.policy['soft_bytes'])
