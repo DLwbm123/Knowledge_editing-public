@@ -14,3 +14,17 @@ Primary eligibility uses frozen historical Base masks; new-backend Base is a sep
 Run the CPU storage/serialization checks via `selfcheck.main()` within the existing environment. Actual model canaries and `audit.main()` additionally check gradients, algebra, runtime imports and support separation. `scorer.py` reuses the isolated historical Judge runner and quarantine mechanism; it requires the operator's existing local authenticated CLI and the same explicit proxy. Successful full-input-identical Judge decisions may be reused; failed requests cannot be retried by renaming them.
 
 Publish only source and checked aggregate files from `run/public`. All private role tables, raw answers/tokens, per-question scores, checkpoints, model assets, credentials and process receipts remain private. A running phase is not a completed or published result.
+
+### PR5 repair checks
+
+Run `test_math.py` and `test_repair.py` in the actual execution environment with
+`CUDA_VISIBLE_DEVICES=''`; `RUN_ROOT` must identify the existing private overlay.
+The former exercises the imported CP/KL implementation, conversion and callback
+gradients. The latter kills real child writers at transaction boundaries and
+checks retained-response Judge recovery without making a Judge call.
+`freeze_science.py` creates a one-time model/import/role identity and refuses an
+existing lock. `audit.py` additionally requires the private
+`ROLE_AUDIT_INPUTS.json` inventory/candidate locations and performs full-input
+role checks. Historical weights need a per-file audited migration, never a
+blanket binding bypass. See `reports/decomp_24h_20260927/fix_pr5/FIX_AUDIT_ZH.md`
+for the real DEV9 qualification, the authorized G35 correction, and limitations.

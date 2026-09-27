@@ -9,6 +9,11 @@ from scripts.medtrace.run_selective_write import teacher_batch
 import worker_v3 as old
 LAYER='model.layers.30.mlp.down_proj'
 
+def generated_ids(result):
+ assert 'generated_token_ids' in result and 'raw_token_ids' not in result, 'run_dev16 generation schema mismatch'
+ assert isinstance(result['generated_token_ids'],list) and all(type(x) is int for x in result['generated_token_ids'])
+ return result['generated_token_ids']
+
 def selected(t):return t['order'] in read(ROOT/'EXPERIMENT_LOCK.json')['stage_diagnostics_orders']
 def spectrum(s):
  s=s.detach().float();nz=s[s>s.max().clamp_min(1e-20)*1e-6];return dict(effective_rank=len(nz),condition=float(nz.max()/nz.min()) if len(nz) else None,energy=float(s.square().sum()),singular_values=s.cpu().tolist())
@@ -44,5 +49,5 @@ def diagnose(runtime,t,ex,stage,seed,method):
    outputs.append(generate(runtime,dict(query_id=rec.record_id,question=rec.question,image_path=str(rec.image_path)),hook,1024))
   finally:hook.detach()
  mask=batch.labels[:,1:]!=-100;student=logits[0][:,:-1][mask];teacher=base[:,:-1][mask];kl=float((teacher.softmax(-1)*(teacher.log_softmax(-1)-student.log_softmax(-1))).sum(-1).mean())
- write(ROOT/'private/diagnostics'/f'{seed}-{method}-{t["order"]}-{stage}.json',dict(stage=stage,method=method,seed=seed,parameters=sum(p.numel() for p in ex.parameters()),matrix=matrix,modes=modes,residuals=energies,conversion_logit_max_abs=float((logits[0]-logits[1]).abs().max()),conversion_generation_equal=outputs[0]['raw_token_ids']==outputs[1]['raw_token_ids'],Base_to_student_native_answer_KL=kl,outputs=outputs))
+ write(ROOT/'private/diagnostics'/f'{seed}-{method}-{t["order"]}-{stage}.json',dict(stage=stage,method=method,seed=seed,parameters=sum(p.numel() for p in ex.parameters()),matrix=matrix,modes=modes,residuals=energies,conversion_logit_max_abs=float((logits[0]-logits[1]).abs().max()),conversion_generation_equal=generated_ids(outputs[0])==generated_ids(outputs[1]),Base_to_student_native_answer_KL=kl,outputs=outputs))
  del lr

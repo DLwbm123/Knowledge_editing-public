@@ -5,7 +5,8 @@ from datetime import datetime
 ROOT=Path(os.environ['RUN_ROOT'])
 def read(p):return json.loads(Path(p).read_text())
 def write(p,d):
- p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_name(p.name+'.'+str(os.getpid())+'.tmp');tmp.write_text(json.dumps(d,ensure_ascii=False,indent=2));os.replace(tmp,p)
+ from storage import Store
+ p=Path(p);Store(ROOT).write(str(p.relative_to(ROOT)),json.dumps(d,ensure_ascii=False,indent=2).encode())
 @contextlib.contextmanager
 def lock():
  with (ROOT/'RESOURCE_LEDGER.lock').open('a') as f:

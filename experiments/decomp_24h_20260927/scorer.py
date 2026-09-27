@@ -1,7 +1,7 @@
 """Bounded scoring consumer; reserves inherited budget before each isolated call."""
 import json,os,subprocess,sys,time,traceback,threading,signal
 from pathlib import Path
-from judge_recovery import transport_failure,quarantine
+from judge_recovery import transport_failure
 ROOT=Path(os.environ['SCORER_STATE']).resolve();SOURCE=Path(os.environ['SCORER_RUNTIME']);LOCAL=ROOT/'judge';REMOTE=os.environ['RUN_ROOT']
 sys.path.insert(0,str(SOURCE))
 from scripts.medtrace.stage17_judge import run_batch
@@ -23,11 +23,35 @@ def remote(code):
  r=subprocess.run(SSH,input=code,text=True,capture_output=True,timeout=45,check=True)
  return json.loads(r.stdout) if r.stdout.strip() else None
 
+def quarantine(local_root,remote_root,remote,batch,rows,evidence):
+ result=remote("import sys,json;sys.path.insert(0,'@RUN_ROOT@');from judge_io import quarantine;print(json.dumps(quarantine('@RUN_ROOT@',"+repr(batch['batch_id'])+","+repr(evidence)+")))")
+ p=local_root/'blocked_keys.json';d=json.loads(p.read_text());d['keys']=sorted(set(d['keys'])|set(result['keys']));p.write_text(json.dumps(d))
+
+def recover_local():
+ ledger=remote("import json;print(open('@RUN_ROOT@/RESOURCE_LEDGER.json').read())")
+ for attempt in ledger['judge_attempts']:
+  if attempt['status']!='RESERVED':continue
+  bid=attempt['id'];bundle=LOCAL/'batches'/bid;ep=bundle/'operator/execution_evidence'/f'{bid}.json';rp=bundle/'operator/responses'/f'{bid}.json'
+  ev=json.loads(ep.read_text()) if ep.exists() else {}
+  if ev.get('status')=='FORMAT_VALID' and rp.exists():
+   rows=remote("import json;from pathlib import Path;r=Path('@RUN_ROOT@/private/judge/pending');print(json.dumps([json.loads((r/(k+'.json')).read_text()) for k in "+repr(attempt['keys'])+"]))")
+   batch=dict(batch_id=bid,records=[r['record'] for r in rows]);response=json.loads(rp.read_text());decisions=validate(batch,response)
+   scores={r['key']:dict(key=r['key'],is_correct=v['is_correct'],payload_binding=digest(r['record']),batch_id=bid,protocol=PROTOCOL,evidence_status=ev['status']) for r,v in zip(rows,decisions,strict=True)}
+   remote("import sys,json;sys.path.insert(0,'@RUN_ROOT@');from judge_io import publish;print(json.dumps(publish('@RUN_ROOT@',"+repr(bid)+","+repr(scores)+","+repr(ev)+","+repr(response)+")))")
+  else:
+   ev=dict(ev,recovery='No valid retained success after verified singleton restart; never resubmit')
+   quarantine(ROOT,REMOTE,remote,dict(batch_id=bid),[],ev)
+
 def main():
+ import fcntl
+ ROOT.mkdir(parents=True,exist_ok=True);singleton=(ROOT/'SCORER.lock').open('a');fcntl.flock(singleton,fcntl.LOCK_EX|fcntl.LOCK_NB)
  LOCAL.mkdir(mode=0o700,exist_ok=True)
+ remote("import sys,json;sys.path.insert(0,'@RUN_ROOT@');from judge_io import recover;print(json.dumps(recover('@RUN_ROOT@')))")
+ recover_local()
  stop=remote("import json;from datetime import datetime;print(json.dumps(datetime.fromisoformat(json.load(open('@RUN_ROOT@/RUN_MANIFEST.json'))['deadline_at']).timestamp()))")
  consecutive_transport_failures=0
  while time.time()<stop-600:
+  assert sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file())<256*1024**2,'Local scorer evidence reserve exhausted'
   state=remote("import json\nfrom pathlib import Path\nr=Path('@RUN_ROOT@');p=r/'private/judge'\nprint(json.dumps({'pending':{f.stem:json.loads(f.read_text()) for f in (p/'pending').glob('*.json') if not (p/'scores'/f.name).exists()},'canary':json.loads((r/'RUN_STATUS.json').read_text())}))")
   if state['canary']['status'] in ['USER_STOPPED','BLOCKED','FAILED','BUDGET_STOP']:break
   blocked=set(json.loads((ROOT/'blocked_keys.json').read_text())['keys'])
@@ -57,7 +81,7 @@ with (r/'RESOURCE_LEDGER.lock').open('a') as f:
  assert d['physical_requests']+1<=d['physical_requests_limit']
  d['judge_submission_attempt_items']+=n;d['current_judge_attempts']=d['judge_submission_attempt_items']-d['historical_judge_attempts'];d['physical_requests']+=1
  d['judge_attempts'].append({'id':bid,'items':n,'status':'RESERVED','keys':KEYS})
- tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps(d,indent=2));os.replace(tmp,p)
+ import sys;sys.path.insert(0,str(r));from storage import Store;Store(r).write('RESOURCE_LEDGER.json',json.dumps(d).encode())
 print(json.dumps({'status':'RESERVED','items':n}))
 """.replace('BID',repr(bid)).replace('COUNT',str(len(rows))).replace('KEYS',repr([r['key'] for r in rows])))
   print(reservation,flush=True)
@@ -78,24 +102,13 @@ print(json.dumps({'status':'RESERVED','items':n}))
   decisions=validate(batch,response)
   scores={r['key']:dict(key=r['key'],is_correct=v['is_correct'],payload_binding=digest(r['record']),batch_id=bid,
      protocol=PROTOCOL,evidence_status=evidence['status']) for r,v in zip(rows,decisions,strict=True)}
-  remote("""import json,fcntl,os
-from pathlib import Path
-r=Path('@RUN_ROOT@');scores=SCORES;ev=EVIDENCE;bid=BID
-for key,value in scores.items():
- p=r/'private/judge/scores'/f'{key}.json'
- with p.open('x') as f:json.dump(value,f)
-p=r/'private/judge/evidence'/f'{bid}.json';p.parent.mkdir(exist_ok=True);p.write_text(json.dumps(ev,indent=2))
-with (r/'RESOURCE_LEDGER.lock').open('a') as f:
- fcntl.flock(f,fcntl.LOCK_EX);p=r/'RESOURCE_LEDGER.json';d=json.loads(p.read_text())
- a=next(a for a in d['judge_attempts'] if a['id']==bid);a.update(status='FORMAT_VALID',usage=ev.get('usage'))
- tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps(d,indent=2));os.replace(tmp,p)
-""".replace('SCORES',repr(scores)).replace('EVIDENCE',repr(evidence)).replace('BID',repr(bid)))
- remote("from pathlib import Path;Path('@RUN_ROOT@/SCORER_DONE').write_text('finished or budget exhausted')")
+  remote("import sys,json;sys.path.insert(0,'@RUN_ROOT@');from judge_io import publish;print(json.dumps(publish('@RUN_ROOT@',"+repr(bid)+","+repr(scores)+","+repr(evidence)+","+repr(response)+")))")
+ remote("import sys;sys.path.insert(0,'@RUN_ROOT@');from storage import Store;Store('@RUN_ROOT@').write('SCORER_DONE',b'finished or budget exhausted')")
  print('SCORING_CONSUMER_FINISHED',flush=True)
 if __name__=='__main__':
  try:main()
  except Exception as e:
   (ROOT/'JUDGE_FAILURE.json').write_text(json.dumps({'error':str(e),'traceback':traceback.format_exc(),'time':time.time()}));
-  try:remote("import json;from pathlib import Path;Path('@RUN_ROOT@/JUDGE_FAILURE.json').write_text(json.dumps("+repr({'error':'Scoring consumer failed; inspect preserved local evidence','time':__import__('time').time()})+"))")
+  try:remote("import sys,json;sys.path.insert(0,'@RUN_ROOT@');from storage import Store;Store('@RUN_ROOT@').write('JUDGE_FAILURE.json',json.dumps("+repr({'error':'Scoring consumer failed; inspect preserved local evidence','time':__import__('time').time()})+").encode())")
   except Exception:pass
   raise

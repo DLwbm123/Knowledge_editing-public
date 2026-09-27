@@ -1,5 +1,5 @@
 """Finite dependency queue, process identity checks, leases and original deadlines."""
-import os,time,json,signal,subprocess,fcntl
+import os,time,json,signal,subprocess,fcntl,resource,traceback
 from datetime import datetime
 from pathlib import Path
 from resources import ROOT,read,write,lock
@@ -22,6 +22,9 @@ def stop(pid):
  if alive(pid):os.killpg(pid,signal.SIGKILL)
  close_dead(pid)
 
+def log_limit():
+ resource.setrlimit(resource.RLIMIT_FSIZE,(32*1024**2,32*1024**2))
+
 def launch(g):
  # Only this phase's entries and the three locked physical devices are eligible.
  lines=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid','--format=csv,noheader'],text=True).splitlines()
@@ -29,7 +32,7 @@ def launch(g):
  free=subprocess.check_output(['nvidia-smi','-i',str(g['index']),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True)
  if int(free.strip())<30000:return None
  env=os.environ.copy();env.update(CUDA_VISIBLE_DEVICES=g['uuid'],PINNED_GPU_UUID=g['uuid'],PHYSICAL_GPU=str(g['index']),LEASE_SECONDS='7200',PYTHONUNBUFFERED='1',TMPDIR='/data/bmw/tmp',HF_HOME='/data/bmw/cache/huggingface',TORCH_HOME='/data/bmw/cache/torch',XDG_CACHE_HOME='/data/bmw/cache',CUDA_CACHE_PATH='/data/bmw/cache/cuda')
- with (ROOT/'logs'/f'worker{g["index"]}.log').open('ab') as f:p=subprocess.Popen(['/data/bmw/envs/v0/bin/python','/tmp/d1.py'],env=env,cwd=ROOT,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
+ with (ROOT/'logs'/f'worker{g["index"]}.log').open('ab') as f:p=subprocess.Popen(['/data/bmw/envs/v0/bin/python','/tmp/d1.py'],env=env,cwd=ROOT,stdout=f,stderr=subprocess.STDOUT,start_new_session=True,preexec_fn=log_limit)
  return dict(pid=p.pid,index=g['index'],uuid=g['uuid'],started_epoch=time.time(),entry='/tmp/d1.py')
 
 def build_blocks():
@@ -83,7 +86,9 @@ def main():
   if reason:break
   d=read(ROOT/'RESOURCE_LEDGER.json');used=d['current_gpu_seconds']+sum(now-s['started_epoch'] for s in d['gpu_sessions'] if not s.get('ended_epoch'))
   if used>=manifest['gpu_seconds_limit']:reason='GPU_BUDGET';break
-  if now-last_report>120:report();last_report=now
+  if now-last_report>120:
+   from storage import Store
+   disk=Store(ROOT).disk_audit();write(ROOT/'STORAGE_AUDIT.json',disk);report();last_report=now
   pending=[j for j in q if j['status']=='PENDING'];running=[j for j in q if j['status']=='RUNNING']
   if not pending and not running and not active:
    c=coverage()
@@ -99,6 +104,8 @@ def main():
    write(ap,amendments)
    nextblock=next((b for b in blocks if next(x for x in amendments['blocks'] if x['id']==b['id'])['status']=='NOT_STARTED'),None)
    if not nextblock:break
+   if disk['soft_reached']:reason='STORAGE_SOFT_WATERMARK';break
+   if (ROOT/'REPAIR_HOLD.json').exists():reason='REPAIR_CANARY_REVIEW_REQUIRED';break
    # Conservative pilot-derived per-unit forecast, with a 25% resource reserve.
    completed_units=sum(len(j.get('methods',[])) for j in q if j['status']=='COMPLETE');new_attempts=d['judge_submission_attempt_items']-d['historical_judge_attempts'];unit_seconds=max(60,used/max(1,completed_units));unit_judge=max(1,new_attempts/max(1,completed_units));units=sum(len(j.get('methods',[])) for j in nextblock['jobs']);forecast_gpu=unit_seconds*units*1.3;forecast_judge=unit_judge*units*1.5
    forecast=dict(block=nextblock['id'],units=units,GPU_seconds=forecast_gpu,Judge_items=forecast_judge,observed_units=completed_units,epoch=now)
@@ -133,4 +140,15 @@ def main():
   write(ROOT/'RETAINED_CHECKPOINT_MANIFEST.json',[dict(path=str(p.relative_to(ROOT)),bytes=p.stat().st_size) for p in (ROOT/'adapters').rglob('*.pt')])
   write(ROOT/'public/RETAINED_CHECKPOINT_MANIFEST.json',dict(count=len(list((ROOT/'adapters').rglob('*.pt'))),model_bytes=models,phase_artifact_bytes=total,reusable_environment_separately_reserved_bytes=policy['environment_reserved_bytes'],weights_public=False))
   write(ROOT/'public/CLEANUP_RECEIPT.json',dict(rolling_removed=len(rolling),model_bytes=models,final_adapter_retention='All paired main adapters, including negative results'))
-if __name__=='__main__':main()
+if __name__=='__main__':
+ try:main()
+ except Exception:
+  from storage import atomic_control
+  atomic_control(ROOT/'ADMISSION_STOP',b'Controller failure; finish current unit and stop admission')
+  # A reporting failure must stop admission without killing a healthy atomic job.
+  with (ROOT/'QUEUE.lock').open('a') as f:
+   fcntl.flock(f,fcntl.LOCK_EX);q=read(ROOT/'QUEUE.json')
+   for j in q:
+    if j['status']=='PENDING':j['status']='HOLD_CONTROLLER_ERROR'
+   write(ROOT/'QUEUE.json',q)
+  write(ROOT/'CONTROLLER_FAILURE.json',dict(traceback=traceback.format_exc(),epoch=time.time(),workers_preserved=True));write(ROOT/'RUN_STATUS.json',dict(status='BLOCKED',reason='CONTROLLER_EXCEPTION_SAFE_DRAIN'));raise

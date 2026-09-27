@@ -20,19 +20,21 @@ def new(kind):return {'CP':lambda:AsymmetricCPExpert(14336,4096,4),'TK':TuckerC4
 def save_final(store,rel,ex,seed,edit,kind,step,binding,consumers=()):
  payload=dict(expert={k:v.detach().cpu() for k,v in ex.state_dict().items()},seed=seed,edit=edit,kind=kind,step=step,binding=binding)
  store.save(rel,payload,consumers=consumers,pin=not consumers)
-def load(rel):
- d=torch.load(ROOT/rel,map_location='cuda',weights_only=True);ex=new(d['kind']);ex.load_state_dict(d['expert']);return ex,d
+def load(rel,want):
+ from bindings import load_expected
+ d=load_expected(rel,want);ex=new(d['kind']);ex.load_state_dict(d['expert']);return ex,d
 
-def stage(runtime,t,ex,kind,stage_name,seed,method,protect=None,g=None):
- store=Store(ROOT);slot=os.environ['PHYSICAL_GPU'];rel=f'checkpoints/slot{slot}/latest.pt';identity=dict(edit=t['canonical_edit_id'],kind=kind,stage=stage_name,seed=seed,method=method)
+def stage(runtime,t,ex,kind,stage_name,seed,method,protect=None,g=None,run_seed=None,structure=None):
+ from bindings import expected,rolling
+ assert run_seed is not None and structure is not None
+ store=Store(ROOT);slot=os.environ['PHYSICAL_GPU'];rel=f'checkpoints/slot{slot}/latest.pt';identity=expected(t,run_seed,structure,method,stage_name,0)
  from diagnostics import selected,diagnose
  diag=selected(t);hdiag=torch.randn(4,14336,device='cuda',generator=torch.Generator(device='cuda').manual_seed(20260927)) if diag else None
  seed_everything(seed);opt=optimizer(ex,runtime.model,stage_name);rec=old.record(t);batch=[runtime.build_edit_batch(rec)]+[runtime.build_edit_batch(replace(rec,question=q)) for q in t['semantic_fit_questions']]
  gb=[runtime.build_edit_batch(replace(rec,question=q)) for q in (g or [])];curve=[];start=0;steps={'native':200,'A2':80,'W0':320,'continuation':80}[stage_name];forwards=tokens=0;began=time.time();p=ROOT/rel
- if p.exists():
-  d=torch.load(p,map_location='cuda',weights_only=True)
-  if d['binding']==identity:
-   ex.load_state_dict(d['expert']);opt.load_state_dict(d['optimizer']);start=d['step'];curve=d['curve'];forwards=d['forwards'];tokens=d['tokens'];torch.set_rng_state(d['torch_rng'].cpu());torch.cuda.set_rng_state(d['cuda_rng'].cpu());random.setstate(d['python_rng'])
+ d=rolling(rel,t,run_seed,structure,method)
+ if d and d['binding']['stage']==stage_name:
+  ex.load_state_dict(d['expert']);opt.load_state_dict(d['optimizer']);start=d['step'];curve=d['curve'];forwards=d['forwards'];tokens=d['tokens'];torch.set_rng_state(d['torch_rng'].cpu());torch.cuda.set_rng_state(d['cuda_rng'].cpu());random.setstate(d['python_rng'])
  order=list(range(1,5))
  if stage_name=='continuation':random.Random(seed).shuffle(order)
  hook=MedTraceLayerHook(runtime.get_module(LAYER),ex);hook.attach();ex.requires_grad_(True)
@@ -65,13 +67,27 @@ def stage(runtime,t,ex,kind,stage_name,seed,method,protect=None,g=None):
     if isinstance(ex,AsymmetricCPExpert):
      condition=float(torch.linalg.cond(ex.input_basis().float()));assert condition<=1e4,'CP native condition hard stop'
    if step and (step%20==0 or stop):
-    store.save(rel,dict(expert=ex.state_dict(),optimizer=opt.state_dict(),step=step,seed=seed,stage=stage_name,edit=rec.record_id,binding=identity,curve=curve,forwards=forwards,tokens=tokens,torch_rng=torch.get_rng_state(),cuda_rng=torch.cuda.get_rng_state(),python_rng=random.getstate()),pin=True)
+    store.save(rel,dict(expert=ex.state_dict(),optimizer=opt.state_dict(),step=step,seed=seed,stage=stage_name,edit=rec.record_id,binding=expected(t,run_seed,structure,method,stage_name,step),curve=curve,forwards=forwards,tokens=tokens,torch_rng=torch.get_rng_state(),cuda_rng=torch.cuda.get_rng_state(),python_rng=random.getstate()),pin=True)
     print(method,t['order'],stage_name,step,flush=True)
    if stop:break
  finally:hook.detach()
  diagnose(runtime,t,ex,stage_name,seed,method)
- report=dict(identity=identity,steps=step,forwards=forwards,target_tokens=tokens,seconds=time.time()-began,curve=curve,parameters=sum(p.numel() for p in ex.parameters()))
+ report=dict(identity=dict(edit=t['canonical_edit_id'],kind=kind,stage=stage_name,seed=seed,method=method),steps=step,forwards=forwards,target_tokens=tokens,seconds=time.time()-began,curve=curve,parameters=sum(p.numel() for p in ex.parameters()))
  store.write(f'private/curves/s{seed}/{method}/e{t["order"]}/{stage_name}.json',json.dumps(report).encode());ex.requires_grad_(False);return ex
+
+def teacher_bytes(value):
+ # Count shared storage once, including cached GPU embeddings and labels.
+ seen=set();total=0
+ def visit(x):
+  nonlocal total
+  if torch.is_tensor(x):
+   storage=x.untyped_storage();key=(str(x.device),storage.data_ptr())
+   if key not in seen:seen.add(key);total+=storage.nbytes()
+  elif isinstance(x,dict):
+   for v in x.values():visit(v)
+  elif isinstance(x,(list,tuple)):
+   for v in x:visit(v)
+ visit(value);assert total<=8*1024**3,'Total teacher tensor working set exceeds 8 GiB';return total
 
 def u_teachers(runtime,t):
  from scripts.medtrace.run_selective_write import teacher_batch
@@ -83,14 +99,14 @@ def u_teachers(runtime,t):
    output,_=old.base(runtime,row,old.record(t),score=False)
    kw,labels,mask,binding=teacher_batch(runtime,dict(row,eqkey=old.input_id(row)),output['raw_token_ids'])
    with torch.no_grad():logp=runtime.model(**kw).logits[mask].float().log_softmax(-1).cpu()
-   size+=logp.numel()*logp.element_size();assert size<=8*1024**3,'Bounded teacher working set';ts.append((kw,labels,mask,logp))
+   ts.append((kw,labels,mask,logp));size=teacher_bytes([groups,ts])
   assert ts;groups.append(ts)
  return groups,size
 
-def p_teacher(runtime,t,teacher_rel,questions):
+def p_teacher(runtime,t,teacher_rel,questions,teacher_expected):
  import fcntl
  quality_id=old.digest(dict(teacher=teacher_rel,weight_sha256=hashlib.sha256((ROOT/teacher_rel).read_bytes()).hexdigest(),questions=questions));quality_path=ROOT/'private/teacher_quality'/f'{quality_id}.json'
- ex,meta=load(teacher_rel);ex.requires_grad_(False);hook=MedTraceLayerHook(runtime.get_module(LAYER),ex);hook.attach();rows=[]
+ ex,meta=load(teacher_rel,teacher_expected);ex.requires_grad_(False);hook=MedTraceLayerHook(runtime.get_module(LAYER),ex);hook.attach();rows=[]
  try:
   with (ROOT/'TEACHER_QUALITY.lock').open('a') as lockfile:
    fcntl.flock(lockfile,fcntl.LOCK_EX)
@@ -122,5 +138,5 @@ def protector(runtime,groups,method,seed,kd):
   if qualified:
    # The mean is over qualified teachers; coverage cannot dilute lambda_D.
    kdvalue=term(qualified[random.Random(seed*1000033+step).randrange(len(qualified))],.10)
-  return dict(U_KL=sum(losses)/len(losses),D_KL=kdvalue)
+  return dict(U_KL=sum(losses)/len(losses) if method=='M0' else .5*sum(losses[:-1])/len(old_u)+.5*losses[-1],D_KL=kdvalue)
  return apply

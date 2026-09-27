@@ -19,7 +19,11 @@ def main():
  paths={n:importlib.import_module(n).__file__ for n in ['scripts.medtrace.stage15','methods.medtrace','methods.medtrace.selective_write','freshstart.runtime','worker_v3','router_r3','m3bench_repro.editors.llava_runtime']}
  write(ROOT/'MODULE_PATHS.json',paths)
  write(ROOT/'VERSION_LOCK.json',dict(torch=str(torch.__version__),transformers=transformers.__version__,cuda=torch.version.cuda,modules={k:dict(path=v,sha256=hashlib.sha256(Path(v).read_bytes()).hexdigest()) for k,v in paths.items()},phase_source={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in ROOT.glob('*.py')}))
- tasks=read(ROOT/'private/TASKS_R2_LOCKED.json')['tasks'];g={x['order']:x for x in read(ROOT/'private/G_SUPPORTS.json')};roles=[];private=[]
+ from bindings import g_supports
+ from roles_audit import run
+ sources=read(ROOT/'private/ROLE_AUDIT_INPUTS.json');gfile='private/G_SUPPORTS_REPAIRED.json' if (ROOT/'SUPPORT_REPAIR.json').exists() else 'private/G_SUPPORTS.json'
+ global_audit=run(ROOT,sources['inventory'],sources['candidate'],gfile);assert global_audit['status']=='PASS','Global role audit failed'
+ tasks=read(ROOT/'private/TASKS_R2_LOCKED.json')['tasks'];g=g_supports();roles=[];private=[]
  def key(row):return (row.get('image_sha256',row.get('image_path')),row['question'].strip().lower())
  for t in tasks:
   old={key(x) for x in t['U_fit']};new={key(x) for x in t['U_new']};ev={key(x) for x in t['evaluation']};assert not (old|new)&ev,'U/evaluation overlap'

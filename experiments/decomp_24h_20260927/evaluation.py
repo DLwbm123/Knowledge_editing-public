@@ -1,5 +1,5 @@
 """R3 real-bank generation retained with current-phase execution bindings."""
-import time
+import time,hashlib
 from dataclasses import asdict
 from resources import ROOT,read,write
 import worker_v3 as old
@@ -9,6 +9,8 @@ def evaluate(runtime,tasks,bank,router,label,mode,prefix,folder,bindings,protoco
  from scripts.medtrace import stage15
  from methods.medtrace import MedTraceLayerHook
  consumers=[]
+ router_entries=[dict(edit=edit,radius=radius,key_sha256=hashlib.sha256(key.detach().float().cpu().contiguous().numpy().tobytes()).hexdigest()) for edit,key,radius in zip(router.logical_ids,router.keys,router.radii,strict=True)]
+ science=read(ROOT/'SCIENCE_LOCK.json')['id']
  for t in tasks:
   for row in t['evaluation']:
    rt.check_budget()
@@ -18,7 +20,7 @@ def evaluate(runtime,tasks,bank,router,label,mode,prefix,folder,bindings,protoco
    expert=bank.get(decision['logical_edit_id'])
    if forced:
     assert len(bank)==1;expert=next(iter(bank.values()))
-   binding=dict(input=ib,model=protocol['model'],precision=protocol['precision'],backend=protocol['backend'],code=protocol['code'],bank=bindings,router=dict(kappa=router.kappa,mu=router.mu),prefix=prefix,forced_diagnostic=forced)
+   binding=dict(input=ib,model=protocol['model'],precision=protocol['precision'],backend=protocol['backend'],science_id=science,bank=bindings,router=dict(kappa=router.kappa,mu=router.mu,entries=router_entries),prefix=prefix,forced_diagnostic=forced)
    ident=old.digest(binding);path=ROOT/'private/generations'/f'{ident}.json'
    if path.exists():
     saved=read(path);assert saved['execution_binding']==binding;out=saved['output']
