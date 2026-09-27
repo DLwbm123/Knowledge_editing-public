@@ -63,7 +63,7 @@ def report(final=False):
  write(mask_path,support_masks)
  write(ROOT/'public/SUPPORT_METRICS.json',supports(supportrows,scores,read(ROOT/'EXPERIMENT_LOCK.json')['stage_diagnostics_orders']));write(ROOT/'public/THREE_SEED_AGGREGATE.json',seed_aggregate(allrows,scores,retention));
  write(ROOT/'public/CORE_MATRIX_RESULTS.json',result);c=coverage();d=read(ROOT/'RESOURCE_LEDGER.json');active=sum(time.time()-s['started_epoch'] for s in d['gpu_sessions'] if not s.get('ended_epoch'))
- write(ROOT/'public/RESOURCE_LEDGER_AGGREGATE.json',dict(historical_gpu_seconds=d['historical_gpu_seconds'],phase_gpu_seconds=d['current_gpu_seconds']+active,phase_limit=72*3600,judge_attempts=d['judge_submission_attempt_items'],judge_limit=6000,active_gpu_sessions=sum(not s.get('ended_epoch') for s in d['gpu_sessions'])))
+ write(ROOT/'public/RESOURCE_LEDGER_AGGREGATE.json',dict(historical_gpu_seconds=d['historical_gpu_seconds'],phase_gpu_seconds=d['current_gpu_seconds']+active,phase_limit=None if __import__('resources').limits_waived() else 72*3600,original_phase_limit=72*3600,wallclock_gpu_limits_waived=__import__('resources').limits_waived(),judge_attempts=d['judge_submission_attempt_items'],judge_limit=6000,active_gpu_sessions=sum(not s.get('ended_epoch') for s in d['gpu_sessions'])))
  kd=[read(p) for p in (ROOT/'private/kd').glob('*.json')]
  write(ROOT/'public/TEACHER_QUALITY_COVERAGE.json',dict(teacher_consumers=len(kd),G_fit_items=sum(len(x['quality']) for x in kd),qualified=sum(sum(x['quality']) for x in kd),normalization='Mean over qualified subset at lambda 0.10; all G_fit retain CE; zero KD if no qualified input'))
  costs=defaultdict(list);curves=defaultdict(list)

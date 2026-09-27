@@ -70,7 +70,8 @@ def main():
  recover_local()
  terminal=remote("import json;print(json.dumps([a['id'] for a in json.load(open('@RUN_ROOT@/RESOURCE_LEDGER.json'))['judge_attempts'] if a['status'] in ['FORMAT_VALID','FAILED_NO_RETRY']]))")
  for bid in terminal:archive_closed_state(bid)
- stop=remote("import json;from datetime import datetime;print(json.dumps(datetime.fromisoformat(json.load(open('@RUN_ROOT@/RUN_MANIFEST.json'))['deadline_at']).timestamp()))")
+ stop=remote("import json,sys,os;from datetime import datetime;os.environ['RUN_ROOT']='@RUN_ROOT@';sys.path.insert(0,'@RUN_ROOT@');from resources import limits_waived;print(json.dumps(None if limits_waived() else datetime.fromisoformat(json.load(open('@RUN_ROOT@/RUN_MANIFEST.json'))['deadline_at']).timestamp()))")
+ if stop is None:stop=float('inf')
  storage_limits=remote("import json;print(json.dumps(json.load(open('@RUN_ROOT@/STORAGE_POLICY.json')).get('quotas_enabled',True)))")
  consecutive_transport_failures=0
  while time.time()<stop-600:

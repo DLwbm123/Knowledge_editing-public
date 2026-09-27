@@ -2,7 +2,7 @@
 import os,time,json,signal,subprocess,fcntl,resource,traceback
 from datetime import datetime
 from pathlib import Path
-from resources import ROOT,read,write,lock
+from resources import ROOT,read,write,lock,limits_waived
 from report import report,coverage
 
 def alive(pid):
@@ -58,6 +58,7 @@ def main():
  singleton=(ROOT/'CONTROLLER.lock').open('a');fcntl.flock(singleton,fcntl.LOCK_EX|fcntl.LOCK_NB)
  write(ROOT/'ORCHESTRATOR_PID.json',dict(pid=os.getpid(),entry='/tmp/d3.py',started_epoch=time.time()))
  manifest=read(ROOT/'EXPERIMENT_LOCK.json');deadline=datetime.fromisoformat(manifest['deadline_at']).timestamp();trainstop=datetime.fromisoformat(manifest['no_new_training_after']).timestamp();genstop=datetime.fromisoformat(manifest['no_large_generation_after']).timestamp()
+ if limits_waived():deadline=trainstop=genstop=float('inf')
  blocks=build_blocks();ap=ROOT/'QUEUE_AMENDMENT.json'
  if not ap.exists():write(ap,dict(blocks=[dict(id=b['id'],status='NOT_STARTED',units=sum(len(j.get('methods',[])) for j in b['jobs']),jobs=len(b['jobs'])) for b in blocks],main_evaluated_units_target=720,additional_seed_M0_teachers=96,optional='After core seeds: fixed diagnostic DEV4 paired structured continuation, then zero-function-change rank8; all later optional families deferred',selection='Resource forecasts only; no method outcome based selection'))
  receipts=read(ROOT/'ACTIVE_PROCESSES.json') if (ROOT/'ACTIVE_PROCESSES.json').exists() else read(ROOT/'PILOT_PROCESSES.json')
@@ -85,7 +86,7 @@ def main():
     if sessions and now-sessions[-1]['started_epoch']>sessions[-1]['reserved_seconds']+30:stop(x['pid']);reason='LEASE_EXCEEDED';break
   if reason:break
   d=read(ROOT/'RESOURCE_LEDGER.json');used=d['current_gpu_seconds']+sum(now-s['started_epoch'] for s in d['gpu_sessions'] if not s.get('ended_epoch'))
-  if used>=manifest['gpu_seconds_limit']:reason='GPU_BUDGET';break
+  if not limits_waived() and used>=manifest['gpu_seconds_limit']:reason='GPU_BUDGET';break
   if now-last_report>120:
    from storage import Store
    disk=Store(ROOT).disk_audit();write(ROOT/'STORAGE_AUDIT.json',disk);report();last_report=now
@@ -110,7 +111,7 @@ def main():
    completed_units=sum(len(j.get('methods',[])) for j in q if j['status']=='COMPLETE');new_attempts=d['judge_submission_attempt_items']-d['historical_judge_attempts'];unit_seconds=max(60,used/max(1,completed_units));unit_judge=max(1,new_attempts/max(1,completed_units));units=sum(len(j.get('methods',[])) for j in nextblock['jobs']);forecast_gpu=unit_seconds*units*1.3;forecast_judge=unit_judge*units*1.5
    forecast=dict(block=nextblock['id'],units=units,GPU_seconds=forecast_gpu,Judge_items=forecast_judge,observed_units=completed_units,epoch=now)
    write(ROOT/'BUDGET_FORECAST.json',forecast)
-   if now+forecast_gpu/3>=trainstop or used+forecast_gpu>.75*manifest['gpu_seconds_limit'] or forecast_judge>.75*(6000-d['judge_submission_attempt_items']):reason='FORECAST_RESERVE_GATE';break
+   if (not limits_waived() and (now+forecast_gpu/3>=trainstop or used+forecast_gpu>.75*manifest['gpu_seconds_limit'])) or forecast_judge>.75*(d['judge_submission_attempt_items_limit']-d['judge_submission_attempt_items']):reason='FORECAST_RESERVE_GATE';break
    with (ROOT/'QUEUE.lock').open('a') as f:
     fcntl.flock(f,fcntl.LOCK_EX);q=read(ROOT/'QUEUE.json');q.extend(nextblock['jobs']);write(ROOT/'QUEUE.json',q)
    a=next(x for x in amendments['blocks'] if x['id']==nextblock['id']);a.update(status='ADMITTED',forecast=forecast);write(ap,amendments);pending=nextblock['jobs'];write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase=nextblock['id'],epoch=now))
