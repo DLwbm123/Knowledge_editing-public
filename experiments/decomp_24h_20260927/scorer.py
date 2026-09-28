@@ -20,7 +20,7 @@ def run_batch(*args,**kwargs):
 SSH=['ssh','pro5000','python3 -']
 def remote(code):
  code=code.replace('@RUN_ROOT@',REMOTE)
- r=subprocess.run(SSH,input=code,text=True,capture_output=True,timeout=45,check=True)
+ r=subprocess.run(SSH,input=code,text=True,capture_output=True,timeout=300,check=True)
  return json.loads(r.stdout) if r.stdout.strip() else None
 
 def quarantine(local_root,remote_root,remote,batch,rows,evidence):
