@@ -73,7 +73,7 @@ def main():
  stop=remote("import json,sys,os;from datetime import datetime;os.environ['RUN_ROOT']='@RUN_ROOT@';sys.path.insert(0,'@RUN_ROOT@');from resources import limits_waived;print(json.dumps(None if limits_waived() else datetime.fromisoformat(json.load(open('@RUN_ROOT@/RUN_MANIFEST.json'))['deadline_at']).timestamp()))")
  if stop is None:stop=float('inf')
  storage_limits=remote("import json;print(json.dumps(json.load(open('@RUN_ROOT@/STORAGE_POLICY.json')).get('quotas_enabled',True)))")
- consecutive_transport_failures=0
+ consecutive_transport_failures=remote("import json,itertools;d=json.load(open('@RUN_ROOT@/RESOURCE_LEDGER.json'));print(json.dumps(len(list(itertools.takewhile(lambda a:a['status']=='FAILED_NO_RETRY',reversed(d['judge_attempts']))))))")
  while time.time()<stop-600:
   assert not storage_limits or sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file())<256*1024**2,'Local scorer evidence reserve exhausted'
   state=remote("import json\nfrom pathlib import Path\nr=Path('@RUN_ROOT@');p=r/'private/judge'\nprint(json.dumps({'pending':{f.stem:json.loads(f.read_text()) for f in (p/'pending').glob('*.json') if not (p/'scores'/f.name).exists()},'canary':json.loads((r/'RUN_STATUS.json').read_text())}))")
