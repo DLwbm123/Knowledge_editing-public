@@ -1,0 +1,337 @@
+{
+  "tests": {
+    "MATH_TEST.json": {
+      "status": "PASS",
+      "results": {
+        "CP": {
+          "parameters": 1476,
+          "conversion_max_abs": 1.0186340659856796e-10,
+          "gradient_norms": [
+            {
+              "u_in": 0.0,
+              "v_in": 0.0,
+              "u_out": 0.0,
+              "v_out": 0.0,
+              "rho": 0.000481648399727419
+            },
+            {
+              "u_in": 3.1226634291670052e-06,
+              "v_in": 3.1877723358775256e-06,
+              "u_out": 2.823917384375818e-06,
+              "v_out": 2.698670186873642e-06,
+              "rho": 0.0004995359922759235
+            },
+            {
+              "u_in": 4.398383225634461e-06,
+              "v_in": 4.543761406239355e-06,
+              "u_out": 3.96389532397734e-06,
+              "v_out": 3.8696443880326115e-06,
+              "rho": 0.0005597975105047226
+            }
+          ]
+        },
+        "TK": {
+          "parameters": 1600,
+          "conversion_max_abs": 1.6298145055770874e-09,
+          "gradient_norms": [
+            {
+              "u1": 0.0,
+              "u2": 0.0,
+              "u3": 0.0,
+              "u4": 0.0,
+              "L": 0.0030503070447593927,
+              "R": 0.0
+            },
+            {
+              "u1": 3.2255848054774106e-05,
+              "u2": 3.1846881029196084e-05,
+              "u3": 6.742228288203478e-05,
+              "u4": 7.140981324482709e-05,
+              "L": 0.003040383104234934,
+              "R": 1.8904560420196503e-05
+            },
+            {
+              "u1": 7.070103310979903e-05,
+              "u2": 6.987091182963923e-05,
+              "u3": 0.0001387610682286322,
+              "u4": 0.0001470253337174654,
+              "L": 0.003397313877940178,
+              "R": 3.976219522883184e-05
+            }
+          ]
+        },
+        "LR": {
+          "parameters": 73728,
+          "conversion_max_abs": 0.0,
+          "gradient_norms": [
+            {
+              "A": 0.0,
+              "B": 0.03894419968128204
+            },
+            {
+              "A": 0.12809087336063385,
+              "B": 0.03854383900761604
+            },
+            {
+              "A": 0.24581772089004517,
+              "B": 0.2075514942407608
+            }
+          ]
+        },
+        "KL": {
+          "direction": "teacher||student",
+          "normalization": "token mean, full vocabulary",
+          "value": 0.4481792449951172,
+          "gradient_max_abs": 7.916241884231567e-09,
+          "shift_and_EOS": true
+        },
+        "sampler": {
+          "mean": 4.0068,
+          "expected": 4.0
+        },
+        "callback": {
+          "gradient_max_abs": 4.656612873077393e-10,
+          "weighted_KL_log_matches": true,
+          "total_teacher_tensor_bytes": 1304
+        }
+      }
+    },
+    "TRANSACTION_TEST.json": {
+      "status": "PASS",
+      "faults": [
+        {
+          "point": "reserve",
+          "recovery": "OLD_RESTORED",
+          "valid_step": 40,
+          "previous_fallback": true
+        },
+        {
+          "point": "fsync",
+          "recovery": "NEW_COMMITTED",
+          "valid_step": 60,
+          "previous_fallback": true
+        },
+        {
+          "point": "verify",
+          "recovery": "NEW_COMMITTED",
+          "valid_step": 60,
+          "previous_fallback": true
+        },
+        {
+          "point": "replace",
+          "recovery": "NEW_COMMITTED",
+          "valid_step": 60,
+          "previous_fallback": true
+        }
+      ],
+      "mixed_order_namespace": true,
+      "judge": {
+        "interrupted_publication_recovered": true,
+        "idempotent": true,
+        "new_judge_calls": 0
+      },
+      "empty_metrics_not_complete": true
+    },
+    "CANARY_CLOSURE.json": {
+      "status": "PASS",
+      "edit_order": 9,
+      "actual_optimizer_steps": 80,
+      "methods": [
+        "M0",
+        "M1"
+      ],
+      "actual_train_seq_train": true,
+      "strict_final_reload": true,
+      "consumers": 92,
+      "judge_required": 50,
+      "judge_missing": 0,
+      "report_completed": true,
+      "disk": {
+        "managed_bytes": 125347222,
+        "actual_owned_bytes": 127466930,
+        "logs_bytes": 460455,
+        "external_actual_bytes": 7345549312,
+        "newly_accounted": 40058,
+        "reserved_total": 11936507286,
+        "soft_reached": false
+      },
+      "epoch": 1790498857.8814397,
+      "diagnostic_scope": "one fixed DEV edit; not evidence of scientific benefit"
+    },
+    "BINDING_TEST.json": {
+      "validated": 175,
+      "mismatched_step_rejected": true
+    }
+  },
+  "role_audit": {
+    "status": "PASS",
+    "official_required": 2465,
+    "official_found": 2465,
+    "affected_orders": [],
+    "candidate_native_only_overlap_count": 12,
+    "candidate_overlap_note": "Unused candidate source QA is not automatically a formal evaluation probe; recorded separately",
+    "source_role_overlap_groups": 46,
+    "source_overlap_note": "Native/P/G may share a positive source by design; cross-role full-input collisions are separately blocked"
+  },
+  "real_GPU_diagnostics": [
+    {
+      "stage": "continuation",
+      "method": "M1",
+      "conversion_logit_max_abs": 0.0,
+      "generation_equal": true,
+      "max_residual_conversion_relative": 0.0
+    },
+    {
+      "stage": "W0",
+      "method": "CP",
+      "conversion_logit_max_abs": 0.0078125,
+      "generation_equal": true,
+      "max_residual_conversion_relative": 2.0157902724804444e-07
+    },
+    {
+      "stage": "native",
+      "method": "CP",
+      "conversion_logit_max_abs": 0.0078125,
+      "generation_equal": true,
+      "max_residual_conversion_relative": 1.6918968981372018e-07
+    },
+    {
+      "stage": "A2",
+      "method": "CP",
+      "conversion_logit_max_abs": 0.0078125,
+      "generation_equal": true,
+      "max_residual_conversion_relative": 1.6640365174680483e-07
+    },
+    {
+      "stage": "continuation",
+      "method": "M0",
+      "conversion_logit_max_abs": 0.0,
+      "generation_equal": true,
+      "max_residual_conversion_relative": 0.0
+    }
+  ],
+  "code_hashes": {
+    "before": {
+      "report.py": "e6acecb65f33d204d2806450582dc31821dc206ba4eeaab596a6bcb6f5c2b9e5",
+      "worker.py": "9b74ce07b772805e1b3a9fb216b39871589f55d7cf5b5add30adddc56a0cb6e4",
+      "evaluation.py": "1a67a2b754549b0118879b784a04fbe87ceea1ffc854e41153d858c11f87e8eb",
+      "structures.py": "ed0ca2cfb952c2e6b977b15833d82b83a7132b74ec71f908aa266cd6f4d7a35a",
+      "storage.py": "e6c456713a7c4bbb3373839078659c67898c4a74485e74ce59397aaa044061d3",
+      "metrics_r2.py": "822155a79664b3ab1e69b0a742ecf2c8d595b07616fee8c5f6c85ba58cc2ea4c",
+      "training.py": "75e2d6d096d22682166f545273c8385300fb100c9ce142f51140313c8dedd713",
+      "metrics.py": "0a63797ea804009d7178918bc930090310e0af13df1841b3e477291b93b08be1",
+      "diagnostics.py": "7d1bf057035fa54b378d7bb0ec22b34799765c656f996f32c502b644f392bc8f",
+      "canary.py": "82dc2bc10b4020004f2d1af0482f9245533352a565d980b78ceb1ad289d85214",
+      "controller.py": "6cc6ab959be4779d1893ca574a602a314df29a6d03f11736e8e4e1eeaf292c7c",
+      "resources.py": "6e8cd523efa31d2ad16d4ca1f33170c4302ffa277bef7e2c23014f3181f15912",
+      "audit.py": "ce1fac24e69e3f794919a2e188635ea70ef81af99101ec9b1ad2beae29cc048a",
+      "selfcheck.py": "624d75142334ae4c3ac37ec422162fd98d360599f279f0c1d8d3d9b0154a67a4",
+      "report_r3.py": "e96ef461b83639b2e05a0cea5952e30d1a2e46307da00a18c51122c5a4d0d613",
+      "worker_v3.py": "76742ac878fc66a6a0d64c8f3a1b72d72963161a54805612cf519d9086681d85",
+      "router_r3.py": "bda8e0092775a7228fc8f723d244dc0cba8f41aa6401b36f2726d681d7f05560"
+    },
+    "after": {
+      "report.py": "3e272b6cd612ad1fbb260d4d899ffa2d9215a3debf8c3b10113fb9dd848507eb",
+      "worker.py": "2e737f953817ae3eb846d702c81e4ef512090eb61813a099697561f35a53980f",
+      "evaluation.py": "451ac84ba99672105c1d81493f04655a270cfb8c326bc9ccf870d756f5e944a1",
+      "structures.py": "ed0ca2cfb952c2e6b977b15833d82b83a7132b74ec71f908aa266cd6f4d7a35a",
+      "storage.py": "4c1873c5356c3754f67150e3f37dbe7c40ed8da9326363b9723eea70c8665ab0",
+      "paired_stats.py": "a18cb02ff5c24aca8d3ec36917fd7427865464aea03aeace336b5d2c150c6374",
+      "metrics_r2.py": "822155a79664b3ab1e69b0a742ecf2c8d595b07616fee8c5f6c85ba58cc2ea4c",
+      "training.py": "15cf2979aa97cfc33a213a3852001f517ed977e29a9139881acb8ef306470db6",
+      "roles_audit.py": "7a2f31841216073574a3e63a6f2fb5b2eb6d10430c419c79c58c0b5c19299c18",
+      "metrics.py": "0a63797ea804009d7178918bc930090310e0af13df1841b3e477291b93b08be1",
+      "diagnostics.py": "60294a65426d6f19671f6c31a5aa58016cbc66cbc18e7f19e747f548e34fe44f",
+      "canary.py": "82dc2bc10b4020004f2d1af0482f9245533352a565d980b78ceb1ad289d85214",
+      "controller.py": "fc45f7a92a2ec78a303d0ca2b0ae23d163f6d2270fd96dabe039a7466d38d4a6",
+      "resources.py": "009fec9ed7bc7d0bb3a68ea0f30ad13663ed43dd685efcd23b8c19232cccf179",
+      "audit.py": "8085633923498990f979c3c73c2d211c5f043607e1d8ac5abad6c932e76529b0",
+      "test_math.py": "18a5b230213c22b6b40d8c61512860d94e3ee0f4bfd249be09f94283e78ea97b",
+      "scorer.py": "8db7a051d8dc3ffea46042e126e88783249ca5d675e65179412d70bc07358ed8",
+      "bindings.py": "2797f33518cc15549a1804c54638cbb7b4b7b2b7a89fc2284ad1e876439bbe17",
+      "judge_io.py": "1e0bdc34bc074a3db02ed7623123576f2ec730c5df54fe55e2fec093852c693f",
+      "test_repair.py": "69da9407da6295824e8fbc0eef9271fca9cc5e7f8c48327ce964e1650df926b9",
+      "selfcheck.py": "624d75142334ae4c3ac37ec422162fd98d360599f279f0c1d8d3d9b0154a67a4",
+      "report_r3.py": "e96ef461b83639b2e05a0cea5952e30d1a2e46307da00a18c51122c5a4d0d613",
+      "setup.py": "e01d6e85ff5d252a93703d513ede74ffa970552f9186d827e4b64b53db95eb6d",
+      "worker_v3.py": "76742ac878fc66a6a0d64c8f3a1b72d72963161a54805612cf519d9086681d85",
+      "router_r3.py": "bda8e0092775a7228fc8f723d244dc0cba8f41aa6401b36f2726d681d7f05560",
+      "freeze_science.py": "1998d1d72518850446dfc723663d0329d9372834382830e92fad343094d79fdf"
+    }
+  },
+  "affected_consumer_groups": [
+    {
+      "original": "jobs/s20260927-CP-35/M2/CONSUMERS.json",
+      "quarantine": "fix/pr5_v1/quarantined/jobs/s20260927-CP-35/M2/CONSUMERS.json",
+      "consumers": 12,
+      "arms": [
+        "M2"
+      ],
+      "mode": "single",
+      "prefix": 1
+    },
+    {
+      "original": "jobs/s20260927-CP-35/M3/CONSUMERS.json",
+      "quarantine": "fix/pr5_v1/quarantined/jobs/s20260927-CP-35/M3/CONSUMERS.json",
+      "consumers": 12,
+      "arms": [
+        "M3"
+      ],
+      "mode": "single",
+      "prefix": 1
+    },
+    {
+      "original": "jobs/s20260927-TK-35/M5/CONSUMERS.json",
+      "quarantine": "fix/pr5_v1/quarantined/jobs/s20260927-TK-35/M5/CONSUMERS.json",
+      "consumers": 12,
+      "arms": [
+        "M5"
+      ],
+      "mode": "single",
+      "prefix": 1
+    },
+    {
+      "original": "jobs/s20260927-REG24-M3-bank/p12/CONSUMERS.json",
+      "quarantine": "fix/pr5_v1/quarantined/jobs/s20260927-REG24-M3-bank/p12/CONSUMERS.json",
+      "consumers": 150,
+      "arms": [
+        "M3"
+      ],
+      "mode": "sequential",
+      "prefix": 12
+    },
+    {
+      "original": "jobs/s20260927-REG24-M3-bank/p24/CONSUMERS.json",
+      "quarantine": "fix/pr5_v1/quarantined/jobs/s20260927-REG24-M3-bank/p24/CONSUMERS.json",
+      "consumers": 285,
+      "arms": [
+        "M3"
+      ],
+      "mode": "sequential",
+      "prefix": 24
+    }
+  ],
+  "budget_snapshot": {
+    "epoch": 1790499293.680203,
+    "phase_gpu_seconds": 14557.599954128265,
+    "judge_attempts": 2138,
+    "phase_gpu_limit": 259200,
+    "judge_limit": 6000
+  },
+  "status": {
+    "status": "RUNNING",
+    "phase": "TECHNICAL_FIX_QUALIFIED_DATA_DEPENDENCY_REPAIR",
+    "epoch": 1790499010.4664662
+  },
+  "data_repair": {
+    "order": 35,
+    "removed_supports": 1,
+    "remaining_G_fit": 3,
+    "affected_methods": [
+      "M2",
+      "M3",
+      "M5"
+    ],
+    "selection": "Exact full-input collision, no candidate performance used"
+  }
+}
