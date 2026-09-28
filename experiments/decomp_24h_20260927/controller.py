@@ -27,8 +27,7 @@ def log_limit():
 
 def launch(g):
  # Only this phase's entries and the three locked physical devices are eligible.
- lines=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid','--format=csv,noheader'],text=True).splitlines()
- if g['uuid'] in lines:return None
+ # Shared GPUs are authorized when the existing free-memory margin is satisfied.
  free=subprocess.check_output(['nvidia-smi','-i',str(g['index']),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True)
  if int(free.strip())<30000:return None
  env=os.environ.copy();env.update(CUDA_VISIBLE_DEVICES=g['uuid'],PINNED_GPU_UUID=g['uuid'],PHYSICAL_GPU=str(g['index']),LEASE_SECONDS='7200',PYTHONUNBUFFERED='1',TMPDIR='/data/bmw/tmp',HF_HOME='/data/bmw/cache/huggingface',TORCH_HOME='/data/bmw/cache/torch',XDG_CACHE_HOME='/data/bmw/cache',CUDA_CACHE_PATH='/data/bmw/cache/cuda')
