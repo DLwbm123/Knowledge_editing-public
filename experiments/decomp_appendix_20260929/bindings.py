@@ -38,7 +38,7 @@ def expected(t,seed,kind,method,stage,step):
  if imported:
   assert method=='M0' and stage=='continuation' and step==80
   assert digest_file(ROOT/imported['path'])==imported['sha256']
-  return imported['binding']
+  return imported['parent_expected']
  c=context(t,seed,kind);c.update(method=method,stage=stage,actual_step=step,loss=dict(native=1 if stage=='native' else .5,P=0 if stage=='native' else .25 if method in ['M2','M3','M5','M7'] and stage=='continuation' else .5,G=.25 if method in ['M2','M3','M5','M7'] and stage=='continuation' else 0,U=.01 if stage=='continuation' else 0,D=.10 if method in ['M3','M5','M7'] and stage=='continuation' else 0))
  if stage=='continuation':
   rel=f'checkpoints/W0/s{seed}/{kind}/e{t["order"]:03d}.pt';ledger=read(ROOT/'STORAGE_LEDGER.json');entry=ledger['artifacts'].get(rel);assert entry and entry.get('hash'),'Missing W0 provenance';c['initialization_W0_hash']=entry['hash']
@@ -52,6 +52,12 @@ def expected(t,seed,kind,method,stage,step):
  return c
 
 def check_payload(x,rel,want):
+ imported=read(ROOT/'IMPORTED_BINDINGS.json').get(rel)
+ if imported:
+  assert digest_file(ROOT/rel)==imported['sha256'],'Imported teacher changed'
+  assert want==imported['parent_expected'] and x['binding']==imported['binding'],'Imported teacher identity mismatch'
+  assert x['step']==want['actual_step']==80 and x.get('expert'),'Imported teacher step/payload mismatch'
+  return
  if not isinstance(x.get('expert'),dict) or not x['expert']:raise ValueError('Empty expert payload')
  if x.get('step')!=want['actual_step']:raise ValueError('Actual step mismatch')
  if x.get('binding')==want:return
