@@ -53,6 +53,9 @@ def quota_test():
  with tempfile.TemporaryDirectory(dir=os.environ.get('TMPDIR')) as td:
   r=Path(td);policy=dict(hard_bytes=10,soft_bytes=8,checkpoint_bytes=10,teacher_bytes=10,min_free_bytes=0,quotas_enabled=False)
   (r/'STORAGE_POLICY.json').write_text(json.dumps(policy));Store(r).write('evidence.json',b'x'*100)
+  with Store(r).lock() as ledger:ledger['large_control_probe']='x'*(16*1024**2)
+  assert json.loads((r/'STORAGE_LEDGER.json').read_text())['large_control_probe'].endswith('x')
+  with Store(r).lock() as ledger:del ledger['large_control_probe']
   policy['quotas_enabled']=True;(r/'STORAGE_POLICY.json').write_text(json.dumps(policy))
   try:Store(r).write('other.json',b'x'*100)
   except RuntimeError:pass

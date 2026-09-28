@@ -15,7 +15,7 @@ def alive(w):
  except FileNotFoundError:return False
 
 def atomic_control(p,data,cap=16*1024**2):
- if len(data)>cap:raise RuntimeError('CONTROL_FILE_LIMIT')
+ if cap is not None and len(data)>cap:raise RuntimeError('CONTROL_FILE_LIMIT')
  p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_name(p.name+'.control.tmp')
  with tmp.open('wb') as f:f.write(data);f.flush();os.fsync(f.fileno())
  os.replace(tmp,p)
@@ -32,7 +32,7 @@ class Store:
   with (self.root/'STORAGE.lock').open('a') as f:
    fcntl.flock(f,fcntl.LOCK_EX);d=json.loads(self.db.read_text()) if self.db.exists() else dict(artifacts={},peak_bytes=0,deleted_bytes=0,deleted_count=0)
    yield d
-   atomic_control(self.db,json.dumps(d).encode())
+   atomic_control(self.db,json.dumps(d).encode(),cap=16*1024**2 if self.limits else None)
  def reserve(self,rel,size,kind,consumers=(),pin=False,expected_hash=None):
   p=self.path(rel)
   if size<0:raise ValueError('Negative reservation')
@@ -73,7 +73,7 @@ class Store:
      old=a.get('old_ready')
      if old and p.is_file() and digest_file(p)==old['hash'] and p.name=='latest.pt':
       extra=p.stat().st_size;total=sum(x['bytes']+x.get('previous_bytes',0) for x in d['artifacts'].values() if x['status']!='DELETED')+self.policy.get('environment_reserved_bytes',0)+self.policy.get('control_reserved_bytes',0);assert not self.limits or total+extra<=self.policy['hard_bytes'],'Recovery copy reservation exceeds hard cap'
-      prev=p.with_name('previous.pt');data=p.read_bytes();atomic_control(prev,data,cap=self.policy['checkpoint_bytes']);prevrel=str(prev.relative_to(self.root));d['artifacts'][prevrel]=dict(old,real_path=str(prev),consumers=[],pin=True)
+      prev=p.with_name('previous.pt');data=p.read_bytes();atomic_control(prev,data,cap=self.policy['checkpoint_bytes'] if self.limits else None);prevrel=str(prev.relative_to(self.root));d['artifacts'][prevrel]=dict(old,real_path=str(prev),consumers=[],pin=True)
      os.replace(tmp,p)
     self._finish(d,rel,a);result='NEW_COMMITTED'
    else:
@@ -148,7 +148,7 @@ class Store:
    if a['status']!='READY' or a['pin'] or a['readers'] or (a['consumers'] and not (rebuildable_teacher and a['kind']=='teacher')):raise RuntimeError('Artifact has live dependencies')
    receipt=dict(path=rel,bytes=a['bytes'],hash=a['hash'],epoch=time.time(),reason='regenerable teacher eviction' if rebuildable_teacher else 'all binary consumers completed')
    atomic_control(self.root/'CLEANUP_PENDING.json',json.dumps(receipt).encode());p.unlink();a.update(status='DELETED',previous_bytes=0);d['deleted_bytes']+=a['bytes'];d['deleted_count']+=1
-   rp=self.root/'CLEANUP_RECEIPT.jsonl';prior=rp.read_bytes() if rp.exists() else b'';atomic_control(rp,prior+json.dumps(receipt).encode()+b'\n')
+   rp=self.root/'CLEANUP_RECEIPT.jsonl';prior=rp.read_bytes() if rp.exists() else b'';atomic_control(rp,prior+json.dumps(receipt).encode()+b'\n',cap=16*1024**2 if self.limits else None)
  def save(self,rel,payload,consumers=(),pin=False,fault=None):
   import torch
   allowed={'expert','optimizer','step','seed','stage','torch_rng','cuda_rng','python_rng','sampler','curve','edit','binding','cursor','forwards','tokens','kind'}
