@@ -1,7 +1,7 @@
 """R3 real-bank generation retained with current-phase execution bindings."""
 import time,hashlib
 from dataclasses import asdict
-from resources import ROOT,read,write
+from resources import ROOT,read,write,limits_waived
 import worker_v3 as old
 from freshstart import runtime as rt
 SEED=20260927
@@ -25,7 +25,7 @@ def evaluate(runtime,tasks,bank,router,label,mode,prefix,folder,bindings,protoco
    if path.exists():
     saved=read(path);assert saved['execution_binding']==binding;out=saved['output']
    else:
-    if time.time()>=rt.epoch(read(ROOT/'RUN_MANIFEST.json')['no_new_generation_after']):raise TimeoutError('Hour 11: no new generation expansion')
+    if not limits_waived() and time.time()>=rt.epoch(read(ROOT/'RUN_MANIFEST.json')['no_new_generation_after']):raise TimeoutError('Hour 11: no new generation expansion')
     hook=MedTraceLayerHook(runtime.get_module(rt.LAYER),expert) if expert is not None else None
     if hook:hook.attach()
     try:out=stage15.generate(runtime,raw,ib,hook)
