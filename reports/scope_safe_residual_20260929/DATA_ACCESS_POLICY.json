@@ -1,0 +1,19 @@
+{
+  "forbidden_for_fit_calibration_and_mining": [
+    "formal T0/T1G/T2G/T1L/T2L",
+    "old pressure validation/test",
+    "their per-item scores"
+  ],
+  "allowed_fit": [
+    "native",
+    "S_fit",
+    "inherited U_old/U_new",
+    "audited U_bg"
+  ],
+  "calibration": "Disjoint source groups and inputs from fit; no formal outcomes",
+  "check": "Independent CHECK only for lambda choice",
+  "regression": "Exposed DEV/REG evaluation only",
+  "holdout": "New source groups only; never rename DEV/REG CONFIRM",
+  "enforce": "Purpose enum and input/source exclusion, explicit scope evidence required",
+  "future_edit_support_prohibited": true
+}

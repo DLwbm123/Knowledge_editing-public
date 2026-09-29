@@ -1,0 +1,52 @@
+{
+  "status": "CPU_PREPARATION_NOT_GPU_ADMITTED",
+  "main": "CP -> free rank4 INIT_POST80",
+  "layer": "model.layers.30.mlp.down_proj",
+  "precision": "float16 backbone, FP32 master",
+  "branches": [
+    "A0",
+    "AK",
+    "AU",
+    "AH",
+    "AHS"
+  ],
+  "steps": 80,
+  "lambda_res_pilot": [
+    0.01,
+    0.1
+  ],
+  "tau_grid": [
+    -0.2,
+    0,
+    0.1,
+    0.2,
+    0.3
+  ],
+  "seed": 20260929,
+  "no_E3_E4_outcome_selection": true,
+  "fit_input_role_policy": {
+    "forbidden_for_fit_calibration_and_mining": [
+      "formal T0/T1G/T2G/T1L/T2L",
+      "old pressure validation/test",
+      "their per-item scores"
+    ],
+    "allowed_fit": [
+      "native",
+      "S_fit",
+      "inherited U_old/U_new",
+      "audited U_bg"
+    ],
+    "calibration": "Disjoint source groups and inputs from fit; no formal outcomes",
+    "check": "Independent CHECK only for lambda choice",
+    "regression": "Exposed DEV/REG evaluation only",
+    "holdout": "New source groups only; never rename DEV/REG CONFIRM",
+    "enforce": "Purpose enum and input/source exclusion, explicit scope evidence required",
+    "future_edit_support_prohibited": true
+  },
+  "remaining_unfrozen": [
+    "CHECK/CAL data",
+    "complete scoring reservation",
+    "full INIT model/data compatibility",
+    "GPU runtime integration"
+  ]
+}
