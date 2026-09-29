@@ -12,6 +12,7 @@ def main():
  import worker_v3 as old
  from scripts.medtrace import stage15,run_selective_write
  from structures import convert
+ from e2 import structure as method_structure,deploy,parity
  from training import new,stage,load,save_final,u_teachers,p_teacher,protector,derive_seed,teacher_bytes
  from diagnostics import selected as is_diagnostic_edit
  from bindings import expected,rolling,verify_science_files,g_supports,initialization,state_digest
@@ -60,8 +61,9 @@ def main():
       if saved:resume_stage=saved['binding']['stage'];ex.load_state_dict(saved['expert'])
       stages=['native','A2','W0'];assert resume_stage in stages
       for phase in stages[stages.index(resume_stage):]:stage(runtime,t,ex,kind,phase,ss+1 if phase=='W0' else ss,kind,run_seed=seed,structure=kind)
-      future=([('M1' if kind=='CP' else 'M4')+suffix for suffix in ['_STRUCT','_R8']] if seed==20260927 and kind in ['CP','TK'] and is_diagnostic_edit(t) else [])
+      future=[] # Only consumers admitted in this appendix may retain W0.
       save_final(store,wrel,ex,seed,t['canonical_edit_id'],kind,320,expected(t,seed,kind,kind,'W0',320),consumers=arms+future+job.get('future_methods',[]))
+     if job.get('block')=='E2_REG24':parity(runtime,t,ex,ss+1,kind+'-W0')
      initial={k:v.detach().clone() for k,v in ex.state_dict().items()};groups,cachebytes=u_teachers(runtime,t)
      for method in arms:
       rel=finalrel(seed,method,t['order'])
@@ -73,16 +75,17 @@ def main():
        cachebytes=teacher_bytes([groups,kd]);stage(runtime,t,expert,deployment_kind,'continuation',ss+1,method,protector(runtime,groups,method,ss+1,kd),g,run_seed=seed,structure=kind)
        save_final(store,rel,expert,seed,t['canonical_edit_id'],deployment_kind,80,expected(t,seed,kind,method,'continuation',80),consumers=())
       expert,_=load(rel,expected(t,seed,kind,method,'continuation',80));expert.requires_grad_(False)
+      if method.endswith('_STRUCT'):expert=parity(runtime,t,expert,ss+1,method+'-final')
       key,radius=old.router_entry(runtime,t);router=RejectRouter();router.add(t['canonical_edit_id'],key,radius)
-      evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'single',1,ROOT/'jobs'/jid/method,[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80)],protocol)
-      if is_diagnostic_edit(t):evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'diagnostic_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-forced'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80)],protocol,forced=True)
-      if is_diagnostic_edit(t):
+      evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'single',1,ROOT/'jobs'/jid/method,[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol)
+      if is_diagnostic_edit(t) and job.get('block')!='E2_REG24':evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'diagnostic_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-forced'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol,forced=True)
+      if is_diagnostic_edit(t) and job.get('block')!='E2_REG24':
        support=copy.deepcopy(t);support['evaluation']=[]
        for role,questions in [('G_FIT',gs[t['order']]['G_fit']),('G_CHECK',gs[t['order']]['G_check'])]:
         for question in questions:support['evaluation'].append(dict(t['native'],task=role,question=question,reference=old.record(t).target,query_id='support-'+old.digest([role,t['canonical_edit_id'],question])))
        for role,rows in [('U_FIT_OLD',t['U_fit']),('U_FIT_NEW',t['U_new'])]:
         for row in rows:support['evaluation'].append(dict(row,task=role,query_id='support-'+old.digest([role,t['canonical_edit_id'],old.input_id(row)])))
-       evaluation.evaluate(runtime,[support],{t['canonical_edit_id']:expert},router,method,'support_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-supports'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80)],protocol,forced=True)
+       evaluation.evaluate(runtime,[support],{t['canonical_edit_id']:expert},router,method,'support_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-supports'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol,forced=True)
       with store.lock() as d:remaining=method in d['artifacts'][wrel]['consumers']
       if remaining:store.consumed(wrel,method)
       del expert
@@ -93,7 +96,7 @@ def main():
     else:
      bank={};router=RejectRouter();bindings=[];selected_tasks=[t for t in tasks if t['order'] in job['orders']]
      for i,t in enumerate(selected_tasks,1):
-      rel=finalrel(seed,job['method'],t['order']);structure='CP' if job['method'] in ['M0','M1','M2','M3'] else 'TK' if job['method'] in ['M4','M5'] else 'LR';expert,_=load(rel,expected(t,seed,structure,job['method'],'continuation',80));expert.requires_grad_(False);bank[t['canonical_edit_id']]=expert;key,radius=old.router_entry(runtime,t);router.add(t['canonical_edit_id'],key,radius);bindings.append(dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80))
+      rel=finalrel(seed,job['method'],t['order']);structure=method_structure(job['method']);expert,_=load(rel,expected(t,seed,structure,job['method'],'continuation',80));expert=deploy(expert,job['method'],derive_seed(t['canonical_edit_id'],seed)+1);expert.requires_grad_(False);bank[t['canonical_edit_id']]=expert;key,radius=old.router_entry(runtime,t);router.add(t['canonical_edit_id'],key,radius);bindings.append(dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if job['method'].endswith('_STRUCT') else 'native_free_rank4'))
       if i in job['prefixes']:evaluation.evaluate(runtime,selected_tasks[:i],bank,router,job['method'],'sequential',i,ROOT/'jobs'/jid/f'p{i}',bindings,protocol)
      del bank
     guarded_write(ROOT/'jobs'/jid/'COMPUTE_COUNTS.json',dict(model_calls=counters['model_calls']-counts_before['model_calls'],input_positions=counters['input_positions']-counts_before['input_positions'],seconds=time.time()-job_began,scope='Includes Base, teacher, CE, KL and generation model calls for this completed worker attempt',seed=seed,mode=job['mode'],methods=job.get('methods',[job.get('method')]),physical_gpu=slot))

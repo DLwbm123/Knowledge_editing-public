@@ -9,3 +9,16 @@ Frozen order: two REG24 canary edits, then the remaining REG24 edits, then real 
 E2, DEV24 expansion, E3 and E4 are **not implemented or admitted by this E1 controller**. They require the already-authorized plan's separate complete-pair budget audit. E1 completion is not completion of the entire appendix. No independent CONFIRM. The original clocks and actual consumption are preserved; user-authorized compute/storage quota waivers do not authorize extra paid Judge attempts.
 
 Canary repair: some verified parent teachers retain legacy binding metadata. Import validation compares the exact teacher file digest, stored legacy binding, previously verified parent expected binding, and actual 80-step payload. It does not rewrite the parent or weaken checks for newly trained artifacts. `test_imported_teachers.py` checks all imported teachers and rejects an incorrect expected step. Existing M6 results and Direct-W0 are resumed without retraining; no Judge request is repeated.
+
+## E2 REG24
+
+`E2_PROTOCOL.json` freezes the admitted complete CP/Tucker FREE4–KEEP_STRUCT
+pairs. Since the parent W0 assets were reclaimed, both branches are rebuilt
+from the same new per-edit W0. Each receives 80 continuation updates; STRUCT
+is expanded in memory before all primary inference. `e2.py` records residual,
+predictor-logit and generation parity without adding Judge diagnostics.
+`test_e2.py` checks nonzero CP/Tucker residuals, input gradients, bank dispatch
+and the finite 52-job dependency queue. The two canary jobs must close before
+remaining jobs can claim work. The paid lifetime ceiling is explicitly
+6395, with 2880 reserved at the unchanged 3515-attempt baseline. This is an
+E2 launch, not evidence that E2 or the full appendix has finished.

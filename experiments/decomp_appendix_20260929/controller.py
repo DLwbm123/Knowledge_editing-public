@@ -101,7 +101,25 @@ def main():
    with (ROOT/'QUEUE.lock').open('a') as f:
     fcntl.flock(f,fcntl.LOCK_EX);q=read(ROOT/'QUEUE.json');q.extend(nextblock['jobs']);write(ROOT/'QUEUE.json',q)
    a=next(x for x in amendments['blocks'] if x['id']==nextblock['id']);a.update(status='ADMITTED',forecast=forecast);write(ap,amendments);pending=nextblock['jobs'];write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase=nextblock['id'],epoch=now))
-  if pending and not active and not any(all((ROOT/p).exists() for p in j.get('requires',[])) for j in pending):reason='DEPENDENCY_BLOCKED';break
+  if pending and not active and not any(all((ROOT/p).exists() for p in j.get('requires',[])) for j in pending):
+   canary=[j for j in q if j.get('e2_canary')]
+   if len(canary)==2 and all(j['status']=='COMPLETE' for j in canary) and not (ROOT/'E2_CANARY_PASS.json').exists():
+    c=coverage()
+    if c['IN_FLIGHT'] or c['UNSUBMITTED']:
+     if (ROOT/'SCORER_DONE').exists():reason='E2_CANARY_SCORER_CLOSED';break
+     write(ROOT/'RUN_STATUS.json',dict(status='SCORING_GATE',phase='E2_CANARY',epoch=now));time.sleep(15);continue
+    assert c['SCORED']>0
+    canary_keys=set()
+    for j in canary:
+     for m in j['methods']:
+      rows=read(ROOT/'jobs'/j['id']/m/'CONSUMERS.json');assert rows,'Empty E2 canary'
+      canary_keys.update(row['judge_key'] for row in rows)
+     for stage in [j['kind']+'-W0',j['methods'][1]+'-final']:assert (ROOT/'private/e2_parity'/f'{stage}-{j["order"]}.json').exists()
+    canary_scored=sum((ROOT/'private/judge/scores'/f'{key}.json').exists() for key in canary_keys)
+    if not canary_scored:reason='E2_CANARY_SCORING_EMPTY';break
+    write(ROOT/'E2_CANARY_PASS.json',dict(status='PASS',epoch=now,coverage=c,canary_required=len(canary_keys),canary_scored=canary_scored,paired_training_save_reload_expansion_generation=True))
+    continue
+   reason='DEPENDENCY_BLOCKED';break
   if now>=genstop:reason='GENERATION_STOP';break
   if now>=trainstop and any(j['mode']=='train' for j in pending):reason='TRAINING_STOP';break
   for g in read(ROOT/'GPU_BINDINGS.json')['devices']:
