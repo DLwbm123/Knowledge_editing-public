@@ -21,6 +21,8 @@ def main():
  for n in ['RESOURCE_LEDGER.json','QUEUE.json','QUEUE_AMENDMENT.json','INCREMENTAL_MATRIX_LOCK.json','RUN_STATUS.json','ACTIVE_IMPLEMENTATION.json']:
   assert not (audit/n).exists();shutil.copy2(r/n,audit/n)
  shutil.copytree(r/'public',audit/'public')
+ for n in ['private/curves','private/diagnostics']:
+  if (r/n).exists():shutil.copytree(r/n,audit/n)
  with lock() as d:
   assert not any(not s.get('ended_epoch') for s in d['gpu_sessions'])
   for x in d['reservations']:
