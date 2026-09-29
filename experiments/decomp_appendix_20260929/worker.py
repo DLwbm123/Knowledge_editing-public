@@ -63,7 +63,7 @@ def main():
       for phase in stages[stages.index(resume_stage):]:stage(runtime,t,ex,kind,phase,ss+1 if phase=='W0' else ss,kind,run_seed=seed,structure=kind)
       future=[] # Only consumers admitted in this appendix may retain W0.
       save_final(store,wrel,ex,seed,t['canonical_edit_id'],kind,320,expected(t,seed,kind,kind,'W0',320),consumers=arms+future+job.get('future_methods',[]))
-     if job.get('block')=='E2_REG24':parity(runtime,t,ex,ss+1,kind+'-W0')
+     if job.get('block') in ['E2_REG24','E1_E2_DEV24'] and kind!='LR':parity(runtime,t,ex,ss+1,kind+'-W0')
      initial={k:v.detach().clone() for k,v in ex.state_dict().items()};groups,cachebytes=u_teachers(runtime,t)
      for method in arms:
       rel=finalrel(seed,method,t['order'])

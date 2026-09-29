@@ -22,3 +22,17 @@ and the finite 52-job dependency queue. The two canary jobs must close before
 remaining jobs can claim work. The paid lifetime ceiling is explicitly
 6395, with 2880 reserved at the unchanged 3515-attempt baseline. This is an
 E2 launch, not evidence that E2 or the full appendix has finished.
+
+## Full E1 + E2 DEV24
+
+`dev.py` freezes 78 jobs: 72 paired per-edit training jobs (144 continuation
+branches) and six real bank12/24 jobs. Seed 20260927 and orders 1–24 are fixed.
+Direct M6/M7, CP M1/M1_STRUCT and Tucker M4/M4_STRUCT each share their respective
+rebuilt W0. Three edit1 canaries precede the remaining queue; inherited CP-M0
+teachers are imported only after complete parent binding/hash verification.
+The same locked supervision, coordinate-specific optimizer, 80 updates, router,
+precision and structural expansion checks apply. No paid support diagnostics
+are added. The user authorized a cumulative Judge ceiling of 7660; 4008 items
+are reserved at the unchanged 3652-attempt baseline (6 × [268+132+268]). Original
+clocks, all prior attempts and permanent failed keys remain unchanged. This is
+a launch, not a completed DEV24 result or an authorization for further fees.
