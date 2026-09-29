@@ -1,9 +1,16 @@
 {
-  "status": "READY_WAITING_FOR_LEASE",
+  "status": "STARTING_GPU_WORKERS",
   "phase": "P1_DEV8",
   "continuations": 48,
   "training_started": false,
   "budget_blocker": false,
   "CPU_tests": "PASS",
-  "gpu_integration": "PENDING_REAL_CANARY"
+  "gpu_integration": "PENDING_REAL_CANARY",
+  "model_loading": true,
+  "physical_gpus": [
+    0,
+    1,
+    2
+  ],
+  "predecessor_overlap": "GPU only, scoring remains serial"
 }

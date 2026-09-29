@@ -20,18 +20,30 @@ def released(old):
    if any(live(i['pid'],old) for i in (x if isinstance(x,list) else [x])):return False
  return True
 
-def activate(old):
- # Snapshot counters and terminal payloads only after old ownership is released.
+def sync_judge(old):
  assert released(old)
- d=read(old/'RESOURCE_LEDGER.json');assert all(a['status'] in ['FORMAT_VALID','FAILED_NO_RETRY'] for a in d['judge_attempts'])
- write(ROOT/'PREDECESSOR_FINAL_LEDGER.json',d)
- d.update(historical_gpu_seconds=d['lifetime_gpu_seconds'],current_gpu_seconds=0,gpu_sessions=[],historical_judge_attempts=d['judge_submission_attempt_items'],current_judge_attempts=0,predecessor_attempt_limit=d['judge_submission_attempt_items_limit'],judge_submission_attempt_items_limit=None,physical_requests_limit=None)
- write(ROOT/'RESOURCE_LEDGER.json',d)
- for n in ['JUDGE_MISSING_LOCK.json']:
-  shutil.copy2(old/'private/judge'/n,ROOT/'private/judge'/n)
+ if (ROOT/'SCORING_OWNERSHIP_RELEASED.json').exists():return
+ prior=read(old/'RESOURCE_LEDGER.json');assert all(a['status'] in ['FORMAT_VALID','FAILED_NO_RETRY'] for a in prior['judge_attempts'])
+ write(ROOT/'PREDECESSOR_FINAL_LEDGER.json',prior)
+ with (ROOT/'RESOURCE_LEDGER.lock').open('a') as f:
+  fcntl.flock(f,fcntl.LOCK_EX);d=read(ROOT/'RESOURCE_LEDGER.json');assert not d['judge_attempts']
+  for k in ['judge_attempts','judge_submission_attempt_items','physical_requests']:d[k]=prior[k]
+  d.update(historical_judge_attempts=prior['judge_submission_attempt_items'],current_judge_attempts=0,predecessor_attempt_limit=prior['judge_submission_attempt_items_limit'])
+  write(ROOT/'RESOURCE_LEDGER.json',d)
+ shutil.copy2(old/'private/judge/JUDGE_MISSING_LOCK.json',ROOT/'private/judge/JUDGE_MISSING_LOCK.json')
  for p in (old/'private/judge/scores').glob('*.json'):shutil.copy2(p,ROOT/'private/judge/scores'/p.name)
- write(ROOT/'LEASE_ACQUIRED.json',dict(epoch=time.time(),predecessor_released=True,devices=[5,6,7],phase='P1_DEV8'))
- write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase='P1_DEV8',epoch=time.time()))
+ write(ROOT/'SCORING_OWNERSHIP_RELEASED.json',dict(epoch=time.time(),predecessor_attempts=prior['judge_submission_attempt_items']))
+
+def activate(old):
+ independent=(ROOT/'OTHER_GPU_AUTHORIZATION.json').exists()
+ assert independent or released(old)
+ devices=[g['index'] for g in read(ROOT/'GPU_BINDINGS.json')['devices']]
+ if independent:assert set(devices)<=set(read(ROOT/'OTHER_GPU_AUTHORIZATION.json')['devices']) and not set(devices)&{5,6,7}
+ write(ROOT/'RESOURCE_LEDGER.json',dict(historical_gpu_seconds=0,current_gpu_seconds=0,lifetime_gpu_seconds=0,gpu_sessions=[],historical_judge_attempts=0,current_judge_attempts=0,judge_submission_attempt_items=0,judge_submission_attempt_items_limit=None,physical_requests=0,physical_requests_limit=None,judge_attempts=[],predecessor_judge_sync_pending=True))
+ write(ROOT/'private/judge/JUDGE_MISSING_LOCK.json',dict(keys=[]))
+ write(ROOT/'LEASE_ACQUIRED.json',dict(epoch=time.time(),predecessor_released=released(old),independent_devices=independent,devices=devices,phase='P1_DEV8'))
+ if released(old):sync_judge(old)
+ write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase='P1_DEV8',epoch=time.time(),scoring='WAIT_PREDECESSOR_RELEASE'))
 
 def main():
  f=(ROOT/'CONTROLLER.lock').open('a');fcntl.flock(f,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -39,7 +51,7 @@ def main():
  old=Path(read(ROOT/'PREDECESSOR.json')['root'])
  while not (ROOT/'LEASE_ACQUIRED.json').exists():
   if (ROOT/'STOP').exists() or (old/'STOP').exists():write(ROOT/'RUN_STATUS.json',dict(status='USER_STOPPED'));return
-  if released(old):activate(old);break
+  if (ROOT/'OTHER_GPU_AUTHORIZATION.json').exists() or released(old):activate(old);break
   write(ROOT/'RUN_STATUS.json',dict(status='READY_WAITING_FOR_LEASE',gpu_started=False,phase='P1_DEV8',epoch=time.time(),reason='E3/E4 ownership reserved'));time.sleep(30)
  active=read(ROOT/'ACTIVE_PROCESSES.json') if (ROOT/'ACTIVE_PROCESSES.json').exists() else []
  while True:
