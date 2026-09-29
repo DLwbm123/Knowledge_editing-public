@@ -16,7 +16,7 @@ while True:
    state=Path('/tmp/ss1');state.mkdir(mode=0o700,exist_ok=True)
    raw=subprocess.check_output(['ssh','pro5000','cat '+remote+'/private/judge/JUDGE_MISSING_LOCK.json'],text=True);(state/'blocked_keys.json').write_text(raw)
    Path('/tmp/s11.py').write_text('import os,sys,runpy\nsys.path[:0]=os.environ["SOURCE_PATHS"].split(os.pathsep)\nrunpy.run_module("scope_scorer",run_name="__main__")\n')
-   env=os.environ.copy();env.update(SCORER_STATE=str(state),SCORER_RUNTIME=str(old/'.local_run/runtime'),SOURCE_PATHS=os.pathsep.join([str(base/'experiments/scope_safe_residual_20260929'),str(base/'experiments/decomp_24h_20260927')]),PYTHONUNBUFFERED='1')
+   env=os.environ.copy();env.update(SCORER_STATE=str(state),SCORER_RUNTIME=str(old/'.local_run/runtime'),SOURCE_PATHS=os.pathsep.join([str(base/'experiments/scope_safe_residual_20260929'),str(base/'experiments/decomp_24h_20260927'),str(base/'experiments/textjoint_r2_20260925')]),PYTHONUNBUFFERED='1')
    with (state/'score.log').open('ab') as log:p=subprocess.Popen(['/opt/homebrew/bin/python3','/tmp/s11.py'],env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
    (base/'.local_run/SCORE_PID.json').write_text(json.dumps(dict(pid=p.pid,entry='/tmp/s11.py',state=str(state))));(base/'.local_run/HANDOFF_STATUS.json').write_text(json.dumps(dict(status='SCORER_STARTED',pid=p.pid)));break
  time.sleep(30)
