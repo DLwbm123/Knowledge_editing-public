@@ -11,12 +11,12 @@ def deploy(expert,method,seed):
  return convert(expert,seed) if method.endswith('_STRUCT') else expert
 
 @torch.no_grad()
-def parity(runtime,t,expert,seed,stage):
+def parity(runtime,t,expert,seed,stage,free=None,directory="e2_parity"):
  from methods.medtrace import MedTraceLayerHook
  from scripts.medtrace.run_dev16 import generate
  from diagnostics import generated_ids,LAYER
  import worker_v3 as old
- free=convert(expert,seed);rec=old.record(t);batch=runtime.build_edit_batch(rec)
+ free=convert(expert,seed) if free is None else free;rec=old.record(t);batch=runtime.build_edit_batch(rec)
  h=torch.randn(8,14336,device=next(expert.parameters()).device,generator=torch.Generator(device=next(expert.parameters()).device).manual_seed(seed))
  x=expert.residual(h);y=free.residual(h)
  assert torch.isfinite(x).all() and torch.isfinite(y).all()
@@ -31,7 +31,7 @@ def parity(runtime,t,expert,seed,stage):
    outputs.append(generate(runtime,dict(query_id=rec.record_id,question=rec.question,image_path=str(rec.image_path)),hook,1024))
   finally:hook.detach()
  assert all(torch.isfinite(x).all() for x in logits)
- write(ROOT/'private/e2_parity'/f'{stage}-{t["order"]}.json',dict(stage=stage,order=t['order'],residual_max_abs=err,residual_relative=float((x-y).norm()/x.norm().clamp_min(1e-12)),predictor_logits_max_abs=float((logits[0]-logits[1]).abs().max()),generation_equal=generated_ids(outputs[0])==generated_ids(outputs[1]),outputs=outputs,rule='FP32 normalized residual; actual FP16 model predictor logits; native free generation. Numerical generation sensitivity is reported, never filtered.'))
+ write(ROOT/'private'/directory/f'{stage}-{t["order"]}.json',dict(stage=stage,order=t['order'],residual_max_abs=err,residual_relative=float((x-y).norm()/x.norm().clamp_min(1e-12)),predictor_logits_max_abs=float((logits[0]-logits[1]).abs().max()),generation_equal=generated_ids(outputs[0])==generated_ids(outputs[1]),outputs=outputs,rule='FP32 normalized residual; actual FP16 model predictor logits; native free generation. Numerical generation sensitivity is reported, never filtered.'))
  return free
 
 def jobs():

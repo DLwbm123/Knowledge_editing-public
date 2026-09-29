@@ -1,0 +1,57 @@
+{
+  "block": "E3_REG24",
+  "seed": 20260927,
+  "orders": [
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48
+  ],
+  "methods": [
+    "M1_E3_RAW",
+    "M1_E3_SVDGAUGE",
+    "M4_E3_RAW",
+    "M4_E3_SVDGAUGE"
+  ],
+  "continuations": 96,
+  "steps": 80,
+  "complete_pair_judge_reservation": 2880,
+  "baseline_attempts": 3779,
+  "lifetime_limit": 7660,
+  "initialization": "Rebuilt CP/TK W0 in separate W0_E3 namespace, shared by RAW/SVDGAUGE",
+  "gauge": "CPU float64 thin QR; full 4x4 SVD, Bc=QB U Sigma, Ac=Vt QA.T; sign of max abs Ac coordinate nonnegative; no rank truncation",
+  "optimizer": "Fresh original LR4 Adam groups, original per-step normalization and sampling; L_S unchanged",
+  "parity": "Every gauge W0: FP32 action, actual FP16 predictor logits and native free generation; differences retained",
+  "canaries": [
+    "CP edit25",
+    "TK edit25"
+  ],
+  "primary": [
+    "single",
+    "bank12",
+    "bank24"
+  ],
+  "no_additional_judge_diagnostics": true,
+  "selection": "Pre-registered order, not based on performance",
+  "scope": "No E4 admission; historical failed keys unchanged"
+}

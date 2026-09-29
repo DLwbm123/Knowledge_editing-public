@@ -102,9 +102,9 @@ def main():
     fcntl.flock(f,fcntl.LOCK_EX);q=read(ROOT/'QUEUE.json');q.extend(nextblock['jobs']);write(ROOT/'QUEUE.json',q)
    a=next(x for x in amendments['blocks'] if x['id']==nextblock['id']);a.update(status='ADMITTED',forecast=forecast);write(ap,amendments);pending=nextblock['jobs'];write(ROOT/'RUN_STATUS.json',dict(status='RUNNING',phase=nextblock['id'],epoch=now))
   if pending and not active and not any(all((ROOT/p).exists() for p in j.get('requires',[])) for j in pending):
-   dev=any(j.get('dev_canary') for j in q)
-   marker='DEV_CANARY_PASS.json' if dev else 'E2_CANARY_PASS.json'
-   canary=[j for j in q if j.get('dev_canary' if dev else 'e2_canary')]
+   e3=any(j.get('e3_canary') for j in q);dev=not e3 and any(j.get('dev_canary') for j in q)
+   marker='E3_CANARY_PASS.json' if e3 else 'DEV_CANARY_PASS.json' if dev else 'E2_CANARY_PASS.json'
+   canary=[j for j in q if j.get('e3_canary' if e3 else 'dev_canary' if dev else 'e2_canary')]
    if len(canary)==(3 if dev else 2) and all(j['status']=='COMPLETE' for j in canary) and not (ROOT/marker).exists():
     c=coverage()
     if c['IN_FLIGHT'] or c['UNSUBMITTED']:
@@ -116,7 +116,7 @@ def main():
      for m in j['methods']:
       rows=read(ROOT/'jobs'/j['id']/m/'CONSUMERS.json');assert rows,'Empty E2 canary'
       canary_keys.update(row['judge_key'] for row in rows)
-     for stage in ([j['kind']+'-W0',j['methods'][1]+'-final'] if j['kind']!='LR' else []):assert (ROOT/'private/e2_parity'/f'{stage}-{j["order"]}.json').exists()
+     for stage in ([j['methods'][1]+'-W0'] if e3 else [j['kind']+'-W0',j['methods'][1]+'-final'] if j['kind']!='LR' else []):assert (ROOT/'private'/('e3_parity' if e3 else 'e2_parity')/f'{stage}-{j["order"]}.json').exists()
     canary_scored=sum((ROOT/'private/judge/scores'/f'{key}.json').exists() for key in canary_keys)
     if not canary_scored:reason='E2_CANARY_SCORING_EMPTY';break
     write(ROOT/marker,dict(status='PASS',epoch=now,coverage=c,canary_required=len(canary_keys),canary_scored=canary_scored,paired_training_save_reload_expansion_generation=True))

@@ -33,7 +33,7 @@ def report(final=False):
   key=f'{seed}_{panel}_{mode}_{prefix}';summary=summarize(rows,scores)
   for s in summary:s['unique_inputs']=len({r['input_id'] for r in rows if r['arm']==s['arm'] and r['task']==s['task'] and scores.get(r['base_judge_key']) is retention(s['task'])});s['expected_edits']=(4 if panel=='OPTIONAL_FIXED_DEV4' else 24) if mode=='single' else prefix
   comparisons={}
-  for a,b in [('M0','M1'),('M1','M2'),('M2','M3'),('M1','M3'),('M1','M4'),('M3','M5'),('M4','M5'),('M1','M6'),('M6','M7'),('M1','M1_STRUCT'),('M4','M4_STRUCT'),('M1','M1_R8'),('M4','M4_R8')]:
+  for a,b in [('M0','M1'),('M1','M2'),('M2','M3'),('M1','M3'),('M1','M4'),('M3','M5'),('M4','M5'),('M1','M6'),('M6','M7'),('M1','M1_STRUCT'),('M4','M4_STRUCT'),('M1','M1_R8'),('M4','M4_R8'),('M1_E3_RAW','M1_E3_SVDGAUGE'),('M4_E3_RAW','M4_E3_SVDGAUGE')]:
    aa={(r['edit'],r['task'],r['query_id']):r for r in rows if r['arm']==a};bb={(r['edit'],r['task'],r['query_id']):r for r in rows if r['arm']==b}
    if not aa or set(aa)!=set(bb):comparisons[a+'_'+b]={'status':'UNPAIRED_COHORT'};continue
    bytask=defaultdict(list)

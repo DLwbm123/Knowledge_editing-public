@@ -36,3 +36,16 @@ are added. The user authorized a cumulative Judge ceiling of 7660; 4008 items
 are reserved at the unchanged 3652-attempt baseline (6 × [268+132+268]). Original
 clocks, all prior attempts and permanent failed keys remain unchanged. This is
 a launch, not a completed DEV24 result or an authorization for further fees.
+
+## E3 REG24 SVD gauge
+
+E1/E2 REG24 and DEV24 have completed (see versioned reports). `E3_PROTOCOL.json`
+freezes 52 jobs and 96 continuation branches, pairing rebuilt CP/Tucker RAW
+with function-preserving SVDGAUGE at rank4. Separate method and W0 namespaces
+preserve prior artifacts. `e3.py` uses CPU float64 thin QR and a full 4x4 SVD,
+without a dense residual matrix or rank truncation. Every edit records step0
+FP32/FP16/native-generation parity. Two canaries close before full admission.
+2880 attempts are conservatively reserved from the existing 7660 ceiling at
+3779 used. E4 is not admitted. Judge uses gpt-6-astra/high via ChatGPT-authenticated
+Codex CLI: these limits count experiment attempt items, not money or purchased
+API credits. Historical references to paid ceilings do not imply API billing.

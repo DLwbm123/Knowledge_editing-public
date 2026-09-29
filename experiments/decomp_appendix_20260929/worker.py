@@ -53,7 +53,7 @@ def main():
     jid=job['id'];seed=job['seed'];evaluation.SEED=seed;counts_before=counters.copy();job_began=time.time()
     if job['mode']=='train':
      t=next(t for t in tasks if t['order']==job['order']);kind=job['kind'];ss=derive_seed(t['canonical_edit_id'],seed);binding=dict(edit=t['canonical_edit_id'],seed=seed,structure=kind,backend=protocol['backend'],code=protocol['code'],support_digest=old.digest(dict(P=t['semantic_fit_questions'],Uold=t['U_fit'],Unew=t['U_new'],G=gs[t['order']])))
-     wrel=f'checkpoints/W0/s{seed}/{kind}/e{t["order"]:03d}.pt';arms=job['methods']
+     wbase='W0_E3' if job.get('block')=='E3_REG24' else 'W0';wrel=f'checkpoints/{wbase}/s{seed}/{kind}/e{t["order"]:03d}.pt';arms=job['methods']
      if (ROOT/wrel).exists():ex,_=load(wrel,expected(t,seed,kind,kind,'W0',320))
      else:
       seed_everything(ss);ex=new(kind);assert state_digest(ex)==initialization(t['canonical_edit_id'],seed,kind)['state_sha256'],'Actual initializer mismatch';resume_stage='native';rolling=ROOT/f'checkpoints/slot{slot}/latest.pt'
@@ -70,6 +70,11 @@ def main():
       if (ROOT/rel).exists():expert,_=load(rel,expected(t,seed,kind,method,'continuation',80))
       else:
        ex.load_state_dict(initial);expert=copy.deepcopy(ex) if method.endswith('_STRUCT') else convert(ex,ss+1,rank=8 if method.endswith('_R8') else 4);deployment_kind=kind if method.endswith('_STRUCT') else 'LR8' if method.endswith('_R8') else 'LR';g=gs[t['order']]['G_fit'];kd=None
+       if method.endswith('_SVDGAUGE'):
+        from e3 import gauge
+        raw=expert;expert,meta=gauge(raw);write(ROOT/'private/e3_gauge'/f'{method}-{t["order"]}.json',meta)
+        expert=parity(runtime,t,raw,ss+1,method+'-W0',free=expert,directory='e3_parity')
+        del raw
        if method in ['M3','M5','M7']:
         teacher=finalrel(seed,'M0',t['order']);kd=p_teacher(runtime,t,teacher,g,expected(t,seed,'CP','M0','continuation',80));guarded_write(ROOT/'private/kd'/f'{seed}-{t["order"]}-{method}.json',dict(quality=[x[3] is not None for x in kd],rule='literal normalized free generation equals native target; unreliable G keeps CE and zero KD',teacher=teacher,temperature=1,normalization='uniform qualified G_fit mean; CE retains all G_fit; lambda_D=0.10',teacher_working_set_bytes=cachebytes))
        cachebytes=teacher_bytes([groups,kd]);stage(runtime,t,expert,deployment_kind,'continuation',ss+1,method,protector(runtime,groups,method,ss+1,kd),g,run_seed=seed,structure=kind)
@@ -78,8 +83,8 @@ def main():
       if method.endswith('_STRUCT'):expert=parity(runtime,t,expert,ss+1,method+'-final')
       key,radius=old.router_entry(runtime,t);router=RejectRouter();router.add(t['canonical_edit_id'],key,radius)
       evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'single',1,ROOT/'jobs'/jid/method,[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol)
-      if is_diagnostic_edit(t) and job.get('block')!='E2_REG24':evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'diagnostic_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-forced'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol,forced=True)
-      if is_diagnostic_edit(t) and job.get('block')!='E2_REG24':
+      if is_diagnostic_edit(t) and job.get('block') not in ['E2_REG24','E3_REG24']:evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'diagnostic_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-forced'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol,forced=True)
+      if is_diagnostic_edit(t) and job.get('block') not in ['E2_REG24','E3_REG24']:
        support=copy.deepcopy(t);support['evaluation']=[]
        for role,questions in [('G_FIT',gs[t['order']]['G_fit']),('G_CHECK',gs[t['order']]['G_check'])]:
         for question in questions:support['evaluation'].append(dict(t['native'],task=role,question=question,reference=old.record(t).target,query_id='support-'+old.digest([role,t['canonical_edit_id'],question])))
