@@ -49,3 +49,14 @@ FP32/FP16/native-generation parity. Two canaries close before full admission.
 3779 used. E4 is not admitted. Judge uses gpt-6-astra/high via ChatGPT-authenticated
 Codex CLI: these limits count experiment attempt items, not money or purchased
 API credits. Historical references to paid ceilings do not imply API billing.
+
+## E4 rank capacity
+
+User authorized immediate admission of the complete E4 block, raising the internal
+attempt ceiling to 9539 (1879 above 7660). Reserve 2880 items without resetting
+history. `activate_e4.py` automatically waits for existing E3 ownership release;
+no same-device overlap. Four distinct E4 arms share CP/TK W0_E4 within each pair,
+retain original rank4 factors and expand with random nonzero A/zero B columns.
+`e4.py` checks function preservation and nonzero new-direction B gradients.
+Every R8 step0 has GPU parity before its 80 updates; two canaries gate 52 jobs.
+This is admission, not completed E4 evidence or purchase of Codex credits.

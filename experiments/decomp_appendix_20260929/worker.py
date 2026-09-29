@@ -53,7 +53,7 @@ def main():
     jid=job['id'];seed=job['seed'];evaluation.SEED=seed;counts_before=counters.copy();job_began=time.time()
     if job['mode']=='train':
      t=next(t for t in tasks if t['order']==job['order']);kind=job['kind'];ss=derive_seed(t['canonical_edit_id'],seed);binding=dict(edit=t['canonical_edit_id'],seed=seed,structure=kind,backend=protocol['backend'],code=protocol['code'],support_digest=old.digest(dict(P=t['semantic_fit_questions'],Uold=t['U_fit'],Unew=t['U_new'],G=gs[t['order']])))
-     wbase='W0_E3' if job.get('block')=='E3_REG24' else 'W0';wrel=f'checkpoints/{wbase}/s{seed}/{kind}/e{t["order"]:03d}.pt';arms=job['methods']
+     wbase='W0_E4' if job.get('block')=='E4_REG24' else 'W0_E3' if job.get('block')=='E3_REG24' else 'W0';wrel=f'checkpoints/{wbase}/s{seed}/{kind}/e{t["order"]:03d}.pt';arms=job['methods']
      if (ROOT/wrel).exists():ex,_=load(wrel,expected(t,seed,kind,kind,'W0',320))
      else:
       seed_everything(ss);ex=new(kind);assert state_digest(ex)==initialization(t['canonical_edit_id'],seed,kind)['state_sha256'],'Actual initializer mismatch';resume_stage='native';rolling=ROOT/f'checkpoints/slot{slot}/latest.pt'
@@ -70,6 +70,10 @@ def main():
       if (ROOT/rel).exists():expert,_=load(rel,expected(t,seed,kind,method,'continuation',80))
       else:
        ex.load_state_dict(initial);expert=copy.deepcopy(ex) if method.endswith('_STRUCT') else convert(ex,ss+1,rank=8 if method.endswith('_R8') else 4);deployment_kind=kind if method.endswith('_STRUCT') else 'LR8' if method.endswith('_R8') else 'LR';g=gs[t['order']]['G_fit'];kd=None
+       if '_E4_' in method:
+        from e4 import expand
+        raw=convert(ex,ss+1);expert=expand(raw,ss+1) if method.endswith('_R8') else raw
+        if method.endswith('_R8'):expert=parity(runtime,t,raw,ss+1,method+'-W0',free=expert,directory='e4_parity')
        if method.endswith('_SVDGAUGE'):
         from e3 import gauge
         raw=expert;expert,meta=gauge(raw);write(ROOT/'private/e3_gauge'/f'{method}-{t["order"]}.json',meta)
@@ -82,15 +86,15 @@ def main():
       expert,_=load(rel,expected(t,seed,kind,method,'continuation',80));expert.requires_grad_(False)
       if method.endswith('_STRUCT'):expert=parity(runtime,t,expert,ss+1,method+'-final')
       key,radius=old.router_entry(runtime,t);router=RejectRouter();router.add(t['canonical_edit_id'],key,radius)
-      evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'single',1,ROOT/'jobs'/jid/method,[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol)
-      if is_diagnostic_edit(t) and job.get('block') not in ['E2_REG24','E3_REG24']:evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'diagnostic_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-forced'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol,forced=True)
-      if is_diagnostic_edit(t) and job.get('block') not in ['E2_REG24','E3_REG24']:
+      evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'single',1,ROOT/'jobs'/jid/method,[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank8' if method.endswith('_R8') else 'native_free_rank4')],protocol)
+      if is_diagnostic_edit(t) and job.get('block') not in ['E2_REG24','E3_REG24','E4_REG24']:evaluation.evaluate(runtime,[t],{t['canonical_edit_id']:expert},router,method,'diagnostic_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-forced'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank8' if method.endswith('_R8') else 'native_free_rank4')],protocol,forced=True)
+      if is_diagnostic_edit(t) and job.get('block') not in ['E2_REG24','E3_REG24','E4_REG24']:
        support=copy.deepcopy(t);support['evaluation']=[]
        for role,questions in [('G_FIT',gs[t['order']]['G_fit']),('G_CHECK',gs[t['order']]['G_check'])]:
         for question in questions:support['evaluation'].append(dict(t['native'],task=role,question=question,reference=old.record(t).target,query_id='support-'+old.digest([role,t['canonical_edit_id'],question])))
        for role,rows in [('U_FIT_OLD',t['U_fit']),('U_FIT_NEW',t['U_new'])]:
         for row in rows:support['evaluation'].append(dict(row,task=role,query_id='support-'+old.digest([role,t['canonical_edit_id'],old.input_id(row)])))
-       evaluation.evaluate(runtime,[support],{t['canonical_edit_id']:expert},router,method,'support_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-supports'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank4')],protocol,forced=True)
+       evaluation.evaluate(runtime,[support],{t['canonical_edit_id']:expert},router,method,'support_FORCED_ON',1,ROOT/'jobs'/jid/(method+'-supports'),[dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if method.endswith('_STRUCT') else 'native_free_rank8' if method.endswith('_R8') else 'native_free_rank4')],protocol,forced=True)
       with store.lock() as d:remaining=method in d['artifacts'][wrel]['consumers']
       if remaining:store.consumed(wrel,method)
       del expert
@@ -101,7 +105,7 @@ def main():
     else:
      bank={};router=RejectRouter();bindings=[];selected_tasks=[t for t in tasks if t['order'] in job['orders']]
      for i,t in enumerate(selected_tasks,1):
-      rel=finalrel(seed,job['method'],t['order']);structure=method_structure(job['method']);expert,_=load(rel,expected(t,seed,structure,job['method'],'continuation',80));expert=deploy(expert,job['method'],derive_seed(t['canonical_edit_id'],seed)+1);expert.requires_grad_(False);bank[t['canonical_edit_id']]=expert;key,radius=old.router_entry(runtime,t);router.add(t['canonical_edit_id'],key,radius);bindings.append(dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if job['method'].endswith('_STRUCT') else 'native_free_rank4'))
+      rel=finalrel(seed,job['method'],t['order']);structure=method_structure(job['method']);expert,_=load(rel,expected(t,seed,structure,job['method'],'continuation',80));expert=deploy(expert,job['method'],derive_seed(t['canonical_edit_id'],seed)+1);expert.requires_grad_(False);bank[t['canonical_edit_id']]=expert;key,radius=old.router_entry(runtime,t);router.add(t['canonical_edit_id'],key,radius);bindings.append(dict(adapter=rel,sha256=hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),actual_steps=80,deployment='expanded_free_rank4' if job['method'].endswith('_STRUCT') else 'native_free_rank8' if job['method'].endswith('_R8') else 'native_free_rank4'))
       if i in job['prefixes']:evaluation.evaluate(runtime,selected_tasks[:i],bank,router,job['method'],'sequential',i,ROOT/'jobs'/jid/f'p{i}',bindings,protocol)
      del bank
     guarded_write(ROOT/'jobs'/jid/'COMPUTE_COUNTS.json',dict(model_calls=counters['model_calls']-counts_before['model_calls'],input_positions=counters['input_positions']-counts_before['input_positions'],seconds=time.time()-job_began,scope='Includes Base, teacher, CE, KL and generation model calls for this completed worker attempt',seed=seed,mode=job['mode'],methods=job.get('methods',[job.get('method')]),physical_gpu=slot))

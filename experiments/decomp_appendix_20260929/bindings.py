@@ -40,9 +40,10 @@ def expected(t,seed,kind,method,stage,step):
   assert digest_file(ROOT/imported['path'])==imported['sha256']
   return imported['parent_expected']
  c=context(t,seed,kind);c.update(method=method,stage=stage,actual_step=step,loss=dict(native=1 if stage=='native' else .5,P=0 if stage=='native' else .25 if method in ['M2','M3','M5','M7'] and stage=='continuation' else .5,G=.25 if method in ['M2','M3','M5','M7'] and stage=='continuation' else 0,U=.01 if stage=='continuation' else 0,D=.10 if method in ['M3','M5','M7'] and stage=='continuation' else 0))
+ if '_E4_' in method:c['rank_protocol']=dict(variant=method.split('_E4_')[1],implementation=digest_file(ROOT/'e4.py'),rank=8 if method.endswith('_R8') else 4,fresh_optimizer=True)
  if '_E3_' in method:c['gauge_protocol']=dict(variant=method.split('_E3_')[1],implementation=digest_file(ROOT/'e3.py'),rank=4,fresh_optimizer=True)
  if stage=='continuation':
-  wbase='W0_E3' if '_E3_' in method else 'W0';rel=f'checkpoints/{wbase}/s{seed}/{kind}/e{t["order"]:03d}.pt';ledger=read(ROOT/'STORAGE_LEDGER.json');entry=ledger['artifacts'].get(rel);assert entry and entry.get('hash'),'Missing W0 provenance';c['initialization_W0_hash']=entry['hash']
+  wbase='W0_E4' if '_E4_' in method else 'W0_E3' if '_E3_' in method else 'W0';rel=f'checkpoints/{wbase}/s{seed}/{kind}/e{t["order"]:03d}.pt';ledger=read(ROOT/'STORAGE_LEDGER.json');entry=ledger['artifacts'].get(rel);assert entry and entry.get('hash'),'Missing W0 provenance';c['initialization_W0_hash']=entry['hash']
   # A later repair can rebuild W0 while valid old siblings keep their original provenance.
   migration=ROOT/'fix/pr5_v1/LEGACY_BINDING_MIGRATION.json';final=f'adapters/s{seed}/{method}/e{t["order"]:03d}.pt'
   if migration.exists():
