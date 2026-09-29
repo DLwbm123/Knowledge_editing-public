@@ -1,0 +1,27 @@
+{
+  "initializers": {
+    "count": 24,
+    "consumers": [
+      "P1 paired branches",
+      "P2 remaining branches"
+    ],
+    "delete_after": "all admitted branches and initializer audit finished"
+  },
+  "pilot_adapters": {
+    "consumers": [
+      "single",
+      "fixed CHECK forced-on",
+      "bank4/8",
+      "P2 binding-equivalent reuse"
+    ],
+    "retain_until": "pilot selection, complete scoring and reuse audit"
+  },
+  "rolling": {
+    "per_GPU": [
+      "latest",
+      "previous"
+    ],
+    "delete_after": "GPU queue complete and no resume consumer"
+  },
+  "historical_files_deleted": false
+}

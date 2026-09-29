@@ -1,5 +1,5 @@
 {
-  "status": "CPU_PREPARATION_NOT_GPU_ADMITTED",
+  "status": "P1_FROZEN_WAITING_OWNERSHIP",
   "main": "CP -> free rank4 INIT_POST80",
   "layer": "model.layers.30.mlp.down_proj",
   "precision": "float16 backbone, FP32 master",
@@ -44,9 +44,8 @@
     "future_edit_support_prohibited": true
   },
   "remaining_unfrozen": [
-    "CHECK/CAL data",
-    "complete scoring reservation",
-    "full INIT model/data compatibility",
-    "GPU runtime integration"
-  ]
+    "P2 global lambda selected once from CHECK after P1",
+    "Rneg unsupported cross-image CAL"
+  ],
+  "CHECK_selection": "Choose lambda by edit-macro CHECK_NEG accuracy subject to CHECK_POS hit not below A0; require complete score coverage, ties choose .01; if neither feasible retain .01 as non-improving mechanistic control and report fail"
 }

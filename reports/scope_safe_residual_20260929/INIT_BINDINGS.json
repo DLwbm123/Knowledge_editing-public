@@ -1,10 +1,15 @@
 {
   "verified": 24,
-  "origin": "E1/E2 DEV M1 post-continuation80",
+  "origin": "INIT_POST80",
+  "tensor_step": 80,
   "new_steps": 80,
   "common_start_per_edit": true,
-  "import_mode": "Read-only references; no historical weight mutation",
-  "old_W0_reuse": false,
-  "verified_scope": "24 checkpoint payloads loaded on CPU; step, method, edit, seed, structure and tensor schema checked",
-  "full_model_data_normalization_compatibility": "PENDING; not admitted as executable training initializers"
+  "checks": [
+    "payload SHA",
+    "input/support identity",
+    "science and backend",
+    "retained original W0 provenance",
+    "kind and actual step"
+  ],
+  "historical_code_bindings_preserved": true
 }
