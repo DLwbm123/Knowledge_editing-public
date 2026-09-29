@@ -30,7 +30,8 @@ def main(old,out):
   rows=[]
   for x in cal:
    if x['order']==t['order'] and x['role']=='new_paraphrase' and ident(x) not in forbidden:
-    rows.append(dict(x,reference=t['native']['reference'],task='CHECK_POS',query_id='check-'+digest(ident(x)),purpose='check',scope='positive'))
+    assert x['image_sha256']==t['native']['image_sha256']
+    rows.append(dict(x,image_path=t['native']['image_path'],reference=t['native']['reference'],task='CHECK_POS',query_id='check-'+digest(ident(x)),purpose='check',scope='positive'))
   check[str(t['order'])]=rows
  assert all(len(v)==2 for v in check.values()),'CHECK support shortfall; do not replace editors'
  write(out/'private/CHECK_POS.json',check)
