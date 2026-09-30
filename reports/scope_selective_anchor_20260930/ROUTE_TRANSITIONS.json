@@ -1,0 +1,710 @@
+{
+  "status": "COMPLETE_CACHED_R0",
+  "actual_algorithm": "nearest first, argmin first-entry ties, test nearest radius, kappa=1 mu=0",
+  "groups": [
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "from_prefix": 8,
+      "to_prefix": 9,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SAME": 42,
+        "OFF_OFF": 2,
+        "ON_ON_SWITCH": 3
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "from_prefix": 9,
+      "to_prefix": 10,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SAME": 40,
+        "OFF_OFF": 2,
+        "ON_ON_SWITCH": 5
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "from_prefix": 10,
+      "to_prefix": 11,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SAME": 45,
+        "OFF_OFF": 2
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "from_prefix": 11,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SAME": 45,
+        "OFF_OFF": 2
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SAME": 40,
+        "OFF_OFF": 2,
+        "ON_ON_SWITCH": 5
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SWITCH": 33,
+        "OFF_ON": 2,
+        "ON_ON_SAME": 12
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "E_orig",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SAME/same": 40,
+        "OFF_OFF/same": 2,
+        "ON_ON_SWITCH/same": 5
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "E_orig",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 25,
+        "ON_ON_SWITCH/wrong_to_correct": 7,
+        "OFF_ON/same": 1,
+        "OFF_ON/correct_to_wrong": 1,
+        "ON_ON_SAME/same": 12,
+        "ON_ON_SWITCH/correct_to_wrong": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "A0",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SAME/same": 40,
+        "OFF_OFF/same": 2,
+        "ON_ON_SWITCH/same": 5
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "A0",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 23,
+        "ON_ON_SWITCH/correct_to_wrong": 4,
+        "OFF_ON/same": 2,
+        "ON_ON_SWITCH/wrong_to_correct": 6,
+        "ON_ON_SAME/same": 12
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "AH",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SAME/same": 40,
+        "OFF_OFF/same": 2,
+        "ON_ON_SWITCH/same": 5
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "AH",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 32,
+        "OFF_ON/same": 2,
+        "ON_ON_SAME/same": 12,
+        "ON_ON_SWITCH/wrong_to_correct": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "AHS_01",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SAME/same": 40,
+        "OFF_OFF/same": 2,
+        "ON_ON_SWITCH/same": 5
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "old47",
+      "method": "AHS_01",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 32,
+        "OFF_ON/same": 2,
+        "ON_ON_SAME/same": 12,
+        "ON_ON_SWITCH/wrong_to_correct": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "from_prefix": 8,
+      "to_prefix": 9,
+      "unique_inputs": 69,
+      "transitions": {
+        "ON_ON_SAME": 69
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "from_prefix": 9,
+      "to_prefix": 10,
+      "unique_inputs": 69,
+      "transitions": {
+        "ON_ON_SAME": 69
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "from_prefix": 10,
+      "to_prefix": 11,
+      "unique_inputs": 69,
+      "transitions": {
+        "ON_ON_SAME": 69
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "from_prefix": 11,
+      "to_prefix": 12,
+      "unique_inputs": 69,
+      "transitions": {
+        "ON_ON_SAME": 69
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 69,
+      "transitions": {
+        "ON_ON_SAME": 69
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 69,
+      "transitions": {
+        "ON_ON_SAME": 67,
+        "ON_ON_SWITCH": 2
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "E_orig",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 68,
+        "ON_ON_SAME/missing": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "E_orig",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 66,
+        "ON_ON_SWITCH/correct_to_wrong": 2,
+        "ON_ON_SAME/missing": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "A0",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 68,
+        "ON_ON_SAME/missing": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "A0",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 66,
+        "ON_ON_SWITCH/correct_to_wrong": 2,
+        "ON_ON_SAME/missing": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "AH",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 68,
+        "ON_ON_SAME/missing": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "AH",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 66,
+        "ON_ON_SWITCH/correct_to_wrong": 2,
+        "ON_ON_SAME/missing": 1
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "AHS_01",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 69
+      }
+    },
+    {
+      "panel": "DEV24",
+      "cohort": "early8_positive",
+      "method": "AHS_01",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 69,
+      "route_correctness": {
+        "ON_ON_SAME/same": 67,
+        "ON_ON_SWITCH/correct_to_wrong": 2
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "from_prefix": 8,
+      "to_prefix": 9,
+      "unique_inputs": 47,
+      "transitions": {
+        "OFF_OFF": 16,
+        "ON_ON_SAME": 31
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "from_prefix": 9,
+      "to_prefix": 10,
+      "unique_inputs": 47,
+      "transitions": {
+        "OFF_OFF": 16,
+        "ON_ON_SAME": 31
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "from_prefix": 10,
+      "to_prefix": 11,
+      "unique_inputs": 47,
+      "transitions": {
+        "OFF_ON": 1,
+        "ON_ON_SAME": 31,
+        "OFF_OFF": 15
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "from_prefix": 11,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SWITCH": 12,
+        "OFF_ON": 15,
+        "ON_ON_SAME": 20
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "transitions": {
+        "OFF_ON": 16,
+        "ON_ON_SWITCH": 11,
+        "ON_ON_SAME": 20
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "transitions": {
+        "ON_ON_SWITCH": 27,
+        "ON_ON_SAME": 20
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "E_orig",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "OFF_ON/same": 9,
+        "ON_ON_SWITCH/same": 6,
+        "OFF_ON/correct_to_wrong": 7,
+        "ON_ON_SWITCH/wrong_to_correct": 2,
+        "ON_ON_SWITCH/correct_to_wrong": 3,
+        "ON_ON_SAME/same": 20
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "E_orig",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 17,
+        "ON_ON_SAME/same": 20,
+        "ON_ON_SWITCH/wrong_to_correct": 9,
+        "ON_ON_SWITCH/correct_to_wrong": 1
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "A0",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "OFF_ON/same": 6,
+        "ON_ON_SWITCH/same": 5,
+        "OFF_ON/correct_to_wrong": 10,
+        "ON_ON_SWITCH/wrong_to_correct": 1,
+        "ON_ON_SWITCH/correct_to_wrong": 5,
+        "ON_ON_SAME/same": 20
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "A0",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 14,
+        "ON_ON_SAME/same": 20,
+        "ON_ON_SWITCH/wrong_to_correct": 12,
+        "ON_ON_SWITCH/correct_to_wrong": 1
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "AH",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "OFF_ON/same": 16,
+        "ON_ON_SWITCH/same": 10,
+        "ON_ON_SWITCH/wrong_to_correct": 1,
+        "ON_ON_SAME/same": 20
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "AH",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 26,
+        "ON_ON_SAME/same": 20,
+        "ON_ON_SWITCH/wrong_to_correct": 1
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "AHS_01",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "OFF_ON/same": 16,
+        "ON_ON_SWITCH/same": 11,
+        "ON_ON_SAME/same": 20
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "old47",
+      "method": "AHS_01",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 47,
+      "route_correctness": {
+        "ON_ON_SWITCH/same": 25,
+        "ON_ON_SAME/same": 20,
+        "ON_ON_SWITCH/correct_to_wrong": 1,
+        "ON_ON_SWITCH/wrong_to_correct": 1
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "from_prefix": 8,
+      "to_prefix": 9,
+      "unique_inputs": 72,
+      "transitions": {
+        "ON_ON_SAME": 72
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "from_prefix": 9,
+      "to_prefix": 10,
+      "unique_inputs": 72,
+      "transitions": {
+        "ON_ON_SAME": 72
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "from_prefix": 10,
+      "to_prefix": 11,
+      "unique_inputs": 72,
+      "transitions": {
+        "ON_ON_SAME": 72
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "from_prefix": 11,
+      "to_prefix": 12,
+      "unique_inputs": 72,
+      "transitions": {
+        "ON_ON_SAME": 72
+      },
+      "outcomes_available": false
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 72,
+      "transitions": {
+        "ON_ON_SAME": 72
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 72,
+      "transitions": {
+        "ON_ON_SAME": 72
+      },
+      "outcomes_available": true
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "E_orig",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "E_orig",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "A0",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "A0",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "AH",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "AH",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "AHS_01",
+      "from_prefix": 8,
+      "to_prefix": 12,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    },
+    {
+      "panel": "REG24",
+      "cohort": "early8_positive",
+      "method": "AHS_01",
+      "from_prefix": 12,
+      "to_prefix": 24,
+      "unique_inputs": 72,
+      "route_correctness": {
+        "ON_ON_SAME/same": 72
+      }
+    }
+  ],
+  "associated_ID_not_unique_correct_scope": true,
+  "intermediate_prefix_outcomes": "NOT_GENERATED; only route changes at 9/10/11; no expert-ID-only answer reuse",
+  "Judge_attempts": 0,
+  "provenance": {
+    "route_decisions": "score-free exact replay of frozen R0 with predecessor keys/radii",
+    "route_correctness": "historical predecessor GPT-6-astra/high scores only; separate from current Sol comparisons",
+    "REG_rows": "historical cached diagnosis, not a newly executed REG candidate block",
+    "prefix_9_10_11_outcomes": "not generated; routing decisions only"
+  }
+}

@@ -1,0 +1,568 @@
+{
+  "status": "CLOSED_NOT_ADMITTED",
+  "formal_continuations": 88,
+  "formal_steps": 7040,
+  "smoke_steps": 320,
+  "completed_jobs": 41,
+  "Judge_model": "gpt-6.1-sol",
+  "reasoning": "high",
+  "Judge_new_attempts": 1088,
+  "Judge_inherited_attempts": 5779,
+  "Judge_cumulative_attempts": 6867,
+  "Judge_unique_success": 1048,
+  "Judge_unique_missing": 40,
+  "Judge_pending_unclosed": 0,
+  "Judge_semantic_retries": 0,
+  "failed_batches": 2,
+  "failure_reason": "SSE idle timeout, permanently missing without retry",
+  "GPU_resident_seconds": 11194.774511575699,
+  "GPU_hours": 3.1096595865488053,
+  "active_leases": 0,
+  "runtime_closed_epoch": 1790770320.815827,
+  "formal_curve_summary": {
+    "P_1": {
+      "continuations": 8,
+      "steps": 640,
+      "CE_forwards": 1280,
+      "seconds": 226.63993120193481,
+      "clip_active_steps": 34,
+      "preclip_norm_median": 0.13969721645116806,
+      "postclip_norm_max": 0.9999995827674866,
+      "positive_gradient_norm_median": 0.13735030591487885,
+      "parameter_update_norm_median": 0.009801879525184631,
+      "function_space_update_recorded": 0
+    },
+    "L": {
+      "continuations": 24,
+      "steps": 1920,
+      "CE_forwards": 3840,
+      "seconds": 703.305605173111,
+      "clip_active_steps": 1,
+      "preclip_norm_median": 0.07361175864934921,
+      "postclip_norm_max": 0.9999991655349731,
+      "positive_gradient_norm_median": 0.0,
+      "parameter_update_norm_median": 0.04575827717781067,
+      "function_space_update_recorded": 0
+    },
+    "SP_01": {
+      "continuations": 24,
+      "steps": 1920,
+      "CE_forwards": 3840,
+      "seconds": 705.1930513381958,
+      "clip_active_steps": 516,
+      "preclip_norm_median": 0.6437706649303436,
+      "postclip_norm_max": 0.9999998807907104,
+      "positive_gradient_norm_median": 0.06848776340484619,
+      "parameter_update_norm_median": 0.040576666593551636,
+      "function_space_update_recorded": 0
+    },
+    "SP_1": {
+      "continuations": 8,
+      "steps": 640,
+      "CE_forwards": 1280,
+      "seconds": 230.80954885482788,
+      "clip_active_steps": 222,
+      "preclip_norm_median": 0.7496598064899445,
+      "postclip_norm_max": 0.9999998211860657,
+      "positive_gradient_norm_median": 0.3138398677110672,
+      "parameter_update_norm_median": 0.026345305144786835,
+      "function_space_update_recorded": 0
+    },
+    "P_01": {
+      "continuations": 24,
+      "steps": 1920,
+      "CE_forwards": 3840,
+      "seconds": 699.5512969493866,
+      "clip_active_steps": 0,
+      "preclip_norm_median": 0.021874080412089825,
+      "postclip_norm_max": 0.7557131052017212,
+      "positive_gradient_norm_median": 0.017557240091264248,
+      "parameter_update_norm_median": 0.02306861523538828,
+      "function_space_update_recorded": 0
+    }
+  },
+  "model_calls_completed_jobs": 178523,
+  "diagnostic_model_forwards": 1760,
+  "diagnostic_autograd_grad_calls": 3520,
+  "preparation_cost_by_edit_order": [
+    {
+      "model_calls": 0,
+      "seconds": 0.0037412643432617188
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.33557558059692383
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.3481791019439697
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.3646717071533203
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.39746713638305664
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.3618032932281494
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.44164609909057617
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.9099042415618896
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.8336858749389648
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.5848758220672607
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.6303739547729492
+    },
+    {
+      "model_calls": 5,
+      "seconds": 1.0176856517791748
+    },
+    {
+      "model_calls": 5,
+      "seconds": 1.2802119255065918
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.8603496551513672
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.9317021369934082
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.5917434692382812
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.6432962417602539
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.9860377311706543
+    },
+    {
+      "model_calls": 5,
+      "seconds": 1.3184635639190674
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.610224723815918
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.791377067565918
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.7940080165863037
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.7350516319274902
+    },
+    {
+      "model_calls": 5,
+      "seconds": 0.9195001125335693
+    }
+  ],
+  "fit_diagnostic_energy_step80": {
+    "L": {
+      "positive_energy": {
+        "n": 48,
+        "median": 5658.62744140625,
+        "min": 1014.141357421875,
+        "max": 16114.693359375
+      },
+      "positive_reference_energy": {
+        "n": 48,
+        "median": 5585.91162109375,
+        "min": 1460.4464111328125,
+        "max": 14700.259765625
+      },
+      "positive_energy_ratio": {
+        "n": 48,
+        "median": 0.8625798938747411,
+        "min": 0.5507425891110463,
+        "max": 1.2589942458405428
+      },
+      "positive_direction_cosine": {
+        "n": 48,
+        "median": 0.9642766416072845,
+        "min": 0.8876941204071045,
+        "max": 0.9784388542175293
+      },
+      "positive_anchor_error": {
+        "n": 48,
+        "median": 320.94712829589844,
+        "min": 180.01583862304688,
+        "max": 615.1326904296875
+      },
+      "positive_target_NLL": {
+        "n": 48,
+        "median": 8.554415762773715e-05,
+        "min": 3.5151122574461624e-05,
+        "max": 0.000371683097910136
+      },
+      "positive_first_target_margin": {
+        "n": 48,
+        "median": 10.31640625,
+        "min": 7.4375,
+        "max": 12.984375
+      },
+      "negative_energy": {
+        "n": 48,
+        "median": 7.774556875228882,
+        "min": 0.1547478437423706,
+        "max": 102.74278259277344
+      },
+      "negative_reference_energy": {
+        "n": 48,
+        "median": 403.18104553222656,
+        "min": 91.38037109375,
+        "max": 1989.6534423828125
+      },
+      "negative_energy_ratio": {
+        "n": 48,
+        "median": 0.01824716774514817,
+        "min": 0.0008581458696232573,
+        "max": 0.28415713082852573
+      },
+      "negative_direction_cosine": {
+        "n": 48,
+        "median": 0.22826622426509857,
+        "min": -0.2926653027534485,
+        "max": 0.7188400626182556
+      },
+      "negative_anchor_error": {
+        "n": 48,
+        "median": 371.53192138671875,
+        "min": 91.92835998535156,
+        "max": 1804.766845703125
+      }
+    },
+    "P_01": {
+      "positive_energy": {
+        "n": 48,
+        "median": 5604.368896484375,
+        "min": 1464.46630859375,
+        "max": 14720.4658203125
+      },
+      "positive_reference_energy": {
+        "n": 48,
+        "median": 5585.91162109375,
+        "min": 1460.4464111328125,
+        "max": 14700.259765625
+      },
+      "positive_energy_ratio": {
+        "n": 48,
+        "median": 1.0016284172948098,
+        "min": 0.9891805817792394,
+        "max": 1.0080451165911803
+      },
+      "positive_direction_cosine": {
+        "n": 48,
+        "median": 0.9995494782924652,
+        "min": 0.9954753518104553,
+        "max": 0.9999551177024841
+      },
+      "positive_anchor_error": {
+        "n": 48,
+        "median": 3.0880157947540283,
+        "min": 0.25752192735671997,
+        "max": 45.36585998535156
+      },
+      "positive_target_NLL": {
+        "n": 48,
+        "median": 0.0001614450811757706,
+        "min": 5.5222051742020994e-05,
+        "max": 0.0007959497161209583
+      },
+      "positive_first_target_margin": {
+        "n": 48,
+        "median": 9.58984375,
+        "min": 8.078125,
+        "max": 11.015625
+      },
+      "negative_energy": {
+        "n": 48,
+        "median": 290.0056610107422,
+        "min": 96.41661834716797,
+        "max": 614.2628784179688
+      },
+      "negative_reference_energy": {
+        "n": 48,
+        "median": 403.18104553222656,
+        "min": 91.38037109375,
+        "max": 1989.6534423828125
+      },
+      "negative_energy_ratio": {
+        "n": 48,
+        "median": 0.7706878891687196,
+        "min": 0.22943324477501745,
+        "max": 1.1252529084849787
+      },
+      "negative_direction_cosine": {
+        "n": 48,
+        "median": 0.8236642479896545,
+        "min": 0.5165145993232727,
+        "max": 0.9826784133911133
+      },
+      "negative_anchor_error": {
+        "n": 48,
+        "median": 66.9785041809082,
+        "min": 8.348464012145996,
+        "max": 1751.3638916015625
+      }
+    },
+    "P_1": {
+      "positive_energy": {
+        "n": 16,
+        "median": 5357.640380859375,
+        "min": 1461.037353515625,
+        "max": 11128.1162109375
+      },
+      "positive_reference_energy": {
+        "n": 16,
+        "median": 5357.9228515625,
+        "min": 1460.4464111328125,
+        "max": 11113.8203125
+      },
+      "positive_energy_ratio": {
+        "n": 16,
+        "median": 1.0001470410718252,
+        "min": 0.9989992267113752,
+        "max": 1.002498603970572
+      },
+      "positive_direction_cosine": {
+        "n": 16,
+        "median": 0.9999904632568359,
+        "min": 0.9997791647911072,
+        "max": 0.9999980926513672
+      },
+      "positive_anchor_error": {
+        "n": 16,
+        "median": 0.0868455283343792,
+        "min": 0.006333771161735058,
+        "max": 2.1815707683563232
+      },
+      "positive_target_NLL": {
+        "n": 16,
+        "median": 0.00014577811089111492,
+        "min": 6.739352829754353e-05,
+        "max": 0.0018316645873710513
+      },
+      "positive_first_target_margin": {
+        "n": 16,
+        "median": 9.5703125,
+        "min": 7.1875,
+        "max": 10.9140625
+      },
+      "negative_energy": {
+        "n": 16,
+        "median": 305.7593231201172,
+        "min": 97.34748840332031,
+        "max": 675.7672729492188
+      },
+      "negative_reference_energy": {
+        "n": 16,
+        "median": 410.4348449707031,
+        "min": 91.38037109375,
+        "max": 866.4508056640625
+      },
+      "negative_energy_ratio": {
+        "n": 16,
+        "median": 0.8175862995568721,
+        "min": 0.626610811170123,
+        "max": 1.0652997710356031
+      },
+      "negative_direction_cosine": {
+        "n": 16,
+        "median": 0.9416000843048096,
+        "min": 0.8334636688232422,
+        "max": 0.9925634264945984
+      },
+      "negative_anchor_error": {
+        "n": 16,
+        "median": 19.95268154144287,
+        "min": 4.492134094238281,
+        "max": 101.41705322265625
+      }
+    },
+    "SP_01": {
+      "positive_energy": {
+        "n": 48,
+        "median": 5481.904541015625,
+        "min": 1423.3389892578125,
+        "max": 14532.734375
+      },
+      "positive_reference_energy": {
+        "n": 48,
+        "median": 5585.91162109375,
+        "min": 1460.4464111328125,
+        "max": 14700.259765625
+      },
+      "positive_energy_ratio": {
+        "n": 48,
+        "median": 0.9756207703378686,
+        "min": 0.8877662385183865,
+        "max": 1.0076043237061767
+      },
+      "positive_direction_cosine": {
+        "n": 48,
+        "median": 0.9985467791557312,
+        "min": 0.9794959425926208,
+        "max": 0.9995747804641724
+      },
+      "positive_anchor_error": {
+        "n": 48,
+        "median": 15.020750522613525,
+        "min": 1.956639051437378,
+        "max": 111.12444305419922
+      },
+      "positive_target_NLL": {
+        "n": 48,
+        "median": 0.00016388858784921467,
+        "min": 5.702497219317593e-05,
+        "max": 0.0008414664189331234
+      },
+      "positive_first_target_margin": {
+        "n": 48,
+        "median": 9.55859375,
+        "min": 5.78125,
+        "max": 11.125
+      },
+      "negative_energy": {
+        "n": 48,
+        "median": 5.349903345108032,
+        "min": 0.22298966348171234,
+        "max": 84.51719665527344
+      },
+      "negative_reference_energy": {
+        "n": 48,
+        "median": 403.18104553222656,
+        "min": 91.38037109375,
+        "max": 1989.6534423828125
+      },
+      "negative_energy_ratio": {
+        "n": 48,
+        "median": 0.013143102019977357,
+        "min": 0.0011215278315979107,
+        "max": 0.2154828064567533
+      },
+      "negative_direction_cosine": {
+        "n": 48,
+        "median": 0.08943576738238335,
+        "min": -0.3771274983882904,
+        "max": 0.7265663146972656
+      },
+      "negative_anchor_error": {
+        "n": 48,
+        "median": 363.8180847167969,
+        "min": 93.00608825683594,
+        "max": 1929.333740234375
+      }
+    },
+    "SP_1": {
+      "positive_energy": {
+        "n": 16,
+        "median": 5337.069091796875,
+        "min": 1471.2357177734375,
+        "max": 11098.111328125
+      },
+      "positive_reference_energy": {
+        "n": 16,
+        "median": 5357.9228515625,
+        "min": 1460.4464111328125,
+        "max": 11113.8203125
+      },
+      "positive_energy_ratio": {
+        "n": 16,
+        "median": 0.9990750627574547,
+        "min": 0.9924971326988843,
+        "max": 1.0147070129334936
+      },
+      "positive_direction_cosine": {
+        "n": 16,
+        "median": 0.9998570382595062,
+        "min": 0.9992859959602356,
+        "max": 0.9999808073043823
+      },
+      "positive_anchor_error": {
+        "n": 16,
+        "median": 0.9775941967964172,
+        "min": 0.0494963563978672,
+        "max": 6.0993781089782715
+      },
+      "positive_target_NLL": {
+        "n": 16,
+        "median": 0.00014607056800741702,
+        "min": 6.758857489330694e-05,
+        "max": 0.0018325112760066986
+      },
+      "positive_first_target_margin": {
+        "n": 16,
+        "median": 9.5703125,
+        "min": 7.2265625,
+        "max": 10.9375
+      },
+      "negative_energy": {
+        "n": 16,
+        "median": 5.240846395492554,
+        "min": 0.1094440445303917,
+        "max": 64.49466705322266
+      },
+      "negative_reference_energy": {
+        "n": 16,
+        "median": 410.4348449707031,
+        "min": 91.38037109375,
+        "max": 866.4508056640625
+      },
+      "negative_energy_ratio": {
+        "n": 16,
+        "median": 0.016909301965182696,
+        "min": 0.000932341600226795,
+        "max": 0.09008102630620286
+      },
+      "negative_direction_cosine": {
+        "n": 16,
+        "median": 0.2771713435649872,
+        "min": -0.2800918221473694,
+        "max": 0.5536826252937317
+      },
+      "negative_anchor_error": {
+        "n": 16,
+        "median": 393.62689208984375,
+        "min": 91.49187469482422,
+        "max": 649.5932006835938
+      }
+    }
+  },
+  "REG_status": "NOT_ADMITTED",
+  "prefill": "NOT_SEPARATELY_MEASURED",
+  "per_step_function_space_update": "NOT_RECORDED: fixed-batch anchor error relative to initialization is recorded separately",
+  "full_activation_saved": false,
+  "first_formal_GPU_lease_epoch": 1790764138.8455858,
+  "wall_seconds_first_formal_GPU_to_close": 6181.970241069794,
+  "runtime_code_commit": "8c6d6b5",
+  "post_close_report_changes": "append edit macro; exclude pilot CHECK rows from full DEV report; suppress bootstrap CI with fewer than two clusters; frozen joint decision unchanged",
+  "anchor_extra_backward_calls": 5120,
+  "positive_scale_formal_preprocess_model_calls": 115,
+  "positive_scale_preprocess_note": "115 formal calls plus 5 already recorded in separate smoke; one shared scale per DEV edit"
+}
