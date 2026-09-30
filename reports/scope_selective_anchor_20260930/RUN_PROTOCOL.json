@@ -1,0 +1,47 @@
+{
+  "status": "FROZEN_PROTOCOL_EXECUTED_DEV_CLOSED",
+  "seed": 20260929,
+  "steps": 80,
+  "layer": "model.layers.30.mlp.down_proj",
+  "rank": 4,
+  "router": "R0 immutable nearest-first",
+  "beta": [
+    0.1,
+    1.0
+  ],
+  "gamma": [
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "pilot": [
+    4,
+    5,
+    6,
+    11,
+    12,
+    15,
+    16,
+    21
+  ],
+  "DEV_new_continuations": 88,
+  "REG_new_continuations_if_admitted": 72,
+  "GPU": [
+    5,
+    6,
+    7
+  ],
+  "soft_bytes": 10737418240,
+  "hard_bytes": 21474836480,
+  "old_artifacts": "read-only",
+  "hourly_monitor": false,
+  "REG_gate": "at least one frozen preregistered candidate clear joint PASS",
+  "independent_CONFIRM": false,
+  "judge": {
+    "model": "gpt-6.1-sol",
+    "reasoning_effort": "high",
+    "protocol": "MEDTRACE_SOURCE_AGREEMENT_SOL61_HIGH_V1"
+  },
+  "monitor_amendment": "User explicitly enabled hourly monitoring on 2026-09-30 after launch; pause after verified public delivery"
+}
