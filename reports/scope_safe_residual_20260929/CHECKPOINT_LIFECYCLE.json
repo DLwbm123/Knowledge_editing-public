@@ -1,27 +1,24 @@
 {
-  "initializers": {
-    "count": 24,
-    "consumers": [
-      "P1 paired branches",
-      "P2 remaining branches"
-    ],
-    "delete_after": "all admitted branches and initializer audit finished"
-  },
-  "pilot_adapters": {
-    "consumers": [
-      "single",
-      "fixed CHECK forced-on",
-      "bank4/8",
-      "P2 binding-equivalent reuse"
-    ],
-    "retain_until": "pilot selection, complete scoring and reuse audit"
-  },
-  "rolling": {
-    "per_GPU": [
-      "latest",
-      "previous"
-    ],
-    "delete_after": "GPU queue complete and no resume consumer"
-  },
-  "historical_files_deleted": false
+  "status": "COMPLETE",
+  "deleted_files": 110,
+  "deleted_bytes": 36414822,
+  "deleted_categories": [
+    "48 independent initializer copies",
+    "6 inactive rolling optimizer checkpoints",
+    "24 AK + 24 AU + 8 unused-lambda adapters"
+  ],
+  "retained_adapters": 192,
+  "retained_bytes": 57140160,
+  "retained_methods": [
+    "E_orig",
+    "A0",
+    "AH",
+    "AHS_01"
+  ],
+  "retained_reason": "Final paired baseline/simple-control/candidate banks for DEV24 and REG24, as execution plan requires",
+  "retained_key_features": true,
+  "private_outputs_scores_bindings_preserved": true,
+  "historical_files_deleted": false,
+  "restoration": "Deleted adapter/optimizer states require deterministic recomputation; initializers can be copied from retained predecessor sources",
+  "raw_manifest_private": true
 }

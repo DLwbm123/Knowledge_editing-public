@@ -1,6 +1,6 @@
 # Scope residual 已执行矩阵结果（P1/P2/P4）
 
-已执行训练与评分全部结束；附件的全部验收尚未完成。P3缺合法CAL正例，P5未满足预定联合收益条件。辅助holdout、路由统计及checkpoint生命周期收口仍列为待办，不能将本报告视为这些项目已完成。
+主训练矩阵与辅助holdout的生成、评分已全部结束。P3缺合法CAL正例，P5未满足预定联合收益条件；它们不作为已执行实验。完整收口与限制见DELIVERY_COVERAGE.json、WHOLE_SCOPE_COMPLETION.json和HOLDOUT_RESULTS_ZH.md。
 
 ## 执行审计
 
@@ -68,9 +68,10 @@ AH压力收益较小，REG T2G也低于A0；AK在DEV压力18/50低于A024/50，A
 
 P3的Rneg和R1都没有合法CAL_SCOPE正例，不使用CHECK或正式QA拟合阈值。保留R0结果；这不证明门控无效。没有独立CONFIRM。
 
-尚未完成：
-- New stress holdout 47 inputs / 24 sources: Base qualification and evaluated conditional/unconditional accuracy not completed; no 200/50 claim
-- Fixed early-edit growth curves and full routing/coverage diagnostics remain to be completed where supported
-- Detailed forward/latency/storage accounting and dependency-ordered checkpoint cleanup remain pending
+后续辅助验收更新：
+- 固定前4编辑增长、R0路由/损伤及前向成本已补齐：AUXILIARY_METRICS.json。
+- 冻结47输入/24来源holdout已完成，Base正确35/47；完整结果见HOLDOUT_RESULTS_ZH.md。
+- 生命周期以CHECKPOINT_LIFECYCLE.json最终回执为准。
+- prefill未单独记录；缺合法CAL正例不拟合新gate，因此没有校准后多coverage曲线。35个Base正确输入、24个来源不足目标200/50，不伪称确认性证据。
 
 本报告公开源码、配置和脱敏聚合；逐题医疗输入输出、评分、token、权重与凭证均不发布。

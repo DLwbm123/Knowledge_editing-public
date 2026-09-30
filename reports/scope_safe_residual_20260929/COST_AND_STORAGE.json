@@ -1,15 +1,15 @@
 {
-  "scope_gpu_hours": 14.638160141176648,
-  "scope_new_judge_attempts": 1576,
+  "scope_gpu_hours": 18.176876295142705,
+  "scope_new_judge_attempts": 1821,
   "inherited_judge_attempts": 3958,
-  "lifetime_judge_attempts": 5534,
+  "lifetime_judge_attempts": 5779,
   "P1_new": 286,
   "P2_new": 664,
   "P4_new": 626,
   "internal_judge_cap": null,
   "total_continuation_steps": 16000,
   "private_data_on_server": true,
-  "detailed_forward_latency_storage_audit": "AUXILIARY_METRICS.json; prefill not separately recorded; holdout ongoing",
+  "detailed_forward_latency_storage_audit": "AUXILIARY_METRICS.json and HOLDOUT_RESULTS.json; prefill not separately recorded",
   "recorded_costs": {
     "training_by_arm": {
       "A0": {
@@ -86,5 +86,31 @@
         "bytes": 16362471
       }
     }
+  },
+  "holdout_new_judge_attempts": 245,
+  "holdout_gpu_hours": 3.538716153966056,
+  "final_lifecycle": {
+    "status": "COMPLETE",
+    "deleted_files": 110,
+    "deleted_bytes": 36414822,
+    "deleted_categories": [
+      "48 independent initializer copies",
+      "6 inactive rolling optimizer checkpoints",
+      "24 AK + 24 AU + 8 unused-lambda adapters"
+    ],
+    "retained_adapters": 192,
+    "retained_bytes": 57140160,
+    "retained_methods": [
+      "E_orig",
+      "A0",
+      "AH",
+      "AHS_01"
+    ],
+    "retained_reason": "Final paired baseline/simple-control/candidate banks for DEV24 and REG24, as execution plan requires",
+    "retained_key_features": true,
+    "private_outputs_scores_bindings_preserved": true,
+    "historical_files_deleted": false,
+    "restoration": "Deleted adapter/optimizer states require deterministic recomputation; initializers can be copied from retained predecessor sources",
+    "raw_manifest_private": true
   }
 }

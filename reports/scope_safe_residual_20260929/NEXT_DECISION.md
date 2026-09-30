@@ -1,9 +1,9 @@
 # 当前决策
 
-已执行P1/P2/P4矩阵的训练与评分全部结束，见[结果报告](FINAL_RESULTS_ZH.md)。
+主矩阵与holdout全部计算/评分结束。AHS提高压力及holdout保持，但REG T2G仍下降6.38个百分点，不满足预定泛化约束，不能宣布净改进；P5不准入，不追加seed、M3或大bank。holdout上AHS也未稳定优于AH，不据此重新挑选方法。
 
-AHS提高压力保持，但DEV/REG的T2G退化超过预定1个百分点目标，不能宣布联合净增益。按原计划不准入P5；不扩大搜索或在REG重新选参。AK不支持保留为改进候选；AH/AU收益与泛化损失并存，暂不替换E_orig/A0。
+R1/Rneg缺合法CAL_SCOPE正例，未拟合，不声称无效。AK现有结果不支持作为改进保留；AH/AU仍有泛化代价，不直接替换E_orig/A0。完整结果见FINAL_RESULTS_ZH.md和HOLDOUT_RESULTS_ZH.md；未测prefill、缺校准曲线、holdout规模不足均明确保留为证据限制。
 
-R1/Rneg缺合法CAL_SCOPE正例，未拟合，不能声称无效。继续完成已授权辅助验收，清单见[覆盖账目](DELIVERY_COVERAGE.json)；整个附件尚未全部交付。
+checkpoint依赖清理按CHECKPOINT_LIFECYCLE.json回执执行；最终范围与完成状态见DELIVERY_COVERAGE.json。未经新计划与授权，不继续扩展科学搜索。
 
-辅助统计已补齐，holdout评测运行中；见[AUXILIARY_STATUS_ZH.md](AUXILIARY_STATUS_ZH.md)。
+最终收口：holdout已完成，110个无依赖文件已回收，192个计划要求的最终adapter保留；没有待运行或待评分任务。以已公开的缺项和数据限制结束本次有限计划，关闭小时监测。
