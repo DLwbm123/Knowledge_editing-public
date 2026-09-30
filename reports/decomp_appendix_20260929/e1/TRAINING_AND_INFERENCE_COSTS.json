@@ -1,0 +1,55 @@
+{
+  "stages": [
+    {
+      "structure": "LR",
+      "method": "LR",
+      "stage": "A2",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 435.606764793396,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "LR",
+      "method": "LR",
+      "stage": "W0",
+      "completed": 24,
+      "steps_sum": 7680,
+      "seconds_sum": 1693.264806509018,
+      "CE_forward_calls": 15360,
+      "CE_target_tokens": 227840
+    },
+    {
+      "structure": "LR",
+      "method": "LR",
+      "stage": "native",
+      "completed": 24,
+      "steps_sum": 480,
+      "seconds_sum": 133.34750843048096,
+      "CE_forward_calls": 480,
+      "CE_target_tokens": 7120
+    },
+    {
+      "structure": "LR",
+      "method": "M6",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 736.8502626419067,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "LR",
+      "method": "M7",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 1006.1860628128052,
+      "CE_forward_calls": 5760,
+      "CE_target_tokens": 85440
+    }
+  ],
+  "note": "CE call counters exclude KL calls. GPU residency includes teacher preparation, diagnostics and generation; no equal-compute claim."
+}
