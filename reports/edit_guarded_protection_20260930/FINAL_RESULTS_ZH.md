@@ -47,3 +47,5 @@ Pressure要求相对H至少+3个已知正确且完整分母差下界≥0。三�
 - 已按消费者清理100个本轮adapter/恢复槽文件，共32,309,236字节；无准入选中adapter需要保留，旧PR7/PR8资产不动。保留最小源码、配置、曲线、生成绑定和评分/失败复现元数据。
 
 公开发布范围为源码、配置、测试、脱敏聚合及限制；医疗输入、原始回答、逐题私有评分、权重、tokens和凭证均不公开。
+
+公开交付已完成：[Draft PR #9](https://github.com/DLwbm123/Knowledge_editing-public/pull/9)，独立分支 `review/edit-guarded-protection-20260930`。源码与脱敏报告已提交到 GitHub，远端提交和匿名报告访问经代理验证；未合并旧 PR。
