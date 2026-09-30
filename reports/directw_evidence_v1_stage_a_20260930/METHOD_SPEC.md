@@ -63,6 +63,11 @@ restore it as well. Every failed attempt is retained. A sequential call starts
 from the previous accepted native matrix; `reset_single` restores the clean Base
 before an independent single edit. There is no summation of independent patches.
 
+`edit_one(..., attempt_log=private_path)` flushes and fsyncs attempt-start,
+attempt-result and terminal/rollback events. The caller uses a private path in
+the independent RUN_ROOT. The CPU interruption test proves this log survives
+Ctrl-C after a candidate write. Initial group protection values are recorded.
+
 ## Scope of demonstrated evidence
 
 The 20 CPU groups test actual synthetic PyTorch computations, including an

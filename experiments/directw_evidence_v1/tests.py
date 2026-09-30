@@ -1,6 +1,6 @@
 """20 requirement groups with real FP64 CPU calculations and independent oracles.
 
-Run from repository root: python -m experiments.directw_evidence_v1.tests
+Run from repository root using the neutral stdin entry in README.md
 The recorded command uses a neutral stdin runner to keep process argv private.
 """
 from __future__ import annotations
@@ -344,6 +344,7 @@ print(json.dumps(dict(logits=model(**inputs).tolist(),generation=model.generate(
         r.normal_logits=raises
         result=edit_one(r,cs,gs,cfg,"W_FUNCTIONAL_QP")
         self.assertEqual(result.status,"EXCEPTION_ROLLED_BACK"); self.assertTrue(torch.equal(initial,r.weight))
+        self.assertEqual(result.attempts[-1]["status"],"EXCEPTION_ROLLED_BACK")
         r.normal_logits=original
         result=edit_one(r,cs,gs,cfg,"W_FUNCTIONAL_QP");self.assertEqual(result.status,"ACCEPTED")
         first=r.weight.detach().clone();cs[0].threshold=.2
@@ -356,7 +357,12 @@ print(json.dumps(dict(logits=model(**inputs).tolist(),generation=model.generate(
             if calls[0]>2:raise KeyboardInterrupt()
             return original(inputs)
         r.normal_logits=interrupted
-        with self.assertRaises(KeyboardInterrupt):edit_one(r,cs,gs,cfg,"W_FUNCTIONAL_QP")
+        with tempfile.TemporaryDirectory() as directory:
+            logfile=Path(directory)/"attempts.jsonl"
+            with self.assertRaises(KeyboardInterrupt):edit_one(r,cs,gs,cfg,"W_FUNCTIONAL_QP",attempt_log=logfile)
+            events=[json.loads(line) for line in logfile.read_text().splitlines()]
+            self.assertEqual(events[-1]["status"],"EXCEPTION_ROLLED_BACK")
+            self.assertTrue(any(e["event"]=="ATTEMPT" for e in events))
         self.assertTrue(torch.equal(initial,r.weight))
         self.metric(max_error=0.,exception_rollback=True,interrupt_rollback=True,single_reset=True,sequential_inheritance=True)
 
@@ -423,6 +429,8 @@ print(json.dumps(dict(logits=model(**inputs).tolist(),generation=model.generate(
     def test_19_failed_missing_judge_denominator(self):
         ledger=AttemptLedger();ledger.record("a","ACCEPTED",judged=True,correct=True)
         ledger.record("b","TRAINING_FAILED");ledger.record("c","ROLLED_BACK");ledger.record("d","MISSING_JUDGE_KEY")
+        with self.assertRaises(ValueError):ledger.record("unscored","ACCEPTED",correct=True)
+        with self.assertRaises(ValueError):ledger.record("nonboolean","ACCEPTED",judged=True,correct="yes")
         result=ledger.summary();self.assertEqual(result["intended"],4);self.assertEqual(result["missing"],3)
         self.assertEqual(result["correctness_lower"],.25);self.assertEqual(result["correctness_upper"],1.)
         self.metric(max_error=0.,**result)

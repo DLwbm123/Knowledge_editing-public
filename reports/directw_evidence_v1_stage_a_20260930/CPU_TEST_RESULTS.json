@@ -1,7 +1,7 @@
 {
   "scope": "CPU SYNTHETIC ONLY; no native VLM performance",
   "seed": 20260930,
-  "command": "python -m experiments.directw_evidence_v1.tests (or neutral python - stdin runner)",
+  "command": "python - < neutral stdin runner (see experiments/directw_evidence_v1/README.md)",
   "python": "3.12.9 | packaged by Anaconda, Inc. | (main, Feb  6 2025, 12:55:12) [Clang 14.0.6 ]",
   "torch": "2.6.0",
   "counts": {
@@ -17,7 +17,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.6126267910003662,
+      "seconds": 0.5614789170213044,
       "metrics": {
         "max_error": 1.1102230246251565e-16,
         "atol": 1e-08,
@@ -30,7 +30,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.006677000026684254,
+      "seconds": 0.004930666997097433,
       "metrics": {
         "max_error": 1.1102230246251565e-16,
         "minimum_eigenvalue": -2.1134855106699772e-16,
@@ -43,7 +43,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0045266670058481395,
+      "seconds": 0.005153290985617787,
       "metrics": {
         "max_error": 3.5968519038833344e-17,
         "fisher_norm": 0.16020714036320707
@@ -55,7 +55,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0006456249975599349,
+      "seconds": 0.0007891670102253556,
       "metrics": {
         "max_error": 1.4067172405041184e-05,
         "errors": [
@@ -74,7 +74,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0031010829843580723,
+      "seconds": 0.002615415956825018,
       "metrics": {
         "max_error": 0.0,
         "before": 0.005614189723963954,
@@ -88,7 +88,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.002016458020079881,
+      "seconds": 0.002143833029549569,
       "metrics": {
         "max_error": 1.54303653188137e-15,
         "residual": 1.864357658576169e-14,
@@ -101,7 +101,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0073383330018259585,
+      "seconds": 0.007455875049345195,
       "metrics": {
         "max_error": 4.132894027009115e-11,
         "kkt": {
@@ -121,7 +121,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.024561500002164394,
+      "seconds": 0.02548966696485877,
       "metrics": {
         "branches": [
           "W_FT",
@@ -140,7 +140,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.21037445805268362,
+      "seconds": 0.21023258299101144,
       "metrics": {
         "max_error": 0.0,
         "two_endpoint_guard": "BACKTRACK_REJECTED",
@@ -154,7 +154,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0036890420014970005,
+      "seconds": 0.00431766698602587,
       "metrics": {
         "max_error": 0.0,
         "geometry": {
@@ -173,7 +173,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0020441670203581452,
+      "seconds": 0.002775375032797456,
       "metrics": {
         "max_error": 0.0,
         "eos_policy": "excluded content, separate optional EOS",
@@ -186,7 +186,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.00038475001929327846,
+      "seconds": 0.0003489580121822655,
       "metrics": {
         "rejected_reasons": [
           "EVALUATION_TO_FIT",
@@ -204,7 +204,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.00029079202795401216,
+      "seconds": 0.0003142080386169255,
       "metrics": {
         "branches": {
           "W_FT": "PENDING_NATIVE_CHECK",
@@ -222,7 +222,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.010140916972886771,
+      "seconds": 0.010635874990839511,
       "metrics": {
         "changed": [
           "mlp.down_proj.weight"
@@ -237,7 +237,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.6437562080100179,
+      "seconds": 0.8031498329946771,
       "metrics": {
         "max_error": 0.0,
         "clean_subprocess": true,
@@ -252,7 +252,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.02909224998438731,
+      "seconds": 0.035215666983276606,
       "metrics": {
         "max_error": 0.0,
         "exception_rollback": true,
@@ -267,7 +267,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0013137079658918083,
+      "seconds": 0.0012257089838385582,
       "metrics": {
         "max_error": 0.0,
         "history": {
@@ -285,7 +285,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0010856249718926847,
+      "seconds": 0.0007755830301903188,
       "metrics": {
         "max_error": 0.0,
         "binding_budget_rejections": 14,
@@ -298,7 +298,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.0003892080276273191,
+      "seconds": 0.0002689159591682255,
       "metrics": {
         "max_error": 0.0,
         "intended": 4,
@@ -320,7 +320,7 @@
       "status": "PASS",
       "seed": 20260930,
       "dtype": "float64 CPU",
-      "seconds": 0.001694332982879132,
+      "seconds": 0.001552542031276971,
       "metrics": {
         "max_error": 0.0,
         "outside_preserved": true,

@@ -121,7 +121,7 @@ def build(run_root: Path, metadata_path: Path) -> int:
         storage_lifecycle="small original-matrix final/reference/resume snapshots only; dependency-aware dry-run cleanup in own RUN_ROOT")
     write(public/"RESOURCE_AND_STORAGE_ESTIMATE.json",resource)
     results=json.loads((run_root/"CPU_TEST_RESULTS.json").read_text())
-    results["command"]="python -m experiments.directw_evidence_v1.tests (or neutral python - stdin runner)"
+    results["command"]="python - < neutral stdin runner (see experiments/directw_evidence_v1/README.md)"
     write(public/"CPU_TEST_RESULTS.json",results)
     code=digest({str(p.relative_to(repo)):p.read_text() for p in sorted(source.rglob("*"))
                  if p.is_file() and p.suffix in {".py",".json"}})

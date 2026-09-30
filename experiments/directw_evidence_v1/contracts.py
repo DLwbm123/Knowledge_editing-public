@@ -204,7 +204,7 @@ class AttemptLedger:
         self.rows: list[dict[str, Any]] = []
 
     def record(self, edit_id: str, status: str, *, judged: bool = False, correct: bool | None = None) -> None:
-        if any(r["id"] == edit_id for r in self.rows) or (judged and correct is None):
+        if any(r["id"] == edit_id for r in self.rows) or (judged and type(correct) is not bool) or (not judged and correct is not None):
             raise ValueError("duplicate or incomplete verdict")
         self.rows.append(dict(id=edit_id, status=status, judged=judged, correct=correct))
 

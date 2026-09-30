@@ -9,6 +9,9 @@ from dataclasses import dataclass, field
 from typing import Any, Callable
 import copy
 import hashlib
+import json
+import os
+from pathlib import Path
 import torch
 from torch import Tensor, nn
 from .numerics import FrozenGGN, position_weights, protection_kl, solve_step
@@ -224,6 +227,7 @@ class EditResult:
     accepted_steps: int = 0
     rollback: bool = False
     error: str | None = None
+    initial_protection: dict[str, float] = field(default_factory=dict)
 
 
 def constraint_values(constraints: list[Constraint], weight: Tensor) -> Tensor:
@@ -231,7 +235,7 @@ def constraint_values(constraints: list[Constraint], weight: Tensor) -> Tensor:
 
 
 def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list[ProtectionGroup],
-             config: EditConfig, branch: str) -> EditResult:
+             config: EditConfig, branch: str, *, attempt_log: Path | None = None) -> EditResult:
     """Rejected/final-unsatisfied edits restore their edit-start state.
 
     Every attempted rounded weight is checked using normal model forwards through
@@ -254,6 +258,13 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
     # Fixed role-stratified rotation, independent of scores/test performance.
     ordered = sorted(range(len(constraints)), key=lambda i: (constraints[i].role, i))
 
+    def journal(event: dict[str, Any]) -> None:
+        if attempt_log is not None:
+            # Caller supplies a private path inside this run's RUN_ROOT.
+            with attempt_log.open("a") as stream:
+                stream.write(json.dumps(event,default=str)+"\n")
+                stream.flush();os.fsync(stream.fileno())
+
     def evaluate() -> tuple[Tensor, dict[str, float]]:
         # Temporarily evaluate all functional closures through the REAL model.
         original = runtime.logits
@@ -273,10 +284,13 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
 
     try:
         initial, initial_losses = evaluate()
+        result.initial_protection = initial_losses
+        journal(dict(event="EDIT_START",protection=initial_losses,weight_version=runtime.version))
         runtime.audit(snapshot, hooks)
         if any(not torch.isfinite(torch.tensor(v)) or v > g.budget + 1e-12
                for g in groups for v in [initial_losses[g.name]]):
             result.status = "START_BUDGET_VIOLATION"
+            journal(dict(event="TERMINAL",status=result.status,protection=initial_losses))
             return result
         for step in range(config.max_steps):
             w = runtime.weight.detach().clone().requires_grad_(True)
@@ -320,6 +334,9 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
             before = float((thresholds - full.detach()).clamp_min(0).square().sum())
             accepted = False
             for factor in config.factors:
+                attempt = dict(step=step,factor=factor,accepted=False,status="STARTED")
+                result.attempts.append(attempt)
+                journal(dict(event="ATTEMPT",**attempt))
                 runtime.write(w.detach() + factor * direction)
                 runtime.audit(snapshot, hooks)
                 values, losses = evaluate()
@@ -332,13 +349,15 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                 # Merit has squared-score units; constraint tolerance has score units.
                 merit_roundoff = 16 * torch.finfo(values.dtype).eps * max(before, torch.finfo(values.dtype).tiny)
                 accepted = finite and budget_ok and merit < before - merit_roundoff
-                result.attempts.append(dict(step=step, factor=factor, accepted=accepted, merit=merit,
+                attempt.update(dict(step=step, factor=factor, accepted=accepted, merit=merit,
+                    status="ACCEPTED" if accepted else "REJECTED",
                     protection=losses, clipped=clipped, edit_drift=edit_drift, base_drift=base_drift,
                     rounding=copy.copy(runtime.last_rounding), actual_scores=values.tolist(),
                     qp=None if qp is None else dict(status=qp.status, slack=qp.slack.tolist(), kkt=qp.kkt,
                         cg=[dict(status=s.status, residual=s.relative_residual, iterations=s.iterations,
                                  calls=s.calls, condition_surrogate=s.condition_surrogate) for s in qp.cg],
                         matvecs=sum(f.calls for f in frozen), active=active)))
+                journal(dict(event="ATTEMPT_RESULT",**attempt))
                 if accepted:
                     result.accepted_steps += 1; break
                 runtime.write(w.detach())
@@ -351,9 +370,13 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
         if result.status != "ACCEPTED":
             restore()
         runtime.audit(snapshot, hooks)
+        journal(dict(event="TERMINAL",status=result.status,rollback=result.rollback,violations=result.final_violations))
     except BaseException as exc:
         restore()
         result.status, result.error = "EXCEPTION_ROLLED_BACK", type(exc).__name__ + ": " + str(exc)
+        if result.attempts and result.attempts[-1].get("status") == "STARTED":
+            result.attempts[-1].update(status="EXCEPTION_ROLLED_BACK",error=result.error)
+        journal(dict(event="TERMINAL",status=result.status,rollback=True,error=result.error))
         if isinstance(exc, (KeyboardInterrupt, SystemExit)):
             raise
     return result
