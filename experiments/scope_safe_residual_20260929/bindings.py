@@ -7,7 +7,9 @@ from storage import Store,digest_file
 def expected(t,seed,kind,method,stage,step):
  assert stage=='continuation' and kind=='LR'
  init=next(x for x in read(ROOT/'private/INITIALIZERS.json') if x['order']==t['order'])
- return dict(science_id=read(ROOT/'SCIENCE_LOCK.json')['id'],edit=t['canonical_edit_id'],seed=seed,method=method,stage=stage,actual_step=step,origin='INIT_POST80',initialization_sha256=init['sha256'],kind=kind,implementation={n:digest_file(ROOT/n) for n in ['training.py','protection.py','mechanisms.py','scope_worker.py']},fresh_optimizer=True)
+ result=dict(science_id=read(ROOT/'SCIENCE_LOCK.json')['id'],edit=t['canonical_edit_id'],seed=seed,method=method,stage=stage,actual_step=step,origin='INIT_POST80',initialization_sha256=init['sha256'],kind=kind,implementation={n:digest_file(ROOT/n) for n in ['training.py','protection.py','mechanisms.py','scope_worker.py']},fresh_optimizer=True)
+ if t['order']>24:result['extension_protocol']=read(ROOT/'P4_PROTOCOL.json')['id']
+ return result
 def load_expected(rel,want):
  def validate(x,p):
   assert x['binding']==want and x['step']==want['actual_step'] and x['expert'],'Checkpoint binding mismatch'

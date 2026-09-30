@@ -76,7 +76,7 @@ def main():
      (ROOT/'ADMISSION_STOP').touch();write(ROOT/'RUN_STATUS.json',dict(status='BLOCKED',reason='WORKER_FAILURE',pid=a['pid']));return
   write(ROOT/'ACTIVE_PROCESSES.json',active)
   if all(j['status']=='COMPLETE' for j in q) and not active:
-   write(ROOT/'RUN_STATUS.json',dict(status='GPU_QUEUE_FINISHED',phase='P2_FULL_DEV24' if (ROOT/'P2_ADMISSION.json').exists() else 'P1_DEV8',epoch=time.time(),next='Audit current phase and proceed through the authorized finite plan'));return
+   write(ROOT/'RUN_STATUS.json',dict(status='GPU_QUEUE_FINISHED',phase='P4_FROZEN_REG24' if (ROOT/'P4_PROTOCOL.json').exists() else 'P2_FULL_DEV24' if (ROOT/'P2_ADMISSION.json').exists() else 'P1_DEV8',epoch=time.time(),next='Audit current phase and proceed through the authorized finite plan'));return
   if shutil.disk_usage(ROOT).free<20*1024**3:raise RuntimeError('Less than 20 GiB physical free space')
   for g in read(ROOT/'GPU_BINDINGS.json')['devices']:
    if any(a['index']==g['index'] for a in active):continue
