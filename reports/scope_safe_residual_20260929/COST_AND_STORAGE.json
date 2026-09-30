@@ -1,0 +1,116 @@
+{
+  "scope_gpu_hours": 18.176876295142705,
+  "scope_new_judge_attempts": 1821,
+  "inherited_judge_attempts": 3958,
+  "lifetime_judge_attempts": 5779,
+  "P1_new": 286,
+  "P2_new": 664,
+  "P4_new": 626,
+  "internal_judge_cap": null,
+  "total_continuation_steps": 16000,
+  "private_data_on_server": true,
+  "detailed_forward_latency_storage_audit": "AUXILIARY_METRICS.json and HOLDOUT_RESULTS.json; prefill not separately recorded",
+  "recorded_costs": {
+    "training_by_arm": {
+      "A0": {
+        "continuations": 48,
+        "steps": 3840,
+        "CE_calls": 7680,
+        "KL_calls": 7680,
+        "residual_calls": 0,
+        "training_seconds": 1809.658290863037
+      },
+      "AHS_01": {
+        "continuations": 48,
+        "steps": 3840,
+        "CE_calls": 7680,
+        "KL_calls": 7680,
+        "residual_calls": 0,
+        "training_seconds": 1977.5900387763977
+      },
+      "AH": {
+        "continuations": 48,
+        "steps": 3840,
+        "CE_calls": 7680,
+        "KL_calls": 7680,
+        "residual_calls": 0,
+        "training_seconds": 2020.6874833106995
+      },
+      "AU": {
+        "continuations": 24,
+        "steps": 1920,
+        "CE_calls": 3840,
+        "KL_calls": 3840,
+        "residual_calls": 0,
+        "training_seconds": 905.4468247890472
+      },
+      "AHS_001": {
+        "continuations": 8,
+        "steps": 640,
+        "CE_calls": 1280,
+        "KL_calls": 1280,
+        "residual_calls": 0,
+        "training_seconds": 250.57627487182617
+      },
+      "AK": {
+        "continuations": 24,
+        "steps": 1920,
+        "CE_calls": 3840,
+        "KL_calls": 3840,
+        "residual_calls": 0,
+        "training_seconds": 718.1849575042725
+      }
+    },
+    "completed_job_model_calls": 633327,
+    "completed_job_resident_seconds": 48507.697002887726,
+    "unique_cached_generations": 13767,
+    "generation_seconds_median": 0.43160462379455566,
+    "generation_seconds_total": 14882.714950323105,
+    "prefill_latency": null,
+    "prefill_status": "Not separately instrumented; cannot reconstruct from total generation latency",
+    "storage": {
+      "adapters": {
+        "files": 248,
+        "bytes": 73804248
+      },
+      "checkpoints": {
+        "files": 6,
+        "bytes": 5448798
+      },
+      "initializers": {
+        "files": 48,
+        "bytes": 14301936
+      },
+      "private/keys": {
+        "files": 912,
+        "bytes": 16362471
+      }
+    }
+  },
+  "holdout_new_judge_attempts": 245,
+  "holdout_gpu_hours": 3.538716153966056,
+  "final_lifecycle": {
+    "status": "COMPLETE",
+    "deleted_files": 110,
+    "deleted_bytes": 36414822,
+    "deleted_categories": [
+      "48 independent initializer copies",
+      "6 inactive rolling optimizer checkpoints",
+      "24 AK + 24 AU + 8 unused-lambda adapters"
+    ],
+    "retained_adapters": 192,
+    "retained_bytes": 57140160,
+    "retained_methods": [
+      "E_orig",
+      "A0",
+      "AH",
+      "AHS_01"
+    ],
+    "retained_reason": "Final paired baseline/simple-control/candidate banks for DEV24 and REG24, as execution plan requires",
+    "retained_key_features": true,
+    "private_outputs_scores_bindings_preserved": true,
+    "historical_files_deleted": false,
+    "restoration": "Deleted adapter/optimizer states require deterministic recomputation; initializers can be copied from retained predecessor sources",
+    "raw_manifest_private": true
+  }
+}
