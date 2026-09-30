@@ -9,5 +9,82 @@
   "internal_judge_cap": null,
   "total_continuation_steps": 16000,
   "private_data_on_server": true,
-  "detailed_forward_latency_storage_audit": "PENDING"
+  "detailed_forward_latency_storage_audit": "AUXILIARY_METRICS.json; prefill not separately recorded; holdout ongoing",
+  "recorded_costs": {
+    "training_by_arm": {
+      "A0": {
+        "continuations": 48,
+        "steps": 3840,
+        "CE_calls": 7680,
+        "KL_calls": 7680,
+        "residual_calls": 0,
+        "training_seconds": 1809.658290863037
+      },
+      "AHS_01": {
+        "continuations": 48,
+        "steps": 3840,
+        "CE_calls": 7680,
+        "KL_calls": 7680,
+        "residual_calls": 0,
+        "training_seconds": 1977.5900387763977
+      },
+      "AH": {
+        "continuations": 48,
+        "steps": 3840,
+        "CE_calls": 7680,
+        "KL_calls": 7680,
+        "residual_calls": 0,
+        "training_seconds": 2020.6874833106995
+      },
+      "AU": {
+        "continuations": 24,
+        "steps": 1920,
+        "CE_calls": 3840,
+        "KL_calls": 3840,
+        "residual_calls": 0,
+        "training_seconds": 905.4468247890472
+      },
+      "AHS_001": {
+        "continuations": 8,
+        "steps": 640,
+        "CE_calls": 1280,
+        "KL_calls": 1280,
+        "residual_calls": 0,
+        "training_seconds": 250.57627487182617
+      },
+      "AK": {
+        "continuations": 24,
+        "steps": 1920,
+        "CE_calls": 3840,
+        "KL_calls": 3840,
+        "residual_calls": 0,
+        "training_seconds": 718.1849575042725
+      }
+    },
+    "completed_job_model_calls": 633327,
+    "completed_job_resident_seconds": 48507.697002887726,
+    "unique_cached_generations": 13767,
+    "generation_seconds_median": 0.43160462379455566,
+    "generation_seconds_total": 14882.714950323105,
+    "prefill_latency": null,
+    "prefill_status": "Not separately instrumented; cannot reconstruct from total generation latency",
+    "storage": {
+      "adapters": {
+        "files": 248,
+        "bytes": 73804248
+      },
+      "checkpoints": {
+        "files": 6,
+        "bytes": 5448798
+      },
+      "initializers": {
+        "files": 48,
+        "bytes": 14301936
+      },
+      "private/keys": {
+        "files": 912,
+        "bytes": 16362471
+      }
+    }
+  }
 }

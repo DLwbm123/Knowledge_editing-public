@@ -5,7 +5,10 @@
     "P2 full DEV24",
     "P3 legal CAL feasibility audit",
     "P4 frozen REG24",
-    "P5 admission decision"
+    "P5 admission decision",
+    "Fixed early-four-edit growth curves with source/edit paired bootstrap",
+    "Observed R0 activation/damage operating points and paired route invariance",
+    "Recorded CE/KL/residual/model calls and total generation timing"
   ],
   "unsupported": [
     "R1/Rneg performance and gate/expert factorial: missing legal CAL_SCOPE positives"
@@ -14,9 +17,13 @@
     "P5 extra seeds/M3/new edits/large unique banks"
   ],
   "pending": [
-    "New stress holdout 47 inputs / 24 sources: Base qualification and evaluated conditional/unconditional accuracy not completed; no 200/50 claim",
-    "Fixed early-edit growth curves and full routing/coverage diagnostics remain to be completed where supported",
-    "Detailed forward/latency/storage accounting and dependency-ordered checkpoint cleanup remain pending"
+    "Frozen 47-input / 24-source holdout evaluation running on existing banks; Base mask and conditional/unconditional aggregate pending",
+    "Dependency-ordered checkpoint cleanup after holdout consumers finish"
   ],
-  "entire_attachment_complete": false
+  "entire_attachment_complete": false,
+  "measurement_limitations": [
+    "Prefill latency was not separately instrumented; cannot infer it from total generation time",
+    "No legal CAL_SCOPE positive set, so no calibrated alternate gate or matched-coverage curve; report fixed R0 operating points",
+    "Source clusters are proxies, not verified patient clusters"
+  ]
 }
