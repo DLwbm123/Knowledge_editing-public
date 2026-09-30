@@ -1,0 +1,14 @@
+{
+  "first_failure": {
+    "exception": "RuntimeError",
+    "reason": "Error(s) in reparametrizing for LlavaMistralForCausalLM:\n\tMissing key(s): 'model.rotary_emb.inv_freq', 'model.vision_tower.vision_tower.vision_model.embeddings.position_ids'."
+  },
+  "root_cause": "Strict functional_call requires named non-persistent buffers omitted by state_dict",
+  "fix": "Bind all named parameters and named buffers; freeze, audit and restore non-persistent buffers; reject selected parameter/buffer storage alias",
+  "CPU_regression": "26/26 passed",
+  "native_recheck": "B2 functional_call parity max error 0",
+  "subsequent_numerical_failure": {
+    "exception": "RuntimeError",
+    "reason": "native GGN/precision qualification failed"
+  }
+}

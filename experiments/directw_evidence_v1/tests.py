@@ -257,7 +257,7 @@ class Checks(unittest.TestCase):
         self.metric(rejected_reasons=reasons,max_error=0.)
 
     def test_13_missing_visual_branch_only(self):
-        rows=[row(role) for role in ("EDIT_FIT","PROTECT_BG_FIT","PROTECT_NEAR_FIT")]
+        rows=[row(role) for role in ("EDIT_FIT","GEN_FIT","PROTECT_BG_FIT","PROTECT_NEAR_FIT")]
         for i,r in enumerate(rows):r.update(id=str(i),question_hash=str(i))
         audited=audit_data(rows,edit_index=0,test_ids=set(),expected_model="base")
         eligible=method_eligibility(audited)
@@ -403,7 +403,8 @@ print(json.dumps(dict(logits=model(**inputs).tolist(),generation=model.generate(
         config.update(execution_stage="NATIVE_SMOKE",current_state="NATIVE_SMOKE_ALLOWED",allow_native_model_execution=True,
             allow_gpu=True,authorized_gpu_hours=1,leased_gpu_uuids=["fixture-uuid"],model_binding="m",editable_weight_path="p",
             data_manifest_digest="d",approved_protocol_digest="p",trust_radius=.1,behavior_thresholds={"fit":.1},preservation_budgets={"bg":.01},
-            data_audit_status="PASS",legal_fit_inputs=1)
+            smoke_data_audit_status="PASS",mechanical_smoke_inputs=1,native_wall_seconds_cap=60,
+            max_active_constraints=2,max_edit_steps=1)
         approval=dict(approved=True,approved_phases=["NATIVE_SMOKE"],approval_reference="test-receipt",bindings=bindings)
         trusted=dict(origin="USER_MESSAGE",original_text="synthetic authorization fixture only",reference="test-receipt",phases=["NATIVE_SMOKE"],bindings=bindings)
         # This positive fixture validates the gate, does not write any approval file or invoke loader.
@@ -414,7 +415,8 @@ print(json.dumps(dict(logits=model(**inputs).tolist(),generation=model.generate(
             with self.assertRaises(PermissionError):gated_load("NATIVE_SMOKE",bad,approval,config,loader,trusted_authorization=trusted)
             failures+=1
         for field,value in [("authorized_gpu_hours",0),("leased_gpu_uuids",[]),("trust_radius",None),("preservation_budgets",None),
-                            ("data_audit_status","BLOCKED"),("legal_fit_inputs",0),("teacher_cache_limit_gib",0)]:
+                            ("smoke_data_audit_status","BLOCKED"),("mechanical_smoke_inputs",0),("teacher_cache_limit_gib",0),
+                            ("authorized_gpu_hours",float("inf")),("native_wall_seconds_cap",0), ("max_edit_steps",20)]:
             bad=dict(config);bad[field]=value
             with self.assertRaises(PermissionError):gated_load("NATIVE_SMOKE",bindings,approval,bad,loader,trusted_authorization=trusted)
             failures+=1

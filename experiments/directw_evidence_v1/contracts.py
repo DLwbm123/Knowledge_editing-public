@@ -12,6 +12,7 @@ from torch import Tensor
 
 FIT = {"EDIT_FIT", "GEN_FIT", "VIS_PAIR_FIT", "PROTECT_BG_FIT", "PROTECT_NEAR_FIT", "PAST_EDIT_MEMORY"}
 EVALUATION = {"DEV_CAL", "REG_EXPOSED", "TEST_CONFIRM"}
+SMOKE = "SMOKE_MECHANICAL"
 FIELDS = {"id", "source_group", "patient_group", "image_hash", "question_hash", "answer_hash",
           "fact_family", "role", "permission_basis", "available_at_edit_index", "scope_evidence",
           "annotation_source", "ever_developed", "ever_scored", "teacher_reference", "source_split"}
@@ -31,9 +32,16 @@ def audit_data(rows: list[dict[str, Any]], *, edit_index: int,
         if not FIELDS <= row.keys():
             flag(row, "MISSING_CONTRACT_FIELDS"); continue
         role = row["role"]
-        if role not in FIT | EVALUATION:
+        if role not in FIT | EVALUATION | {SMOKE}:
             flag(row, "UNKNOWN_ROLE")
+        if role == SMOKE:
+            if row["source_split"] != "train" or row["id"] in test_ids or row.get("evaluation_origin") or row.get("original_role") in EVALUATION or row["ever_developed"] or row["ever_scored"]:
+                flag(row, "EVALUATION_TO_SMOKE")
+            if not row["permission_basis"] or row.get("mechanical_permission_verified") is not True:
+                flag(row, "UNVERIFIED_SMOKE_PERMISSION")
         if role in FIT:
+            if row.get("original_role") == SMOKE or row.get("mechanical_origin"):
+                flag(row, "SMOKE_TO_SCIENTIFIC_ROLE")
             if row["id"] in test_ids or row["source_split"] in {"test", "validation", "heldout"} or row.get("evaluation_origin", False):
                 flag(row, "EVALUATION_TO_FIT")
             if not row["permission_basis"] or row.get("fit_permission_verified") is not True:
@@ -73,6 +81,9 @@ def audit_data(rows: list[dict[str, Any]], *, edit_index: int,
                 near_duplicates.append([left["id"],right["id"]])
     for key, members in identities.items():
         if len(members) > 1:
+            if SMOKE in {r.get("role") for r in members} and {r.get("role") for r in members} & (FIT | EVALUATION):
+                for row in members:
+                    flag(row, "SMOKE_TO_SCIENTIFIC_ROLE")
             exact_duplicates.append([r["id"] for r in members])
             if len({r.get("answer_hash") for r in members}) > 1:
                 conflicts.append([r["id"] for r in members])
@@ -111,7 +122,7 @@ def audit_data(rows: list[dict[str, Any]], *, edit_index: int,
 
 def method_eligibility(audit: dict[str, Any]) -> dict[str, str]:
     counts = audit["eligible_counts"]
-    common = all(counts.get(role, 0) > 0 for role in ("EDIT_FIT", "PROTECT_BG_FIT", "PROTECT_NEAR_FIT"))
+    common = all(counts.get(role, 0) > 0 for role in ("EDIT_FIT", "GEN_FIT", "PROTECT_BG_FIT", "PROTECT_NEAR_FIT"))
     status = "PENDING_NATIVE_CHECK" if common else "BLOCKED"
     return {"W_FT": status, "W_EUCLIDEAN_QP": status, "W_KEY_QP": status,
             "W_FUNCTIONAL_QP": status,
@@ -203,7 +214,10 @@ class AttemptLedger:
     def __init__(self) -> None:
         self.rows: list[dict[str, Any]] = []
 
-    def record(self, edit_id: str, status: str, *, judged: bool = False, correct: bool | None = None) -> None:
+    def record(self, edit_id: str, status: str, *, judged: bool = False, correct: bool | None = None,
+               role: str = "EDIT_FIT", result_kind: str = "SCIENTIFIC") -> None:
+        if role not in FIT or result_kind != "SCIENTIFIC" or status == "MECHANICAL_NATIVE_VALIDATION":
+            raise ValueError("mechanical outputs are excluded from scientific denominators")
         if any(r["id"] == edit_id for r in self.rows) or (judged and type(correct) is not bool) or (not judged and correct is not None):
             raise ValueError("duplicate or incomplete verdict")
         self.rows.append(dict(id=edit_id, status=status, judged=judged, correct=correct))

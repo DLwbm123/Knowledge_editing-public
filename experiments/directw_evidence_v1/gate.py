@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any, Callable
 import argparse
 import json
+import math
 
 STAGES = {"NATIVE_SMOKE": "NATIVE_SMOKE_ALLOWED", "PILOT": "PILOT_ALLOWED", "SEQUENTIAL": "SEQUENTIAL_ALLOWED"}
 BINDINGS = {"code", "dependencies", "model", "data", "protocol", "config", "budget"}
@@ -47,7 +48,8 @@ def default_config() -> dict[str, Any]:
         trust_radius=None, behavior_thresholds=None, preservation_budgets=None,
         history_max_inputs=64, history_max_predictor_positions=4096, new_run_storage_limit_gib=20,
         teacher_cache_limit_gib=2, gpu_physical_candidates=[5,6,7], leased_gpu_uuids=[],
-        authorized_gpu_hours=0, authorized_judge_calls=0, data_audit_status="BLOCKED",legal_fit_inputs=0)
+        authorized_gpu_hours=0, authorized_judge_calls=0, data_audit_status="BLOCKED",legal_fit_inputs=0,
+        smoke_data_audit_status="BLOCKED", mechanical_smoke_inputs=0, native_wall_seconds_cap=0)
 
 
 def require_external_approval(stage: str, bindings: dict[str, str], approval: dict[str, Any] | None,
@@ -57,7 +59,7 @@ def require_external_approval(stage: str, bindings: dict[str, str], approval: di
     This CLI deliberately cannot fabricate that receipt. A later human-authorized
     orchestration must supply it separately and preserve original review wording.
     """
-    if stage not in STAGES or config.get("execution_stage") == "IMPLEMENT_ONLY":
+    if stage not in STAGES or config.get("execution_stage") != stage:
         raise PermissionError("stage A does not authorize native execution")
     if not trusted_authorization or trusted_authorization.get("origin") not in {"USER_MESSAGE", "VERIFIED_EXTERNAL_REVIEW"}:
         raise PermissionError("no independently trusted human authorization")
@@ -74,11 +76,28 @@ def require_external_approval(stage: str, bindings: dict[str, str], approval: di
     if not all(config.get(k) for k in ("model_binding", "editable_weight_path", "data_manifest_digest",
             "approved_protocol_digest", "trust_radius", "behavior_thresholds", "preservation_budgets")):
         raise PermissionError("unapproved critical scientific configuration")
-    if config.get("data_audit_status") != "PASS" or config.get("legal_fit_inputs", 0) <= 0:
-        raise PermissionError("data role audit not admitted")
+    if stage == "NATIVE_SMOKE":
+        if config.get("smoke_data_audit_status") != "PASS" or not 1 <= config.get("mechanical_smoke_inputs", 0) <= 2:
+            raise PermissionError("mechanical smoke data audit not admitted")
+        if config.get("allow_training") or config.get("allow_paid_judge") or config.get("authorized_judge_calls", 0):
+            raise PermissionError("mechanical smoke cannot grant scientific training or Judge")
+        if not (0 < config.get("native_wall_seconds_cap", 0) <= 3600 * config.get("authorized_gpu_hours", 0)):
+            raise PermissionError("finite native smoke wall budget missing")
+        if not 1 <= config.get("max_active_constraints", 0) <= 2 or config.get("max_edit_steps") != 1:
+            raise PermissionError("mechanical transaction must be bounded to one step and two constraints")
+    else:
+        counts = config.get("scientific_role_counts", {})
+        required = {"EDIT_FIT", "GEN_FIT", "PROTECT_BG_FIT", "PROTECT_NEAR_FIT"}
+        if config.get("method") == "W_EVIDENCE_QP":
+            required.add("VIS_PAIR_FIT")
+        if config.get("data_audit_status") != "PASS" or config.get("legal_fit_inputs", 0) <= 0 or not all(counts.get(r, 0) > 0 for r in required):
+            raise PermissionError("scientific data role audit not admitted")
+        if not config.get("frozen_dev_cal_digest") and not config.get("preapproved_global_rule_digest"):
+            raise PermissionError("independent calibration or preapproved global rule missing")
     if min(config.get("new_run_storage_limit_gib", 0),config.get("teacher_cache_limit_gib", 0)) <= 0:
         raise PermissionError("storage budget missing")
-    if not config.get("allow_gpu") or config.get("authorized_gpu_hours", 0) <= 0 or not config.get("leased_gpu_uuids"):
+    hours = config.get("authorized_gpu_hours", 0)
+    if not isinstance(hours, (int, float)) or not math.isfinite(hours) or not config.get("allow_gpu") or hours <= 0 or not config.get("leased_gpu_uuids"):
         raise PermissionError("GPU budget/lease missing")
     if config.get("allow_paid_judge") and config.get("authorized_judge_calls", 0) <= 0:
         raise PermissionError("paid Judge budget missing")

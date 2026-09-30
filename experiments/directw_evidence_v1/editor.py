@@ -115,14 +115,17 @@ class MatrixRuntime:
         if path not in parameters or parameters[path].ndim != 2 or not path.endswith(".weight"):
             raise ValueError("one original 2D matrix required")
         self.model, self.path, self.weight = model, path, parameters[path]
-        aliases = [name for name, p in parameters.items() if p.untyped_storage().data_ptr() == self.weight.untyped_storage().data_ptr()]
+        buffers = dict(model.named_buffers(remove_duplicate=False))
+        aliases = [name for name, p in {**parameters, **buffers}.items() if p.untyped_storage().data_ptr() == self.weight.untyped_storage().data_ptr()]
         if aliases != [path]:
             raise ValueError("shared editable weight requires separate review")
         self.base = self.weight.detach().clone()
         self.base_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
-        parameter_keys = set(dict(model.named_parameters(remove_duplicate=False)))
-        self.functional_state = {k: (v.detach() if k in parameter_keys else v.detach().clone())
-                                 for k, v in model.state_dict().items() if k != path}
+        # state_dict omits non-persistent RoPE/position buffers; strict functional
+        # replacement requires every named parameter AND every named buffer.
+        self.buffer_base = {k: v.detach().cpu().clone() for k, v in buffers.items()}
+        self.functional_state = {k: v.detach() for k, v in parameters.items() if k != path}
+        self.functional_state.update({k: v.detach().clone() for k, v in buffers.items()})
         self.version = 0
         self.last_rounding: dict[str, float] = {}
 
@@ -180,12 +183,21 @@ class MatrixRuntime:
 
     def reset_single(self) -> None:
         self.model.load_state_dict(self.base_state, strict=True)
+        with torch.no_grad():
+            for key, value in self.model.named_buffers(remove_duplicate=False):
+                value.copy_(self.buffer_base[key].to(value))
         self.version += 1
 
     def audit(self, snapshot: dict[str, Tensor], hooks: tuple[int, ...]) -> None:
         now = self.model.state_dict()
         if set(now) != set(snapshot) or self.hooks() != hooks:
             raise RuntimeError("module/state key/hook mutation")
+        buffers = dict(self.model.named_buffers(remove_duplicate=False))
+        if set(buffers) != set(self.buffer_base) or any(
+            v.shape != self.buffer_base[k].shape or v.dtype != self.buffer_base[k].dtype
+            or not torch.equal(v.detach().cpu(), self.buffer_base[k]) for k, v in buffers.items()
+        ):
+            raise RuntimeError("unauthorized buffer mutation, including non-persistent state")
         for key, value in now.items():
             if value.shape != snapshot[key].shape or value.dtype != snapshot[key].dtype:
                 raise RuntimeError("shape/dtype mutation")

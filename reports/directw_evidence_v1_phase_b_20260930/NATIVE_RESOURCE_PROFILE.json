@@ -1,0 +1,247 @@
+{
+  "status": "MEASURED_PARTIAL",
+  "result_kind": "MECHANICAL_NATIVE_VALIDATION",
+  "failure": {
+    "exception": "RuntimeError",
+    "reason": "native GGN/precision qualification failed"
+  },
+  "microbenchmarks": [
+    {
+      "operation": "clean_model_load",
+      "wall_seconds": 9.792730699991807,
+      "peak_gpu_allocated_bytes": 15739459072,
+      "peak_gpu_reserved_bytes": 15747514368,
+      "activation_memory_increment_bytes": 15739459072,
+      "host_peak_rss_bytes": 6372970496,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "template_image_expansion",
+      "wall_seconds": 0.5052748060552403,
+      "peak_gpu_allocated_bytes": 15982733312,
+      "peak_gpu_reserved_bytes": 16005464064,
+      "activation_memory_increment_bytes": 125828096,
+      "host_peak_rss_bytes": 17793597440,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "Base_forward",
+      "wall_seconds": 0.2064835079945624,
+      "peak_gpu_allocated_bytes": 16041201152,
+      "peak_gpu_reserved_bytes": 16231956480,
+      "activation_memory_increment_bytes": 145117696,
+      "host_peak_rss_bytes": 17793597440,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "deterministic_repeat_forward",
+      "wall_seconds": 0.12782130402047187,
+      "peak_gpu_allocated_bytes": 16118795776,
+      "peak_gpu_reserved_bytes": 16309551104,
+      "activation_memory_increment_bytes": 145117696,
+      "host_peak_rss_bytes": 17793597440,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "functional_call_parity",
+      "wall_seconds": 0.09172217594459653,
+      "peak_gpu_allocated_bytes": 16196390400,
+      "peak_gpu_reserved_bytes": 16387145728,
+      "activation_memory_increment_bytes": 145117696,
+      "host_peak_rss_bytes": 17793597440,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "W_KEY_physical_input",
+      "wall_seconds": 0.12869819591287524,
+      "peak_gpu_allocated_bytes": 16291277312,
+      "peak_gpu_reserved_bytes": 16542334976,
+      "activation_memory_increment_bytes": 162406912,
+      "host_peak_rss_bytes": 17852116992,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "answer_score_backward",
+      "wall_seconds": 0.3122053610859439,
+      "peak_gpu_allocated_bytes": 17921967616,
+      "peak_gpu_reserved_bytes": 18272485376,
+      "activation_memory_increment_bytes": 1825905152,
+      "host_peak_rss_bytes": 17994723328,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "protection_KL_backward_Base",
+      "wall_seconds": 0.19884475495200604,
+      "peak_gpu_allocated_bytes": 17916980224,
+      "peak_gpu_reserved_bytes": 18389925888,
+      "activation_memory_increment_bytes": 1669794304,
+      "host_peak_rss_bytes": 18062880768,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "protection_KL_backward_perturbed",
+      "wall_seconds": 0.19037582899909467,
+      "peak_gpu_allocated_bytes": 18151861248,
+      "peak_gpu_reserved_bytes": 18624806912,
+      "activation_memory_increment_bytes": 1669794304,
+      "host_peak_rss_bytes": 18073366528,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "BF16_FrozenGGN_anchor",
+      "wall_seconds": 0.13804735708981752,
+      "peak_gpu_allocated_bytes": 16862066176,
+      "peak_gpu_reserved_bytes": 19446890496,
+      "activation_memory_increment_bytes": 262558720,
+      "host_peak_rss_bytes": 18073366528,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "BF16_Q_inverse_CG",
+      "wall_seconds": 3.1491545350290835,
+      "peak_gpu_allocated_bytes": 19281845760,
+      "peak_gpu_reserved_bytes": 20350763008,
+      "activation_memory_increment_bytes": 2564769280,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 7
+    },
+    {
+      "operation": "solver_coordinate_answer_backward",
+      "wall_seconds": 0.18923849402926862,
+      "peak_gpu_allocated_bytes": 18893341184,
+      "peak_gpu_reserved_bytes": 20350763008,
+      "activation_memory_increment_bytes": 1823943168,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "solver_coordinate_protection_backward",
+      "wall_seconds": 0.18818213196936995,
+      "peak_gpu_allocated_bytes": 19057437696,
+      "peak_gpu_reserved_bytes": 20350763008,
+      "activation_memory_increment_bytes": 1753158656,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "solver_FrozenGGN_anchor",
+      "wall_seconds": 0.13540138793177903,
+      "peak_gpu_allocated_bytes": 18036599808,
+      "peak_gpu_reserved_bytes": 20350763008,
+      "activation_memory_increment_bytes": 497439744,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "native_JVP",
+      "wall_seconds": 0.22983907896559685,
+      "peak_gpu_allocated_bytes": 18828020736,
+      "peak_gpu_reserved_bytes": 20965228544,
+      "activation_memory_increment_bytes": 584089088,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "native_VJP",
+      "wall_seconds": 0.1149061379255727,
+      "peak_gpu_allocated_bytes": 20188281856,
+      "peak_gpu_reserved_bytes": 20965228544,
+      "activation_memory_increment_bytes": 1944094208,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "exact_GGN_matvec",
+      "wall_seconds": 0.41743411193601787,
+      "peak_gpu_allocated_bytes": 20424586240,
+      "peak_gpu_reserved_bytes": 21699231744,
+      "activation_memory_increment_bytes": 1945517568,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 1
+    },
+    {
+      "operation": "repeated_exact_GGN_matvec",
+      "wall_seconds": 0.41820228402502835,
+      "peak_gpu_allocated_bytes": 20658224128,
+      "peak_gpu_reserved_bytes": 21961375744,
+      "activation_memory_increment_bytes": 1944274432,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 1
+    },
+    {
+      "operation": "symmetry_exact_GGN_matvec",
+      "wall_seconds": 0.3911439150106162,
+      "peak_gpu_allocated_bytes": 20893105152,
+      "peak_gpu_reserved_bytes": 22196256768,
+      "activation_memory_increment_bytes": 1944274432,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 1
+    },
+    {
+      "operation": "Q_inverse_CG",
+      "wall_seconds": 2.7470033589052036,
+      "peak_gpu_allocated_bytes": 22773259264,
+      "peak_gpu_reserved_bytes": 24157093888,
+      "activation_memory_increment_bytes": 3589547520,
+      "host_peak_rss_bytes": 18092240896,
+      "ggn_calls": 7
+    }
+  ],
+  "elapsed_seconds": 25.12875226698816,
+  "gpu_hours_used": 0.006980208963052266,
+  "gpu_hours_cap": 0.5,
+  "exact_GGN_calls": 17,
+  "exact_GGN_call_cap": 48,
+  "solver_vector_bytes": 234881024,
+  "snapshot_bytes": 117440512,
+  "full_Backbone_CPU_snapshot_bytes": 15132438528,
+  "new_artifact_bytes": 393185,
+  "paid_judge_calls": 0,
+  "real_pilot_started": false,
+  "sequential_started": false,
+  "native_smoke_status": "FAIL",
+  "current_state": "BLOCKED_NATIVE",
+  "total_campaign_gpu_seconds": 44.94046004593838,
+  "total_campaign_gpu_hours": 0.012483461123871772,
+  "total_campaign_GGN_calls": 17,
+  "budget_not_reset": true,
+  "attempts": [
+    {
+      "run_id": "20260930B1",
+      "elapsed_seconds": 19.811707778950222,
+      "GGN_calls": 0,
+      "status": "FAIL",
+      "failure": {
+        "exception": "RuntimeError",
+        "reason": "Error(s) in reparametrizing for LlavaMistralForCausalLM:\n\tMissing key(s): 'model.rotary_emb.inv_freq', 'model.vision_tower.vision_tower.vision_model.embeddings.position_ids'."
+      }
+    },
+    {
+      "run_id": "20260930B2",
+      "elapsed_seconds": 25.12875226698816,
+      "GGN_calls": 17,
+      "status": "FAIL",
+      "failure": {
+        "exception": "RuntimeError",
+        "reason": "native GGN/precision qualification failed"
+      }
+    }
+  ],
+  "peak_gpu_allocated_bytes": 22773259264,
+  "peak_host_rss_bytes": 18092240896,
+  "full_logits_native_BF16_bytes": 38592000,
+  "full_logits_FP32_arithmetic_bytes": 77184000,
+  "candidate_tensor_copies_written": 0,
+  "write_transaction_status": "NOT_RUN_AFTER_NUMERICAL_HARD_STOP",
+  "clean_reload_status": "NOT_RUN_AFTER_NUMERICAL_HARD_STOP",
+  "unexecuted_microbenchmarks": [
+    "1-constraint_QP",
+    "2-constraint_QP",
+    "candidate_write_and_protection",
+    "accepted_mechanical_export",
+    "editor_free_clean_reload"
+  ],
+  "activation_measurement": "CUDA allocated peak minus pre-operation allocation; includes temporaries, not a pure autograd saved-tensor census",
+  "scalar_byte_fields": "Vector/snapshot/full-logit sizes computed from measured tensor shape and dtype; not timing estimates",
+  "new_method_performance_numbers": 0
+}

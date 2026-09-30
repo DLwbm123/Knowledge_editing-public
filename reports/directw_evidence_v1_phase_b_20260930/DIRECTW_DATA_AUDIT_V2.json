@@ -1,0 +1,34 @@
+{
+  "status": "BLOCKED_DATA",
+  "audit_execution": "COMPLETE",
+  "candidate_rows": 29,
+  "candidate_source_groups": 3,
+  "smoke_data_audit_status": "PASS",
+  "mechanical_smoke_inputs": 2,
+  "smoke_findings": [],
+  "scientific_role_counts": {
+    "EDIT_FIT": 0,
+    "GEN_FIT": 0,
+    "PAST_EDIT_MEMORY": 0,
+    "PROTECT_BG_FIT": 0,
+    "PROTECT_NEAR_FIT": 0,
+    "VIS_PAIR_FIT": 0
+  },
+  "original_annotation_digest_verified": true,
+  "original_image_content_verified": true,
+  "independent_dev_cal": "NOT_ESTABLISHED",
+  "independent_test_confirm": "NOT_ESTABLISHED",
+  "test_qa_read": 0,
+  "old_evaluation_qa_read": 0,
+  "model_scores_read": 0,
+  "synthesized_medical_negatives": 0,
+  "selection_basis": "source-only previously isolated train/adaptation support; no scores or evaluation QA accessed",
+  "blockers": {
+    "EDIT_FIT": "No verified corrected-edit target/role permission and fact-family timeline",
+    "GEN_FIT": "No independently verified same-fact paraphrase linkage",
+    "PROTECT_BG_FIT": "No reviewed scope ledger, frozen Base masks, or legal bound teacher",
+    "PROTECT_NEAR_FIT": "No VERIFIED_OUT_OF_SCOPE evidence",
+    "VIS_PAIR_FIT": "No independently annotated equivalent question pair, incompatible answer, negative scope or bound Base correctness",
+    "PAST_EDIT_MEMORY": "No accepted DirectW edit or historical teacher"
+  }
+}

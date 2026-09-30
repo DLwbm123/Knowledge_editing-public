@@ -1,0 +1,27 @@
+{
+  "status": "FAIL",
+  "result_kind": "MECHANICAL_NATIVE_VALIDATION",
+  "deployment_dtype": "torch.bfloat16",
+  "solver_coordinate_dtype": "torch.float32",
+  "logit_protection_arithmetic_dtype": "torch.float32",
+  "FP32_editor_state_used": true,
+  "patch_trigger": "BF16 frozen CG convergence failure",
+  "BF16_CG_status": "NOT_CONVERGED",
+  "BF16_relative_residual": 0.005970251091703057,
+  "constraint_gradient_dtype": "torch.float32",
+  "preservation_gradient_dtype": "torch.float32",
+  "CG_inner_product_dtype": "torch.float32",
+  "solver_CG_status": "NOT_CONVERGED",
+  "solver_CG_residual": 0.005297542628197115,
+  "CG_rtol": 0.0001,
+  "finite_difference": {
+    "epsilon": 0.001,
+    "analytic": -0.80859375,
+    "central_difference": -0.008583067916333675,
+    "relative_error": 0.9893851913691719,
+    "plus_represented_delta_norm": 0.0010004043579101562,
+    "minus_represented_delta_norm": 0.0009984970092773438,
+    "frozen_relative_tolerance": 0.2
+  },
+  "gradient_zero_fraction": 0.0
+}
