@@ -1,0 +1,35 @@
+{
+  "status": "STATIC_HEADER_VERIFIED_NATIVE_PENDING",
+  "proposal_module": "model.layers.21.mlp.down_proj",
+  "proposal_weight": "model.layers.21.mlp.down_proj.weight",
+  "selected_shape": [
+    4096,
+    14336
+  ],
+  "serialized_dtype": "BF16",
+  "selected_bias_in_checkpoint": false,
+  "model_config": {
+    "model_type": "llava_mistral",
+    "architectures": [
+      "LlavaMistralForCausalLM"
+    ],
+    "hidden_size": 4096,
+    "intermediate_size": 14336,
+    "num_hidden_layers": 32,
+    "vocab_size": 32000,
+    "torch_dtype": "bfloat16",
+    "tie_word_embeddings": false,
+    "mm_vision_tower": "openai/clip-vit-large-patch14-336"
+  },
+  "config_digest": "79ba13d1a0d4c2eba0346e7a1462d0e7fb6e5ebb1c087686bd7ca7a4f0ae013a",
+  "checkpoint_tensor_elements": 7566219264,
+  "actual_instantiated_parameter_count": null,
+  "editable_original_parameter_count": 58720256,
+  "new_deployment_parameters": 0,
+  "full_clean_base_content_digest": null,
+  "full_base_binding_status": "BLOCKED_NOT_CONTENT_BOUND",
+  "native_shared_storage": "PENDING_NATIVE_CHECK",
+  "native_backend": "PENDING_NATIVE_CHECK",
+  "all_branches_clean_base": "required; no adapter/optimizer loaded",
+  "native_deployment_dtype": null
+}

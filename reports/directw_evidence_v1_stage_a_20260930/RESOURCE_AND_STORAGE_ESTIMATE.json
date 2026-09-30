@@ -1,0 +1,53 @@
+{
+  "status": "STATIC_ESTIMATE_NATIVE_MEASUREMENT_REQUIRED",
+  "matrix_elements": 58720256,
+  "matrix_bf16_bytes": 117440512,
+  "matrix_fp32_bytes": 234881024,
+  "checkpoint_tensor_elements": 7566219264,
+  "serialized_model_bytes": 15132534160,
+  "solver_minimum_working_vector_budget": {
+    "A_rows": 8,
+    "Qinv_A_columns": 8,
+    "additional_vectors": 12,
+    "fp32_bytes": 6576668672,
+    "GiB": 6.125,
+    "excludes_autodiff_activations_and_full_logits": true
+  },
+  "runtime_host_state_bytes_estimate": 30264877056,
+  "runtime_host_note": "Base reset snapshot plus edit transaction snapshot, tensor-count lower bound; dtype/allocator overhead pending",
+  "gpu_peak_bytes": null,
+  "seconds_per_forward": null,
+  "seconds_per_backward": null,
+  "seconds_per_matvec": null,
+  "worst_case_draft": {
+    "groups": 3,
+    "CG_solves": 9,
+    "CG_iter_cap": 32,
+    "GGN_calls_per_QP_step": 948,
+    "GGN_calls_per_edit_20_steps": 18960,
+    "note": "each exact GGN entails a JVP and VJP; three stationarity/evaluation probes included; extra constraint/true-forward cost excluded"
+  },
+  "history_max_inputs": 64,
+  "history_max_predictor_positions": 4096,
+  "history_full_vocab_teacher_fp32_bytes": 524288000,
+  "history_cache_cap_bytes": 2147483648,
+  "run_storage_cap_bytes": 21474836480,
+  "shared_base_copies": 0,
+  "per_edit_backbone_checkpoints": 0,
+  "native_gpu_hours_authorized": 0,
+  "paid_judge_calls_authorized": 0,
+  "GPU_candidates": [
+    5,
+    6,
+    7
+  ],
+  "leased_GPU_uuids": [],
+  "native_revalidation_required": [
+    "actual derivative backend",
+    "peak VRAM/host RAM",
+    "matvec timing",
+    "full paired-block generation/scoring budget",
+    "current physical GPU lease"
+  ],
+  "storage_lifecycle": "small original-matrix final/reference/resume snapshots only; dependency-aware dry-run cleanup in own RUN_ROOT"
+}

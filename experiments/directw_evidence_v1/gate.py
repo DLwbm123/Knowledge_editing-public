@@ -1,0 +1,117 @@
+"""Fail closed before any real-model loader, backend or paid service import."""
+from __future__ import annotations
+from typing import Any, Callable
+import argparse
+import json
+
+STAGES = {"NATIVE_SMOKE": "NATIVE_SMOKE_ALLOWED", "PILOT": "PILOT_ALLOWED", "SEQUENTIAL": "SEQUENTIAL_ALLOWED"}
+BINDINGS = {"code", "dependencies", "model", "data", "protocol", "config", "budget"}
+
+
+def advance_state(current: str, target: str, *, cpu_passed: bool = False,
+                  audit_complete: bool = False, stage: str | None = None,
+                  bindings: dict[str, str] | None = None, approval: dict[str, Any] | None = None,
+                  config: dict[str, Any] | None = None,
+                  trusted_authorization: dict[str, Any] | None = None) -> str:
+    """Explicit stage progression; stage-A completion grants no native phase."""
+    transitions = {"IMPLEMENTING":"CPU_TESTS_COMPLETE", "CPU_TESTS_COMPLETE":"DATA_AUDIT_COMPLETE",
+        "DATA_AUDIT_COMPLETE":"WAITING_FOR_EXTERNAL_REVIEW", "NATIVE_SMOKE_ALLOWED":"NATIVE_SMOKE_COMPLETE",
+        "PILOT_ALLOWED":"PILOT_COMPLETE", "SEQUENTIAL_ALLOWED":"COMPLETE"}
+    if target in STAGES.values():
+        expected = {"NATIVE_SMOKE_ALLOWED":"WAITING_FOR_EXTERNAL_REVIEW", "PILOT_ALLOWED":"NATIVE_SMOKE_COMPLETE",
+                    "SEQUENTIAL_ALLOWED":"PILOT_COMPLETE"}[target]
+        if current != expected or not stage or STAGES.get(stage) != target:
+            raise PermissionError("phase transition dependency mismatch")
+        require_external_approval(stage, bindings or {}, approval, {**(config or {}),"current_state":target},
+                                  trusted_authorization=trusted_authorization)
+    elif transitions.get(current) != target:
+        raise PermissionError("invalid state transition")
+    elif target == "CPU_TESTS_COMPLETE" and not cpu_passed:
+        raise PermissionError("CPU tests incomplete")
+    elif target in {"DATA_AUDIT_COMPLETE","WAITING_FOR_EXTERNAL_REVIEW"} and not audit_complete:
+        raise PermissionError("data audit incomplete")
+    elif current in STAGES.values():
+        if not (config or {}).get("phase_validation_passed"):
+            raise PermissionError("phase validation incomplete")
+    return target
+
+
+def default_config() -> dict[str, Any]:
+    return dict(run_name="directw_evidence_v1", execution_stage="IMPLEMENT_ONLY",
+        allow_native_model_execution=False, allow_gpu=False, allow_training=False, allow_paid_judge=False,
+        external_review_required=True, approved_phases=[], approval_reference=None,
+        model_binding=None, editable_weight_path=None, data_manifest_digest=None, approved_protocol_digest=None,
+        curvature_backend="exact_ggn_matvec", qp_variant="l2_slack_with_preservation_linear_term",
+        max_active_constraints=8, cg_max_iter=32, cg_rtol=1e-4, max_edit_steps=20,
+        line_search_factors=[1., .5, .25, .125, .0625, .03125, .015625],
+        trust_radius=None, behavior_thresholds=None, preservation_budgets=None,
+        history_max_inputs=64, history_max_predictor_positions=4096, new_run_storage_limit_gib=20,
+        teacher_cache_limit_gib=2, gpu_physical_candidates=[5,6,7], leased_gpu_uuids=[],
+        authorized_gpu_hours=0, authorized_judge_calls=0, data_audit_status="BLOCKED",legal_fit_inputs=0)
+
+
+def require_external_approval(stage: str, bindings: dict[str, str], approval: dict[str, Any] | None,
+                              config: dict[str, Any], *, trusted_authorization: dict[str, Any] | None = None) -> None:
+    """Trusted receipt comes from human instruction channel, NEVER approval-file claims.
+
+    This CLI deliberately cannot fabricate that receipt. A later human-authorized
+    orchestration must supply it separately and preserve original review wording.
+    """
+    if stage not in STAGES or config.get("execution_stage") == "IMPLEMENT_ONLY":
+        raise PermissionError("stage A does not authorize native execution")
+    if not trusted_authorization or trusted_authorization.get("origin") not in {"USER_MESSAGE", "VERIFIED_EXTERNAL_REVIEW"}:
+        raise PermissionError("no independently trusted human authorization")
+    if not approval or approval.get("approved") is not True or stage not in approval.get("approved_phases", []):
+        raise PermissionError("missing explicit phase approval")
+    if not trusted_authorization.get("original_text") or approval.get("approval_reference") != trusted_authorization.get("reference"):
+        raise PermissionError("approval provenance mismatch")
+    if stage not in trusted_authorization.get("phases", []) or trusted_authorization.get("bindings") != bindings:
+        raise PermissionError("trusted receipt stage/bindings mismatch")
+    if set(bindings) != BINDINGS or not all(isinstance(v,str) and len(v)==64 for v in bindings.values()) or approval.get("bindings") != bindings:
+        raise PermissionError("scientific binding changed or missing")
+    if config.get("current_state") != STAGES[stage] or not config.get("allow_native_model_execution"):
+        raise PermissionError("state/native permission mismatch")
+    if not all(config.get(k) for k in ("model_binding", "editable_weight_path", "data_manifest_digest",
+            "approved_protocol_digest", "trust_radius", "behavior_thresholds", "preservation_budgets")):
+        raise PermissionError("unapproved critical scientific configuration")
+    if config.get("data_audit_status") != "PASS" or config.get("legal_fit_inputs", 0) <= 0:
+        raise PermissionError("data role audit not admitted")
+    if min(config.get("new_run_storage_limit_gib", 0),config.get("teacher_cache_limit_gib", 0)) <= 0:
+        raise PermissionError("storage budget missing")
+    if not config.get("allow_gpu") or config.get("authorized_gpu_hours", 0) <= 0 or not config.get("leased_gpu_uuids"):
+        raise PermissionError("GPU budget/lease missing")
+    if config.get("allow_paid_judge") and config.get("authorized_judge_calls", 0) <= 0:
+        raise PermissionError("paid Judge budget missing")
+    if stage != "NATIVE_SMOKE" and not config.get("allow_training"):
+        raise PermissionError("training phase not permitted")
+    if stage in {"PILOT", "SEQUENTIAL"} and config.get("native_smoke_status") != "PASS":
+        raise PermissionError("native smoke incomplete")
+    if stage == "SEQUENTIAL" and config.get("pilot_gate_status") != "PASS":
+        raise PermissionError("pilot prerequisite incomplete")
+
+
+def gated_load(stage: str, bindings: dict[str, str], approval: dict[str, Any] | None,
+               config: dict[str, Any], loader: Callable[[], Any], *,
+               trusted_authorization: dict[str, Any] | None = None) -> Any:
+    require_external_approval(stage, bindings, approval, config, trusted_authorization=trusted_authorization)
+    return loader()
+
+
+def cli(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Independent stage-A review gate; native dispatch requires a trusted human receipt")
+    parser.add_argument("--stage", choices=["IMPLEMENT_ONLY", *STAGES], default="IMPLEMENT_ONLY")
+    parser.add_argument("--run", action="store_true")
+    parser.add_argument("--config")
+    parser.add_argument("--approval")
+    args = parser.parse_args(argv)
+    config = json.load(open(args.config)) if args.config else default_config()
+    approval = json.load(open(args.approval)) if args.approval else None
+    if args.stage != "IMPLEMENT_ONLY" or args.run:
+        require_external_approval(args.stage, {}, approval, config)
+    print(json.dumps(dict(current_state="WAITING_FOR_EXTERNAL_REVIEW", native_gpu_runs=0,
+                         real_model_training_started=False, paid_judge_calls=0)))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(cli())

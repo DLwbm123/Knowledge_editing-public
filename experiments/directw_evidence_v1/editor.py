@@ -1,0 +1,369 @@
+"""Single native-matrix editing with normal-forward acceptance and rollback.
+
+No adapter, residual hook, optimizer restoration or legacy runtime imports.
+Native template preparation remains a separately gated qualification task.
+"""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from typing import Any, Callable
+import copy
+import hashlib
+import torch
+from torch import Tensor, nn
+from .numerics import FrozenGGN, position_weights, protection_kl, solve_step
+
+BRANCHES = ("W_FT", "W_EUCLIDEAN_QP", "W_KEY_QP", "W_FUNCTIONAL_QP", "W_EVIDENCE_QP")
+
+
+def tensor_digest(value: Tensor) -> str:
+    raw = value.detach().cpu().contiguous().reshape(-1).view(torch.uint8).numpy().tobytes()
+    return hashlib.sha256(raw).hexdigest()
+
+
+def mean_answer_logprob(logits: Tensor, labels: Tensor, *, eos_id: int,
+                        include_eos: bool = False) -> Tensor:
+    """Labels are at the MODEL-EXPANDED positions; score predictor t for label t+1.
+
+    Prefix, image expansion and padding labels must be -100. Average each answer
+    separately so answer length / padding never silently changes its weight.
+    """
+    if logits.ndim != 3 or logits.shape[:2] != labels.shape:
+        raise ValueError("expanded logits/labels mismatch")
+    target = labels[:, 1:]
+    mask = target != -100
+    if not include_eos:
+        mask = mask & (target != eos_id)
+    if not mask.any(dim=1).all():
+        raise ValueError("empty content answer")
+    if ((target[mask] < 0) | (target[mask] >= logits.shape[-1])).any():
+        raise ValueError("invalid content token")
+    safe = target.masked_fill(~mask, 0)
+    score = logits[:, :-1].log_softmax(-1).gather(-1, safe.unsqueeze(-1)).squeeze(-1)
+    return (score * mask).sum(-1) / mask.sum(-1)
+
+
+@dataclass
+class Constraint:
+    name: str
+    role: str
+    score: Callable[[Tensor], Tensor]
+    threshold: float
+    cross_image: bool = False
+    protection_group: str | None = None
+
+
+def build_constraints(supports: list[tuple[str, Callable[[Tensor], Tensor], float]],
+                      pairs: list[dict[str, Any]], branch: str) -> list[Constraint]:
+    """All branches get BOTH endpoint supervision; only evidence adds cross-image."""
+    if branch not in BRANCHES:
+        raise ValueError("unknown branch")
+    constraints = [Constraint(name, "EDIT_FIT", score, threshold) for name, score, threshold in supports]
+    for pair in pairs:
+        if pair.get("verified") is not True or pair.get("scope") != "OUT_OF_SCOPE" or pair.get("negative_base_correct") is not True:
+            raise ValueError("unqualified visual pair")
+        if not pair.get("negative_protection_group"):
+            raise ValueError("visual counterexample requires its own protection group")
+        plus, minus = pair["plus_margin"], pair["minus_margin"]
+        constraints.extend([Constraint(pair["id"] + ":plus", "VIS_PAIR_FIT", plus, pair["endpoint_margin"]),
+                            Constraint(pair["id"] + ":minus", "VIS_PAIR_FIT", minus, pair["endpoint_margin"],
+                                       protection_group=pair["negative_protection_group"])])
+        if branch == "W_EVIDENCE_QP":
+            constraints.append(Constraint(pair["id"] + ":cross", "VIS_PAIR_FIT",
+                                          lambda w, p=plus, n=minus: p(w) + n(w),
+                                          pair["visual_margin"], True))
+    return constraints
+
+
+@dataclass
+class ProtectionGroup:
+    name: str
+    logits: Callable[[Tensor], Tensor]
+    anchor: Tensor
+    mask: Tensor
+    sources: tuple[str, ...]
+    coefficient: float
+    budget: float
+    binding: dict[str, str]
+    keys: Tensor | None = None
+
+    def __post_init__(self) -> None:
+        required = {"model", "weight_version", "input", "prefix", "mask", "dtype", "backend", "config", "teacher_version"}
+        if set(self.binding) != required or not all(self.binding.values()):
+            raise ValueError("incomplete protection binding")
+        if self.coefficient <= 0 or self.budget < 0 or self.anchor.requires_grad:
+            raise ValueError("invalid protection anchor/budget")
+        self.anchor = self.anchor.detach().clone()
+        self.mask = self.mask.detach().clone()
+        self.weights = position_weights(self.mask, self.sources)
+        if self.keys is not None:
+            self.keys = self.keys.detach().clone()
+
+    def loss(self, weight: Tensor) -> Tensor:
+        return protection_kl(self.logits(weight), self.anchor, self.weights)
+
+
+class MatrixRuntime:
+    """Bind one unshared original 2D weight; freeze all other functional state."""
+    def __init__(self, model: nn.Module, path: str):
+        if model.training or any(m.training for m in model.modules()):
+            raise ValueError("model must be eval mode")
+        parameters = dict(model.named_parameters(remove_duplicate=False))
+        if path not in parameters or parameters[path].ndim != 2 or not path.endswith(".weight"):
+            raise ValueError("one original 2D matrix required")
+        self.model, self.path, self.weight = model, path, parameters[path]
+        aliases = [name for name, p in parameters.items() if p.untyped_storage().data_ptr() == self.weight.untyped_storage().data_ptr()]
+        if aliases != [path]:
+            raise ValueError("shared editable weight requires separate review")
+        self.base = self.weight.detach().clone()
+        self.base_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
+        parameter_keys = set(dict(model.named_parameters(remove_duplicate=False)))
+        self.functional_state = {k: (v.detach() if k in parameter_keys else v.detach().clone())
+                                 for k, v in model.state_dict().items() if k != path}
+        self.version = 0
+        self.last_rounding: dict[str, float] = {}
+
+    def logits(self, weight: Tensor, inputs: dict[str, Any]) -> Tensor:
+        if "past_key_values" in inputs or inputs.get("use_cache", False):
+            raise ValueError("editing forward cannot reuse KV cache")
+        state = {**self.functional_state, self.path: weight}
+        result = torch.func.functional_call(self.model, state, (), inputs, strict=True)
+        return result.logits if hasattr(result, "logits") else result
+
+    def normal_logits(self, inputs: dict[str, Any]) -> Tensor:
+        if "past_key_values" in inputs or inputs.get("use_cache", False):
+            raise ValueError("stale/native KV cache rejected")
+        result = self.model(**inputs)
+        return result.logits if hasattr(result, "logits") else result
+
+    def bind_inputs(self, inputs: dict[str, Any]) -> Callable[[Tensor], Tensor]:
+        """Freeze tensor inputs, template prefixes and masks for one solver batch."""
+        if "past_key_values" in inputs or inputs.get("use_cache", False):
+            raise ValueError("cannot bind an inference KV cache")
+        fixed = copy.deepcopy(inputs)
+        for key, value in fixed.items():
+            if isinstance(value, Tensor):
+                fixed[key] = value.detach().clone()
+        return lambda w: self.logits(w, fixed)
+
+    def capture_input(self, inputs: dict[str, Any]) -> Tensor:
+        """Read-only hook at the actual matrix input, removed even on exception."""
+        captured = []
+        module = self.model.get_submodule(self.path.rsplit(".", 1)[0])
+        hook = module.register_forward_pre_hook(lambda _m, args: captured.append(args[0].detach().clone()))
+        try:
+            with torch.no_grad():
+                self.normal_logits(inputs)
+        finally:
+            hook.remove()
+        if len(captured) != 1:
+            raise ValueError("ambiguous reused editable module")
+        return captured[0]
+
+    def write(self, candidate: Tensor) -> None:
+        if candidate.shape != self.weight.shape or not torch.isfinite(candidate).all():
+            raise ValueError("invalid candidate weight")
+        rounded = candidate.to(self.weight)
+        if not torch.isfinite(rounded).all():
+            raise ValueError("nonfinite deployment dtype")
+        requested = candidate - self.weight.detach().to(candidate)
+        actual = rounded - self.weight.detach()
+        self.last_rounding = dict(requested_delta_norm=float(requested.norm()),
+                                  actual_delta_norm=float(actual.norm()),
+                                  zeroed_fraction=float(((actual == 0) & (requested != 0)).sum()) / max(1, int((requested != 0).sum())))
+        with torch.no_grad():
+            self.weight.copy_(rounded)
+        self.version += 1
+
+    def reset_single(self) -> None:
+        self.model.load_state_dict(self.base_state, strict=True)
+        self.version += 1
+
+    def audit(self, snapshot: dict[str, Tensor], hooks: tuple[int, ...]) -> None:
+        now = self.model.state_dict()
+        if set(now) != set(snapshot) or self.hooks() != hooks:
+            raise RuntimeError("module/state key/hook mutation")
+        for key, value in now.items():
+            if value.shape != snapshot[key].shape or value.dtype != snapshot[key].dtype:
+                raise RuntimeError("shape/dtype mutation")
+            if key != self.path and not torch.equal(value.detach().cpu(), snapshot[key]):
+                raise RuntimeError("unauthorized parameter/buffer mutation")
+
+    def hooks(self) -> tuple[int, ...]:
+        return tuple(len(m._forward_hooks) + len(m._forward_pre_hooks) + len(m._backward_hooks)
+                     for m in self.model.modules())
+
+
+@dataclass
+class EditConfig:
+    tau: float
+    nu: float
+    trust_radius: float
+    base_drift_limit: float
+    edit_drift_limit: float
+    max_steps: int = 20
+    max_active: int = 8
+    factors: tuple[float, ...] = (1., .5, .25, .125, .0625, .03125, .015625)
+    cg_max_iter: int = 32
+    cg_rtol: float = 1e-4
+    tolerance: float = 1e-8
+    ft_lr: float = .1
+
+    def __post_init__(self) -> None:
+        if min(self.tau, self.nu, self.trust_radius, self.base_drift_limit, self.edit_drift_limit, self.ft_lr) <= 0:
+            raise ValueError("positive budgets required")
+        if min(self.max_steps, self.max_active, self.cg_max_iter) < 1 or not self.factors or any(not 0 < f <= 1 for f in self.factors):
+            raise ValueError("finite positive iteration/line-search budgets required")
+
+
+@dataclass
+class EditResult:
+    status: str
+    attempts: list[dict[str, Any]] = field(default_factory=list)
+    final_violations: dict[str, float] = field(default_factory=dict)
+    accepted_steps: int = 0
+    rollback: bool = False
+    error: str | None = None
+
+
+def constraint_values(constraints: list[Constraint], weight: Tensor) -> Tensor:
+    return torch.stack([c.score(weight).reshape(()) for c in constraints])
+
+
+def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list[ProtectionGroup],
+             config: EditConfig, branch: str) -> EditResult:
+    """Rejected/final-unsatisfied edits restore their edit-start state.
+
+    Every attempted rounded weight is checked using normal model forwards through
+    scores/groups evaluated at runtime.weight. Closures must call runtime.logits;
+    the normal forward parity check below independently proves the write path.
+    """
+    if branch not in BRANCHES or not constraints or not groups:
+        raise ValueError("branch, legal constraints and protection groups required")
+    if branch == "W_EVIDENCE_QP" and not any(c.cross_image for c in constraints):
+        raise ValueError("BLOCKED_DATA: evidence branch requires verified pairs")
+    if len({g.name for g in groups}) != len(groups) or any(
+        c.protection_group and c.protection_group not in {g.name for g in groups} for c in constraints
+    ):
+        raise ValueError("missing/ambiguous endpoint protection group")
+    snapshot = {k: v.detach().cpu().clone() for k, v in runtime.model.state_dict().items()}
+    hooks = runtime.hooks()
+    start = runtime.weight.detach().clone()
+    thresholds = start.new_tensor([c.threshold for c in constraints])
+    result = EditResult("NOT_SATISFIED")
+    # Fixed role-stratified rotation, independent of scores/test performance.
+    ordered = sorted(range(len(constraints)), key=lambda i: (constraints[i].role, i))
+
+    def evaluate() -> tuple[Tensor, dict[str, float]]:
+        # Temporarily evaluate all functional closures through the REAL model.
+        original = runtime.logits
+        runtime.logits = lambda _w, inputs: runtime.normal_logits(inputs)
+        try:
+            with torch.no_grad():
+                values = constraint_values(constraints, runtime.weight)
+                losses = {g.name: float(g.loss(runtime.weight)) for g in groups}
+            return values, losses
+        finally:
+            runtime.logits = original
+
+    def restore() -> None:
+        runtime.model.load_state_dict(snapshot, strict=True)
+        runtime.version += 1
+        result.rollback = True
+
+    try:
+        initial, initial_losses = evaluate()
+        runtime.audit(snapshot, hooks)
+        if any(not torch.isfinite(torch.tensor(v)) or v > g.budget + 1e-12
+               for g in groups for v in [initial_losses[g.name]]):
+            result.status = "START_BUDGET_VIOLATION"
+            return result
+        for step in range(config.max_steps):
+            w = runtime.weight.detach().clone().requires_grad_(True)
+            full = constraint_values(constraints, w)
+            if float((thresholds - full).clamp_min(0).max()) <= config.tolerance:
+                result.status = "ACCEPTED"; break
+            preservation = sum(g.coefficient * g.loss(w) for g in groups)
+            gpres = torch.autograd.grad(preservation, w, retain_graph=True)[0].detach()
+            active = [ordered[(step * config.max_active + j) % len(ordered)]
+                      for j in range(min(config.max_active, len(ordered)))]
+            a = torch.stack([torch.autograd.grad(full[i], w, retain_graph=True)[0].flatten() for i in active]).detach()
+            b = (thresholds - full.detach())[active]
+            frozen = [FrozenGGN(g.logits, w, g.weights) for g in groups]
+            def operator(v: Tensor) -> Tensor:
+                shaped = v.reshape_as(w)
+                out = config.tau * shaped
+                for g, curvature in zip(groups, frozen):
+                    if branch in ("W_FUNCTIONAL_QP", "W_EVIDENCE_QP"):
+                        out = out + g.coefficient * curvature(shaped)
+                    elif branch == "W_KEY_QP":
+                        if g.keys is None or g.keys.shape[:-1] != g.mask.shape or g.keys.shape[-1] != w.shape[-1]:
+                            raise ValueError("actual aligned matrix inputs required for key geometry")
+                        keys = g.keys.reshape(-1, w.shape[-1])
+                        out = out + g.coefficient * ((shaped @ keys.T) * g.weights.to(w).flatten()) @ keys
+                return out.reshape_as(v)
+            qp = None
+            if branch == "W_FT":
+                objective = .5 * (thresholds - full).clamp_min(0).square().sum() + preservation + .5 * config.tau * (w - start).square().sum()
+                direction = -config.ft_lr * torch.autograd.grad(objective, w)[0].detach()
+            else:
+                qp = solve_step(operator, a, b, gpres, nu=config.nu, max_active=config.max_active,
+                                cg_rtol=config.cg_rtol, cg_max_iter=config.cg_max_iter)
+                direction = qp.direction
+                if qp.status != "CONVERGED":
+                    result.attempts.append(dict(step=step, status=qp.status, kkt=qp.kkt))
+                    result.status = "SOLVER_NOT_CONVERGED"; break
+            norm = float(direction.norm())
+            clipped = norm > config.trust_radius
+            if clipped:
+                direction = direction * (config.trust_radius / norm)
+            before = float((thresholds - full.detach()).clamp_min(0).square().sum())
+            accepted = False
+            for factor in config.factors:
+                runtime.write(w.detach() + factor * direction)
+                runtime.audit(snapshot, hooks)
+                values, losses = evaluate()
+                merit = float((thresholds - values).clamp_min(0).square().sum())
+                finite = bool(torch.isfinite(values).all()) and all(torch.isfinite(torch.tensor(v)) for v in losses.values())
+                budget_ok = all(losses[g.name] <= g.budget + 1e-12 for g in groups)
+                edit_drift = float((runtime.weight - start).norm())
+                base_drift = float((runtime.weight - runtime.base).norm())
+                budget_ok = budget_ok and edit_drift <= config.edit_drift_limit and base_drift <= config.base_drift_limit
+                # Merit has squared-score units; constraint tolerance has score units.
+                merit_roundoff = 16 * torch.finfo(values.dtype).eps * max(before, torch.finfo(values.dtype).tiny)
+                accepted = finite and budget_ok and merit < before - merit_roundoff
+                result.attempts.append(dict(step=step, factor=factor, accepted=accepted, merit=merit,
+                    protection=losses, clipped=clipped, edit_drift=edit_drift, base_drift=base_drift,
+                    rounding=copy.copy(runtime.last_rounding), actual_scores=values.tolist(),
+                    qp=None if qp is None else dict(status=qp.status, slack=qp.slack.tolist(), kkt=qp.kkt,
+                        cg=[dict(status=s.status, residual=s.relative_residual, iterations=s.iterations,
+                                 calls=s.calls, condition_surrogate=s.condition_surrogate) for s in qp.cg],
+                        matvecs=sum(f.calls for f in frozen), active=active)))
+                if accepted:
+                    result.accepted_steps += 1; break
+                runtime.write(w.detach())
+            if not accepted:
+                result.status = "BACKTRACK_REJECTED"; break
+        values, _ = evaluate()
+        result.final_violations = {c.name: float((thresholds[i] - values[i]).clamp_min(0)) for i, c in enumerate(constraints)}
+        if max(result.final_violations.values()) <= config.tolerance:
+            result.status = "ACCEPTED"
+        if result.status != "ACCEPTED":
+            restore()
+        runtime.audit(snapshot, hooks)
+    except BaseException as exc:
+        restore()
+        result.status, result.error = "EXCEPTION_ROLLED_BACK", type(exc).__name__ + ": " + str(exc)
+        if isinstance(exc, (KeyboardInterrupt, SystemExit)):
+            raise
+    return result
+
+
+def geometry(keys_plus: Tensor, keys_minus: Tensor, grad_plus: Tensor, grad_minus: Tensor) -> dict[str, float]:
+    """Caller must supply same predictor-position alignment at actual matrix input."""
+    if keys_plus.shape != keys_minus.shape:
+        raise ValueError("fixed token alignment required")
+    p, n = keys_plus.flatten(), keys_minus.flatten()
+    cosine = lambda a, b: float((a.flatten() @ b.flatten()) / (a.norm() * b.norm()).clamp_min(1e-30))
+    return dict(distance=float((p - n).norm()), plus_norm=float(p.norm()), minus_norm=float(n.norm()),
+                cosine=cosine(p, n), gradient_cosine=cosine(grad_plus, grad_minus))

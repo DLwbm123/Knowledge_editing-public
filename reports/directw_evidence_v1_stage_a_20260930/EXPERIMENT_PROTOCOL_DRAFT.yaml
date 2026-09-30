@@ -1,0 +1,97 @@
+method: DirectW-Evidence-v1
+status: DRAFT_NOT_APPROVED
+current_authorization: STAGE_A_ONLY
+model_proposal: llava_med_v1_5_mistral_7b
+weight_path_proposal: model.layers.21.mlp.down_proj.weight
+model_full_content_digest: null
+runtime_compute_dtype: null
+deployment_dtype: null
+attention_backend: null
+clean_base_same_for_all_branches: true
+inherit_cp_lora_state: false
+branches: [W_FT, W_EUCLIDEAN_QP, W_KEY_QP, W_FUNCTIONAL_QP, W_EVIDENCE_QP]
+ordinary_pair_labels_and_protection_shared: true
+cross_image_constraint_only_in: W_EVIDENCE_QP
+max_active_constraints_draft: 8
+constraint_schedule: fixed_role_order_round_robin
+check_all_fit_constraints_on_each_candidate: true
+cg_max_iter_draft: 32
+cg_relative_tolerance_draft: 0.0001
+max_edit_steps_draft: 20
+line_search_factors_draft: [1.0, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625]
+tau: null
+nu: null
+trust_radius: null
+edit_drift_limit: null
+base_drift_limit: null
+behavior_thresholds: null
+preservation_budgets: null
+native_numerical_tolerances: null
+threshold_selection: lawful_independent_DEV_CAL_or_explicit_preapproved_global_rule_only
+content_answer_score: mean_token_logprob
+content_eos_proposal: excluded_and_reported_separately
+official_performance: free_generation_only
+decode_config: null
+fit_roles: [EDIT_FIT, GEN_FIT, VIS_PAIR_FIT, PROTECT_BG_FIT, PROTECT_NEAR_FIT, PAST_EDIT_MEMORY]
+no_gradient_or_mining_roles: [DEV_CAL, REG_EXPOSED, TEST_CONFIRM]
+history_inputs_draft: 64
+history_predictor_positions_draft: 4096
+history_cache_gib_draft: 2
+history_retention: deterministic_source_fact_strata_hash_priority
+history_teacher: accepted_edited_distribution
+background_teacher: fixed_clean_Base
+conflict_rule: explicit_supersedes_keep_original_target_diagnostic
+storage_gib_draft: 20
+save_per_edit_full_backbone: false
+cleanup: own_RUN_ROOT_explicit_files_dependencies_complete_dry_run_first
+stages:
+  B:
+    required_explicit_phase: NATIVE_SMOKE
+    lawful_inputs: null
+    purpose: mechanical_module_template_precision_derivatives_write_rollback_clean_reload_and_cost
+    max_model_calls: null
+    max_gpu_hours: 0
+    does_not_imply_pilot: true
+  C:
+    required_explicit_phase: PILOT
+    prerequisite: approved_native_smoke_and_frozen_data_thresholds_resource_budget
+    edit_count_proposal: [8, 12]
+    common_legal_cohort: null
+    full_paired_branch_block_required: true
+    pilot_thresholds: null
+    no_per_edit_best_layer_or_cherry_picking: true
+    max_gpu_hours: 0
+    max_judge_calls: 0
+  D:
+    required_explicit_phase: SEQUENTIAL
+    prerequisite: approved_pilot_gate_and_frozen_comparison_block
+    prefix_proposal: [1, 4, 8, 12, 24]
+    order_count_proposal: 3
+    actual_native_inheritance: true
+    incomplete_cohort_policy: use_actual_count_do_not_duplicate
+    early_edit_tracking: [original, text_generality, image_generality, locality]
+    max_gpu_hours: 0
+    max_judge_calls: 0
+metrics:
+  T0: post_correctness_on_uniform_frozen_Base_wrong_requests
+  T1G: image_perturbation_generality_release_aligned_separate_from_independent_images
+  T2G: text_rephrase_generality
+  T1L: text_locality
+  T2L: image_locality
+  primary_generality: Base_wrong_repair_fraction_with_fixed_denominator
+  secondary: all_legitimate_probe_post_accuracy
+  locality: Base_correct_retention_and_support_count
+  extra: [history_retention, forgetting, failure, rollback, rejection, update_norm, cumulative_drift, VRAM, editor_bytes, matvec_calls, GPU_time]
+  primary_aggregation: edit_macro
+  uncertainty: paired_edit_source_cluster_intervals_small_n_descriptive
+  missing_scoring: preserve_intention_to_edit_denominator_and_report_conservative_bounds
+  solver_fit_generation_states_distinct: true
+  independent_confirmation_available: false
+  claim_limit: exploratory_or_regression_until_independent_confirmation
+stop_conditions: [numerical_instability, leakage, anchor_misalignment, unauthorized_parameter_change, reload_mismatch, budget_failure, pilot_gate_failure]
+allowed_gpu_physical_candidates_for_later_review: [5, 6, 7]
+leased_gpu_uuids: []
+paid_judge_model: null
+paid_judge_template_digest: null
+external_approval_reference: null
+approved_phases: []

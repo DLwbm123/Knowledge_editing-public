@@ -1,0 +1,37 @@
+{
+  "fit_roles": [
+    "EDIT_FIT",
+    "GEN_FIT",
+    "PAST_EDIT_MEMORY",
+    "PROTECT_BG_FIT",
+    "PROTECT_NEAR_FIT",
+    "VIS_PAIR_FIT"
+  ],
+  "excluded_from_gradients_curvature_mining": [
+    "DEV_CAL",
+    "REG_EXPOSED",
+    "TEST_CONFIRM"
+  ],
+  "source_role_alone_is_permission": false,
+  "group_isolation": [
+    "edit",
+    "source/patient",
+    "fact_family"
+  ],
+  "same_image_original_and_official_probe": "benchmark sharing allowed; evaluation QA cannot be repurposed for fit",
+  "future_information": false,
+  "clinical_negative_synthesis": false,
+  "base_anchor": "fixed clean Base for unrelated facts",
+  "history_anchor": "accepted edited distribution, explicit supersedes",
+  "cache_bindings": [
+    "model",
+    "weight_version",
+    "input",
+    "prefix",
+    "mask",
+    "dtype",
+    "backend",
+    "config",
+    "teacher_version"
+  ]
+}
