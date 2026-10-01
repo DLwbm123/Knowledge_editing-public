@@ -1,0 +1,33 @@
+{
+  "stage": "scope_positive_guard_20261001",
+  "parent": "8363aad03e7dd8ad2198b5044325e5721e049314",
+  "DEV_methods": [
+    "R0",
+    "NEG0",
+    "PLOO"
+  ],
+  "candidates": [
+    "PLOO"
+  ],
+  "expert_weights": "historical H read-only",
+  "positive_guard": {
+    "anchors": "native + exactly four S_fit",
+    "radius": "nearest other positive anchor, float32 euclidean; duplicates keep zero",
+    "decision": "original R0 winner active AND (NEG0 quotient>=0 OR within any positive guard ball)",
+    "inclusive": true,
+    "threshold_search": false,
+    "full_negative_preservation_guarantee": false
+  },
+  "GPU_only": [
+    6,
+    7
+  ],
+  "new_Judge_limit": 500,
+  "GPU_hours_limit": 4,
+  "wall_hours_limit": 6,
+  "REG": "Only clear PLOO DEV PASS; R0+PLOO exposed regression",
+  "qualification": "Original BASE_MASKS and old35 only",
+  "gates": "Same PR10 shared-missing joint gates; T0/T1G zero new errors, T2G<=1, bank24 Pressure known+3 and delta_min>=0, old35<=1 each prefix, formalT2L<=1, known changed-route rescue required",
+  "CAL_SCOPE": "UNAVAILABLE; no new verified cross-image claims",
+  "new_training": 0
+}
