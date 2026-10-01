@@ -271,8 +271,11 @@ class EditConfig:
     arithmetic_dtype: torch.dtype | None = None
     max_ggn_calls: int | None = None
     constraint_value_mode: str = "functional"
+    record_trial_diagnostics: bool = False
 
     def __post_init__(self) -> None:
+        if type(self.record_trial_diagnostics) is not bool:
+            raise ValueError("trial diagnostics must be boolean")
         if self.constraint_value_mode not in {"functional", "native_value"}:
             raise ValueError("unknown constraint value mode")
         if self.max_ggn_calls is not None and (type(self.max_ggn_calls) is not int or self.max_ggn_calls < 0):
@@ -439,6 +442,25 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                         cg=[dict(status=s.status, residual=s.relative_residual, iterations=s.iterations,
                                  calls=s.calls, condition_surrogate=s.condition_surrogate) for s in qp.cg],
                         matvecs=sum(f.calls for f in frozen), active=active)))
+                if config.record_trial_diagnostics:
+                    with torch.no_grad():
+                        requested=w.detach()+factor*direction
+                        rounded=runtime.weight.detach().to(w)
+                        fp_requested=constraint_values(constraints,requested)
+                        fp_rounded=constraint_values(constraints,rounded)
+                        repeat,repeat_losses=evaluate()
+                        repeat_exact=torch.equal(repeat,values) and repeat_losses==losses
+                        attempt['trial_diagnostics']=dict(
+                            active=active,functional_before=full.detach().tolist(),native_before=deployed_values.tolist(),
+                            functional_requested=fp_requested.tolist(),functional_rounded=fp_rounded.tolist(),
+                            affine_requested=(full.detach()[active]+a@(factor*direction).flatten()).tolist(),
+                            affine_rounded=(full.detach()[active]+a@(rounded-w.detach()).flatten()).tolist(),
+                            functional_KL_requested={g.name:float(g.loss(requested)) for g in groups},
+                            functional_KL_rounded={g.name:float(g.loss(rounded)) for g in groups},
+                            native_repeat_exact=repeat_exact)
+                        del requested,rounded,fp_requested,fp_rounded,repeat
+                    if not repeat_exact:
+                        raise RuntimeError("native trial forward is not repeatable")
                 journal(dict(event="ATTEMPT_RESULT",**attempt))
                 if accepted:
                     result.accepted_steps += 1; deployed_values = values; break

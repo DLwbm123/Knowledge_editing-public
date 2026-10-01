@@ -10,6 +10,25 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_trial_diagnostics_do_not_change_edit_and_record_real_forwards(self):
+        from .editor import edit_one
+        outputs=[]
+        for enabled in (False,True):
+            runtime,_,c,g,cfg=self.fp32_case()
+            cfg.constraint_value_mode='native_value';cfg.record_trial_diagnostics=enabled
+            result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+            self.assertEqual(result.status,'ACCEPTED',result)
+            if enabled:
+                for attempt in result.attempts:
+                    d=attempt.pop('trial_diagnostics')
+                    self.assertTrue(d['native_repeat_exact'])
+                    self.assertEqual(len(d['functional_rounded']),1)
+                    self.assertTrue(torch.isfinite(torch.tensor(d['affine_requested'])).all())
+                    self.assertTrue(torch.isfinite(torch.tensor(d['functional_KL_rounded']['bg'])))
+            outputs.append((runtime.weight.detach().clone(),result.attempts,result.ggn_calls))
+        self.assertTrue(torch.equal(outputs[0][0],outputs[1][0]))
+        self.assertEqual(outputs[0][1:],outputs[1][1:])
+
     def test_native_value_anchor_ignores_constant_surrogate_offset(self):
         from .editor import edit_one
         results=[]

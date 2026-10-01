@@ -1,20 +1,20 @@
 # GPU5 continuation and autonomous follow-up
 
-## Latest state — 2026-10-01 hourly follow-up
+## Latest state — 2026-10-01 15:15 China-time follow-up
 
-At the 14:15 China-time follow-up E3 had completed 8/8 with 0 accepted, five BACKTRACK_REJECTED and three NOT_SATISFIED. All initial-control parity and Base-restoration receipts passed. The native-value change did not improve the primary endpoint. Results are published under `reports/directw_evidence_v1_native_value_20261001/FINAL_REPORT.md` (commit330f104). Cumulative consumption is566GGN and3329.959252seconds.
+E1/E2, E3 and E4 each completed the same eight development cases with0/8 final acceptance. E4 used up to12 steps but all cases stopped early on BACKTRACK_REJECTED. Every E4 first-three-step attempt dictionary exactly matched E3; all Base restorations passed. E4 complete results are published under `reports/directw_evidence_v1_step_budget_20261001/FINAL_REPORT.md` (commitcf6ca99). Prior cumulative consumption is952GGN and5437.398783seconds. Do not keep increasing step budgets to seek a success.
 
-The current successor is `20261001E4`, launch PID1268295, GPU5 only. Read `reports/directw_evidence_v1_step_budget_20261001/PROTOCOL.md` and SOURCE_BINDINGS.json. It changes only the E3 scientific-case step ceiling from3 to12 for all eight cases; every target/protection/solver acceptance rule is unchanged. Source is unchanged from6d7ebe5; prior38 CPU tests are reused, not rerun. New-run ceiling4hours/4096GGN. Compare complete outcomes and first-three-step trajectories to E3; if zero acceptance persists, do not blindly increase steps again. Verify live state before acting. The following E1/E2/E3 launch descriptions are historical.
+The active run is `20261001E5`, launch PID1284578, GPU5 only. Read `reports/directw_evidence_v1_trial_diagnostics_20261001/PROTOCOL.md` and the bound JSON/source manifest. It performs one native-value QP step per case on all eight, recording additional true forwards at the requested and BF16-rounded matrix, affine predictions, FP32/BF16 reference KL and exact normal-forward repeatability. It is a numerical diagnostic with no edit-effectiveness hypothesis; original targets and protection rules remain unchanged. Its frozen ceilings are1hour/256GGN. CPU39 tests passed including instrumentation-on/off invariance; native instrumentation verification is pending at launch.
 
-E1/E2 is complete: 8/8 cases, 0 accepted, five BACKTRACK_REJECTED and three NOT_SATISFIED; all restored. Results are published in FINAL_REPORT.md / FINAL_RESULTS.json (commit 417cea5). Historical cumulative consumption is 304 GGN and 1850.591329 seconds.
+On completion compare each recorded first-step attempt against E4 excluding only the new diagnostics fields; verify the gain decomposition identity, actual repeatability and full denominator. Publish all numerical outcomes. Use evidence to distinguish affine error, rounding contribution and deployment arithmetic discrepancy before proposing a different bounded mechanism experiment. Diagnose an instrumentation integrity failure before any retry. Do not treat intermediate gain or numerical checks as clinical success. All original data-role limitations remain.
 
-The active successor is `20261001E3`, PID at launch `1245009`, using only GPU5. Read `reports/directw_evidence_v1_native_value_20261001/PROTOCOL.md` and its bound JSON/source manifest. This is the predeclared native-value-anchored QP ablation on the same eight development cases with historical E1/E2 controls. All acceptance thresholds and budgets within each case remain fixed; the local QP right-hand side changes from the FP32 functional value to the current normal BF16 value. New-run ceiling: 4 hours / 4096 GGN. Verify live state before any action; the following E2 continuation text is historical.
+Verify latest live process/receipts before actions; PID and launch snapshots are historical identifiers. The original E2 resumption details below are retained as historical context.
 
 ## User authority, 2026-10-01
 
 The user explicitly assigned DirectW to pro5000 physical GPU5 and other experiments to GPUs6/7, requested hourly monitoring, authorized autonomous diagnosis/repair, and authorized designing and executing subsequent experiments once the current experiment completes. This supersedes prior manual-review stops for this exploration. It does not supply missing scientific data or permit fabricated medical counterexamples.
 
-## Current continuation
+## Historical E2 continuation
 
 Run `20261001E2`, PID at launch `1223994`, resumes E1's four unfinished independent cases. E1 and its four negative outcomes remain immutable. Resume code verifies identical model, selected matrix, data/selection, scientific protocol and solver settings, a contiguous terminal case prefix, restored Base and cumulative accounting before any model load. It re-executes the mechanical native regression, then starts at zero-based case index 4. No experiment hyperparameter or acceptance threshold changes.
 
