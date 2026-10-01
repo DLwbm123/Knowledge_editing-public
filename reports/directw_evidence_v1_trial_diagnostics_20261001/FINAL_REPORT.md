@@ -1,0 +1,15 @@
+# E5 complete: rounding and deployment arithmetic both matter
+
+The one-step native diagnostic completed8/8 cases and20 actual line-search candidates, without a runtime error. Every original first-step attempt field matched E4 exactly after excluding the new diagnostic records. All repeated normal native forwards were exactly equal, and every four-term gain decomposition reconstructed the native gain with zero residual in the exported scalar arithmetic. Instrumentation therefore preserved the observed first-step trajectory on these cases.
+
+At each case's initial full-step candidate, BF16 weight rounding retained only32.36%–72.87% (median56.31%) of the unrounded candidate's full-FP32 functional gain. This is a measured loss in that functional calculation, not a direct clinical or causal effect. Deployment-arithmetic discrepancies could add or subtract further gain. Six of the20 candidate records had rounded-weight FP32 reference KL within0.001 but actual normal BF16 KL above0.001. Thus functional protection loss alone would not reliably enforce the native protection ceiling; the native checks remain necessary.
+
+The primary diagnostic objective is complete. Final accepted edits remain0/8 after the one-step transaction; six NOT_SATISFIED and two BACKTRACK_REJECTED, all restored to Base. This is not an effectiveness improvement and no new accepted-matrix clean reload was available. Full per-candidate scalar decomposition, parity flags, case statuses and ledger are in FINAL_RESULTS.json. Diagnostic candidates are on-policy attempts, not an exhaustive line-search surface.
+
+Run consumption946.312568seconds (15.77minutes),91GGN, Judge0; historical cumulative consumption6383.711353seconds (106.40minutes),1043GGN. The process had exited and GPU5 was available at the2026-10-01 16:15 China-time check.
+
+## Evidence-driven next control
+
+Test a separately labeled end-to-end native FP32 precision control on the same eight development cases, three edit steps and unchanged0.1 relative score-gain /0.001 protection requirements. Initialize from the same BF16-loaded checkpoint values, convert frozen model arithmetic toFP32, and still optimize only the selected original matrix. This jointly removes weight-write BF16 quantization and BF16 model arithmetic; it does not isolate those two effects. Base scores, image embeddings and targets can change with precision, so old cross-precision baseline-score parity is inappropriate and will not be falsely asserted. Native/functional parity at the new FP32 Base and within-run diagnostic invariants are still required. Any accepted FP32 export must reload in a clean native FP32 model with matching logits and generation.
+
+This follow-up is a feasibility/precision control, not a BF16-deployable result or a repair of the prior negative experiments. No target relaxation, extra steps, medical negatives, paid Judge, or held-out test reuse. The original scope-unknown reference and absent visual-pair limitations remain BLOCKED_DATA for scientific claims.
