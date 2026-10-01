@@ -1,0 +1,91 @@
+{
+  "state": "EXPERIMENT_COMPLETE",
+  "cases": 8,
+  "accepted": 1,
+  "actual_target_tokens_exact": 0,
+  "exact_match_before": 0,
+  "exact_match_after": 0,
+  "mean_token_F1_before": 0.10712467679379445,
+  "mean_token_F1_after": 0.09241879444085327,
+  "status_counts": {
+    "NOT_SATISFIED": 3,
+    "BACKTRACK_REJECTED": 3,
+    "ACCEPTED": 1,
+    "SOLVER_NOT_CONVERGED": 1
+  },
+  "prefix_audit": [
+    {
+      "index": "0",
+      "compared_attempt_records": 11,
+      "compared_steps": 3,
+      "exact_equal": true
+    },
+    {
+      "index": "1",
+      "compared_attempt_records": 13,
+      "compared_steps": 3,
+      "exact_equal": true
+    },
+    {
+      "index": "2",
+      "compared_attempt_records": 16,
+      "compared_steps": 3,
+      "exact_equal": true
+    },
+    {
+      "index": "3",
+      "compared_attempt_records": 8,
+      "compared_steps": 3,
+      "exact_equal": true
+    },
+    {
+      "index": "4",
+      "compared_attempt_records": 8,
+      "compared_steps": 3,
+      "exact_equal": true
+    },
+    {
+      "index": "5",
+      "compared_attempt_records": 6,
+      "compared_steps": 2,
+      "exact_equal": true
+    },
+    {
+      "index": "6",
+      "compared_attempt_records": 7,
+      "compared_steps": 3,
+      "exact_equal": true
+    },
+    {
+      "index": "7",
+      "compared_attempt_records": 13,
+      "compared_steps": 2,
+      "exact_equal": true
+    }
+  ],
+  "probes": 199,
+  "probe_KL_above_0_001": 7,
+  "probe_score_drops_below_minus_0_1": 0,
+  "max_probe_KL": 0.0198043342679739,
+  "minimum_probe_score_change": -0.08520770072937012,
+  "predeclared_efficacy": "FAIL",
+  "clean_reload_pass": 1,
+  "deleted_matrices": 1,
+  "deleted_bytes": 117442152,
+  "remaining_matrices": 0,
+  "new_GGN_calls": 489,
+  "elapsed_seconds": 3510.1995219750097,
+  "cumulative_GGN_calls": 3340,
+  "cumulative_native_seconds": 24816.661409884808,
+  "accepted_case_singleton_cached_logit_audit": {
+    "case": 3,
+    "target_length_with_EOS": 2,
+    "batched_minimum_margin": 0.125,
+    "singleton_teacher_forced_margins": [
+      0.0,
+      0.25
+    ],
+    "actual_first_generated_token_matches_target": false,
+    "interpretation": "Batch acceptance does not certify greedy decoding; further native execution-path diagnosis required"
+  }
+}
