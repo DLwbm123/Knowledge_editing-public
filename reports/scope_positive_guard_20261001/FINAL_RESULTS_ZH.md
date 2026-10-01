@@ -21,3 +21,5 @@ DEV与old47为暴露面板；REG即便执行也为EXPOSED_REGRESSION，不是ind
 经逐消费者审阅，989个PLOO结果与NEG0的route及Judge payload全部相同（0个改变），156个guard命中均没有新增接受。保住240个合法fit支持点不能推断formal正例迁移。T1G single新增7错、bank24新增3错，均无missing不确定性；其余非空joint门槛通过。native/S_fit闭球在正式数据上没有提供额外正例保护。hazard/CAL资产为PR10继承只读审计，非本轮新增独立数据。
 
 下一阶段只做预先固定的暴露几何/来源诊断及私有标注待审清单，不以该诊断拟合新阈值，不将已有formal正例改成新校准数据。新Judge0，正式生成消费者2967项全部基于完整绑定复用；实际模型生成仅在机械检查中验证。
+
+已公开交付：[PR11](https://github.com/DLwbm123/Knowledge_editing-public/pull/11)；分支 `review/scope-positive-guard-20261001`。源代码及13项必需报告已发布，远端提交及匿名报告访问已核验。
