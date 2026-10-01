@@ -1,0 +1,11 @@
+# E4 complete: more steps did not improve final acceptance
+
+The uniform12-step E4 experiment completed8/8 cases, final accepted0/8. All eight terminated BACKTRACK_REJECTED before the12-step ceiling and restored Base. No runtime exception or new OOM occurred. The longest trajectory had six accepted steps followed by rejection. The first-three-step attempt dictionaries matched the E3 historical control exactly for every case, confirming the declared shared trajectory before the changed budget takes effect.
+
+Thus the predeclared primary criterion (any increase over E3's0/8 accepted) failed. Extending steps from3 to12 did not solve the observed bottleneck, and no further blind step expansion is planned. Intermediate score gains remain development diagnostics rather than accepted edit successes. All initial score/parity checks and Base-restoration receipts passed. There was no accepted matrix for a new native export/reload validation.
+
+E4 used2107.439528seconds (35.12minutes) and386GGN calls, Judge0. Historical cumulative process time is5437.398783seconds (90.62minutes), cumulativeGGN952. At the2026-10-01 15:15 China-time check, the process had exited and GPU5 was available. Raw private evidence remains under the E4 RUN_ROOT; complete sanitized case metrics, exact first-three-step parity and the resource ledger are in FINAL_RESULTS.json.
+
+The next experiment will be a fixed one-step numerical diagnostic on all eight development cases. It will compare, at each actually attempted line-search candidate, the FP32 affine prediction, actual FP32 score before/after BF16 weight rounding, and normal BF16 score gain. It will also measure FP32 versus BF16 reference KL and normal-forward repeatability. This separates observed local approximation error, weight quantization loss and deployment-arithmetic discrepancy instead of treating any one as already proven. It changes no acceptance threshold and has no improvement claim as its primary endpoint.
+
+All results remain exploratory training-support evidence: no independent evaluation, verified non-target medical scope or qualified visual pairs. Scientific data admission remains BLOCKED_DATA; no clinical or W_EVIDENCE effectiveness claim is supported.
