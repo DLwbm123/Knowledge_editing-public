@@ -10,6 +10,25 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_double_qp_accumulation_checks_returned_fp32_direction_and_failed_cg(self):
+        torch.manual_seed(0)
+        a=torch.randn(1,128)*10;b=torch.tensor([14.97]);g=torch.zeros(128)
+        def operator(v):
+            self.assertEqual(v.dtype,torch.float32)
+            return 100*v
+        actual=solve_step(operator,a,b,g,cg_rtol=1e-4,cg_max_iter=16,dual_tol=1e-6,double_accumulation=True)
+        oracle=solve_step(lambda v:100*v,a.double(),b.double(),g.double(),cg_rtol=1e-8,cg_max_iter=16,dual_tol=1e-8)
+        self.assertEqual(actual.status,'CONVERGED');self.assertEqual(actual.direction.dtype,torch.float32)
+        self.assertEqual(actual.alpha.dtype,torch.float64)
+        self.assertLess(float((actual.direction.double()-oracle.direction).abs().max()),1e-7)
+        gap=a.double()@actual.direction.double()+actual.slack-b.double()
+        self.assertEqual(actual.kkt['primal'],float((-gap).clamp_min(0).max()))
+        diagonal=torch.linspace(1,1000,128)
+        failed=solve_step(lambda v:diagonal*v,a,b,g,cg_rtol=1e-4,cg_max_iter=1,dual_tol=1e-6,double_accumulation=True)
+        self.assertEqual(failed.status,'NOT_CONVERGED')
+        self.assertTrue(any(v.status!='CONVERGED' for v in failed.cg))
+        with self.assertRaises(ValueError):solve_step(operator,a,b,g,double_accumulation='yes')
+
     def test_prefix_margin_rejects_tie_and_includes_EOS_without_mutation(self):
         from types import SimpleNamespace
         from .native_io import prefix_target_margin

@@ -295,8 +295,11 @@ class EditConfig:
     rounding_mode: str = "nearest"
     rounding_seed: int = 20261001
     qp_dual_tol: float = 1e-8
+    qp_double_accumulation: bool = False
 
     def __post_init__(self) -> None:
+        if type(self.qp_double_accumulation) is not bool:
+            raise ValueError("QP double accumulation must be boolean")
         if not 0 < self.qp_dual_tol < float('inf'):
             raise ValueError('finite positive QP dual tolerance required')
         if self.rounding_mode not in {"nearest", "stochastic_bf16"} or type(self.rounding_seed) is not int or not 0 <= self.rounding_seed < 2**63:
@@ -436,7 +439,8 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                 direction = -config.ft_lr * torch.autograd.grad(objective, w)[0].detach()
             else:
                 qp = solve_step(operator, a, b, gpres, nu=config.nu, max_active=config.max_active,
-                                cg_rtol=config.cg_rtol, cg_max_iter=config.cg_max_iter,dual_tol=config.qp_dual_tol)
+                                cg_rtol=config.cg_rtol, cg_max_iter=config.cg_max_iter,dual_tol=config.qp_dual_tol,
+                                double_accumulation=config.qp_double_accumulation)
                 direction = qp.direction
                 if qp.status != "CONVERGED":
                     result.attempts.append(dict(step=step,status=qp.status,kkt=qp.kkt,dual_tol=config.qp_dual_tol,

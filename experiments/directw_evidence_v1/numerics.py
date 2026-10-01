@@ -154,8 +154,10 @@ def solve_step(operator: Operator, constraints: Tensor, rhs: Tensor, preservatio
                *, nu: float = 10., max_active: int = 8, cg_rtol: float = 1e-8,
                cg_max_iter: int = 64, dual_tol: float = 1e-8,
                dual_max_iter: int = 10000,
-               inverse_solutions: list[CGResult] | None = None) -> StepResult:
+               inverse_solutions: list[CGResult] | None = None,
+               double_accumulation: bool = False) -> StepResult:
     """Soft QP via nonnegative dual coordinate descent, never a parameter inverse."""
+    if type(double_accumulation) is not bool:raise ValueError("double accumulation must be boolean")
     a, b, g = constraints, rhs, preservation_grad.reshape(-1)
     if nu <= 0 or a.ndim != 2 or a.shape != (len(b), g.numel()) or not 0 < len(b) <= max_active:
         raise ValueError("invalid slack QP/active constraint budget")
@@ -180,6 +182,8 @@ def solve_step(operator: Operator, constraints: Tensor, rhs: Tensor, preservatio
             solves.append(CGResult(value, "CONVERGED" if okay else "NOT_CONVERGED", relative, 0, 1, prior.condition_surrogate))
     qg = solves[0].value
     qa = torch.stack([s.value for s in solves[1:]], dim=1)
+    if double_accumulation:
+        a,b,qa,qg=(x.double() for x in (a,b,qa,qg))
     h = a @ qa + torch.eye(len(b), dtype=a.dtype, device=a.device) / nu
     target = b + a @ qg
     alpha = torch.zeros_like(b)
@@ -196,10 +200,11 @@ def solve_step(operator: Operator, constraints: Tensor, rhs: Tensor, preservatio
             projected = alpha - (alpha - derivative).clamp_min(0)
             if float(projected.abs().max()) <= dual_tol:
                 break
-    d = qa @ alpha - qg
+    # Check the actual returned direction after casting, not its FP64 precursor.
+    d = (qa @ alpha - qg).to(g.dtype)
     xi = alpha / nu
-    gap = a @ d + xi - b
-    stationarity = operator(d) + g - a.T @ alpha
+    gap = a @ d.to(a.dtype) + xi - b
+    stationarity = operator(d).to(a.dtype) + g.to(a.dtype) - a.T @ alpha
     kkt = dict(primal=float((-gap).clamp_min(0).max()),
                stationarity=float(stationarity.norm()),
                complementarity=float((alpha * gap).abs().max()),

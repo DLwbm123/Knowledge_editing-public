@@ -193,6 +193,7 @@ def run(config,approval,trusted):
             max_steps=1 if mechanical else config['max_edit_steps'],max_active=1,cg_max_iter=config['maximum_CG_iterations'],
             cg_rtol=1e-4,tolerance=1e-6,arithmetic_dtype=torch.float32,
             qp_dual_tol=1e-8 if mechanical else config.get('qp_dual_tol',1e-8),
+            qp_double_accumulation=False if mechanical else config.get('qp_double_accumulation',False),
             constraint_value_mode=config.get('constraint_value_mode','functional'),
             record_trial_diagnostics=config.get('record_trial_diagnostics',False),
             rounding_mode=config.get('rounding_mode','nearest'),
@@ -223,7 +224,7 @@ def run(config,approval,trusted):
             constraint_value_mode=settings.constraint_value_mode,historical_control_parity=control is not None,
             native_deployment_dtype=str(runtime.weight.dtype),
             rounding_mode=settings.rounding_mode,rounding_seed=settings.rounding_seed,
-            qp_dual_tol=settings.qp_dual_tol,
+            qp_dual_tol=settings.qp_dual_tol,qp_double_accumulation=settings.qp_double_accumulation,
             exact_GGN=diagnostic,attempts=result.attempts,
             elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         expected=config.get('expected_replay_digests',{}).get(index)
