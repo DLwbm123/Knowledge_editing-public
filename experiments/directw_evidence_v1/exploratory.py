@@ -105,6 +105,11 @@ def run(config,approval,trusted):
         point=runtime.base.float()
         with torch.no_grad():fp=smooth(point).float()
         base_score=float(score(physical));fp_score=float(score(fp))
+        control=None
+        if not mechanical and config.get('historical_control_scores') is not None:
+            control=config['historical_control_scores'][int(index)]
+            if abs(base_score-control['base_score'])>1e-6 or abs(fp_score-control['FP32_base_score'])>1e-6:
+                raise RuntimeError('historical control initial score parity failed')
         # Exploratory reference scope is UNKNOWN, not claimed as legal BG/NEAR FIT.
         valid=(labels[1,1:]!=-100)&(labels[1,1:]!=tokenizer.eos_token_id)
         positions=valid.nonzero().flatten()
@@ -134,6 +139,7 @@ def run(config,approval,trusted):
         settings=EditConfig(tau=100.,nu=10.,trust_radius=.1,base_drift_limit=.3,edit_drift_limit=.3,
             max_steps=1 if mechanical else config['max_edit_steps'],max_active=1,cg_max_iter=config['maximum_CG_iterations'],
             cg_rtol=1e-4,tolerance=1e-6,arithmetic_dtype=torch.float32,
+            constraint_value_mode=config.get('constraint_value_mode','functional'),
             max_ggn_calls=config['maximum_GGN_calls']-total_ggn)
         result=edit_one(runtime,[constraint],[group],settings,'W_FUNCTIONAL_QP',attempt_log=root/f'{index}.attempts.private.jsonl')
         total_ggn+=result.ggn_calls
@@ -149,6 +155,7 @@ def run(config,approval,trusted):
             ggn_calls=result.ggn_calls,rollback=result.rollback,base_score=base_score,FP32_base_score=fp_score,
             threshold=threshold,final_deployed_score=final_score,changed_original_W=changed,
             same_precision_parity=parity,cross_precision_max_difference=float((fp-physical).abs().max()),
+            constraint_value_mode=settings.constraint_value_mode,historical_control_parity=control is not None,
             exact_GGN=diagnostic,attempts=result.attempts,
             elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))

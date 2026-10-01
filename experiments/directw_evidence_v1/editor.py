@@ -270,8 +270,11 @@ class EditConfig:
     ft_lr: float = .1
     arithmetic_dtype: torch.dtype | None = None
     max_ggn_calls: int | None = None
+    constraint_value_mode: str = "functional"
 
     def __post_init__(self) -> None:
+        if self.constraint_value_mode not in {"functional", "native_value"}:
+            raise ValueError("unknown constraint value mode")
         if self.max_ggn_calls is not None and (type(self.max_ggn_calls) is not int or self.max_ggn_calls < 0):
             raise ValueError("invalid GGN call cap")
         if self.arithmetic_dtype not in (None, torch.float32):
@@ -307,6 +310,8 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
     """
     if branch not in BRANCHES or not constraints or not groups:
         raise ValueError("branch, legal constraints and protection groups required")
+    if branch == "W_FT" and config.constraint_value_mode != "functional":
+        raise ValueError("native value anchoring is a QP ablation only")
     if branch == "W_EVIDENCE_QP" and not any(c.cross_image for c in constraints):
         raise ValueError("BLOCKED_DATA: evidence branch requires verified pairs")
     if len({g.name for g in groups}) != len(groups) or any(
@@ -371,7 +376,12 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
             active = [ordered[(step * config.max_active + j) % len(ordered)]
                       for j in range(min(config.max_active, len(ordered)))]
             a = torch.stack([torch.autograd.grad(full[i], w, retain_graph=True)[0].flatten() for i in active]).detach()
-            b = (thresholds - full.detach())[active]
+            # Optional ablation: match affine values to deployment, retain FP32 Jacobian.
+            values_for_qp = deployed_values if config.constraint_value_mode == "native_value" else full.detach()
+            b = (thresholds - values_for_qp)[active]
+            journal(dict(event="LINEARIZATION",step=step,mode=config.constraint_value_mode,
+                         functional_scores=full.detach().cpu().tolist(),native_scores=deployed_values.cpu().tolist(),
+                         rhs=b.detach().cpu().tolist()))
             frozen = [FrozenGGN(g.logits, w, g.weights) for g in groups]
             def operator(v: Tensor) -> Tensor:
                 shaped = v.reshape_as(w)

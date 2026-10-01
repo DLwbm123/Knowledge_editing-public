@@ -10,6 +10,24 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_native_value_anchor_ignores_constant_surrogate_offset(self):
+        from .editor import edit_one
+        results=[]
+        for offset in (0.,10.):
+            runtime,_,c,g,cfg=self.fp32_case()
+            original=c.score;c.score=lambda w,f=original: f(w)+offset
+            cfg.constraint_value_mode='native_value'
+            result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+            self.assertEqual(result.status,'ACCEPTED',result)
+            self.assertGreaterEqual(float(c.normal_score()),c.threshold-cfg.tolerance)
+            results.append(runtime.weight.detach().clone())
+        self.assertTrue(torch.equal(*results))
+        runtime,_,c,g,cfg=self.fp32_case()
+        original=c.score;c.score=lambda w:original(w)+10.
+        result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+        self.assertNotEqual(result.status,'ACCEPTED')
+        self.assertTrue(result.rollback)
+
     def test_resume_preserves_negative_prefix_and_cumulative_budget(self):
         import json,tempfile
         from pathlib import Path

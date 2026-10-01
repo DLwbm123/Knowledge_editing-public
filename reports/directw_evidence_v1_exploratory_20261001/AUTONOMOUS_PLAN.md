@@ -1,5 +1,11 @@
 # GPU5 continuation and autonomous follow-up
 
+## Latest state — 2026-10-01 hourly follow-up
+
+E1/E2 is complete: 8/8 cases, 0 accepted, five BACKTRACK_REJECTED and three NOT_SATISFIED; all restored. Results are published in FINAL_REPORT.md / FINAL_RESULTS.json (commit 417cea5). Historical cumulative consumption is 304 GGN and 1850.591329 seconds.
+
+The active successor is `20261001E3`, PID at launch `1245009`, using only GPU5. Read `reports/directw_evidence_v1_native_value_20261001/PROTOCOL.md` and its bound JSON/source manifest. This is the predeclared native-value-anchored QP ablation on the same eight development cases with historical E1/E2 controls. All acceptance thresholds and budgets within each case remain fixed; the local QP right-hand side changes from the FP32 functional value to the current normal BF16 value. New-run ceiling: 4 hours / 4096 GGN. Verify live state before any action; the following E2 continuation text is historical.
+
 ## User authority, 2026-10-01
 
 The user explicitly assigned DirectW to pro5000 physical GPU5 and other experiments to GPUs6/7, requested hourly monitoring, authorized autonomous diagnosis/repair, and authorized designing and executing subsequent experiments once the current experiment completes. This supersedes prior manual-review stops for this exploration. It does not supply missing scientific data or permit fabricated medical counterexamples.
