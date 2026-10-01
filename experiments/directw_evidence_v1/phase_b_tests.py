@@ -10,6 +10,38 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_exploratory_source_selection_and_explicit_waiver_gate(self):
+        from .exploratory import select_cases
+        rows=[dict(id=str(i),source_group=str(i%3),image_hash=str(i%3),question_hash=str(i),
+                   role='CANDIDATE_ONLY',original_role='train',source_split='train') for i in range(12)]
+        rows[0]['role']='SMOKE_MECHANICAL';rows[1]['source_split']='test'
+        pairs=select_cases(rows,8)
+        self.assertEqual(len(pairs),8)
+        self.assertEqual(pairs,select_cases(list(reversed(rows)),8))
+        self.assertTrue(all(a['id'] not in ('0','1') and b['id'] not in ('0','1') and a['image_hash']!=b['image_hash'] for a,b in pairs))
+        c=default_config();c.update(execution_stage='EXPLORATORY_PILOT',current_state='EXPLORATORY_ALLOWED',
+            allow_native_model_execution=True,allow_training=True,allow_gpu=True,authorized_gpu_hours=4,
+            leased_gpu_uuids=['fixture'],model_binding='m',editable_weight_path='w',data_manifest_digest='d',
+            trust_radius=.1,behavior_thresholds={'gain':.1},preservation_budgets={'reference':.001},
+            result_kind='EXPLORATORY_TRAINING_ONLY',verified_training_source=True,exploratory_inputs=8,
+            prelaunch_native_validation_required=True,waived_requirements=['scientific_fit_admission',
+            'independent_calibration','previous_smoke_budget','external_review_stop'])
+        b,a,t=gate_fixture(c,('EXPLORATORY_PILOT',))
+        with self.assertRaises(PermissionError):require_external_approval('EXPLORATORY_PILOT',b,a,c,trusted_authorization=t)
+        t['waived_requirements']=c['waived_requirements'][:]
+        require_external_approval('EXPLORATORY_PILOT',b,a,c,trusted_authorization=t)
+        self.assertEqual(c['data_audit_status'],'BLOCKED')
+        with self.assertRaises(PermissionError):require_external_approval('PILOT',b,a,c,trusted_authorization=t)
+
+    def test_ggn_safety_count_survives_exception_rollback(self):
+        from .editor import edit_one
+        r,_,c,g,cfg=self.fp32_case();cfg.max_ggn_calls=1
+        result=edit_one(r,[c],[g],cfg,'W_FUNCTIONAL_QP')
+        self.assertEqual(result.ggn_calls,1)
+        self.assertEqual(result.status,'EXCEPTION_ROLLED_BACK')
+        self.assertIn('GGN call safety ceiling',result.error)
+        self.assertTrue(torch.equal(r.weight,r.base))
+
     def fp32_case(self):
         from .editor import Constraint, ProtectionGroup, EditConfig
         model=TinyModel(dtype=torch.bfloat16);model.requires_grad_(False)

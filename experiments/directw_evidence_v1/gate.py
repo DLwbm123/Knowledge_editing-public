@@ -6,7 +6,7 @@ import json
 import math
 from .contracts import digest
 
-STAGES = {"NATIVE_SMOKE": "NATIVE_SMOKE_ALLOWED", "PILOT": "PILOT_ALLOWED", "SEQUENTIAL": "SEQUENTIAL_ALLOWED"}
+STAGES = {"NATIVE_SMOKE": "NATIVE_SMOKE_ALLOWED", "PILOT": "PILOT_ALLOWED", "SEQUENTIAL": "SEQUENTIAL_ALLOWED", "EXPLORATORY_PILOT": "EXPLORATORY_ALLOWED"}
 BINDINGS = {"code", "dependencies", "model", "data", "protocol", "config", "budget"}
 
 
@@ -42,7 +42,7 @@ def advance_state(current: str, target: str, *, cpu_passed: bool = False,
         "PILOT_ALLOWED":"PILOT_COMPLETE", "SEQUENTIAL_ALLOWED":"COMPLETE"}
     if target in STAGES.values():
         expected = {"NATIVE_SMOKE_ALLOWED":"WAITING_FOR_EXTERNAL_REVIEW", "PILOT_ALLOWED":"NATIVE_SMOKE_COMPLETE",
-                    "SEQUENTIAL_ALLOWED":"PILOT_COMPLETE"}[target]
+                    "SEQUENTIAL_ALLOWED":"PILOT_COMPLETE", "EXPLORATORY_ALLOWED":"WAITING_FOR_EXTERNAL_REVIEW"}[target]
         if current != expected or not stage or STAGES.get(stage) != target:
             raise PermissionError("phase transition dependency mismatch")
         require_external_approval(stage, bindings or {}, approval, {**(config or {}),"current_state":target},
@@ -130,6 +130,14 @@ def require_external_approval(stage: str, bindings: dict[str, str], approval: di
             raise PermissionError("finite native smoke wall budget missing")
         if not 1 <= config.get("max_active_constraints", 0) <= 2 or config.get("max_edit_steps") != 1:
             raise PermissionError("mechanical transaction must be bounded to one step and two constraints")
+    elif stage == "EXPLORATORY_PILOT":
+        waivers = {"scientific_fit_admission", "independent_calibration", "previous_smoke_budget", "external_review_stop"}
+        if set(config.get("waived_requirements", [])) != waivers or set(trusted_authorization.get("waived_requirements", [])) != waivers:
+            raise PermissionError("exploratory exceptions require explicit independently trusted user instruction")
+        if config.get("result_kind") != "EXPLORATORY_TRAINING_ONLY" or not config.get("verified_training_source") or config.get("exploratory_inputs", 0) <= 0:
+            raise PermissionError("exploratory source/scope must be explicit; no scientific FIT relabeling")
+        if not config.get("prelaunch_native_validation_required") or config.get("allow_paid_judge") or config.get("authorized_judge_calls", 0):
+            raise PermissionError("exploration requires repaired native-path validation and no Judge")
     else:
         counts = config.get("scientific_role_counts", {})
         required = {"EDIT_FIT", "GEN_FIT", "PROTECT_BG_FIT", "PROTECT_NEAR_FIT"}

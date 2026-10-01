@@ -269,8 +269,11 @@ class EditConfig:
     tolerance: float = 1e-8
     ft_lr: float = .1
     arithmetic_dtype: torch.dtype | None = None
+    max_ggn_calls: int | None = None
 
     def __post_init__(self) -> None:
+        if self.max_ggn_calls is not None and (type(self.max_ggn_calls) is not int or self.max_ggn_calls < 0):
+            raise ValueError("invalid GGN call cap")
         if self.arithmetic_dtype not in (None, torch.float32):
             raise ValueError("explicit temporary FP32 arithmetic or native dtype required")
         if min(self.tau, self.nu, self.trust_radius, self.base_drift_limit, self.edit_drift_limit, self.ft_lr) <= 0:
@@ -285,6 +288,7 @@ class EditResult:
     attempts: list[dict[str, Any]] = field(default_factory=list)
     final_violations: dict[str, float] = field(default_factory=dict)
     accepted_steps: int = 0
+    ggn_calls: int = 0
     rollback: bool = False
     error: str | None = None
     initial_protection: dict[str, float] = field(default_factory=dict)
@@ -374,6 +378,9 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                 out = config.tau * shaped
                 for g, curvature in zip(groups, frozen):
                     if branch in ("W_FUNCTIONAL_QP", "W_EVIDENCE_QP"):
+                        if config.max_ggn_calls is not None and result.ggn_calls >= config.max_ggn_calls:
+                            raise TimeoutError("GGN call safety ceiling reached")
+                        result.ggn_calls += 1
                         out = out + g.coefficient * curvature(shaped)
                     elif branch == "W_KEY_QP":
                         if g.keys is None or g.keys.shape[:-1] != g.mask.shape or g.keys.shape[-1] != w.shape[-1]:
