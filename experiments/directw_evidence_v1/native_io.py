@@ -67,12 +67,12 @@ def load(config):
     return model,tokenizer,tower.image_processor
 
 
-def prepare(model,tokenizer,processor,row):
+def prepare(model,tokenizer,processor,row,question_suffix=''):
     from llava.conversation import conv_templates
     from llava.constants import IMAGE_TOKEN_INDEX,DEFAULT_IMAGE_TOKEN
     from llava.mm_utils import tokenizer_image_token,process_images
     conv=conv_templates['mistral_instruct'].copy()
-    conv.append_message(conv.roles[0],DEFAULT_IMAGE_TOKEN+'\n'+row['question'])
+    conv.append_message(conv.roles[0],DEFAULT_IMAGE_TOKEN+'\n'+row['question']+question_suffix)
     conv.append_message(conv.roles[1],None)
     prefix=conv.get_prompt()
     prefix_ids=tokenizer_image_token(prefix,tokenizer,IMAGE_TOKEN_INDEX,return_tensors='pt')

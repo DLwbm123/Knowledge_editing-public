@@ -10,6 +10,41 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_readonly_prompt_diagnostic_replay_and_failure_ledger(self):
+        import tempfile,json
+        from pathlib import Path
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        from . import prompt_diagnostic as diagnostic
+        class Model(torch.nn.Module):
+            def __init__(self):
+                super().__init__();self.weight=torch.nn.Parameter(torch.ones(1),requires_grad=False)
+            def named_parameters(self):return [(diagnostic.WEIGHT,self.weight)]
+            def forward(self,**kwargs):return SimpleNamespace(logits=torch.zeros(1,3,3))
+        def prepared(*args,question_suffix=''):
+            return {},torch.tensor([[-100,1,2]]),dict(suffix=question_suffix),{}
+        def generated(model,tokenizer,generation,reference,cap):
+            return dict(tokens=[11 if generation['suffix'] else 10,2],text='yes',reference=reference,
+                metrics=dict(normalized_exact_match=True,token_F1=1.,generated_tokens=2,eos_reached=True,hit_token_cap=False))
+        with tempfile.TemporaryDirectory() as directory,patch.object(diagnostic,'require_external_approval'),\
+             patch.object(diagnostic,'load',side_effect=lambda c:(Model(),SimpleNamespace(eos_token_id=2),None)),\
+             patch.object(diagnostic,'prepare',side_effect=prepared),\
+             patch.object(diagnostic,'generation_snapshot',side_effect=generated),\
+             patch.object(torch.cuda,'max_memory_allocated',return_value=0):
+            for mismatch in (False,True):
+                root=Path(directory)/str(mismatch);root.mkdir()
+                config=dict(bindings={},run_root=str(root),prompt_rows=[dict(answer='yes')],prior_GGN_calls=2430,
+                    prior_native_seconds=10.,native_wall_seconds_cap=60,question_suffix=' short',
+                    generation_max_new_tokens=64,expected_base_tokens={'0':[99] if mismatch else [10,2]})
+                result=diagnostic.run(config,{},{});self.assertTrue(result['final_Base_unchanged'])
+                self.assertEqual(result['state'],'STOPPED_ON_ERROR' if mismatch else 'EXPERIMENT_COMPLETE')
+                self.assertEqual(result['completed'],0 if mismatch else 1)
+                self.assertEqual(result['cumulative_GGN_calls'],2430)
+                self.assertGreaterEqual(result['cumulative_native_seconds'],10.)
+                self.assertEqual(json.loads((root/'STATUS.json').read_text())['state'],result['state'])
+                self.assertTrue((root/'0.generation.private.json').exists())
+                self.assertEqual((root/'FAILURE.private.json').exists(),mismatch)
+
     def test_generation_suffix_scoring_and_truncation(self):
         from types import SimpleNamespace
         from .native_io import generation_snapshot,answer_metrics
