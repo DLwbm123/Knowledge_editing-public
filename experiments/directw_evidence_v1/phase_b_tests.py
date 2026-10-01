@@ -10,6 +10,29 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_prefix_margin_rejects_tie_and_includes_EOS_without_mutation(self):
+        from types import SimpleNamespace
+        from .native_io import prefix_target_margin
+        labels=torch.tensor([[-100,1,2]])
+        class Model:
+            def __init__(self):self.prefixes=[];self.bias=0.
+            def generate(self,**kwargs):
+                self.prefixes.append(kwargs['inputs'].clone())
+                j=kwargs['inputs'].shape[1]-2
+                z=torch.tensor([[2.,2.+self.bias,0.]]) if j==0 else torch.tensor([[0.,0.,.25]])
+                return SimpleNamespace(scores=(z,))
+        model=Model();generation=dict(inputs=torch.tensor([[4,5]]),max_new_tokens=8,do_sample=False)
+        rng=torch.get_rng_state().clone()
+        self.assertEqual(float(prefix_target_margin(model,generation,labels)),0.)
+        self.assertEqual(model.prefixes[1].tolist(),[[4,5,1]])
+        model.bias=.5
+        self.assertEqual(float(prefix_target_margin(model,generation,labels)),.25)
+        self.assertEqual(generation['inputs'].tolist(),[[4,5]])
+        self.assertEqual(generation['max_new_tokens'],8)
+        self.assertTrue(torch.equal(rng,torch.get_rng_state()))
+        with self.assertRaises(ValueError):prefix_target_margin(model,generation,labels.repeat(2,1))
+        with self.assertRaises(ValueError):prefix_target_margin(model,generation,torch.full_like(labels,-100))
+
     def test_token_path_audit_separates_batch_prefix_mask_and_preserves_inputs(self):
         from types import SimpleNamespace
         from .native_io import token_path_audit

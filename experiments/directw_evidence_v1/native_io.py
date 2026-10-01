@@ -52,6 +52,27 @@ def generation_snapshot(model, tokenizer, generation, reference, max_new_tokens)
         hit_token_cap=n==max_new_tokens and not eos))
 
 
+def prefix_target_margin(model, generation, labels):
+    """Deployed minimum margin on independently supplied native target prefixes."""
+    if labels.ndim!=2 or labels.shape[0]!=1:
+        raise ValueError('single aligned target sequence required')
+    targets=labels[0,1:][labels[0,1:]!=-100]
+    if not 1<=len(targets)<=64:raise ValueError('target sequence must contain1..64tokens')
+    margins=[]
+    with torch.no_grad():
+        for j,target in enumerate(targets):
+            prefix=torch.cat((generation['inputs'],targets[:j][None,:]),dim=1)
+            out=model.generate(**dict(generation,inputs=prefix,max_new_tokens=1,
+                               return_dict_in_generate=True,output_scores=True))
+            if len(out.scores)!=1:raise RuntimeError('one-step native scores required')
+            z=out.scores[0][0].float()
+            if not torch.isfinite(z).all():raise RuntimeError('nonfinite native prefix scores')
+            values,indices=z.topk(2)
+            other=torch.where(indices[0]==target,values[1],values[0])
+            margins.append(z[target]-other)
+    return torch.stack(margins).min()
+
+
 def token_path_audit(model, prepared, batch_logits, batch_labels):
     """Read-only comparison; prefix decoding scores never decide edit acceptance."""
     inputs,labels,generation,_=prepared

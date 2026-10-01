@@ -8,7 +8,7 @@ from .contracts import digest
 from .gate import require_external_approval
 from .editor import MatrixRuntime,Constraint,ProtectionGroup,EditConfig,edit_one,mean_answer_logprob
 from .numerics import FrozenGGN
-from .native_io import load,prepare,WEIGHT,generation_snapshot,minimum_target_margin,token_path_audit
+from .native_io import load,prepare,WEIGHT,generation_snapshot,minimum_target_margin,token_path_audit,prefix_target_margin
 
 
 REPLAY_FIELDS = ('status','accepted_steps','ggn_calls','base_score','FP32_base_score',
@@ -93,6 +93,10 @@ def run(config,approval,trusted):
     require_external_approval('EXPLORATORY_PILOT',config['bindings'],approval,config,trusted_authorization=trusted)
     if config.get('target_objective','mean_logprob_gain') not in ('mean_logprob_gain','minimum_token_margin'):
         raise ValueError('unsupported target objective')
+    if config.get('deployed_target_path','batched_teacher') not in ('batched_teacher','native_prefix'):
+        raise ValueError('unsupported deployed target path')
+    if config.get('deployed_target_path')=='native_prefix' and config.get('target_objective')!='minimum_token_margin':
+        raise ValueError('native prefix path requires token margin objective')
     inherited=resumed_cases(config);resume_count=len(inherited)
     root=Path(config['run_root']);started=time.monotonic();total_ggn=0;runtime=None
     status=dict(state='LOADING',result_kind='EXPLORATORY_TRAINING_ONLY',completed=len(inherited),intended=config['exploratory_inputs'],
@@ -138,9 +142,15 @@ def run(config,approval,trusted):
         answer_logprob=lambda z:mean_answer_logprob(z.float(),labels,eos_id=tokenizer.eos_token_id)[0]
         objective='mean_logprob_gain' if mechanical else config.get('target_objective','mean_logprob_gain')
         score=(lambda z:minimum_target_margin(z,labels)) if objective=='minimum_token_margin' else answer_logprob
+        prefix_path=not mechanical and config.get('deployed_target_path')=='native_prefix'
+        deployed_score=(lambda:prefix_target_margin(model,prepared[0][2],prepared[0][1])) if prefix_path else lambda:score(normal())
         point=runtime.base.float()
         with torch.no_grad():fp=smooth(point).float()
-        base_score=float(score(physical));fp_score=float(score(fp))
+        batched_base_score=float(score(physical))
+        base_score=float(deployed_score()) if prefix_path else batched_base_score;fp_score=float(score(fp))
+        if prefix_path and path_before is not None:
+            if base_score!=min(p['prefix_generate']['margin'] for p in path_before['positions']):
+                raise RuntimeError('initial native prefix score disagrees with independent audit')
         base_logprob=float(answer_logprob(physical));fp_logprob=float(answer_logprob(fp))
         logprob_control=None
         if not mechanical and config.get('historical_control_logprobs') is not None:
@@ -178,7 +188,7 @@ def run(config,approval,trusted):
         threshold=(config['target_token_margin'] if objective=='minimum_token_margin'
                    else min(max(base_score,fp_score)+gain,-1e-4))
         constraint=Constraint('target','EXPLORATORY_TRAIN',lambda w:score(smooth(w)),threshold,
-                              normal_score=lambda:score(normal()))
+                              normal_score=deployed_score)
         settings=EditConfig(tau=100.,nu=10.,trust_radius=.1,base_drift_limit=.3,edit_drift_limit=.3,
             max_steps=1 if mechanical else config['max_edit_steps'],max_active=1,cg_max_iter=config['maximum_CG_iterations'],
             cg_rtol=1e-4,tolerance=1e-6,arithmetic_dtype=torch.float32,
@@ -193,7 +203,8 @@ def run(config,approval,trusted):
         total_ggn+=result.ggn_calls
         runtime.audit(runtime.base_state,runtime.base_hooks)
         with torch.no_grad():
-            final_logits=normal();final_score=float(score(final_logits));final_logprob=float(answer_logprob(final_logits))
+            final_logits=normal();batched_final_score=float(score(final_logits));final_logprob=float(answer_logprob(final_logits))
+            final_score=float(deployed_score()) if prefix_path else batched_final_score
         del final_logits
         changed=not torch.equal(runtime.weight,runtime.base)
         if result.status!='ACCEPTED' and changed:raise RuntimeError('rejected edit did not restore original W')
@@ -204,6 +215,8 @@ def run(config,approval,trusted):
         receipt=dict(index=index,mechanical=mechanical,editor_branch=branch,status=result.status,accepted_steps=result.accepted_steps,
             ggn_calls=result.ggn_calls,rollback=result.rollback,base_score=base_score,FP32_base_score=fp_score,
             threshold=threshold,final_deployed_score=final_score,changed_original_W=changed,
+            deployed_target_path='native_prefix' if prefix_path else 'batched_teacher',
+            batched_base_score=batched_base_score,batched_final_score=batched_final_score,
             target_objective=objective,base_answer_logprob=base_logprob,FP32_base_answer_logprob=fp_logprob,
             final_answer_logprob=final_logprob,initial_logprob_control_parity=logprob_control is not None,
             same_precision_parity=parity,cross_precision_max_difference=float((fp-physical).abs().max()),
@@ -247,6 +260,8 @@ def run(config,approval,trusted):
             receipt['token_path_diagnostic']=dict(before=path_before,
                 after=token_path_audit(model,prepared[0],path_logits,labels))
             del path_logits
+            if prefix_path and final_score!=min(p['prefix_generate']['margin'] for p in receipt['token_path_diagnostic']['after']['positions']):
+                raise RuntimeError('final native prefix score disagrees with independent audit')
             runtime.audit(runtime.base_state,runtime.base_hooks)
             receipt.update(elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))
