@@ -10,6 +10,39 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_native_diagnostic_probes_are_read_only_and_do_not_change_edit(self):
+        from .exploratory import probe_snapshot
+        from .editor import edit_one
+        results=[]
+        for enabled in (False,True):
+            runtime,inputs,c,g,cfg=self.fp32_case()
+            cfg.rounding_mode='stochastic_bf16';cfg.constraint_value_mode='native_value'
+            pin=dict(inputs,tokens=inputs['tokens'][:,:1].expand(1,4,2).clone())
+            labels=torch.tensor([[-100,1,2,-100]])
+            if enabled:
+                rng=torch.random.get_rng_state().clone();weight=runtime.weight.detach().clone()
+                before,anchor=probe_snapshot(runtime,pin,labels,2)
+                self.assertEqual(anchor.shape,(1,3))
+                self.assertAlmostEqual(before,float(anchor[0,1]),places=6)
+                self.assertTrue(torch.equal(weight,runtime.weight))
+                self.assertTrue(torch.equal(rng,torch.random.get_rng_state()))
+            result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+            self.assertEqual(result.status,'ACCEPTED')
+            results.append((runtime.weight.detach().clone(),result.attempts,result.ggn_calls))
+            if enabled:
+                after,post=probe_snapshot(runtime,pin,labels,2)
+                repeat,repeated=probe_snapshot(runtime,pin,labels,2)
+                self.assertEqual(after,repeat);self.assertTrue(torch.equal(post,repeated))
+                self.assertGreater(float((anchor.exp()*(anchor-post)).sum(-1).mean()),0)
+                self.assertNotEqual(before,after)
+                runtime.audit(runtime.base_state,runtime.base_hooks)
+                runtime.reset_single()
+                reset,restored=probe_snapshot(runtime,pin,labels,2)
+                self.assertEqual(reset,before);self.assertTrue(torch.equal(anchor,restored))
+                with self.assertRaises(ValueError):probe_snapshot(runtime,pin,torch.full_like(labels,-100),2)
+        self.assertTrue(torch.equal(results[0][0],results[1][0]))
+        self.assertEqual(results[0][1:],results[1][1:])
+
     def test_stochastic_bf16_brackets_and_exact_grid_expectation(self):
         from .editor import stochastic_bf16_round
         # Exhaust all 256 evenly spaced draws, with dyadic interpolation fractions.

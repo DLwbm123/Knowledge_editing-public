@@ -11,6 +11,24 @@ from .numerics import FrozenGGN
 from .native_io import load,prepare,WEIGHT
 
 
+REPLAY_FIELDS = ('status','accepted_steps','ggn_calls','base_score','FP32_base_score',
+                 'threshold','final_deployed_score','attempts')
+
+
+def probe_snapshot(runtime, inputs, labels, eos_id):
+    """Read native answer-position distributions; probes never enter the solver."""
+    if labels.shape[0] != 1:
+        raise ValueError('diagnostic probe must be a single input')
+    with torch.no_grad():
+        logits=runtime.normal_logits(inputs).float()
+        score=mean_answer_logprob(logits,labels,eos_id=eos_id)[0]
+        mask=(labels[:,1:]!=-100)&(labels[:,1:]!=eos_id)
+        logp=logits[:,:-1][mask].log_softmax(-1).detach().cpu()
+    if not torch.isfinite(score) or not torch.isfinite(logp).all():
+        raise RuntimeError('nonfinite diagnostic probe')
+    return float(score),logp
+
+
 def select_cases(rows, count=8):
     """Source-only deterministic round robin; permanent smoke exclusions."""
     groups={}
@@ -92,6 +110,13 @@ def run(config,approval,trusted):
     def case(row,reference,index,mechanical=False):
         nonlocal total_ggn
         runtime.reset_single();before=time.monotonic();torch.cuda.reset_peak_memory_stats()
+        probes=[]
+        for probe in config.get('diagnostic_probe_rows',{}).get(index,[]):
+            pin,plabels,_,_=prepare(model,tokenizer,processor,probe)
+            pscore,plogp=probe_snapshot(runtime,pin,plabels,tokenizer.eos_token_id)
+            probes.append((probe['diagnostic_role'],pin,plabels,pscore,plogp))
+        if sum(p[-1].numel()*p[-1].element_size() for p in probes)>config['teacher_cache_limit_gib']*1024**3:
+            raise RuntimeError('diagnostic teacher cache limit exceeded')
         prepared=[prepare(model,tokenizer,processor,r) for r in (row,reference)]
         inputs,labels=combine(prepared)
         with torch.no_grad():
@@ -163,6 +188,26 @@ def run(config,approval,trusted):
             rounding_mode=settings.rounding_mode,rounding_seed=settings.rounding_seed,
             exact_GGN=diagnostic,attempts=result.attempts,
             elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
+        expected=config.get('expected_replay_digests',{}).get(index)
+        if expected is not None:
+            receipt['replay_exact']=digest({k:receipt[k] for k in REPLAY_FIELDS})==expected
+            if not receipt['replay_exact']:
+                (root/f'{index}.replay_failure.private.json').write_text(json.dumps(receipt,indent=2))
+                raise RuntimeError('diagnostic replay differs from frozen control trajectory')
+        if probes:
+            receipt['diagnostic_probes']=[]
+            for role,pin,plabels,pscore,plogp in probes:
+                after,post=probe_snapshot(runtime,pin,plabels,tokenizer.eos_token_id)
+                repeat,repeat_logp=probe_snapshot(runtime,pin,plabels,tokenizer.eos_token_id)
+                if after!=repeat or not torch.equal(post,repeat_logp):
+                    raise RuntimeError('diagnostic native probe is not repeatable')
+                kl=float((plogp.exp()*(plogp-post)).sum(-1).mean())
+                receipt['diagnostic_probes'].append(dict(role=role,scope='SCOPE_UNKNOWN',
+                    before_score=pscore,after_score=after,score_change=after-pscore,
+                    answer_position_KL=kl,native_repeat_exact=True,answer_positions=len(plogp),
+                    scored_state='FINAL_ACCEPTED' if result.status=='ACCEPTED' else 'RESTORED_BASE'))
+            runtime.audit(runtime.base_state,runtime.base_hooks)
+            receipt.update(elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))
         if mechanical and not result.attempts:raise RuntimeError('native regression did not exercise solver/write path')
         if changed and not mechanical:
