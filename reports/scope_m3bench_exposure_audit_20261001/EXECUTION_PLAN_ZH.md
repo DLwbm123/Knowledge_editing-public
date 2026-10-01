@@ -1,0 +1,9 @@
+# M3Bench角色重叠账本独立诊断
+
+本阶段在读取角色细分输出前冻结。前阶段7167条QA按保守图像排除全部拒收，但“出现在清单/metadata”不能证明实际训练或评测；需要一次最低成本身份级诊断。仅复用前阶段私有排除回执及source角色表，原始QA和临床标签不作为分析输入，不读预测、逐题评分、特征或权重。
+
+固定角色：TASKS中的native和U_fit/U_new/U_expanded/H_fit为FROZEN_FIT_SOURCE；evaluation/official_evaluation_full/probes及FORMAL_RECORDS为FORMAL_OR_RESERVED_SOURCE；CAL/CHECK/U_bg/G_SUPPORTS/SCOPE_ROLE为CAL_CHECK_SUPPORT_RESERVED；CANDIDATE/AUXILIARY/ROLE_AUDIT_INPUTS/PRESSURE_CANDIDATES为POOL_INVENTORY；core9的BASE_QUERY_INVENTORY/LINEAGE为BASE_QUERY_INVENTORY（不推定已执行）；metadata为BENCHMARK_METADATA；validation/test为PROTECTED_SPLIT。压力冻结和LOCALITY_STRESS_HOLDOUT归FORMAL_OR_RESERVED_SOURCE。复用上一轮冻结的99个清单和6份metadata；每条QA按全部角色标志报告图像层重叠，多角色不强制互斥，并给固定优先级分桶。
+
+任何未知schema、缺乏身份的记录、未覆盖主机须如实列限制。native只核对来源，不因此产生scope。pool或metadata-only也不能自动认定可准入、从保护角色解封或冒充独立确认；本轮不修改前阶段保守规则和旧准入合同，不重新挖掘QA。
+
+单次CPU、GPU/Judge/训练/生成0，首次clock1小时、任务60秒、输入256MiB、存储16MiB。完整源QA身份分母应为7167，候选/已执行状态不得混淆。输出私有身份角色账本和公开匿名分母/组合/限制；自检必须验证native与formal和pool身份可区别且保留多角色。结束后新review分支/draft PR代理交付、更新交接与监测。若无准入数据，保持监测ACTIVE，等待真实scope证据或可信新来源，不空转GPU。
