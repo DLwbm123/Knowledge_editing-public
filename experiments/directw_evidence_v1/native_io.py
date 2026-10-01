@@ -8,7 +8,15 @@ from PIL import Image
 WEIGHT = 'model.layers.21.mlp.down_proj.weight'
 
 
+def deployment_dtype(config):
+    name=config.get('native_deployment_dtype','bfloat16')
+    if name not in ('bfloat16','float32'):
+        raise ValueError('unsupported native deployment precision')
+    return getattr(torch,name)
+
+
 def load(config):
+    dtype=deployment_dtype(config)
     sys.path.insert(0, config['native_source'])
     from transformers import AutoTokenizer
     from llava.model.language_model.llava_mistral import LlavaMistralConfig, LlavaMistralForCausalLM
@@ -19,7 +27,9 @@ def load(config):
         torch_dtype=torch.bfloat16,attn_implementation=config['attention_backend'],local_files_only=True)
     tower=model.get_vision_tower()
     if not tower.is_loaded:tower.load_model()
-    model=model.to('cuda').eval()
+    # Preserve the original native mixed-precision loader by default. The control
+    # promotes its loaded values, including any native vision-tower precision.
+    model=(model.to('cuda') if dtype==torch.bfloat16 else model.to(device='cuda',dtype=dtype)).eval()
     model.requires_grad_(False)
     tokenizer=AutoTokenizer.from_pretrained(config['model_path'],use_fast=False,local_files_only=True)
     return model,tokenizer,tower.image_processor
@@ -41,7 +51,8 @@ def prepare(model,tokenizer,processor,row):
     labels=ids.clone();labels[:,:len(prefix_ids)]=-100
     image=Image.open(row['image_path']).convert('RGB')
     images=process_images([image],processor,model.config)
-    images=[x.to('cuda',dtype=torch.bfloat16) for x in images] if isinstance(images,list) else images.to('cuda',dtype=torch.bfloat16)
+    dtype=model.get_input_embeddings().weight.dtype
+    images=[x.to('cuda',dtype=dtype) for x in images] if isinstance(images,list) else images.to('cuda',dtype=dtype)
     mask=torch.ones_like(ids,dtype=torch.bool)
     with torch.no_grad():
         expanded=model.prepare_inputs_labels_for_multimodal(ids,None,mask,None,labels,images,[image.size])

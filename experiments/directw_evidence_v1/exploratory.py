@@ -121,7 +121,7 @@ def run(config,approval,trusted):
         group=ProtectionGroup('reference',f_logits,fp[1:2,positions,:].softmax(-1).detach(),
             torch.ones(1,len(positions),device=point.device,dtype=torch.bool),('original_train',),1.,.001,
             dict(bind,dtype='torch.float32'),normal_logits=n_logits,
-            deployment_anchor=physical[1:2,positions,:].softmax(-1).detach(),deployment_binding=dict(bind,dtype='torch.bfloat16'))
+            deployment_anchor=physical[1:2,positions,:].softmax(-1).detach(),deployment_binding=dict(bind,dtype=str(runtime.weight.dtype)))
         diagnostic=None
         if mechanical:
             F=FrozenGGN(f_logits,point,group.weights)
@@ -157,6 +157,7 @@ def run(config,approval,trusted):
             threshold=threshold,final_deployed_score=final_score,changed_original_W=changed,
             same_precision_parity=parity,cross_precision_max_difference=float((fp-physical).abs().max()),
             constraint_value_mode=settings.constraint_value_mode,historical_control_parity=control is not None,
+            native_deployment_dtype=str(runtime.weight.dtype),
             exact_GGN=diagnostic,attempts=result.attempts,
             elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))

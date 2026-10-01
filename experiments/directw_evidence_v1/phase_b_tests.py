@@ -10,6 +10,26 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_explicit_native_fp32_control_preserves_initial_values(self):
+        from .native_io import deployment_dtype
+        from .editor import edit_one
+        self.assertEqual(deployment_dtype({}),torch.bfloat16)
+        self.assertEqual(deployment_dtype({'native_deployment_dtype':'float32'}),torch.float32)
+        with self.assertRaises(ValueError):deployment_dtype({'native_deployment_dtype':'float16'})
+        model=TinyModel(dtype=torch.bfloat16)
+        initial={k:v.detach().float().clone() for k,v in model.state_dict().items()}
+        model=model.to(deployment_dtype({'native_deployment_dtype':'float32'}))
+        self.assertTrue(all(torch.equal(initial[k],v) for k,v in model.state_dict().items()))
+        runtime,_,c,g,cfg=self.fp32_case(deployment_dtype=torch.float32)
+        cfg.constraint_value_mode='native_value';cfg.record_trial_diagnostics=True
+        result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+        self.assertEqual(result.status,'ACCEPTED',result)
+        self.assertEqual(runtime.weight.dtype,torch.float32)
+        for a in result.attempts:
+            d=a['trial_diagnostics']
+            self.assertEqual(d['functional_requested'],d['functional_rounded'])
+            self.assertEqual(d['functional_rounded'],a['actual_scores'])
+
     def test_trial_diagnostics_do_not_change_edit_and_record_real_forwards(self):
         from .editor import edit_one
         outputs=[]
@@ -100,17 +120,17 @@ class PhaseBChecks(unittest.TestCase):
         self.assertIn('GGN call safety ceiling',result.error)
         self.assertTrue(torch.equal(r.weight,r.base))
 
-    def fp32_case(self):
+    def fp32_case(self, deployment_dtype=torch.bfloat16):
         from .editor import Constraint, ProtectionGroup, EditConfig
-        model=TinyModel(dtype=torch.bfloat16);model.requires_grad_(False)
+        model=TinyModel(dtype=deployment_dtype);model.requires_grad_(False)
         runtime=MatrixRuntime(model,'mlp.down_proj.weight')
-        inputs=dict(tokens=torch.zeros(1,2,2,dtype=torch.bfloat16),image=torch.tensor([[1.,0.]],dtype=torch.bfloat16))
+        inputs=dict(tokens=torch.zeros(1,2,2,dtype=deployment_dtype),image=torch.tensor([[1.,0.]],dtype=deployment_dtype))
         functional=runtime.bind_inputs(inputs,arithmetic_dtype=torch.float32)
         normal=runtime.bind_normal_inputs(inputs)
         group=ProtectionGroup('bg',functional,functional(runtime.base.float()).softmax(-1).detach(),
             torch.ones(1,2,dtype=torch.bool),('source',),1.,1.,dict(teacher_binding(),dtype='torch.float32'),
             normal_logits=normal,deployment_anchor=normal().float().softmax(-1).detach(),
-            deployment_binding=dict(teacher_binding(),dtype='torch.bfloat16'))
+            deployment_binding=dict(teacher_binding(),dtype=str(deployment_dtype)))
         constraint=Constraint('edit','EDIT_FIT',lambda w:functional(w)[0,0,0],.1,normal_score=lambda:normal().float()[0,0,0])
         # CPU fixture only; these are not new native tolerances or permissions.
         config=EditConfig(.1,1000.,.05,2.,1.,max_steps=8,cg_max_iter=8,cg_rtol=1e-5,
