@@ -11,3 +11,5 @@ REG词面单独保留：22次出现，11个不同输入，11个输入/winner组�
 共有34个missing出现完整保留。48专家的240支持对应190个不同归一问句，其中15问句由多专家共享；这说明词面相同不自动给出医学scope唯一性。42次词面单独保护（DEV20、REG22）均来自native原问句跨图复用，当前formal面板没有fit_only词面的可观测激活贡献；不能推出4个S_fit支持在其他输入上无效。
 
 初始化失败在读取formal输入之前，已保存私有证据并修正只读来源绑定；预算/首次计时保留。下一阶段等待真正verified且角色隔离的scope材料，8个预先确定pilot每edit至少4同图、2跨图正例并附来源验证；16个旧CHECK提案仍UNVERIFIED。该等待不影响小时监测，见NEXT_STAGE_READINESS.json。
+
+已公开交付：[PR14](https://github.com/DLwbm123/Knowledge_editing-public/pull/14)；分支 `review/scope-text-transfer-audit-20261001`。源代码及本阶段必需报告已发布，远端提交及匿名报告访问已核验。
