@@ -1,0 +1,540 @@
+{
+  "state": "EXPERIMENT_COMPLETE",
+  "result_kind": "EXPLORATORY_TRAINING_ONLY",
+  "completed": 8,
+  "intended": 8,
+  "previous_native_seconds": 14555.745577589842,
+  "previous_GGN_calls": 2129,
+  "new_GGN_calls": 145,
+  "judge_calls": 0,
+  "original_scientific_data_status": "BLOCKED_DATA",
+  "native_regression": "PASS",
+  "inherited_from": null,
+  "elapsed_seconds": 1119.9031787399435,
+  "cumulative_GGN_calls": 2274,
+  "cumulative_native_seconds": 15675.648759132833,
+  "host_peak_rss_bytes": 34947985408,
+  "active_case": 7,
+  "accepted": 8,
+  "final_Base_restored": true,
+  "cases": [
+    {
+      "index": "0",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 2,
+      "ggn_calls": 22,
+      "rollback": false,
+      "base_score": -7.230226993560791,
+      "FP32_base_score": -7.255749225616455,
+      "threshold": -7.130226993560791,
+      "final_deployed_score": -7.104842185974121,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.3705410957336426,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20261002,
+      "exact_GGN": null,
+      "elapsed_seconds": 110.22874754900113,
+      "peak_gpu_bytes": 62308487168,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -0.5026189088821411,
+          "after_score": -0.5025643110275269,
+          "score_change": 5.459785461425781e-05,
+          "answer_position_KL": 2.5882700356305577e-06,
+          "native_repeat_exact": true,
+          "answer_positions": 1,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.396672248840332,
+          "score_change": -9.5367431640625e-06,
+          "answer_position_KL": 2.9056576522634714e-07,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    },
+    {
+      "index": "1",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 1,
+      "ggn_calls": 10,
+      "rollback": false,
+      "base_score": -14.426831245422363,
+      "FP32_base_score": -14.398279190063477,
+      "threshold": -14.298279190063477,
+      "final_deployed_score": -14.270770072937012,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.3705410957336426,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20262011,
+      "exact_GGN": null,
+      "elapsed_seconds": 66.29455848992802,
+      "peak_gpu_bytes": 61838683648,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -5.4312896728515625,
+          "after_score": -5.431520462036133,
+          "score_change": -0.0002307891845703125,
+          "answer_position_KL": 7.93890740169445e-06,
+          "native_repeat_exact": true,
+          "answer_positions": 3,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.412301063537598,
+          "score_change": -0.015638351440429688,
+          "answer_position_KL": 1.0245796602248447e-06,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    },
+    {
+      "index": "2",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 2,
+      "ggn_calls": 27,
+      "rollback": false,
+      "base_score": -3.4585111141204834,
+      "FP32_base_score": -3.4664909839630127,
+      "threshold": -3.3585111141204833,
+      "final_deployed_score": -3.3560571670532227,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.3903510570526123,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20263020,
+      "exact_GGN": null,
+      "elapsed_seconds": 124.16144823504146,
+      "peak_gpu_bytes": 62394596352,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.396662712097168,
+          "score_change": 0.0,
+          "answer_position_KL": 1.62121295943507e-07,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -5.4312896728515625,
+          "after_score": -5.454411029815674,
+          "score_change": -0.023121356964111328,
+          "answer_position_KL": 0.0006575441802851856,
+          "native_repeat_exact": true,
+          "answer_positions": 3,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    },
+    {
+      "index": "3",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 3,
+      "ggn_calls": 35,
+      "rollback": false,
+      "base_score": -0.6620008945465088,
+      "FP32_base_score": -0.7096506953239441,
+      "threshold": -0.5620008945465088,
+      "final_deployed_score": -0.5499765872955322,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.4385643005371094,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20264029,
+      "exact_GGN": null,
+      "elapsed_seconds": 202.4906217060052,
+      "peak_gpu_bytes": 62153375232,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -0.5026189088821411,
+          "after_score": -0.38160648941993713,
+          "score_change": 0.12101241946220398,
+          "answer_position_KL": 0.014059590175747871,
+          "native_repeat_exact": true,
+          "answer_positions": 1,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.412326812744141,
+          "score_change": -0.015664100646972656,
+          "answer_position_KL": 9.929235602612607e-07,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    },
+    {
+      "index": "4",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 1,
+      "ggn_calls": 10,
+      "rollback": false,
+      "base_score": -1.5013902187347412,
+      "FP32_base_score": -1.4743106365203857,
+      "threshold": -1.3743106365203857,
+      "final_deployed_score": -1.3138761520385742,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.3705410957336426,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20265038,
+      "exact_GGN": null,
+      "elapsed_seconds": 66.40451717108954,
+      "peak_gpu_bytes": 61838700032,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -5.4312896728515625,
+          "after_score": -5.420991897583008,
+          "score_change": 0.010297775268554688,
+          "answer_position_KL": 4.0328250179300085e-06,
+          "native_repeat_exact": true,
+          "answer_positions": 3,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.3966965675354,
+          "score_change": -3.3855438232421875e-05,
+          "answer_position_KL": 8.935318192015984e-07,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    },
+    {
+      "index": "5",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 1,
+      "ggn_calls": 10,
+      "rollback": false,
+      "base_score": -13.72700023651123,
+      "FP32_base_score": -13.709046363830566,
+      "threshold": -13.609046363830567,
+      "final_deployed_score": -13.513374328613281,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.3939342498779297,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20266047,
+      "exact_GGN": null,
+      "elapsed_seconds": 66.11296912597027,
+      "peak_gpu_bytes": 61838757376,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.396542072296143,
+          "score_change": 0.00012063980102539062,
+          "answer_position_KL": 3.7958820939820725e-06,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -5.4312896728515625,
+          "after_score": -5.420879364013672,
+          "score_change": 0.010410308837890625,
+          "answer_position_KL": 3.2218167689279653e-07,
+          "native_repeat_exact": true,
+          "answer_positions": 3,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    },
+    {
+      "index": "6",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 1,
+      "ggn_calls": 9,
+      "rollback": false,
+      "base_score": -8.607559204101562,
+      "FP32_base_score": -8.582350730895996,
+      "threshold": -8.482350730895996,
+      "final_deployed_score": -8.415664672851562,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.4428577423095703,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20267056,
+      "exact_GGN": null,
+      "elapsed_seconds": 63.22883452405222,
+      "peak_gpu_bytes": 61757932032,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -0.5026189088821411,
+          "after_score": -0.468203067779541,
+          "score_change": 0.0344158411026001,
+          "answer_position_KL": 0.0015647874679416418,
+          "native_repeat_exact": true,
+          "answer_positions": 1,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.396661281585693,
+          "score_change": 1.430511474609375e-06,
+          "answer_position_KL": 2.3880778599050245e-07,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    },
+    {
+      "index": "7",
+      "mechanical": false,
+      "status": "ACCEPTED",
+      "accepted_steps": 1,
+      "ggn_calls": 11,
+      "rollback": false,
+      "base_score": -8.415148735046387,
+      "FP32_base_score": -8.402172088623047,
+      "threshold": -8.302172088623047,
+      "final_deployed_score": -8.239853858947754,
+      "changed_original_W": true,
+      "same_precision_parity": 0.0,
+      "cross_precision_max_difference": 0.3705410957336426,
+      "constraint_value_mode": "native_value",
+      "historical_control_parity": true,
+      "native_deployment_dtype": "torch.bfloat16",
+      "rounding_mode": "stochastic_bf16",
+      "rounding_seed": 20268065,
+      "exact_GGN": null,
+      "elapsed_seconds": 68.05904478603043,
+      "peak_gpu_bytes": 61838740992,
+      "replay_exact": true,
+      "diagnostic_probes": [
+        {
+          "role": "same_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -5.4312896728515625,
+          "after_score": -5.431629180908203,
+          "score_change": -0.000339508056640625,
+          "answer_position_KL": 1.1666357750073075e-05,
+          "native_repeat_exact": true,
+          "answer_positions": 3,
+          "scored_state": "FINAL_ACCEPTED"
+        },
+        {
+          "role": "third_image",
+          "scope": "SCOPE_UNKNOWN",
+          "before_score": -7.396662712097168,
+          "after_score": -7.396684646606445,
+          "score_change": -2.193450927734375e-05,
+          "answer_position_KL": 4.777445496984001e-07,
+          "native_repeat_exact": true,
+          "answer_positions": 2,
+          "scored_state": "FINAL_ACCEPTED"
+        }
+      ],
+      "Base_restored": true,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 117442152
+      }
+    }
+  ],
+  "native_details": {
+    "index": "native",
+    "mechanical": true,
+    "status": "BACKTRACK_REJECTED",
+    "accepted_steps": 0,
+    "ggn_calls": 8,
+    "rollback": true,
+    "base_score": -2.9172375202178955,
+    "FP32_base_score": -2.9135959148406982,
+    "threshold": -2.913495914840698,
+    "final_deployed_score": -2.9172375202178955,
+    "changed_original_W": false,
+    "same_precision_parity": 0.0,
+    "cross_precision_max_difference": 0.3939342498779297,
+    "constraint_value_mode": "native_value",
+    "historical_control_parity": false,
+    "native_deployment_dtype": "torch.bfloat16",
+    "rounding_mode": "stochastic_bf16",
+    "rounding_seed": 30351002,
+    "exact_GGN": {
+      "symmetry_error": 6.017408793468348e-14,
+      "PSD_probe": 3.726469799403276e-09,
+      "repeat_exact": true,
+      "finite": true
+    },
+    "elapsed_seconds": 154.69723111204803,
+    "peak_gpu_bytes": 61838224896,
+    "replay_exact": true,
+    "diagnostic_probes": [
+      {
+        "role": "same_image",
+        "scope": "SCOPE_UNKNOWN",
+        "before_score": -7.396662712097168,
+        "after_score": -7.396662712097168,
+        "score_change": 0.0,
+        "answer_position_KL": 0.0,
+        "native_repeat_exact": true,
+        "answer_positions": 2,
+        "scored_state": "RESTORED_BASE"
+      },
+      {
+        "role": "third_image",
+        "scope": "SCOPE_UNKNOWN",
+        "before_score": -0.5026189088821411,
+        "after_score": -0.5026189088821411,
+        "score_change": 0.0,
+        "answer_position_KL": 0.0,
+        "native_repeat_exact": true,
+        "answer_positions": 1,
+        "scored_state": "RESTORED_BASE"
+      }
+    ],
+    "Base_restored": true
+  }
+}
