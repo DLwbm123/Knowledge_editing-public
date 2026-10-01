@@ -106,7 +106,7 @@ def main():
         # Historical text is never a retrieval pool; extract source/image identity only.
         if isinstance(value, dict):
             for key, item in value.items():
-                if any(word in key.lower() for word in ['image', 'source_group', 'source_id', 'case_id', 'patient_id', 'study_id']):
+                if key.lower() in {'img_name', 'img_id'} or any(word in key.lower() for word in ['image', 'source_group', 'source_id', 'case_id', 'patient_id', 'study_id']):
                     for ident in image_ids(item):
                         excluded[ident].add(reason)
                 if isinstance(item, (dict, list)):
