@@ -10,6 +10,27 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_resume_preserves_negative_prefix_and_cumulative_budget(self):
+        import json,tempfile
+        from pathlib import Path
+        from .exploratory import resumed_cases
+        with tempfile.TemporaryDirectory() as folder:
+            p=Path(folder)
+            config=dict(model_binding='base',editable_weight_path='w',data_manifest_digest='data',protocol={'tau':100},
+                candidate_rows=[],exploratory_inputs=8,target_logprob_gain=.1,max_edit_steps=3,maximum_CG_iterations=16,
+                run_root=str(p/'next'),resume_from=str(p),prior_GGN_calls=161,prior_native_seconds=990.)
+            cases=[dict(index=str(i),Base_restored=True,status='BACKTRACK_REJECTED',rollback=True) for i in range(4)]
+            previous=dict(state='STOPPED_ON_ERROR',final_Base_restored=True,cases=cases,completed=4,
+                previous_native_seconds=144.,elapsed_seconds=846.,cumulative_GGN_calls=161)
+            (p/'CONFIG.private.json').write_text(json.dumps(dict(config=config)))
+            (p/'STATUS.json').write_text(json.dumps(previous))
+            self.assertEqual(resumed_cases(config),cases)
+            for patch in (dict(prior_GGN_calls=46),dict(prior_native_seconds=144.),dict(target_logprob_gain=.01),dict(run_root=str(p))):
+                with self.assertRaises(ValueError):resumed_cases(dict(config,**patch))
+            previous['cases'][0]['status']='EXCEPTION_ROLLED_BACK'
+            (p/'STATUS.json').write_text(json.dumps(previous))
+            with self.assertRaises(ValueError):resumed_cases(config)
+
     def test_exploratory_source_selection_and_explicit_waiver_gate(self):
         from .exploratory import select_cases
         rows=[dict(id=str(i),source_group=str(i%3),image_hash=str(i%3),question_hash=str(i),

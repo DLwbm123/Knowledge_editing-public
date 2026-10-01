@@ -41,15 +41,49 @@ def combine(prepared):
     return dict(inputs_embeds=embeds,attention_mask=mask,position_ids=None,use_cache=False,return_dict=True),labels
 
 
+def resumed_cases(config):
+    """Carry forward only a verified terminal prefix of independent cases."""
+    if not config.get('resume_from'):
+        return []
+    parent=Path(config['resume_from'])
+    if parent.resolve()==Path(config['run_root']).resolve():
+        raise ValueError('resume requires a new run directory')
+    previous=json.loads((parent/'CONFIG.private.json').read_text())['config']
+    status=json.loads((parent/'STATUS.json').read_text())
+    keys=('model_binding','editable_weight_path','data_manifest_digest','protocol','candidate_rows',
+          'exploratory_inputs','target_logprob_gain','max_edit_steps','maximum_CG_iterations')
+    if any(previous[k]!=config[k] for k in keys):
+        raise ValueError('resume scientific inputs or protocol changed')
+    if status['state']!='STOPPED_ON_ERROR' or status.get('final_Base_restored') is not True:
+        raise ValueError('resume requires stopped, restored parent')
+    cases=status['cases']
+    if len(cases)!=status['completed'] or not 0<=len(cases)<config['exploratory_inputs']:
+        raise ValueError('invalid completed prefix')
+    for i,c in enumerate(cases):
+        if str(c['index'])!=str(i) or not c.get('Base_restored') or c['status'] not in (
+            'ACCEPTED','BACKTRACK_REJECTED','NOT_SATISFIED','SOLVER_NOT_CONVERGED'):
+            raise ValueError('nonterminal or noncontiguous inherited case')
+        if c['status']=='ACCEPTED' and c.get('changed_original_W') and not c.get('clean_reload'):
+            raise ValueError('inherited accepted edit lacks clean reload')
+    consumed=status['previous_native_seconds']+status['elapsed_seconds']
+    if config['prior_GGN_calls']!=status['cumulative_GGN_calls'] or abs(config['prior_native_seconds']-consumed)>1e-6:
+        raise ValueError('resume cumulative ledger mismatch')
+    return cases
+
+
 def run(config,approval,trusted):
     require_external_approval('EXPLORATORY_PILOT',config['bindings'],approval,config,trusted_authorization=trusted)
+    inherited=resumed_cases(config);resume_count=len(inherited)
     root=Path(config['run_root']);started=time.monotonic();total_ggn=0;runtime=None
-    status=dict(state='LOADING',result_kind='EXPLORATORY_TRAINING_ONLY',completed=0,intended=config['exploratory_inputs'],
-                previous_native_seconds=144.39321082888637,previous_GGN_calls=46,new_GGN_calls=0,judge_calls=0,
-                original_scientific_data_status='BLOCKED_DATA',cases=[],native_regression='NOT_RUN')
+    status=dict(state='LOADING',result_kind='EXPLORATORY_TRAINING_ONLY',completed=len(inherited),intended=config['exploratory_inputs'],
+                previous_native_seconds=config['prior_native_seconds'],previous_GGN_calls=config['prior_GGN_calls'],new_GGN_calls=0,judge_calls=0,
+                original_scientific_data_status='BLOCKED_DATA',cases=inherited,native_regression='NOT_RUN',
+                inherited_from=Path(config['resume_from']).name if config.get('resume_from') else None)
     def save():
         status.update(elapsed_seconds=time.monotonic()-started,new_GGN_calls=total_ggn,
-                      cumulative_GGN_calls=46+total_ggn,host_peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024)
+                      cumulative_GGN_calls=config['prior_GGN_calls']+total_ggn,
+                      cumulative_native_seconds=config['prior_native_seconds']+time.monotonic()-started,
+                      host_peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024)
         temp=root/'STATUS.tmp';temp.write_text(json.dumps(status,indent=2,allow_nan=False)+'\n');temp.replace(root/'STATUS.json')
     def timeout(*_):raise TimeoutError('exploratory process safety time ceiling reached')
     signal.signal(signal.SIGALRM,timeout);signal.alarm(config['native_wall_seconds_cap'])
@@ -137,6 +171,7 @@ def run(config,approval,trusted):
         status['native_regression']='PASS';status['native_details']=native
         status['state']='EXPERIMENT_RUNNING';save()
         for i,(row,reference) in enumerate(select_cases(config['candidate_rows'],config['exploratory_inputs'])):
+            if i<resume_count:continue
             if time.monotonic()-started>=config['native_wall_seconds_cap']:raise TimeoutError('time ceiling')
             status['active_case']=i;save()
             result=case(row,reference,str(i));gc.collect();torch.cuda.empty_cache()
