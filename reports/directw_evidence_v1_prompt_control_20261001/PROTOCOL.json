@@ -1,0 +1,32 @@
+{
+  "variant": "READ_ONLY_BASE_PROMPT_FORMAT_CONTROL",
+  "cases": 8,
+  "arms": [
+    "original",
+    "short_answer"
+  ],
+  "question_suffix": "\nAnswer with a single word or short phrase. Do not explain.",
+  "hypothesis": "Response-format mismatch contributes to the gap between short reference likelihood and verbose greedy answers",
+  "metrics": [
+    "native content-answer mean logprob excluding EOS",
+    "64-token greedy normalized exact match",
+    "token F1",
+    "generated token count",
+    "EOS/cap hits"
+  ],
+  "normalization": "Same E11 NFKC/casefold/remove Unicode punctuation/collapse whitespace; keep articles and negation",
+  "success_criterion": "Support format-alignment hypothesis only if >=4/8 generations shorten, mean paired reference logprob rises >=1.0 nat, and normalized exact matches increase >=2/8; otherwise criterion not met",
+  "interpretation": "Format/behavior diagnostic only. Even meeting criterion is not weight editing, new-fact replacement, semantic clinical accuracy or independent generalization. Do not relabel previous edits successful.",
+  "selection": "Same8 original audited train targets as E11/E12; no selection by current response, no changed references, no fabricated medical data; same3 images",
+  "controls": "Clean native BF16 Base, fixed mistral_instruct template, original arm must exactly match E11 Base tokens; parameter version counters and selected matrix must remain unchanged",
+  "changed_field": "Only a fixed question suffix; no optimizer, matrix write, adapter, checkpoint or Judge",
+  "budget": {
+    "new_seconds": 3600,
+    "new_GGN": 0,
+    "free_GPU_MiB": 66000,
+    "output_GiB": 20,
+    "free_disk_GiB": 28
+  },
+  "stop": "Any original generation mismatch, parameter change, nonfinite metric or wall cap stops and preserves raw outputs/costs",
+  "followup": "If format criterion passes, separately freeze a matched edit study with aligned prompt and actual answer-target criterion before seed confirmation. If it fails, do not search many prompt wordings; analyze objective/constraint inadequacy."
+}
