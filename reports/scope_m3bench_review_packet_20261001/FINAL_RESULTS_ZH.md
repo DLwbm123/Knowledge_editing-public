@@ -1,0 +1,13 @@
+# M3Bench真实scope待审包结果
+
+单次CPU准备完成：2,070条角色条件素材经过图像可用与原QA注释筛选剩1,370条（SLAKE119、VQA-RAD1,251），固定检索得到17个edit/input关系，15个不同QA输入、12张不同源图像，覆盖7/8既定pilot；pilot15为0，不补凑。
+
+全部17条scope为UNKNOWN。三个固定桶中，同问同答和同问异答均为0，选中项全来自属性/内容词交集，检索相似不证明真实IN或OUT。每edit各桶最多4并保留完整桶分母。此前20条同anchor原QA只用于条件性同图审核，未改为独立CAL；8pilot每edit4 verified同图+2源隔离跨图要求仍未满足。
+
+私有BLINDED_REVIEW_PACKET.json和BLINDED_REVIEW.csv保留目标/候选源QA、实际图像路径、原QA注释、来源角色、审核者、证据和仲裁字段。尚无真实scope签核。Base/pool/metadata登记不等于已执行，但也不证明完全未暴露或患者独立，因此保留REVIEW_ONLY_EXPOSURE_UNVERIFIED。禁止将SLAKE关系占位模板或T1G不同hash当作真实跨病例事实。
+
+角色排除自检及全部UNKNOWN检查PASS。CPU墙钟0.109秒，GPU/Judge/训练/生成0，无数据图像复制、checkpoint删除或历史改写。公开只有源码、固定计划、匿名计数和限制；真实图像、QA与私有逐条审核文件留服务器。
+
+复现脚本复用前轮audit.py中的固定bucket函数：在私有run目录将experiments/scope_m3bench_candidate_audit_20261001/audit.py复制为candidate_rules.py；RUN_ROOT指向本轮，SOURCE_ROOT和ROLE_ROOT分别指向candidate与exposure audit只读run；CUDA_VISIBLE_DEVICES设为空。公开源码不包含私有输入。
+
+下一步并行推进真实scope来源/签核和独立冻结的TXT三点margin敏感性诊断；后者仅验证已暴露面板，不能补充临床标注或独立确认。
