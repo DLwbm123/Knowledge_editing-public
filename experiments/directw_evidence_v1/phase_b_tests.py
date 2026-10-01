@@ -10,6 +10,20 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_target_margin_uses_worst_content_or_eos_and_masks_padding(self):
+        from .native_io import minimum_target_margin
+        logits=torch.tensor([[[4.,5.,0.],[3.,0.,2.],[99.,0.,0.],[0.,0.,0.]]],requires_grad=True)
+        labels=torch.tensor([[-100,1,2,-100]])
+        margin=minimum_target_margin(logits,labels)
+        self.assertEqual(float(margin),-1.)
+        margin.backward()
+        expected=torch.zeros_like(logits);expected[0,1,0]=-1.;expected[0,1,2]=1.
+        self.assertTrue(torch.equal(logits.grad,expected))
+        improved=logits.detach().clone();improved[0,1,2]=5.
+        self.assertEqual(float(minimum_target_margin(improved,labels)),1.)
+        self.assertTrue(torch.equal(improved[0,:2].argmax(-1),labels[0,1:3]))
+        with self.assertRaises(ValueError):minimum_target_margin(logits,torch.full_like(labels,-100))
+
     def test_readonly_prompt_diagnostic_replay_and_failure_ledger(self):
         import tempfile,json
         from pathlib import Path

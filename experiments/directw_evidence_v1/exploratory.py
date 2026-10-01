@@ -8,7 +8,7 @@ from .contracts import digest
 from .gate import require_external_approval
 from .editor import MatrixRuntime,Constraint,ProtectionGroup,EditConfig,edit_one,mean_answer_logprob
 from .numerics import FrozenGGN
-from .native_io import load,prepare,WEIGHT,generation_snapshot
+from .native_io import load,prepare,WEIGHT,generation_snapshot,minimum_target_margin
 
 
 REPLAY_FIELDS = ('status','accepted_steps','ggn_calls','base_score','FP32_base_score',
@@ -91,6 +91,8 @@ def resumed_cases(config):
 
 def run(config,approval,trusted):
     require_external_approval('EXPLORATORY_PILOT',config['bindings'],approval,config,trusted_authorization=trusted)
+    if config.get('target_objective','mean_logprob_gain') not in ('mean_logprob_gain','minimum_token_margin'):
+        raise ValueError('unsupported target objective')
     inherited=resumed_cases(config);resume_count=len(inherited)
     root=Path(config['run_root']);started=time.monotonic();total_ggn=0;runtime=None
     status=dict(state='LOADING',result_kind='EXPLORATORY_TRAINING_ONLY',completed=len(inherited),intended=config['exploratory_inputs'],
@@ -120,6 +122,9 @@ def run(config,approval,trusted):
         prepared=[prepare(model,tokenizer,processor,r) for r in (row,reference)]
         generation_before=(generation_snapshot(model,tokenizer,prepared[0][2],row['answer'],
             config['generation_max_new_tokens']) if config.get('generation_max_new_tokens') else None)
+        if not mechanical and config.get('expected_base_tokens') is not None:
+            if generation_before is None or generation_before['tokens']!=config['expected_base_tokens'][index]:
+                raise RuntimeError('initial generation differs from frozen Base control')
         inputs,labels=combine(prepared)
         with torch.no_grad():
             physical=runtime.normal_logits(inputs).float()
@@ -128,10 +133,18 @@ def run(config,approval,trusted):
         if parity>1e-3:raise RuntimeError('same-precision native functional parity failed')
         smooth=runtime.bind_inputs(inputs,arithmetic_dtype=torch.float32)
         normal=runtime.bind_normal_inputs(inputs)
-        score=lambda z:mean_answer_logprob(z.float(),labels,eos_id=tokenizer.eos_token_id)[0]
+        answer_logprob=lambda z:mean_answer_logprob(z.float(),labels,eos_id=tokenizer.eos_token_id)[0]
+        objective='mean_logprob_gain' if mechanical else config.get('target_objective','mean_logprob_gain')
+        score=(lambda z:minimum_target_margin(z,labels)) if objective=='minimum_token_margin' else answer_logprob
         point=runtime.base.float()
         with torch.no_grad():fp=smooth(point).float()
         base_score=float(score(physical));fp_score=float(score(fp))
+        base_logprob=float(answer_logprob(physical));fp_logprob=float(answer_logprob(fp))
+        logprob_control=None
+        if not mechanical and config.get('historical_control_logprobs') is not None:
+            logprob_control=config['historical_control_logprobs'][int(index)]
+            if abs(base_logprob-logprob_control['base_score'])>1e-6 or abs(fp_logprob-logprob_control['FP32_base_score'])>1e-6:
+                raise RuntimeError('initial answer logprob differs from frozen control')
         control=None
         if not mechanical and config.get('historical_control_scores') is not None:
             control=config['historical_control_scores'][int(index)]
@@ -160,7 +173,8 @@ def run(config,approval,trusted):
                 raise RuntimeError('repaired native exact-GGN regression failed')
             del F,u,v,fu,fv,again
         gain=1e-4 if mechanical else config['target_logprob_gain']
-        threshold=min(max(base_score,fp_score)+gain,-1e-4)
+        threshold=(config['target_token_margin'] if objective=='minimum_token_margin'
+                   else min(max(base_score,fp_score)+gain,-1e-4))
         constraint=Constraint('target','EXPLORATORY_TRAIN',lambda w:score(smooth(w)),threshold,
                               normal_score=lambda:score(normal()))
         settings=EditConfig(tau=100.,nu=10.,trust_radius=.1,base_drift_limit=.3,edit_drift_limit=.3,
@@ -175,7 +189,9 @@ def run(config,approval,trusted):
         result=edit_one(runtime,[constraint],[group],settings,branch,attempt_log=root/f'{index}.attempts.private.jsonl')
         total_ggn+=result.ggn_calls
         runtime.audit(runtime.base_state,runtime.base_hooks)
-        with torch.no_grad():final_score=float(score(normal()))
+        with torch.no_grad():
+            final_logits=normal();final_score=float(score(final_logits));final_logprob=float(answer_logprob(final_logits))
+        del final_logits
         changed=not torch.equal(runtime.weight,runtime.base)
         if result.status!='ACCEPTED' and changed:raise RuntimeError('rejected edit did not restore original W')
         # Failures of implementation or solvers stop, rather than silently granting qualification.
@@ -185,6 +201,8 @@ def run(config,approval,trusted):
         receipt=dict(index=index,mechanical=mechanical,editor_branch=branch,status=result.status,accepted_steps=result.accepted_steps,
             ggn_calls=result.ggn_calls,rollback=result.rollback,base_score=base_score,FP32_base_score=fp_score,
             threshold=threshold,final_deployed_score=final_score,changed_original_W=changed,
+            target_objective=objective,base_answer_logprob=base_logprob,FP32_base_answer_logprob=fp_logprob,
+            final_answer_logprob=final_logprob,initial_logprob_control_parity=logprob_control is not None,
             same_precision_parity=parity,cross_precision_max_difference=float((fp-physical).abs().max()),
             constraint_value_mode=settings.constraint_value_mode,historical_control_parity=control is not None,
             native_deployment_dtype=str(runtime.weight.dtype),
@@ -216,6 +234,9 @@ def run(config,approval,trusted):
             (root/f'{index}.generation.private.json').write_text(json.dumps(dict(before=generation_before,after=generation_after),indent=2))
             receipt['generation_diagnostic']=dict(before=generation_before['metrics'],after=generation_after['metrics'],
                 tokens_changed=generation_before['tokens']!=generation_after['tokens'])
+            target_tokens=tokenizer(row['answer'],add_special_tokens=False).input_ids+[tokenizer.eos_token_id]
+            receipt['generation_diagnostic'].update(target_tokens_exact_before=generation_before['tokens']==target_tokens,
+                target_tokens_exact_after=generation_after['tokens']==target_tokens)
             receipt.update(elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))
         if mechanical and not result.attempts:raise RuntimeError('native regression did not exercise solver/write path')

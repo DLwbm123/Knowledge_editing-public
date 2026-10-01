@@ -10,6 +10,18 @@ from PIL import Image
 WEIGHT = 'model.layers.21.mlp.down_proj.weight'
 
 
+def minimum_target_margin(logits, labels):
+    """Worst target-versus-best-other logit margin in row zero, including EOS."""
+    if logits.ndim!=3 or labels.shape!=logits.shape[:2]:
+        raise ValueError('aligned token labels required')
+    mask=labels[0,1:]!=-100
+    if not mask.any():raise ValueError('empty target token sequence')
+    targets=labels[0,1:][mask];z=logits[0,:-1][mask].float()
+    best,indices=z.topk(2,dim=-1)
+    other=torch.where(indices[:,0]==targets,best[:,1],best[:,0])
+    return (z.gather(1,targets[:,None])[:,0]-other).min()
+
+
 def answer_metrics(prediction, reference):
     """Conservative lexical diagnostics, not semantic or clinical grading."""
     def normalize(text):
