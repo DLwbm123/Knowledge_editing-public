@@ -1,0 +1,94 @@
+{
+  "cases": 8,
+  "accepted": 1,
+  "all_exact_replays": true,
+  "mechanical_exact_replay": true,
+  "diagnostic_qualification": "PASS",
+  "efficacy": "FAIL",
+  "actual_target_sequence_successes": 0,
+  "token_position_observations": 36,
+  "distinct_case_target_positions": 18,
+  "batch_single_vector_differences_above_0_001": 36,
+  "single_prefix_vector_differences_above_0_001": 36,
+  "max_batch_single_difference": 0.125,
+  "max_single_prefix_difference": 0.140625,
+  "implicit_explicit_mask_max_difference": 0.0,
+  "mask_generated_same": true,
+  "batch_single_target_argmax_disagreements": [
+    {
+      "case": "3",
+      "stage": "after",
+      "position": 0
+    }
+  ],
+  "single_prefix_target_argmax_disagreements": [],
+  "case3_after": {
+    "target_positions": 2,
+    "positions": [
+      {
+        "position": 0,
+        "batch_teacher": {
+          "margin": 0.125,
+          "argmax_is_target": true,
+          "target_ties": 1
+        },
+        "single_teacher": {
+          "margin": 0.0,
+          "argmax_is_target": false,
+          "target_ties": 2
+        },
+        "prefix_generate": {
+          "margin": 0.0,
+          "argmax_is_target": false,
+          "target_ties": 2
+        },
+        "prefix_generate_explicit_mask": {
+          "margin": 0.0,
+          "argmax_is_target": false,
+          "target_ties": 2
+        },
+        "native_generated_target": false,
+        "mask_generated_same": true,
+        "batch_single_max_logit_difference": 0.125,
+        "single_prefix_max_score_difference": 0.0859375,
+        "implicit_explicit_mask_max_score_difference": 0.0
+      },
+      {
+        "position": 1,
+        "batch_teacher": {
+          "margin": 0.25,
+          "argmax_is_target": true,
+          "target_ties": 1
+        },
+        "single_teacher": {
+          "margin": 0.25,
+          "argmax_is_target": true,
+          "target_ties": 1
+        },
+        "prefix_generate": {
+          "margin": 0.25,
+          "argmax_is_target": true,
+          "target_ties": 1
+        },
+        "prefix_generate_explicit_mask": {
+          "margin": 0.25,
+          "argmax_is_target": true,
+          "target_ties": 1
+        },
+        "native_generated_target": true,
+        "mask_generated_same": true,
+        "batch_single_max_logit_difference": 0.0625,
+        "single_prefix_max_score_difference": 0.0625,
+        "implicit_explicit_mask_max_score_difference": 0.0
+      }
+    ],
+    "scope": "Independent native one-step generation conditioned on each forced target prefix; not a claim about cached continuations after divergence"
+  },
+  "new_GGN_calls": 489,
+  "elapsed_seconds": 3544.3985994990217,
+  "cumulative_GGN_calls": 3829,
+  "cumulative_native_seconds": 28361.06001218583,
+  "clean_reload_passes": 1,
+  "deleted_matrices": 1,
+  "remaining_matrices": 0
+}
