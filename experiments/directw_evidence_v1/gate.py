@@ -4,9 +4,31 @@ from typing import Any, Callable
 import argparse
 import json
 import math
+from .contracts import digest
 
 STAGES = {"NATIVE_SMOKE": "NATIVE_SMOKE_ALLOWED", "PILOT": "PILOT_ALLOWED", "SEQUENTIAL": "SEQUENTIAL_ALLOWED"}
 BINDINGS = {"code", "dependencies", "model", "data", "protocol", "config", "budget"}
+
+
+def execution_bindings(config: dict[str, Any]) -> dict[str, str]:
+    """Canonical actual execution payload. Only its self-reference is excluded.
+
+    This computes digests, never approval. The independent human receipt must
+    bind these values before any execution is admitted.
+    """
+    payload = {k: v for k, v in config.items() if k != "bindings"}
+    budget_keys = ("budget_limits", "authorized_gpu_hours", "authorized_judge_calls",
+        "native_wall_seconds_cap", "maximum_GGN_calls", "maximum_CG_iterations",
+        "prior_native_seconds", "prior_GGN_calls", "max_active_constraints",
+        "max_edit_steps", "mechanical_smoke_inputs", "new_run_storage_limit_gib",
+        "teacher_cache_limit_gib")
+    try:
+        # Reject JSON NaN/Infinity rather than accepting their nonstandard hashes.
+        json.dumps(payload, allow_nan=False)
+        return dict(config=digest(payload), protocol=digest(config["protocol"]),
+                    budget=digest({k: config[k] for k in budget_keys if k in config}))
+    except (KeyError, TypeError, ValueError) as error:
+        raise PermissionError("missing/noncanonical execution binding") from error
 
 
 def advance_state(current: str, target: str, *, cpu_passed: bool = False,
@@ -71,12 +93,35 @@ def require_external_approval(stage: str, bindings: dict[str, str], approval: di
         raise PermissionError("trusted receipt stage/bindings mismatch")
     if set(bindings) != BINDINGS or not all(isinstance(v,str) and len(v)==64 for v in bindings.values()) or approval.get("bindings") != bindings:
         raise PermissionError("scientific binding changed or missing")
+    actual = execution_bindings(config)
+    if any(bindings[k] != value for k, value in actual.items()) or config.get("approved_protocol_digest") != actual["protocol"]:
+        raise PermissionError("actual execution config/protocol/budget differs from approved binding")
     if config.get("current_state") != STAGES[stage] or not config.get("allow_native_model_execution"):
         raise PermissionError("state/native permission mismatch")
     if not all(config.get(k) for k in ("model_binding", "editable_weight_path", "data_manifest_digest",
             "approved_protocol_digest", "trust_radius", "behavior_thresholds", "preservation_budgets")):
         raise PermissionError("unapproved critical scientific configuration")
     if stage == "NATIVE_SMOKE":
+        limits = config.get("budget_limits", {})
+        def finite_number(value: Any) -> bool:
+            return type(value) in (int, float) and math.isfinite(value)
+        total_seconds = limits.get("total_native_seconds")
+        total_calls = limits.get("total_GGN_calls")
+        prior_seconds = config.get("prior_native_seconds")
+        prior_calls = config.get("prior_GGN_calls")
+        calls, iterations = config.get("maximum_GGN_calls"), config.get("maximum_CG_iterations")
+        cg_limit = limits.get("maximum_CG_iterations")
+        if not all(finite_number(v) for v in (total_seconds, prior_seconds, config.get("native_wall_seconds_cap"))) or not (
+            0 <= prior_seconds < total_seconds <= 3600 * config.get("authorized_gpu_hours", 0)
+            and 0 < config["native_wall_seconds_cap"] <= total_seconds - prior_seconds
+        ):
+            raise PermissionError("cumulative native time budget exceeded or missing")
+        if not all(type(v) is int for v in (total_calls, prior_calls, calls, iterations, cg_limit)) or not (
+            0 <= prior_calls < total_calls and 0 < calls <= total_calls - prior_calls and 0 < iterations <= cg_limit
+        ):
+            raise PermissionError("cumulative GGN/CG budget exceeded or missing")
+        if config.get("cg_max_iter") != iterations or config["protocol"].get("cg_max_iter") != iterations or config["protocol"].get("cg_rtol") != config.get("cg_rtol"):
+            raise PermissionError("conflicting execution and protocol CG settings")
         if config.get("smoke_data_audit_status") != "PASS" or not 1 <= config.get("mechanical_smoke_inputs", 0) <= 2:
             raise PermissionError("mechanical smoke data audit not admitted")
         if config.get("allow_training") or config.get("allow_paid_judge") or config.get("authorized_judge_calls", 0):

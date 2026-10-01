@@ -21,7 +21,7 @@ from .editor import (MatrixRuntime, ProtectionGroup, Constraint, EditConfig, bui
 from .fixture import TinyModel
 from .contracts import (audit_data, method_eligibility, validate_cache, HistoryMemory, MemoryEntry,
                         cleanup, AttemptLedger, digest, enforce_storage)
-from .gate import require_external_approval, default_config, gated_load, cli, BINDINGS, advance_state
+from .gate import require_external_approval, default_config, gated_load, cli, BINDINGS, advance_state, execution_bindings
 from .export import export_native, load_original_matrix, verify_clean_reload
 
 SEED = 20260930
@@ -38,6 +38,24 @@ def row(role: str = "EDIT_FIT", **extra) -> dict:
                 fact_family="f", role=role, permission_basis="synthetic fixture", available_at_edit_index=0,
                 scope_evidence="VERIFIED_OUT_OF_SCOPE", annotation_source="synthetic", ever_developed=False,
                 ever_scored=False, teacher_reference=None, source_split="train", fit_permission_verified=True, **extra)
+
+
+def gate_fixture(config, phases=("NATIVE_SMOKE",)):
+    """Synthetic CPU authorization fixture only; never native permission."""
+    config.setdefault("protocol", dict(cg_max_iter=4, cg_rtol=1e-4))
+    config.setdefault("maximum_CG_iterations", 4)
+    config["cg_max_iter"] = config["maximum_CG_iterations"]
+    config.setdefault("maximum_GGN_calls", 48)
+    config.setdefault("prior_GGN_calls", 0)
+    config.setdefault("prior_native_seconds", 0.)
+    config.setdefault("budget_limits", dict(total_native_seconds=1800, total_GGN_calls=48, maximum_CG_iterations=4))
+    config["approved_protocol_digest"] = digest(config["protocol"])
+    bindings = {k:digest(k) for k in BINDINGS}
+    bindings.update(execution_bindings(config))
+    approval = dict(approved=True, approved_phases=list(phases), approval_reference="synthetic-test", bindings=bindings)
+    trusted = dict(origin="USER_MESSAGE", original_text="Synthetic CPU gate fixture, not native authorization",
+                   reference="synthetic-test", phases=list(phases), bindings=bindings)
+    return bindings, approval, trusted
 
 
 class Checks(unittest.TestCase):
@@ -148,8 +166,9 @@ class Checks(unittest.TestCase):
         protect=target if protection_same else dict(tokens=target["tokens"],image=torch.tensor([[0.,1.]],dtype=self.dtype))
         logits=lambda w:runtime.logits(w,protect)
         mask=torch.ones(1,2,dtype=torch.bool)
-        group=ProtectionGroup("bg",logits,logits(runtime.weight).softmax(-1).detach(),mask,("s",),1.,0. if protection_same else 1.,binding(),runtime.capture_input(protect))
-        constraint=Constraint("edit","EDIT_FIT",lambda w:runtime.logits(w,target)[0,0,0],.1)
+        group=ProtectionGroup("bg",logits,logits(runtime.weight).softmax(-1).detach(),mask,("s",),1.,0. if protection_same else 1.,binding(),runtime.capture_input(protect),
+            normal_logits=runtime.bind_normal_inputs(protect),deployment_anchor=runtime.normal_logits(protect).softmax(-1).detach(),deployment_binding=binding())
+        constraint=Constraint("edit","EDIT_FIT",lambda w:runtime.logits(w,target)[0,0,0],.1,normal_score=lambda:runtime.normal_logits(target)[0,0,0])
         config=EditConfig(.1,1000.,.05,2.,1.,max_steps=8,cg_rtol=1e-10,tolerance=1e-6)
         return runtime,target,[constraint],[group],config
 
@@ -177,14 +196,17 @@ class Checks(unittest.TestCase):
         plus=inputs; minus=dict(tokens=inputs["tokens"],image=-inputs["image"])
         neg_logits=r.bind_inputs(minus)
         gs=[ProtectionGroup("negative",neg_logits,neg_logits(r.weight).softmax(-1).detach(),
-            torch.ones(1,2,dtype=torch.bool),("s",),1.,.02,binding(),r.capture_input(minus))]
+            torch.ones(1,2,dtype=torch.bool),("s",),1.,.02,binding(),r.capture_input(minus),
+            normal_logits=r.bind_normal_inputs(minus),deployment_anchor=r.normal_logits(minus).softmax(-1).detach(),deployment_binding=binding())]
         self.assertEqual(int(r.normal_logits(minus)[0,0].argmax()),1)
         def score(w,i,y):
             return r.logits(w,i).log_softmax(-1)[0,0,y]
         p=lambda w:score(w,plus,0)-score(w,plus,1)
         n=lambda w:score(w,minus,1)-score(w,minus,0)
         pair=dict(id="pair",verified=True,scope="OUT_OF_SCOPE",negative_base_correct=True,
-                  plus_margin=p,minus_margin=n,endpoint_margin=.1,visual_margin=.3,negative_protection_group="negative")
+                  plus_margin=p,minus_margin=n,
+                  normal_plus_margin=lambda:(r.normal_logits(plus).log_softmax(-1)[0,0,0]-r.normal_logits(plus).log_softmax(-1)[0,0,1]),
+                  normal_minus_margin=lambda:(r.normal_logits(minus).log_softmax(-1)[0,0,1]-r.normal_logits(minus).log_softmax(-1)[0,0,0]),endpoint_margin=.1,visual_margin=.3,negative_protection_group="negative")
         cs=build_constraints([], [pair], "W_EVIDENCE_QP")
         no_cross=build_constraints([], [pair], "W_FUNCTIONAL_QP")
         self.assertEqual(len(cs),3); self.assertEqual(len(no_cross),2)
@@ -200,11 +222,11 @@ class Checks(unittest.TestCase):
         self.assertLess(bad_correct,old_correct)
         self.assertGreater(float(cs[2].score(bad_weight)),float(cs[2].score(before)))
         self.assertGreater(float(gs[0].loss(bad_weight)),gs[0].budget)
-        force_wrong=Constraint("wrong_negative","EDIT_FIT",lambda w:r.logits(w,minus)[0,0,2],.8)
+        force_wrong=Constraint("wrong_negative","EDIT_FIT",lambda w:r.logits(w,minus)[0,0,2],.8,normal_score=lambda:r.normal_logits(minus)[0,0,2])
         blocked=edit_one(r,[*cs,force_wrong],gs,cfg,"W_EVIDENCE_QP")
         self.assertNotEqual(blocked.status,"ACCEPTED");self.assertTrue(torch.equal(before,r.weight))
         # Algebraic adversarial scores: cross=.5 passes while positive endpoint=-.1 fails.
-        bad=build_constraints([], [dict(pair,plus_margin=lambda w:w.sum()*0-.1,minus_margin=lambda w:w.sum()*0+.6)],"W_EVIDENCE_QP")
+        bad=build_constraints([], [dict(pair,plus_margin=lambda w:w.sum()*0-.1,minus_margin=lambda w:w.sum()*0+.6,normal_plus_margin=lambda:r.weight.sum()*0-.1,normal_minus_margin=lambda:r.weight.sum()*0+.6)],"W_EVIDENCE_QP")
         self.assertGreater(float(bad[2].score(r.weight)),bad[2].threshold)
         self.assertLess(float(bad[0].score(r.weight)),bad[0].threshold)
         before=r.weight.detach().clone()
@@ -405,8 +427,7 @@ print(json.dumps(dict(logits=model(**inputs).tolist(),generation=model.generate(
             data_manifest_digest="d",approved_protocol_digest="p",trust_radius=.1,behavior_thresholds={"fit":.1},preservation_budgets={"bg":.01},
             smoke_data_audit_status="PASS",mechanical_smoke_inputs=1,native_wall_seconds_cap=60,
             max_active_constraints=2,max_edit_steps=1)
-        approval=dict(approved=True,approved_phases=["NATIVE_SMOKE"],approval_reference="test-receipt",bindings=bindings)
-        trusted=dict(origin="USER_MESSAGE",original_text="synthetic authorization fixture only",reference="test-receipt",phases=["NATIVE_SMOKE"],bindings=bindings)
+        bindings,approval,trusted=gate_fixture(config)
         # This positive fixture validates the gate, does not write any approval file or invoke loader.
         require_external_approval("NATIVE_SMOKE",bindings,approval,config,trusted_authorization=trusted)
         failures=0

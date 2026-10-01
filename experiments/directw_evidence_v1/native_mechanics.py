@@ -193,7 +193,7 @@ def run(config,approval,trusted):
             with torch.no_grad():candidate_z=normal();candidate_loss=float(protection_kl(candidate_z[:,predictors,:],deployment_anchor,weights))
             candidate_score=float(score(candidate_z));base_score=float(score(z))
             rounding=dict(rt.last_rounding)
-            rt.write(rt.base);restored=torch.equal(rt.weight,rt.base)
+            rt.reset_single();restored=torch.equal(rt.weight,rt.base)
             with torch.no_grad():restoration_error=float((normal()-z).abs().max())
             return candidate_loss,rounding,restored,restoration_error,candidate_score,base_score
         candidate_loss,rounding,restored,restoration_error,candidate_score,base_score=bench('write_normal_forward_protection_rollback',transaction)
@@ -209,7 +209,7 @@ def run(config,approval,trusted):
         rt.write(point+direction);rt.audit(snapshot,hooks)
         with torch.no_grad():edited_z=normal().cpu();tokens=bench('ordinary_unjudged_free_generation',lambda:model.generate(**generation)).cpu()
         edited_path=root/'edited_matrix.private.pt';torch.save(rt.weight.detach().cpu(),edited_path)
-        rt.write(rt.base);rt.audit(snapshot,hooks)
+        rt.reset_single();rt.audit(snapshot,hooks)
         del rt,model,selected,snapshot,raw,raw32,bf_logits,bf_score,bf_loss,loss,logits,answer,curvature,op,inputs,generation
         rt=None;gc.collect();torch.cuda.empty_cache()
         reload_config=dict(config,edited_matrix=str(edited_path),reload_result=str(root/'clean_reload.private.pt'))
@@ -232,7 +232,7 @@ def run(config,approval,trusted):
     finally:
         if rt is not None:
             try:
-                rt.write(rt.base)
+                rt.reset_single()
                 records['NATIVE_WRITE_ROLLBACK_AUDIT']['final_Base_W_bitwise_restored']=torch.equal(rt.weight,rt.base)
             except BaseException as error:records['NATIVE_WRITE_ROLLBACK_AUDIT']['restore_exception']=str(error)
         signal.alarm(0)

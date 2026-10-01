@@ -3,13 +3,139 @@ import unittest
 import torch
 from .contracts import SMOKE, FIT, audit_data, method_eligibility, AttemptLedger, digest
 from .gate import BINDINGS, default_config, require_external_approval
-from .tests import row
+from .tests import row, binding as teacher_binding, gate_fixture
 from .numerics import cg, solve_step, FrozenGGN, protection_gradient, protection_kl
 from .editor import MatrixRuntime
 from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def fp32_case(self):
+        from .editor import Constraint, ProtectionGroup, EditConfig
+        model=TinyModel(dtype=torch.bfloat16);model.requires_grad_(False)
+        runtime=MatrixRuntime(model,'mlp.down_proj.weight')
+        inputs=dict(tokens=torch.zeros(1,2,2,dtype=torch.bfloat16),image=torch.tensor([[1.,0.]],dtype=torch.bfloat16))
+        functional=runtime.bind_inputs(inputs,arithmetic_dtype=torch.float32)
+        normal=runtime.bind_normal_inputs(inputs)
+        group=ProtectionGroup('bg',functional,functional(runtime.base.float()).softmax(-1).detach(),
+            torch.ones(1,2,dtype=torch.bool),('source',),1.,1.,dict(teacher_binding(),dtype='torch.float32'),
+            normal_logits=normal,deployment_anchor=normal().float().softmax(-1).detach(),
+            deployment_binding=dict(teacher_binding(),dtype='torch.bfloat16'))
+        constraint=Constraint('edit','EDIT_FIT',lambda w:functional(w)[0,0,0],.1,normal_score=lambda:normal().float()[0,0,0])
+        # CPU fixture only; these are not new native tolerances or permissions.
+        config=EditConfig(.1,1000.,.05,2.,1.,max_steps=8,cg_max_iter=8,cg_rtol=1e-5,
+                          tolerance=.002,arithmetic_dtype=torch.float32)
+        return runtime,inputs,constraint,group,config
+
+    def test_fp32_edit_uses_bf16_normal_acceptance(self):
+        from .editor import edit_one
+        for branch in ('W_FT','W_EUCLIDEAN_QP','W_KEY_QP','W_FUNCTIONAL_QP'):
+            with self.subTest(branch=branch):
+                runtime,inputs,c,g,cfg=self.fp32_case()
+                g.keys=runtime.capture_input(inputs)
+                if branch=='W_FT':cfg.ft_lr=10.;cfg.tau=1e-8
+                original=runtime.normal_logits;calls=[]
+                def counted(inputs):
+                    result=original(inputs);calls.append(result.dtype);return result
+                runtime.normal_logits=counted
+                result=edit_one(runtime,[c],[g],cfg,branch)
+                self.assertEqual(result.status,'ACCEPTED',result)
+                self.assertGreater(result.accepted_steps,0)
+                self.assertGreater(len(calls),2)
+                self.assertEqual(set(calls),{torch.bfloat16})
+                self.assertGreaterEqual(float(c.normal_score()),c.threshold-cfg.tolerance)
+                self.assertEqual(runtime.weight.dtype,torch.bfloat16)
+                runtime.audit(runtime.base_state,runtime.hooks())
+                c.normal_score=None
+                with self.assertRaisesRegex(ValueError,'explicit normal-forward'):
+                    edit_one(runtime,[c],[g],cfg,branch)
+
+    def test_fp32_satisfied_does_not_override_failed_bf16_score(self):
+        from .editor import edit_one
+        runtime,inputs,c,g,cfg=self.fp32_case()
+        with torch.no_grad():runtime.weight.fill_(.2)
+        functional=runtime.bind_inputs(inputs,arithmetic_dtype=torch.float32)
+        smooth=functional(runtime.weight.float())[0,0,0].detach()
+        actual=runtime.normal_logits(inputs).float()[0,0,0].detach()
+        sign=1. if smooth>actual else -1.
+        self.assertGreater(float((smooth-actual).abs()),1e-6)
+        c.score=lambda w:sign*functional(w)[0,0,0]
+        c.normal_score=lambda:sign*runtime.normal_logits(inputs).float()[0,0,0]
+        c.threshold=float(sign*(smooth+actual)/2)
+        g.anchor=functional(runtime.weight.float()).softmax(-1).detach()
+        g.deployment_anchor=runtime.normal_logits(inputs).float().softmax(-1).detach()
+        cfg.tolerance=1e-8;cfg.max_steps=1
+        before=runtime.weight.detach().clone()
+        self.assertGreater(float(c.score(before.float())),c.threshold)
+        self.assertLess(float(c.normal_score()),c.threshold)
+        result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+        self.assertNotEqual(result.status,'ACCEPTED',result)
+        self.assertTrue(torch.equal(before,runtime.weight))
+
+    def test_full_buffer_restore_on_exception_after_bf16_write(self):
+        from .editor import MatrixRuntime,edit_one
+        runtime,inputs,c,g,cfg=self.fp32_case()
+        runtime.model.register_buffer('scratch',torch.tensor(7.),persistent=False)
+        # Rebind runtime so this is legitimate edit-start state, not a new buffer.
+        runtime=MatrixRuntime(runtime.model,'mlp.down_proj.weight')
+        functional=runtime.bind_inputs(inputs,arithmetic_dtype=torch.float32)
+        c.score=lambda w:functional(w)[0,0,0]
+        c.normal_score=lambda:runtime.normal_logits(inputs).float()[0,0,0]
+        g.logits=functional;g.normal_logits=runtime.bind_normal_inputs(inputs)
+        before={k:v.clone() for k,v in runtime.model.state_dict().items()}
+        original=runtime.normal_logits
+        def fail_after_write(inputs):
+            if runtime.version:
+                runtime.model.scratch.add_(3)
+                raise RuntimeError('controlled post-write failure')
+            return original(inputs)
+        runtime.normal_logits=fail_after_write
+        result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+        self.assertEqual(result.status,'EXCEPTION_ROLLED_BACK',result)
+        self.assertTrue(result.rollback)
+        self.assertTrue(result.attempts)
+        self.assertEqual(float(runtime.model.scratch),7.)
+        self.assertTrue(all(torch.equal(v,before[k]) for k,v in runtime.model.state_dict().items()))
+        runtime.audit(runtime.base_state,runtime.hooks())
+        runtime.reset_single();self.assertEqual(float(runtime.model.scratch),7.)
+        # If the registry itself changes, do not report a successful rollback.
+        def break_registry(inputs):
+            runtime.model.register_buffer('unexpected',torch.tensor(1.),persistent=False)
+            return original(inputs)
+        runtime.normal_logits=break_registry
+        failed=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+        self.assertEqual(failed.status,'ROLLBACK_FAILED')
+        self.assertFalse(failed.rollback)
+
+    def test_bound_execution_changes_and_cumulative_budget_fail_before_loader(self):
+        import copy
+        from .gate import gated_load
+        config=default_config();config.update(execution_stage='NATIVE_SMOKE',current_state='NATIVE_SMOKE_ALLOWED',
+            allow_native_model_execution=True,allow_gpu=True,authorized_gpu_hours=.5,leased_gpu_uuids=['fixture'],
+            model_binding='m',editable_weight_path='w',data_manifest_digest='d',trust_radius=.1,
+            behavior_thresholds={'mechanical':1e-4},preservation_budgets={'mechanical':.001},
+            smoke_data_audit_status='PASS',mechanical_smoke_inputs=1,native_wall_seconds_cap=1600,
+            max_active_constraints=2,max_edit_steps=1,prior_native_seconds=144.393211,prior_GGN_calls=46,
+            maximum_GGN_calls=2,damping=100.)
+        bindings,approval,trusted=gate_fixture(config)
+        called=[];loader=lambda:called.append(True)
+        # Positive check, no model loader.
+        require_external_approval('NATIVE_SMOKE',bindings,approval,config,trusted_authorization=trusted)
+        for field,value in [('maximum_CG_iterations',400),('maximum_GGN_calls',480),('damping',200.),
+                            ('cg_rtol',.1),('native_wall_seconds_cap',1800),('prior_GGN_calls',0)]:
+            with self.subTest(changed=field):
+                changed=copy.deepcopy(config);changed[field]=value
+                with self.assertRaisesRegex(PermissionError,'actual execution'):
+                    gated_load('NATIVE_SMOKE',bindings,approval,changed,loader,trusted_authorization=trusted)
+        changed=copy.deepcopy(config);changed['protocol']['cg_rtol']=.2
+        with self.assertRaises(PermissionError):
+            gated_load('NATIVE_SMOKE',bindings,approval,changed,loader,trusted_authorization=trusted)
+        # Even a synthetic fresh binding cannot admit internally over-budget config.
+        for patch in [dict(maximum_GGN_calls=3),dict(native_wall_seconds_cap=1700),dict(maximum_CG_iterations=400)]:
+            changed=dict(config,**patch);b,a,t=gate_fixture(changed)
+            with self.assertRaises(PermissionError):gated_load('NATIVE_SMOKE',b,a,changed,loader,trusted_authorization=t)
+        self.assertEqual(called,[])
+
     def test_analytic_protection_pullback_stationary_and_nonstationary(self):
         torch.manual_seed(21)
         x=torch.randn(2,3,dtype=torch.float64)
@@ -108,23 +234,24 @@ class PhaseBChecks(unittest.TestCase):
             self.assertIn('EVALUATION_TO_SMOKE',[x['reason'] for x in result['findings']])
 
     def test_pilot_not_admitted_by_smoke(self):
-        binding={k:digest(k) for k in BINDINGS}
-        approval=dict(approved=True,approved_phases=['NATIVE_SMOKE','PILOT'],approval_reference='fixture',bindings=binding)
-        trusted=dict(origin='USER_MESSAGE',original_text='Synthetic gate fixture only',reference='fixture',phases=['NATIVE_SMOKE','PILOT'],bindings=binding)
         config=default_config();config.update(execution_stage='NATIVE_SMOKE',current_state='NATIVE_SMOKE_ALLOWED',
             allow_native_model_execution=True,allow_gpu=True,authorized_gpu_hours=.5,leased_gpu_uuids=['fixture'],
             model_binding='m',editable_weight_path='w',data_manifest_digest='d',approved_protocol_digest='p',
             trust_radius=.01,behavior_thresholds={'mechanical':1e-3},preservation_budgets={'mechanical':1e-3},
             smoke_data_audit_status='PASS',mechanical_smoke_inputs=1,native_wall_seconds_cap=1800,
             max_active_constraints=2,max_edit_steps=1)
+        binding,approval,trusted=gate_fixture(config,('NATIVE_SMOKE','PILOT'))
         require_external_approval('NATIVE_SMOKE',binding,approval,config,trusted_authorization=trusted)
         pilot=dict(config,execution_stage='PILOT',current_state='PILOT_ALLOWED',allow_training=True,native_smoke_status='PASS',
                    data_audit_status='PASS',legal_fit_inputs=1,preapproved_global_rule_digest='fixture')
+        binding,approval,trusted=gate_fixture(pilot,('NATIVE_SMOKE','PILOT'))
         with self.assertRaises(PermissionError):
             require_external_approval('PILOT',binding,approval,pilot,trusted_authorization=trusted)
         pilot['scientific_role_counts']={r:1 for r in ['EDIT_FIT','GEN_FIT','PROTECT_BG_FIT','PROTECT_NEAR_FIT']}
+        binding,approval,trusted=gate_fixture(pilot,('NATIVE_SMOKE','PILOT'))
         require_external_approval('PILOT',binding,approval,pilot,trusted_authorization=trusted)
         pilot['preapproved_global_rule_digest']=None
+        binding,approval,trusted=gate_fixture(pilot,('NATIVE_SMOKE','PILOT'))
         with self.assertRaises(PermissionError):
             require_external_approval('PILOT',binding,approval,pilot,trusted_authorization=trusted)
 

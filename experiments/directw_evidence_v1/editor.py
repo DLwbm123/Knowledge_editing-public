@@ -14,7 +14,7 @@ import os
 from pathlib import Path
 import torch
 from torch import Tensor, nn
-from .numerics import FrozenGGN, position_weights, protection_kl, solve_step
+from .numerics import FrozenGGN, position_weights, protection_kl, protection_gradient, solve_step
 
 BRANCHES = ("W_FT", "W_EUCLIDEAN_QP", "W_KEY_QP", "W_FUNCTIONAL_QP", "W_EVIDENCE_QP")
 
@@ -54,27 +54,29 @@ class Constraint:
     threshold: float
     cross_image: bool = False
     protection_group: str | None = None
+    normal_score: Callable[[], Tensor] | None = None
 
 
-def build_constraints(supports: list[tuple[str, Callable[[Tensor], Tensor], float]],
+def build_constraints(supports: list[tuple[str, Callable[[Tensor], Tensor], float, Callable[[], Tensor]]],
                       pairs: list[dict[str, Any]], branch: str) -> list[Constraint]:
     """All branches get BOTH endpoint supervision; only evidence adds cross-image."""
     if branch not in BRANCHES:
         raise ValueError("unknown branch")
-    constraints = [Constraint(name, "EDIT_FIT", score, threshold) for name, score, threshold in supports]
+    constraints = [Constraint(name, "EDIT_FIT", score, threshold, normal_score=normal) for name, score, threshold, normal in supports]
     for pair in pairs:
         if pair.get("verified") is not True or pair.get("scope") != "OUT_OF_SCOPE" or pair.get("negative_base_correct") is not True:
             raise ValueError("unqualified visual pair")
         if not pair.get("negative_protection_group"):
             raise ValueError("visual counterexample requires its own protection group")
         plus, minus = pair["plus_margin"], pair["minus_margin"]
-        constraints.extend([Constraint(pair["id"] + ":plus", "VIS_PAIR_FIT", plus, pair["endpoint_margin"]),
+        normal_plus, normal_minus = pair["normal_plus_margin"], pair["normal_minus_margin"]
+        constraints.extend([Constraint(pair["id"] + ":plus", "VIS_PAIR_FIT", plus, pair["endpoint_margin"], normal_score=normal_plus),
                             Constraint(pair["id"] + ":minus", "VIS_PAIR_FIT", minus, pair["endpoint_margin"],
-                                       protection_group=pair["negative_protection_group"])])
+                                       protection_group=pair["negative_protection_group"], normal_score=normal_minus)])
         if branch == "W_EVIDENCE_QP":
             constraints.append(Constraint(pair["id"] + ":cross", "VIS_PAIR_FIT",
                                           lambda w, p=plus, n=minus: p(w) + n(w),
-                                          pair["visual_margin"], True))
+                                          pair["visual_margin"], True, normal_score=lambda p=normal_plus, n=normal_minus: p() + n()))
     return constraints
 
 
@@ -89,6 +91,9 @@ class ProtectionGroup:
     budget: float
     binding: dict[str, str]
     keys: Tensor | None = None
+    normal_logits: Callable[[], Tensor] | None = None
+    deployment_anchor: Tensor | None = None
+    deployment_binding: dict[str, str] | None = None
 
     def __post_init__(self) -> None:
         required = {"model", "weight_version", "input", "prefix", "mask", "dtype", "backend", "config", "teacher_version"}
@@ -97,6 +102,10 @@ class ProtectionGroup:
         if self.coefficient <= 0 or self.budget < 0 or self.anchor.requires_grad:
             raise ValueError("invalid protection anchor/budget")
         self.anchor = self.anchor.detach().clone()
+        if self.deployment_anchor is not None:
+            if self.deployment_anchor.requires_grad or self.deployment_binding is None or set(self.deployment_binding) != required or not all(self.deployment_binding.values()):
+                raise ValueError("incomplete detached deployment teacher binding")
+            self.deployment_anchor = self.deployment_anchor.detach().clone()
         self.mask = self.mask.detach().clone()
         self.weights = position_weights(self.mask, self.sources)
         if self.keys is not None:
@@ -126,6 +135,7 @@ class MatrixRuntime:
         self.buffer_base = {k: v.detach().cpu().clone() for k, v in buffers.items()}
         self.functional_state = {k: v.detach() for k, v in parameters.items() if k != path}
         self.functional_state.update({k: v.detach().clone() for k, v in buffers.items()})
+        self.base_hooks = self.hooks()
         self.version = 0
         self.last_rounding: dict[str, float] = {}
 
@@ -167,6 +177,13 @@ class MatrixRuntime:
             return promoted
         return lambda w: self.logits(w, fixed)
 
+    def bind_normal_inputs(self, inputs: dict[str, Any]) -> Callable[[], Tensor]:
+        """Explicit physical-model path; never substitutes a functional closure."""
+        if "past_key_values" in inputs or inputs.get("use_cache", False):
+            raise ValueError("cannot bind an inference KV cache")
+        fixed = copy.deepcopy(inputs)
+        return lambda: self.normal_logits(fixed)
+
     def capture_input(self, inputs: dict[str, Any]) -> Tensor:
         """Read-only hook at the actual matrix input, removed even on exception."""
         captured = []
@@ -196,21 +213,34 @@ class MatrixRuntime:
             self.weight.copy_(rounded)
         self.version += 1
 
-    def reset_single(self) -> None:
-        self.model.load_state_dict(self.base_state, strict=True)
+    def restore_snapshot(self, snapshot: dict[str, Tensor], buffers: dict[str, Tensor],
+                         hooks: tuple[int, ...]) -> None:
+        """Restore and verify persistent AND nonpersistent edit-start state."""
+        current_buffers = dict(self.model.named_buffers(remove_duplicate=False))
+        self.model.load_state_dict(snapshot, strict=True)
+        if set(current_buffers) != set(buffers):
+            raise RuntimeError("cannot restore changed buffer registry")
         with torch.no_grad():
-            for key, value in self.model.named_buffers(remove_duplicate=False):
-                value.copy_(self.buffer_base[key].to(value))
+            for key, value in current_buffers.items():
+                value.copy_(buffers[key].to(value))
+        self.audit(snapshot, hooks, buffer_snapshot=buffers)
+        if not torch.equal(self.weight.detach().cpu(), snapshot[self.path]):
+            raise RuntimeError("selected weight restoration failed")
         self.version += 1
 
-    def audit(self, snapshot: dict[str, Tensor], hooks: tuple[int, ...]) -> None:
+    def reset_single(self) -> None:
+        self.restore_snapshot(self.base_state, self.buffer_base, self.base_hooks)
+
+    def audit(self, snapshot: dict[str, Tensor], hooks: tuple[int, ...], *,
+              buffer_snapshot: dict[str, Tensor] | None = None) -> None:
         now = self.model.state_dict()
         if set(now) != set(snapshot) or self.hooks() != hooks:
             raise RuntimeError("module/state key/hook mutation")
+        expected_buffers = self.buffer_base if buffer_snapshot is None else buffer_snapshot
         buffers = dict(self.model.named_buffers(remove_duplicate=False))
-        if set(buffers) != set(self.buffer_base) or any(
-            v.shape != self.buffer_base[k].shape or v.dtype != self.buffer_base[k].dtype
-            or not torch.equal(v.detach().cpu(), self.buffer_base[k]) for k, v in buffers.items()
+        if set(buffers) != set(expected_buffers) or any(
+            v.shape != expected_buffers[k].shape or v.dtype != expected_buffers[k].dtype
+            or not torch.equal(v.detach().cpu(), expected_buffers[k]) for k, v in buffers.items()
         ):
             raise RuntimeError("unauthorized buffer mutation, including non-persistent state")
         for key, value in now.items():
@@ -238,8 +268,11 @@ class EditConfig:
     cg_rtol: float = 1e-4
     tolerance: float = 1e-8
     ft_lr: float = .1
+    arithmetic_dtype: torch.dtype | None = None
 
     def __post_init__(self) -> None:
+        if self.arithmetic_dtype not in (None, torch.float32):
+            raise ValueError("explicit temporary FP32 arithmetic or native dtype required")
         if min(self.tau, self.nu, self.trust_radius, self.base_drift_limit, self.edit_drift_limit, self.ft_lr) <= 0:
             raise ValueError("positive budgets required")
         if min(self.max_steps, self.max_active, self.cg_max_iter) < 1 or not self.factors or any(not 0 < f <= 1 for f in self.factors):
@@ -265,9 +298,8 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
              config: EditConfig, branch: str, *, attempt_log: Path | None = None) -> EditResult:
     """Rejected/final-unsatisfied edits restore their edit-start state.
 
-    Every attempted rounded weight is checked using normal model forwards through
-    scores/groups evaluated at runtime.weight. Closures must call runtime.logits;
-    the normal forward parity check below independently proves the write path.
+    Solver closures and physical normal-forward callbacks are separate contracts.
+    FP32 solver teachers never stand in for BF16 deployment protection teachers.
     """
     if branch not in BRANCHES or not constraints or not groups:
         raise ValueError("branch, legal constraints and protection groups required")
@@ -277,10 +309,18 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
         c.protection_group and c.protection_group not in {g.name for g in groups} for c in constraints
     ):
         raise ValueError("missing/ambiguous endpoint protection group")
+    if any(c.normal_score is None for c in constraints) or any(
+        g.normal_logits is None or g.deployment_anchor is None or g.deployment_binding is None for g in groups
+    ):
+        raise ValueError("explicit normal-forward scores and bound deployment teachers required")
+    if runtime.weight.dtype in (torch.bfloat16, torch.float16) and config.arithmetic_dtype != torch.float32:
+        raise ValueError("low-precision deployment requires explicit FP32 solver arithmetic")
     snapshot = {k: v.detach().cpu().clone() for k, v in runtime.model.state_dict().items()}
+    buffer_snapshot = {k: v.detach().cpu().clone() for k, v in runtime.model.named_buffers(remove_duplicate=False)}
     hooks = runtime.hooks()
     start = runtime.weight.detach().clone()
-    thresholds = start.new_tensor([c.threshold for c in constraints])
+    coordinate_start = start.to(config.arithmetic_dtype or start.dtype)
+    thresholds = coordinate_start.new_tensor([c.threshold for c in constraints])
     result = EditResult("NOT_SATISFIED")
     # Fixed role-stratified rotation, independent of scores/test performance.
     ordered = sorted(range(len(constraints)), key=lambda i: (constraints[i].role, i))
@@ -293,39 +333,37 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                 stream.flush();os.fsync(stream.fileno())
 
     def evaluate() -> tuple[Tensor, dict[str, float]]:
-        # Temporarily evaluate all functional closures through the REAL model.
-        original = runtime.logits
-        runtime.logits = lambda _w, inputs: runtime.normal_logits(inputs)
-        try:
-            with torch.no_grad():
-                values = constraint_values(constraints, runtime.weight)
-                losses = {g.name: float(g.loss(runtime.weight)) for g in groups}
-            return values, losses
-        finally:
-            runtime.logits = original
+        with torch.no_grad():
+            values = torch.stack([c.normal_score().reshape(()) for c in constraints]).to(thresholds)
+            losses = {g.name: float(protection_kl(g.normal_logits().to(g.deployment_anchor),
+                                                g.deployment_anchor, g.weights)) for g in groups}
+        runtime.audit(snapshot, hooks, buffer_snapshot=buffer_snapshot)
+        return values, losses
 
     def restore() -> None:
-        runtime.model.load_state_dict(snapshot, strict=True)
-        runtime.version += 1
+        runtime.restore_snapshot(snapshot, buffer_snapshot, hooks)
         result.rollback = True
 
     try:
         initial, initial_losses = evaluate()
+        deployed_values = initial
         result.initial_protection = initial_losses
         journal(dict(event="EDIT_START",protection=initial_losses,weight_version=runtime.version))
-        runtime.audit(snapshot, hooks)
+        runtime.audit(snapshot, hooks, buffer_snapshot=buffer_snapshot)
         if any(not torch.isfinite(torch.tensor(v)) or v > g.budget + 1e-12
                for g in groups for v in [initial_losses[g.name]]):
             result.status = "START_BUDGET_VIOLATION"
             journal(dict(event="TERMINAL",status=result.status,protection=initial_losses))
             return result
         for step in range(config.max_steps):
-            w = runtime.weight.detach().clone().requires_grad_(True)
-            full = constraint_values(constraints, w)
-            if float((thresholds - full).clamp_min(0).max()) <= config.tolerance:
+            if bool(torch.isfinite(deployed_values).all()) and float((thresholds - deployed_values).clamp_min(0).max()) <= config.tolerance:
                 result.status = "ACCEPTED"; break
+            w = runtime.weight.detach().to(coordinate_start).clone().requires_grad_(True)
+            full = constraint_values(constraints, w)
             preservation = sum(g.coefficient * g.loss(w) for g in groups)
-            gpres = torch.autograd.grad(preservation, w, retain_graph=True)[0].detach()
+            gpres = (sum(g.coefficient * protection_gradient(g.logits, w.detach(), g.anchor, g.weights) for g in groups)
+                     if config.arithmetic_dtype == torch.float32
+                     else torch.autograd.grad(preservation, w, retain_graph=True)[0].detach())
             active = [ordered[(step * config.max_active + j) % len(ordered)]
                       for j in range(min(config.max_active, len(ordered)))]
             a = torch.stack([torch.autograd.grad(full[i], w, retain_graph=True)[0].flatten() for i in active]).detach()
@@ -340,12 +378,12 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                     elif branch == "W_KEY_QP":
                         if g.keys is None or g.keys.shape[:-1] != g.mask.shape or g.keys.shape[-1] != w.shape[-1]:
                             raise ValueError("actual aligned matrix inputs required for key geometry")
-                        keys = g.keys.reshape(-1, w.shape[-1])
+                        keys = g.keys.reshape(-1, w.shape[-1]).to(w)
                         out = out + g.coefficient * ((shaped @ keys.T) * g.weights.to(w).flatten()) @ keys
                 return out.reshape_as(v)
             qp = None
             if branch == "W_FT":
-                objective = .5 * (thresholds - full).clamp_min(0).square().sum() + preservation + .5 * config.tau * (w - start).square().sum()
+                objective = .5 * (thresholds - full).clamp_min(0).square().sum() + preservation + .5 * config.tau * (w - coordinate_start).square().sum()
                 direction = -config.ft_lr * torch.autograd.grad(objective, w)[0].detach()
             else:
                 qp = solve_step(operator, a, b, gpres, nu=config.nu, max_active=config.max_active,
@@ -358,20 +396,20 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
             clipped = norm > config.trust_radius
             if clipped:
                 direction = direction * (config.trust_radius / norm)
-            before = float((thresholds - full.detach()).clamp_min(0).square().sum())
+            before = float((thresholds - deployed_values).clamp_min(0).square().sum())
             accepted = False
             for factor in config.factors:
                 attempt = dict(step=step,factor=factor,accepted=False,status="STARTED")
                 result.attempts.append(attempt)
                 journal(dict(event="ATTEMPT",**attempt))
                 runtime.write(w.detach() + factor * direction)
-                runtime.audit(snapshot, hooks)
+                runtime.audit(snapshot, hooks, buffer_snapshot=buffer_snapshot)
                 values, losses = evaluate()
                 merit = float((thresholds - values).clamp_min(0).square().sum())
                 finite = bool(torch.isfinite(values).all()) and all(torch.isfinite(torch.tensor(v)) for v in losses.values())
                 budget_ok = all(losses[g.name] <= g.budget + 1e-12 for g in groups)
-                edit_drift = float((runtime.weight - start).norm())
-                base_drift = float((runtime.weight - runtime.base).norm())
+                edit_drift = float((runtime.weight.to(coordinate_start) - coordinate_start).norm())
+                base_drift = float((runtime.weight.to(coordinate_start) - runtime.base.to(coordinate_start)).norm())
                 budget_ok = budget_ok and edit_drift <= config.edit_drift_limit and base_drift <= config.base_drift_limit
                 # Merit has squared-score units; constraint tolerance has score units.
                 merit_roundoff = 16 * torch.finfo(values.dtype).eps * max(before, torch.finfo(values.dtype).tiny)
@@ -386,24 +424,34 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                         matvecs=sum(f.calls for f in frozen), active=active)))
                 journal(dict(event="ATTEMPT_RESULT",**attempt))
                 if accepted:
-                    result.accepted_steps += 1; break
+                    result.accepted_steps += 1; deployed_values = values; break
                 runtime.write(w.detach())
             if not accepted:
                 result.status = "BACKTRACK_REJECTED"; break
-        values, _ = evaluate()
+        values, final_losses = evaluate()
         result.final_violations = {c.name: float((thresholds[i] - values[i]).clamp_min(0)) for i, c in enumerate(constraints)}
-        if max(result.final_violations.values()) <= config.tolerance:
+        if bool(torch.isfinite(values).all()) and max(result.final_violations.values()) <= config.tolerance and all(
+            torch.isfinite(torch.tensor(final_losses[g.name])) and final_losses[g.name] <= g.budget + 1e-12 for g in groups
+        ):
             result.status = "ACCEPTED"
+        elif result.status == "ACCEPTED":
+            result.status = "NOT_SATISFIED"
         if result.status != "ACCEPTED":
             restore()
-        runtime.audit(snapshot, hooks)
+        runtime.audit(snapshot, hooks, buffer_snapshot=buffer_snapshot)
         journal(dict(event="TERMINAL",status=result.status,rollback=result.rollback,violations=result.final_violations))
     except BaseException as exc:
-        restore()
-        result.status, result.error = "EXCEPTION_ROLLED_BACK", type(exc).__name__ + ": " + str(exc)
+        result.error = type(exc).__name__ + ": " + str(exc)
+        try:
+            restore()
+            result.status = "EXCEPTION_ROLLED_BACK"
+        except BaseException as restoration_error:
+            result.rollback = False
+            result.status = "ROLLBACK_FAILED"
+            result.error += "; restoration: " + str(restoration_error)
         if result.attempts and result.attempts[-1].get("status") == "STARTED":
-            result.attempts[-1].update(status="EXCEPTION_ROLLED_BACK",error=result.error)
-        journal(dict(event="TERMINAL",status=result.status,rollback=True,error=result.error))
+            result.attempts[-1].update(status=result.status,error=result.error)
+        journal(dict(event="TERMINAL",status=result.status,rollback=result.rollback,error=result.error))
         if isinstance(exc, (KeyboardInterrupt, SystemExit)):
             raise
     return result
