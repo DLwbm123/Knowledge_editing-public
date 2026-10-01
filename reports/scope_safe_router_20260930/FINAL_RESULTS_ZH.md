@@ -19,3 +19,5 @@ CAL_SCOPE_UNAVAILABLE：继承支持及CHECK为native图像改写，未提供>=4
 本轮已收口，REG=NOT_ADMITTED；GPU驻留0.8210小时（含latent构造、机械检查及推理，不是训练时间）。新Judge 0项，累计7156，无重试，积压0。复用生成统计{'historical_R0_reuse': 2924, 'effective_route_reuse': 946, 'Base_OFF_reuse': 86, 'new_generation': 0}。本轮无adapter/optimizer或权重清理，历史资产不动。
 
 DEV与old47为暴露面板；REG即便执行也为EXPOSED_REGRESSION，不是independent confirmation。不重新训练expert，不搜索阈值，不自动进入下一阶段。公开仅source/config/tests/脱敏聚合与限制；私有输入、raw responses、逐题评分、weights及凭证不公开。
+
+已公开交付：[PR10](https://github.com/DLwbm123/Knowledge_editing-public/pull/10)；分支 `review/scope-safe-router-20260930`。源代码及13项必需报告已发布，远端提交及匿名报告访问已核验。
