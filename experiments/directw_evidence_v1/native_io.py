@@ -52,6 +52,45 @@ def generation_snapshot(model, tokenizer, generation, reference, max_new_tokens)
         hit_token_cap=n==max_new_tokens and not eos))
 
 
+def token_path_audit(model, prepared, batch_logits, batch_labels):
+    """Read-only comparison; prefix decoding scores never decide edit acceptance."""
+    inputs,labels,generation,_=prepared
+    mask=labels[0,1:]!=-100;targets=labels[0,1:][mask]
+    batch_mask=batch_labels[0,1:]!=-100
+    if not 1<=len(targets)<=64 or not torch.equal(targets,batch_labels[0,1:][batch_mask]):
+        raise ValueError('bounded aligned target sequence required')
+    def stats(z,target):
+        z=z.float()
+        if not torch.isfinite(z).all():raise RuntimeError('nonfinite token-path logits')
+        values,indices=z.topk(2)
+        other=values[1] if indices[0]==target else values[0]
+        return dict(margin=float(z[target]-other),argmax_is_target=bool(z.argmax()==target),
+                    target_ties=int((z==z[target]).sum()))
+    records=[]
+    with torch.no_grad():
+        single=model(**inputs).logits[0,:-1][mask]
+        batch=batch_logits[0,:-1][batch_mask]
+        for j,target in enumerate(targets):
+            prefix=torch.cat((generation['inputs'],targets[:j][None,:]),dim=1)
+            kwargs=dict(generation,inputs=prefix,max_new_tokens=1,
+                        return_dict_in_generate=True,output_scores=True)
+            native=model.generate(**kwargs)
+            masked=model.generate(**dict(kwargs,attention_mask=torch.ones_like(prefix,dtype=torch.bool)))
+            if len(native.scores)!=1 or len(masked.scores)!=1:
+                raise RuntimeError('one-step generation diagnostic required')
+            z=native.scores[0][0];explicit=masked.scores[0][0]
+            records.append(dict(position=j,batch_teacher=stats(batch[j],target),
+                single_teacher=stats(single[j],target),prefix_generate=stats(z,target),
+                prefix_generate_explicit_mask=stats(explicit,target),
+                native_generated_target=bool(native.sequences[0,-1]==target),
+                mask_generated_same=bool(native.sequences[0,-1]==masked.sequences[0,-1]),
+                batch_single_max_logit_difference=float((batch[j]-single[j]).abs().max()),
+                single_prefix_max_score_difference=float((single[j].float()-z.float()).abs().max()),
+                implicit_explicit_mask_max_score_difference=float((z.float()-explicit.float()).abs().max())))
+    return dict(target_positions=len(targets),positions=records,
+        scope='Independent native one-step generation conditioned on each forced target prefix; not a claim about cached continuations after divergence')
+
+
 def deployment_dtype(config):
     name=config.get('native_deployment_dtype','bfloat16')
     if name not in ('bfloat16','float32'):

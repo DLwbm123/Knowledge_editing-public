@@ -10,6 +10,35 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_token_path_audit_separates_batch_prefix_mask_and_preserves_inputs(self):
+        from types import SimpleNamespace
+        from .native_io import token_path_audit
+        labels=torch.tensor([[-100,1,2]])
+        logits=torch.tensor([[[0.,2.,0.],[0.,0.,2.],[0.,0.,0.]]])
+        class Model:
+            def __call__(self,**kwargs):return SimpleNamespace(logits=logits)
+            def generate(self,**kwargs):
+                j=kwargs['inputs'].shape[1]-2
+                score=torch.tensor([[3.,1.,0.]]) if j==0 else torch.tensor([[0.,0.,3.]])
+                if 'attention_mask' in kwargs:score=torch.tensor([[0.,3.,0.]]) if j==0 else score
+                return SimpleNamespace(scores=(score,),sequences=score.argmax(-1)[:,None])
+        generation=dict(inputs=torch.tensor([[4,5]]),do_sample=False,max_new_tokens=8)
+        prepared=({},labels,generation,{})
+        batch=logits.clone();batch[0,0,1]=2.5
+        rng=torch.get_rng_state().clone();original=generation['inputs'].clone()
+        result=token_path_audit(Model(),prepared,batch,labels)
+        p=result['positions'][0]
+        self.assertEqual(p['batch_teacher']['margin'],2.5)
+        self.assertEqual(p['single_teacher']['margin'],2.)
+        self.assertEqual(p['prefix_generate']['margin'],-2.)
+        self.assertEqual(p['prefix_generate_explicit_mask']['margin'],3.)
+        self.assertFalse(p['native_generated_target']);self.assertFalse(p['mask_generated_same'])
+        self.assertTrue(result['positions'][1]['native_generated_target'])
+        self.assertTrue(torch.equal(rng,torch.get_rng_state()))
+        self.assertTrue(torch.equal(original,generation['inputs']))
+        self.assertEqual(generation['max_new_tokens'],8)
+        with self.assertRaises(ValueError):token_path_audit(Model(),prepared,batch,torch.full_like(labels,-100))
+
     def test_fp32_large_rhs_tolerance_against_fp64_and_failed_cg(self):
         torch.manual_seed(0)
         a=torch.randn(1,128)*10;b=torch.tensor([14.97]);g=torch.zeros(128)

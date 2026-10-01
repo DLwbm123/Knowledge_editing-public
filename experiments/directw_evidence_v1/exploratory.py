@@ -8,7 +8,7 @@ from .contracts import digest
 from .gate import require_external_approval
 from .editor import MatrixRuntime,Constraint,ProtectionGroup,EditConfig,edit_one,mean_answer_logprob
 from .numerics import FrozenGGN
-from .native_io import load,prepare,WEIGHT,generation_snapshot,minimum_target_margin
+from .native_io import load,prepare,WEIGHT,generation_snapshot,minimum_target_margin,token_path_audit
 
 
 REPLAY_FIELDS = ('status','accepted_steps','ggn_calls','base_score','FP32_base_score',
@@ -129,6 +129,8 @@ def run(config,approval,trusted):
         with torch.no_grad():
             physical=runtime.normal_logits(inputs).float()
             same=runtime.logits(runtime.base,inputs).float()
+        path_before=(token_path_audit(model,prepared[0],physical,labels)
+                     if config.get('token_path_diagnostic') and not mechanical else None)
         parity=float((physical-same).abs().max())
         if parity>1e-3:raise RuntimeError('same-precision native functional parity failed')
         smooth=runtime.bind_inputs(inputs,arithmetic_dtype=torch.float32)
@@ -239,6 +241,13 @@ def run(config,approval,trusted):
             target_tokens=tokenizer(row['answer'],add_special_tokens=False).input_ids+[tokenizer.eos_token_id]
             receipt['generation_diagnostic'].update(target_tokens_exact_before=generation_before['tokens']==target_tokens,
                 target_tokens_exact_after=generation_after['tokens']==target_tokens)
+            receipt.update(elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
+        if path_before is not None:
+            with torch.no_grad():path_logits=normal().float()
+            receipt['token_path_diagnostic']=dict(before=path_before,
+                after=token_path_audit(model,prepared[0],path_logits,labels))
+            del path_logits
+            runtime.audit(runtime.base_state,runtime.base_hooks)
             receipt.update(elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))
         if mechanical and not result.attempts:raise RuntimeError('native regression did not exercise solver/write path')
