@@ -171,7 +171,8 @@ def run(config,approval,trusted):
             rounding_mode=config.get('rounding_mode','nearest'),
             rounding_seed=config.get('rounding_seed',20261001)+1009*(10000 if mechanical else int(index)),
             max_ggn_calls=config['maximum_GGN_calls']-total_ggn)
-        result=edit_one(runtime,[constraint],[group],settings,'W_FUNCTIONAL_QP',attempt_log=root/f'{index}.attempts.private.jsonl')
+        branch='W_FUNCTIONAL_QP' if mechanical else config.get('editor_branch','W_FUNCTIONAL_QP')
+        result=edit_one(runtime,[constraint],[group],settings,branch,attempt_log=root/f'{index}.attempts.private.jsonl')
         total_ggn+=result.ggn_calls
         runtime.audit(runtime.base_state,runtime.base_hooks)
         with torch.no_grad():final_score=float(score(normal()))
@@ -181,7 +182,7 @@ def run(config,approval,trusted):
         if result.status in ('EXCEPTION_ROLLED_BACK','ROLLBACK_FAILED') or (mechanical and result.status=='SOLVER_NOT_CONVERGED'):
             (root/f'{index}.failure.private.json').write_text(json.dumps(asdict(result),indent=2,default=str))
             raise RuntimeError('native editor failure: '+result.status+' '+str(result.error))
-        receipt=dict(index=index,mechanical=mechanical,status=result.status,accepted_steps=result.accepted_steps,
+        receipt=dict(index=index,mechanical=mechanical,editor_branch=branch,status=result.status,accepted_steps=result.accepted_steps,
             ggn_calls=result.ggn_calls,rollback=result.rollback,base_score=base_score,FP32_base_score=fp_score,
             threshold=threshold,final_deployed_score=final_score,changed_original_W=changed,
             same_precision_parity=parity,cross_precision_max_difference=float((fp-physical).abs().max()),
