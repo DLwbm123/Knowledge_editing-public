@@ -294,8 +294,11 @@ class EditConfig:
     record_trial_diagnostics: bool = False
     rounding_mode: str = "nearest"
     rounding_seed: int = 20261001
+    qp_dual_tol: float = 1e-8
 
     def __post_init__(self) -> None:
+        if not 0 < self.qp_dual_tol < float('inf'):
+            raise ValueError('finite positive QP dual tolerance required')
         if self.rounding_mode not in {"nearest", "stochastic_bf16"} or type(self.rounding_seed) is not int or not 0 <= self.rounding_seed < 2**63:
             raise ValueError("invalid rounding mode/seed")
         if type(self.record_trial_diagnostics) is not bool:
@@ -433,10 +436,12 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                 direction = -config.ft_lr * torch.autograd.grad(objective, w)[0].detach()
             else:
                 qp = solve_step(operator, a, b, gpres, nu=config.nu, max_active=config.max_active,
-                                cg_rtol=config.cg_rtol, cg_max_iter=config.cg_max_iter)
+                                cg_rtol=config.cg_rtol, cg_max_iter=config.cg_max_iter,dual_tol=config.qp_dual_tol)
                 direction = qp.direction
                 if qp.status != "CONVERGED":
-                    result.attempts.append(dict(step=step, status=qp.status, kkt=qp.kkt))
+                    result.attempts.append(dict(step=step,status=qp.status,kkt=qp.kkt,dual_tol=config.qp_dual_tol,
+                        dual_iterations=qp.dual_iterations,cg=[dict(status=s.status,residual=s.relative_residual,
+                            iterations=s.iterations,calls=s.calls) for s in qp.cg]))
                     result.status = "SOLVER_NOT_CONVERGED"; break
             norm = float(direction.norm())
             clipped = norm > config.trust_radius

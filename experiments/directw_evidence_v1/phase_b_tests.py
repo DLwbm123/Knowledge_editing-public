@@ -10,6 +10,25 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_fp32_large_rhs_tolerance_against_fp64_and_failed_cg(self):
+        torch.manual_seed(0)
+        a=torch.randn(1,128)*10;b=torch.tensor([14.97]);g=torch.zeros(128)
+        strict=solve_step(lambda v:100*v,a,b,g,cg_rtol=1e-4,cg_max_iter=16)
+        calibrated=solve_step(lambda v:100*v,a,b,g,cg_rtol=1e-4,cg_max_iter=16,dual_tol=1e-6)
+        oracle=solve_step(lambda v:100*v,a.double(),b.double(),g.double(),cg_rtol=1e-4,cg_max_iter=16)
+        self.assertEqual(calibrated.status,'CONVERGED');self.assertEqual(oracle.status,'CONVERGED')
+        self.assertLess(float((calibrated.direction.double()-oracle.direction).abs().max()),1e-7)
+        self.assertTrue(all(s.status=='CONVERGED' for s in calibrated.cg))
+        # Roundoff can vary by CPU; if the strict solve fails it must retain the
+        # same nearly exact direction, not be a genuinely bad CG solution.
+        if strict.status!='CONVERGED':
+            self.assertTrue(all(s.status=='CONVERGED' for s in strict.cg))
+            self.assertLess(float((strict.direction.double()-oracle.direction).abs().max()),1e-7)
+        diagonal=torch.linspace(1.,1000.,128)
+        failed=solve_step(lambda v:diagonal*v,a,b,g,cg_rtol=1e-4,cg_max_iter=1,dual_tol=1e-6)
+        self.assertEqual(failed.status,'NOT_CONVERGED')
+        self.assertTrue(any(s.status!='CONVERGED' for s in failed.cg))
+
     def test_target_margin_uses_worst_content_or_eos_and_masks_padding(self):
         from .native_io import minimum_target_margin
         logits=torch.tensor([[[4.,5.,0.],[3.,0.,2.],[99.,0.,0.],[0.,0.,0.]]],requires_grad=True)
