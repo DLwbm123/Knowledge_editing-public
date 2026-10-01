@@ -9,3 +9,5 @@
 CAL仍缺真实verified且正确隔离的标注。已有16个CHECK同图待审提案已写入私有review queue，全部UNVERIFIED，不计入新CAL，不声称独立确认，也未创造跨图数据。下一步是取得带验证证据的合法scope标注，再另立计划；当前不继续盲调半径、换expert或消耗GPU。公开只aggregate与代码；原图像、QA、答案、逐题诊断、待审明细保持私有。
 
 下一阶段优先验证真正跨图的scope正例支持。同图fit保护的迁移失败是本次暴露诊断结论；不证明全部latent特征或任何其他固定规则无解。失效正例与获救负例的几何范围有重叠，不从这些正式输出反推新阈值。29次missing出现（14个不同输入）全部保留；R0处于OFF的输入没有winner几何，其完整消费者仍在分组分母里。
+
+已公开交付：[PR12](https://github.com/DLwbm123/Knowledge_editing-public/pull/12)；分支 `review/scope-information-audit-20261001`。源代码及本阶段必需报告已发布，远端提交及匿名报告访问已核验。
