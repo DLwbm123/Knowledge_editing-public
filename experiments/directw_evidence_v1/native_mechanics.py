@@ -1,12 +1,13 @@
 """Bounded original-weight mechanical qualification, never a scientific edit run."""
 from __future__ import annotations
 import gc,json,os,resource,signal,subprocess,sys,time,traceback
+from dataclasses import replace
 from pathlib import Path
 import torch
 from .gate import require_external_approval
 from .contracts import digest
 from .editor import MatrixRuntime,mean_answer_logprob
-from .numerics import FrozenGGN,cg,solve_step,protection_kl
+from .numerics import FrozenGGN,cg,solve_step,protection_kl,protection_gradient
 from .native_io import load,prepare,WEIGHT
 
 FILES=['NATIVE_BINDINGS','NATIVE_TEMPLATE_AUDIT','NATIVE_DERIVATIVE_AUDIT','NATIVE_PRECISION_AUDIT',
@@ -16,6 +17,10 @@ FILES=['NATIVE_BINDINGS','NATIVE_TEMPLATE_AUDIT','NATIVE_DERIVATIVE_AUDIT','NATI
 
 def run(config,approval,trusted):
     require_external_approval('NATIVE_SMOKE',config['bindings'],approval,config,trusted_authorization=trusted)
+    if config['protocol'].get('editor_function')!='FP32_FULL_FUNCTIONAL':
+        raise PermissionError('explicit FP32 functional precision contract required')
+    torch.backends.cuda.matmul.allow_tf32=False
+    torch.backends.cudnn.allow_tf32=False
     root=Path(config['run_root']);root.mkdir(parents=True,exist_ok=True)
     records={name:dict(status='NOT_RUN',result_kind='MECHANICAL_NATIVE_VALIDATION') for name in FILES}
     profile=[];ggn_calls=0;rt=None;started=time.monotonic()
@@ -113,17 +118,25 @@ def run(config,approval,trusted):
             perturb_delta_norm=float((perturb.float()-bfpoint.float()).norm()),fixed_detached_anchor=True,no_other_parameter_gradients=no_others)
         flush()
         if not derivative_ok:raise RuntimeError('fixed-anchor native derivative qualification failed')
-        bf_curvature=bench('BF16_FrozenGGN_anchor',lambda:FrozenGGN(bf_logits,bfpoint,weights))
-        bf_operator=operator(bf_curvature,bfpoint)
-        bf_cg=bench('BF16_Q_inverse_CG',lambda:cg(bf_operator,answer_grad,rtol=1e-4,max_iter=config['maximum_CG_iterations']))
-        use_fp32=bf_cg.status!='CONVERGED'
-        point=bfpoint.float() if use_fp32 else bfpoint
-        logits=(lambda w:raw(w.to(torch.bfloat16))[:,predictors,:].float()) if use_fp32 else bf_logits
-        answer=(lambda w:score(raw(w.to(torch.bfloat16)))) if use_fp32 else bf_score
+        # The separately approved FP32 function is not the rounded BF16 map.
+        deployment_anchor=anchor
+        raw32=rt.bind_inputs(inputs,arithmetic_dtype=torch.float32)
+        point=bfpoint.float()
+        logits=lambda w:raw32(w)[:,predictors,:].float()
+        answer=lambda w:score(raw32(w))
+        with torch.no_grad():fp32_z=raw32(point).float()
+        cross_difference=float((fp32_z-z).abs().max())
+        anchor=logits(point).softmax(-1).detach()
         loss=lambda w:protection_kl(logits(w),anchor,weights)
         a=bench('solver_coordinate_answer_backward',lambda:grad(answer,point))
-        g=bench('solver_coordinate_protection_backward',lambda:grad(loss,point))
-        curvature=bench('solver_FrozenGGN_anchor',lambda:FrozenGGN(logits,point,weights)) if use_fp32 else bf_curvature
+        autograd_g=bench('solver_coordinate_protection_backward',lambda:grad(loss,point))
+        # At this exact teacher point, J^T(p-q)=0 analytically. Check equality
+        # and bound autograd normalization roundoff before using that identity.
+        if not torch.equal(logits(point).softmax(-1),anchor) or not finite(autograd_g) or float(autograd_g.norm())>1e-5*max(1,float(a.norm())):
+            raise RuntimeError('stationary fixed-anchor identity failed')
+        g=bench('analytic_categorical_KL_pullback',lambda:protection_gradient(logits,point,anchor,weights))
+        if torch.count_nonzero(g):raise RuntimeError('stationary categorical KL pullback must vanish')
+        curvature=bench('solver_FrozenGGN_anchor',lambda:FrozenGGN(logits,point,weights))
         op=operator(curvature,point)
         u=torch.zeros_like(point);v=torch.zeros_like(point);u.reshape(-1)[index]=1;v.reshape(-1)[(index+14336)%point.numel()]=1
         # Independent JVP/VJP support and timing, without Fisher approximation.
@@ -141,16 +154,21 @@ def run(config,approval,trusted):
             JVP_supported=True,VJP_supported=True,JVP_tangent_dtype=str(u.dtype),JVP_result_dtype=str(jv.dtype),VJP_result_dtype=str(vjp_result.dtype),
             GGN_output_dtype=str(fu.dtype),GGN_norm=float(fu.float().norm()),u_Fv=uv,v_Fu=vu,symmetry_absolute_error=abs(uv-vu),
             PSD_quadratic=quad,repeated_max_difference=float((fu.float()-repeated.float()).abs().max()),approximation_used=False)
-        solved=bench('Q_inverse_CG',lambda:cg(op,a,rtol=1e-4,max_iter=config['maximum_CG_iterations'])) if use_fp32 else bf_cg
+        solved=bench('Q_inverse_CG',lambda:cg(op,a,rtol=1e-4,max_iter=config['maximum_CG_iterations']))
         plus=point.clone();minus=point.clone();plus.reshape(-1)[index]+=epsilon;minus.reshape(-1)[index]-=epsilon
         with torch.no_grad():fd=float((answer(plus)-answer(minus))/(2*epsilon))
         analytic=float(a.reshape(-1)[index]);fd_error=abs(fd-analytic)/max(abs(analytic),1e-8)
         records['NATIVE_PRECISION_AUDIT'].update(status='PASS' if solved.status=='CONVERGED' and fd_error<=.2 else 'FAIL',
             deployment_dtype='torch.bfloat16',solver_coordinate_dtype=str(point.dtype),logit_protection_arithmetic_dtype='torch.float32',
-            FP32_editor_state_used=use_fp32,patch_trigger='BF16 frozen CG convergence failure' if use_fp32 else None,
-            BF16_CG_status=bf_cg.status,BF16_relative_residual=bf_cg.relative_residual,
+            FP32_editor_state_used=True,editor_function='FP32_FULL_FUNCTIONAL',
+            curvature_semantics='exact JVP/VJP GGN of FP32 functional model, not rounded BF16 map',
+            cross_precision_max_difference=cross_difference,cross_precision_parity_passed=cross_difference<=1e-3,
+            cross_precision_parity_is_admission_gate=False,approved_precision_contract=config['approved_protocol_digest'],
+            preservation_gradient_semantics='analytic J^T(p-q)=0 at identical fixed FP32 teacher',
+            autograd_preservation_normalization_roundoff_norm=float(autograd_g.norm()),
             constraint_gradient_dtype=str(a.dtype),preservation_gradient_dtype=str(g.dtype),CG_inner_product_dtype=str((a*a).sum().dtype),
-            solver_CG_status=solved.status,solver_CG_residual=solved.relative_residual,CG_rtol=1e-4,
+            solver_CG_status=solved.status,solver_CG_residual=solved.relative_residual,CG_rtol=1e-4,CG_iterations=solved.iterations,
+            recursive_relative_residuals=solved.recursive_relative_residuals,
             finite_difference=dict(epsilon=epsilon,analytic=analytic,central_difference=fd,relative_error=fd_error,
                 plus_represented_delta_norm=float((plus.to(torch.bfloat16).float()-bfpoint.float()).norm()),
                 minus_represented_delta_norm=float((minus.to(torch.bfloat16).float()-bfpoint.float()).norm()),frozen_relative_tolerance=.2),
@@ -158,25 +176,33 @@ def run(config,approval,trusted):
         flush()
         if records['NATIVE_GGN_AUDIT']['status']!='PASS' or records['NATIVE_PRECISION_AUDIT']['status']!='PASS':raise RuntimeError('native GGN/precision qualification failed')
         constraint=a.reshape(1,-1);rhs=torch.tensor([1e-4],device=point.device,dtype=point.dtype)
-        qp1=bench('one_constraint_QP',lambda:solve_step(op,constraint,rhs,g,nu=10,cg_rtol=1e-4,cg_max_iter=config['maximum_CG_iterations'],dual_tol=1e-8,max_active=2))
-        qp2=bench('two_constraint_QP',lambda:solve_step(op,torch.cat((constraint,.5*constraint)),torch.cat((rhs,.5*rhs)),g,nu=10,cg_rtol=1e-4,cg_max_iter=config['maximum_CG_iterations'],dual_tol=1e-8,max_active=2))
+        solved_g=bench('Q_inverse_stationary_preservation_CG',lambda:cg(op,g,rtol=1e-4,max_iter=config['maximum_CG_iterations']))
+        qp1=bench('one_constraint_QP',lambda:solve_step(op,constraint,rhs,g,nu=10,cg_rtol=1e-4,cg_max_iter=config['maximum_CG_iterations'],dual_tol=1e-8,max_active=2,inverse_solutions=[solved_g,solved]))
+        qp2=bench('two_constraint_QP',lambda:solve_step(op,torch.cat((constraint,.5*constraint)),torch.cat((rhs,.5*rhs)),g,nu=10,cg_rtol=1e-4,cg_max_iter=config['maximum_CG_iterations'],dual_tol=1e-8,max_active=2,inverse_solutions=[solved_g,solved,replace(solved,value=.5*solved.value)]))
         records['NATIVE_QP_AUDIT'].update(status='PASS' if qp1.status==qp2.status=='CONVERGED' else 'FAIL',
             one_constraint=dict(status=qp1.status,kkt=qp1.kkt,slack=qp1.slack.tolist()),two_constraints=dict(status=qp2.status,kkt=qp2.kkt,slack=qp2.slack.tolist()),
-            includes_preservation_linear_term=True,explicit_slack=True,max_active=2,max_edit_steps=1)
+            includes_preservation_linear_term=True,explicit_slack=True,max_active=2,max_edit_steps=1,
+            inverse_reuse='same frozen Q, fresh actual residual check per RHS',
+            reused_inverse_residuals=[[s.relative_residual for s in q.cg] for q in [qp1,qp2]],
+            second_constraint='mechanical redundant row A2=0.5*A1; no independent medical evidence claim')
         flush()
         if records['NATIVE_QP_AUDIT']['status']!='PASS':raise RuntimeError('frozen native QP convergence failed')
         direction=qp2.direction;direction=direction*min(1,config['trust_radius']/max(float(direction.norm()),1e-30))
         def transaction():
             rt.write(point+direction);rt.audit(snapshot,hooks)
-            with torch.no_grad():candidate_z=normal();candidate_loss=float(protection_kl(candidate_z[:,predictors,:],anchor,weights))
+            with torch.no_grad():candidate_z=normal();candidate_loss=float(protection_kl(candidate_z[:,predictors,:],deployment_anchor,weights))
+            candidate_score=float(score(candidate_z));base_score=float(score(z))
             rounding=dict(rt.last_rounding)
             rt.write(rt.base);restored=torch.equal(rt.weight,rt.base)
             with torch.no_grad():restoration_error=float((normal()-z).abs().max())
-            return candidate_loss,rounding,restored,restoration_error
-        candidate_loss,rounding,restored,restoration_error=bench('write_normal_forward_protection_rollback',transaction)
+            return candidate_loss,rounding,restored,restoration_error,candidate_score,base_score
+        candidate_loss,rounding,restored,restoration_error,candidate_score,base_score=bench('write_normal_forward_protection_rollback',transaction)
         transaction_ok=restored and restoration_error<=1e-3 and candidate_loss<=1e-3 and rounding['actual_delta_norm']>0
         records['NATIVE_WRITE_ROLLBACK_AUDIT'].update(status='PASS' if transaction_ok else 'FAIL',only_selected_changed=True,
-            protection_KL=candidate_loss,protection_budget=1e-3,trust_radius=config['trust_radius'],rounding=rounding,
+            protection_KL=candidate_loss,protection_anchor_dtype='BF16 deployment logits promoted to FP32 for KL only',
+            base_answer_score=base_score,candidate_answer_score=candidate_score,
+            actual_deployed_score_change=candidate_score-base_score,content_score_is_mechanical_only=True,
+            protection_budget=1e-3,trust_radius=config['trust_radius'],rounding=rounding,
             bitwise_W_restoration=restored,normal_forward_restoration_max_difference=restoration_error)
         flush()
         if not transaction_ok:raise RuntimeError('bounded deployed mechanical write/rollback qualification failed')
@@ -184,7 +210,7 @@ def run(config,approval,trusted):
         with torch.no_grad():edited_z=normal().cpu();tokens=bench('ordinary_unjudged_free_generation',lambda:model.generate(**generation)).cpu()
         edited_path=root/'edited_matrix.private.pt';torch.save(rt.weight.detach().cpu(),edited_path)
         rt.write(rt.base);rt.audit(snapshot,hooks)
-        del rt,model,selected,snapshot,raw,bf_logits,bf_score,bf_loss,loss,logits,answer,curvature,bf_curvature,op,bf_operator,inputs,generation
+        del rt,model,selected,snapshot,raw,raw32,bf_logits,bf_score,bf_loss,loss,logits,answer,curvature,op,inputs,generation
         rt=None;gc.collect();torch.cuda.empty_cache()
         reload_config=dict(config,edited_matrix=str(edited_path),reload_result=str(root/'clean_reload.private.pt'))
         (root/'RELOAD_CONFIG.private.json').write_text(json.dumps(reload_config))
@@ -214,7 +240,8 @@ def run(config,approval,trusted):
         records['NATIVE_RESOURCE_PROFILE'].update(status='MEASURED_PARTIAL' if profile else 'NOT_MEASURED',microbenchmarks=profile,
             elapsed_seconds=elapsed,gpu_hours_used=elapsed/3600,gpu_hours_cap=config['authorized_gpu_hours'],exact_GGN_calls=ggn_calls,
             exact_GGN_call_cap=config['maximum_GGN_calls'],solver_vector_bytes=4096*14336*4,
-            snapshot_bytes=4096*14336*2,full_Backbone_CPU_snapshot_bytes=config['static_bindings']['checkpoint_tensor_elements']*2,
+            snapshot_bytes=4096*14336*2,full_logit_bytes=int(z.numel()*z.element_size()) if 'z' in locals() else None,
+            candidate_matrix_bytes=4096*14336*4,full_Backbone_CPU_snapshot_bytes=config['static_bindings']['checkpoint_tensor_elements']*2,
             new_artifact_bytes=sum(p.stat().st_size for p in root.rglob('*') if p.is_file()),
             paid_judge_calls=0,real_pilot_started=False,sequential_started=False)
         measured=[p['wall_seconds'] for p in profile if p['operation']=='exact_GGN_matvec']

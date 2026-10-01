@@ -38,6 +38,18 @@ def protection_kl(logits: Tensor, anchor: Tensor, weights: Tensor) -> Tensor:
             - logits.log_softmax(-1))).sum(-1)).sum()
 
 
+def protection_gradient(logits: Operator, point: Tensor, anchor: Tensor, weights: Tensor) -> Tensor:
+    """Categorical KL pullback J^T w(p-q); identical fixed teacher gives zero.
+
+    Uses the analytic probability residual, avoiding normalization roundoff in
+    the log-softmax backward. This does not drop nonstationary protection terms.
+    """
+    value, pullback = torch.func.vjp(logits, point)
+    protection_kl(value, anchor, weights)  # Validate the fixed teacher contract.
+    residual = weights.to(value).unsqueeze(-1) * (value.softmax(-1) - anchor)
+    return pullback(residual)[0].detach()
+
+
 class FrozenGGN:
     """Freeze local point, probabilities, position weights and Torch CPU RNG.
 

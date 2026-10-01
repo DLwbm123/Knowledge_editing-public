@@ -4,12 +4,25 @@ import torch
 from .contracts import SMOKE, FIT, audit_data, method_eligibility, AttemptLedger, digest
 from .gate import BINDINGS, default_config, require_external_approval
 from .tests import row
-from .numerics import cg, solve_step, FrozenGGN
+from .numerics import cg, solve_step, FrozenGGN, protection_gradient, protection_kl
 from .editor import MatrixRuntime
 from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_analytic_protection_pullback_stationary_and_nonstationary(self):
+        torch.manual_seed(21)
+        x=torch.randn(2,3,dtype=torch.float64)
+        point=torch.randn(3,4,dtype=torch.float64)
+        fn=lambda w:x@w
+        anchor=fn(point).softmax(-1).detach();weights=torch.ones(2,dtype=torch.float64)/2
+        self.assertEqual(int(torch.count_nonzero(protection_gradient(fn,point,anchor,weights))),0)
+        moved=(point+.1*torch.randn_like(point)).requires_grad_(True)
+        actual=protection_gradient(fn,moved,anchor,weights)
+        reference=torch.autograd.grad(protection_kl(fn(moved),anchor,weights),moved)[0]
+        self.assertGreater(float(actual.norm()),0)
+        self.assertTrue(torch.allclose(actual,reference,atol=1e-12,rtol=1e-12))
+
     def test_reused_inverse_verified_against_current_operator(self):
         q=torch.diag(torch.tensor([1.,2.,3.],dtype=torch.float64));op=lambda v:q@v
         a=torch.tensor([[1.,1.,0.],[0.,1.,1.]],dtype=torch.float64)

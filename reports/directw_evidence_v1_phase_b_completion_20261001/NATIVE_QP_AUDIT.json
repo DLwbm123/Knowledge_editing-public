@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "result_kind": "MECHANICAL_NATIVE_VALIDATION",
+  "one_constraint": {
+    "status": "CONVERGED",
+    "kkt": {
+      "primal": 2.1827872842550278e-11,
+      "stationarity": 3.006845261666058e-08,
+      "complementarity": 3.973557022325235e-16,
+      "slack_stationarity": 0.0,
+      "dual_projected": 7.275957614183426e-12
+    },
+    "slack": [
+      1.8204051457360038e-06
+    ]
+  },
+  "two_constraints": {
+    "status": "CONVERGED",
+    "kkt": {
+      "primal": 6.912159733474255e-11,
+      "stationarity": 3.0135879569570534e-08,
+      "complementarity": 1.3279359708205651e-13,
+      "slack_stationarity": 0.0,
+      "dual_projected": 9.204086381942034e-09
+    },
+    "slack": [
+      1.463593662265339e-06,
+      7.271921731444309e-07
+    ]
+  },
+  "includes_preservation_linear_term": true,
+  "explicit_slack": true,
+  "max_active": 2,
+  "max_edit_steps": 1,
+  "inverse_reuse": "same frozen Q, fresh actual residual check per RHS",
+  "reused_inverse_residuals": [
+    [
+      0.0,
+      5.839914691859291e-05
+    ],
+    [
+      0.0,
+      5.839914691859291e-05,
+      5.839914691859291e-05
+    ]
+  ],
+  "second_constraint": "mechanical redundant row A2=0.5*A1; no independent medical evidence claim"
+}

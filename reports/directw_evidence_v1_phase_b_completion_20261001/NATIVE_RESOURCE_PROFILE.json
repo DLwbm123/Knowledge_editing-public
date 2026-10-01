@@ -1,0 +1,247 @@
+{
+  "status": "MEASURED_PARTIAL",
+  "result_kind": "MECHANICAL_NATIVE_VALIDATION",
+  "microbenchmarks": [
+    {
+      "operation": "clean_model_load",
+      "wall_seconds": 9.055573060992174,
+      "peak_gpu_allocated_bytes": 15739459072,
+      "peak_gpu_reserved_bytes": 15747514368,
+      "activation_memory_increment_bytes": 15739459072,
+      "host_peak_rss_bytes": 6396043264,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "template_image_expansion",
+      "wall_seconds": 0.3638513999758288,
+      "peak_gpu_allocated_bytes": 15982733312,
+      "peak_gpu_reserved_bytes": 16005464064,
+      "activation_memory_increment_bytes": 125828096,
+      "host_peak_rss_bytes": 17796415488,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "Base_forward",
+      "wall_seconds": 0.13983552204445004,
+      "peak_gpu_allocated_bytes": 16041201152,
+      "peak_gpu_reserved_bytes": 16231956480,
+      "activation_memory_increment_bytes": 145117696,
+      "host_peak_rss_bytes": 17796415488,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "deterministic_repeat_forward",
+      "wall_seconds": 0.06191050505731255,
+      "peak_gpu_allocated_bytes": 16118795776,
+      "peak_gpu_reserved_bytes": 16309551104,
+      "activation_memory_increment_bytes": 145117696,
+      "host_peak_rss_bytes": 17796415488,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "functional_call_parity",
+      "wall_seconds": 0.06855983298737556,
+      "peak_gpu_allocated_bytes": 16196390400,
+      "peak_gpu_reserved_bytes": 16387145728,
+      "activation_memory_increment_bytes": 145117696,
+      "host_peak_rss_bytes": 17796415488,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "W_KEY_physical_input",
+      "wall_seconds": 0.061595603940077126,
+      "peak_gpu_allocated_bytes": 16291277312,
+      "peak_gpu_reserved_bytes": 16542334976,
+      "activation_memory_increment_bytes": 162406912,
+      "host_peak_rss_bytes": 17885343744,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "answer_score_backward",
+      "wall_seconds": 0.49294871801976115,
+      "peak_gpu_allocated_bytes": 17921967616,
+      "peak_gpu_reserved_bytes": 18272485376,
+      "activation_memory_increment_bytes": 1825905152,
+      "host_peak_rss_bytes": 18028998656,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "protection_KL_backward_Base",
+      "wall_seconds": 0.10016576398629695,
+      "peak_gpu_allocated_bytes": 17916980224,
+      "peak_gpu_reserved_bytes": 18389925888,
+      "activation_memory_increment_bytes": 1669794304,
+      "host_peak_rss_bytes": 18097156096,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "protection_KL_backward_perturbed",
+      "wall_seconds": 0.09221567097119987,
+      "peak_gpu_allocated_bytes": 18151861248,
+      "peak_gpu_reserved_bytes": 18624806912,
+      "activation_memory_increment_bytes": 1669794304,
+      "host_peak_rss_bytes": 18106593280,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "solver_coordinate_answer_backward",
+      "wall_seconds": 0.5120984259992838,
+      "peak_gpu_allocated_bytes": 48016869376,
+      "peak_gpu_reserved_bytes": 48676995072,
+      "activation_memory_increment_bytes": 2278305280,
+      "host_peak_rss_bytes": 18110787584,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "solver_coordinate_protection_backward",
+      "wall_seconds": 0.4883083200547844,
+      "peak_gpu_allocated_bytes": 48174155776,
+      "peak_gpu_reserved_bytes": 48911876096,
+      "activation_memory_increment_bytes": 2200710656,
+      "host_peak_rss_bytes": 18110787584,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "analytic_categorical_KL_pullback",
+      "wall_seconds": 0.4836524580605328,
+      "peak_gpu_allocated_bytes": 48515910656,
+      "peak_gpu_reserved_bytes": 49146757120,
+      "activation_memory_increment_bytes": 2307584512,
+      "host_peak_rss_bytes": 18110787584,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "solver_FrozenGGN_anchor",
+      "wall_seconds": 0.39064785302616656,
+      "peak_gpu_allocated_bytes": 46862277120,
+      "peak_gpu_reserved_bytes": 49616519168,
+      "activation_memory_increment_bytes": 419069952,
+      "host_peak_rss_bytes": 18110787584,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "native_JVP",
+      "wall_seconds": 0.7181217360775918,
+      "peak_gpu_allocated_bytes": 47847821824,
+      "peak_gpu_reserved_bytes": 50610569216,
+      "activation_memory_increment_bytes": 699843072,
+      "host_peak_rss_bytes": 18129661952,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "native_VJP",
+      "wall_seconds": 0.4939800619613379,
+      "peak_gpu_allocated_bytes": 49455819264,
+      "peak_gpu_reserved_bytes": 50610569216,
+      "activation_memory_increment_bytes": 2307584512,
+      "host_peak_rss_bytes": 18129661952,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "exact_GGN_matvec",
+      "wall_seconds": 1.1272159320069477,
+      "peak_gpu_allocated_bytes": 49690956288,
+      "peak_gpu_reserved_bytes": 50845450240,
+      "activation_memory_increment_bytes": 2307840512,
+      "host_peak_rss_bytes": 18129661952,
+      "ggn_calls": 1
+    },
+    {
+      "operation": "repeated_exact_GGN_matvec",
+      "wall_seconds": 1.1270472899777815,
+      "peak_gpu_allocated_bytes": 49925837312,
+      "peak_gpu_reserved_bytes": 51369738240,
+      "activation_memory_increment_bytes": 2307840512,
+      "host_peak_rss_bytes": 18129661952,
+      "ggn_calls": 1
+    },
+    {
+      "operation": "symmetry_exact_GGN_matvec",
+      "wall_seconds": 1.129289488075301,
+      "peak_gpu_allocated_bytes": 50160718336,
+      "peak_gpu_reserved_bytes": 51369738240,
+      "activation_memory_increment_bytes": 2307840512,
+      "host_peak_rss_bytes": 18129661952,
+      "ggn_calls": 1
+    },
+    {
+      "operation": "Q_inverse_CG",
+      "wall_seconds": 7.962416665046476,
+      "peak_gpu_allocated_bytes": 52039956992,
+      "peak_gpu_reserved_bytes": 53701771264,
+      "activation_memory_increment_bytes": 3952198144,
+      "host_peak_rss_bytes": 18129661952,
+      "ggn_calls": 7
+    },
+    {
+      "operation": "Q_inverse_stationary_preservation_CG",
+      "wall_seconds": 2.282323166029528,
+      "peak_gpu_allocated_bytes": 51570193408,
+      "peak_gpu_reserved_bytes": 53701771264,
+      "activation_memory_increment_bytes": 2777790976,
+      "host_peak_rss_bytes": 18129661952,
+      "ggn_calls": 2
+    },
+    {
+      "operation": "one_constraint_QP",
+      "wall_seconds": 3.44270226592198,
+      "peak_gpu_allocated_bytes": 52039959040,
+      "peak_gpu_reserved_bytes": 53701771264,
+      "activation_memory_increment_bytes": 3012675584,
+      "host_peak_rss_bytes": 18130055168,
+      "ggn_calls": 3
+    },
+    {
+      "operation": "two_constraint_QP",
+      "wall_seconds": 6.292148272041231,
+      "peak_gpu_allocated_bytes": 53214365696,
+      "peak_gpu_reserved_bytes": 54867787776,
+      "activation_memory_increment_bytes": 3952200192,
+      "host_peak_rss_bytes": 18142638080,
+      "ggn_calls": 4
+    },
+    {
+      "operation": "write_normal_forward_protection_rollback",
+      "wall_seconds": 4.1002121169585735,
+      "peak_gpu_allocated_bytes": 51199939584,
+      "peak_gpu_reserved_bytes": 54869884928,
+      "activation_memory_increment_bytes": 1233129984,
+      "host_peak_rss_bytes": 18431815680,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "ordinary_unjudged_free_generation",
+      "wall_seconds": 0.4254450409207493,
+      "peak_gpu_allocated_bytes": 50215227904,
+      "peak_gpu_reserved_bytes": 54869884928,
+      "activation_memory_increment_bytes": 248418304,
+      "host_peak_rss_bytes": 18438004736,
+      "ggn_calls": 0
+    },
+    {
+      "operation": "editor_free_clean_reload",
+      "wall_seconds": 11.128667009994388,
+      "peak_gpu_allocated_bytes": 5037882368,
+      "peak_gpu_reserved_bytes": 5830082560,
+      "activation_memory_increment_bytes": 0,
+      "host_peak_rss_bytes": 18559115264,
+      "ggn_calls": 0
+    }
+  ],
+  "elapsed_seconds": 69.18945409997832,
+  "gpu_hours_used": 0.019219292805549532,
+  "gpu_hours_cap": 0.5,
+  "exact_GGN_calls": 19,
+  "exact_GGN_call_cap": 21,
+  "solver_vector_bytes": 234881024,
+  "snapshot_bytes": 117440512,
+  "full_logit_bytes": 77184000,
+  "candidate_matrix_bytes": 234881024,
+  "full_Backbone_CPU_snapshot_bytes": 15132438528,
+  "new_artifact_bytes": 195061217,
+  "paid_judge_calls": 0,
+  "real_pilot_started": false,
+  "sequential_started": false,
+  "native_smoke_status": "PASS",
+  "current_state": "WAITING_FOR_PILOT_REVIEW"
+}

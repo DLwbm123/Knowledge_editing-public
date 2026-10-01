@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "result_kind": "MECHANICAL_NATIVE_VALIDATION",
+  "deployment_dtype": "torch.bfloat16",
+  "solver_coordinate_dtype": "torch.float32",
+  "logit_protection_arithmetic_dtype": "torch.float32",
+  "FP32_editor_state_used": true,
+  "editor_function": "FP32_FULL_FUNCTIONAL",
+  "curvature_semantics": "exact JVP/VJP GGN of FP32 functional model, not rounded BF16 map",
+  "cross_precision_max_difference": 0.4348287582397461,
+  "cross_precision_parity_passed": false,
+  "cross_precision_parity_is_admission_gate": false,
+  "approved_precision_contract": "256d27882b9a8f56c25a3394eacdb87c7456d9e8d04927d514bd2ddee11cd47c",
+  "preservation_gradient_semantics": "analytic J^T(p-q)=0 at identical fixed FP32 teacher",
+  "autograd_preservation_normalization_roundoff_norm": 1.270389248020365e-06,
+  "constraint_gradient_dtype": "torch.float32",
+  "preservation_gradient_dtype": "torch.float32",
+  "CG_inner_product_dtype": "torch.float32",
+  "solver_CG_status": "CONVERGED",
+  "solver_CG_residual": 5.839914691859291e-05,
+  "CG_rtol": 0.0001,
+  "CG_iterations": 4,
+  "recursive_relative_residuals": [
+    0.07030139752389032,
+    0.009724170501099952,
+    0.0010936917644601247,
+    5.8300686123955165e-05
+  ],
+  "finite_difference": {
+    "epsilon": 0.001,
+    "analytic": -0.8028130531311035,
+    "central_difference": -0.7979869246482849,
+    "relative_error": 0.00601152218937635,
+    "plus_represented_delta_norm": 0.0010004043579101562,
+    "minus_represented_delta_norm": 0.0009984970092773438,
+    "frozen_relative_tolerance": 0.2
+  },
+  "gradient_zero_fraction": 0.0
+}
