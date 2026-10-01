@@ -1,0 +1,25 @@
+# E7: BF16 stochastic weight rounding
+
+Frozen before execution on 2026-10-01 under the user's explicit delegation for GPU5 follow-up experiments. E6 achieved 2/8 accepted native FP32 edits with exact clean-reload parity; E3 deterministic-nearest BF16 achieved 0/8. E5 measured substantial write-rounding losses. E7 tests whether stochastic rounding of only the edited original matrix improves BF16 feasibility. E6 jointly changed arithmetic and weight-write precision; it does not isolate rounding as the cause.
+
+## Hypothesis and matched control
+
+Primary hypothesis: at least one final accepted native BF16 edit among the same eight development cases in three steps, with mandatory clean native BF16 export/reload parity. Compare paired outcomes with E3's 0/8 three-step native-value QP. Null outcomes remain negative; no seed search, threshold relaxation or blind step extension. The mechanical pair stays outside the denominator. This is an exploratory train-support comparison using previously inspected cases, not independent evaluation or medical generalization.
+
+Restore the original native BF16 loading and image pipeline, with FP32 full functional solver arithmetic. Require all eight initial BF16 native and FP32 functional scores to match E3 within 1e-6. Same initialized checkpoint, matrix, source-hash case selection, distinct-image scope-unknown references, Base resets, tau100, nu10, trust0.1, drift0.3, target min(max(BF16 Base, FP32 functional Base)+0.1,-1e-4), reference KL0.001, CG16/rtol1e-4, seven line-search factors and score tolerance1e-6.
+
+Only intervention: write the FP32 requested candidate to adjacent BF16 endpoints, choosing the upper endpoint with probability (candidate-lower)/(upper-lower). Exactly representable values stay unchanged; nonfinite/out-of-range requests fail and trigger restoration. This is unbiased scalar weight rounding under ideal uniform draws; it is not an unbiased nonlinear output estimator. Finite random draws, hardware subnormal behavior and seed-specific variability limit that statement. Default deterministic nearest rounding is unchanged for all other runs.
+
+Frozen seed schedule: base20261001 + 1009*case_index + local_step; mechanical case_index=10000. Create a private device generator and a single full-matrix uniform tensor per step. Reuse that exact tensor for all seven backtracking factors; never resample a rejected candidate. RNG sequence is device-specific, so CPU tests establish the contract, not bitwise CPU/CUDA identity. Restore rejected writes with exact nearest conversion of the previous representable BF16 matrix. The final original-parameter audit and normal native target/KL/drift checks remain mandatory.
+
+Retain E5 diagnostics for all actually tried candidates: requested/rounded FP32 scores and KL, affine prediction and actual repeatable native values. Record rounding mode/seed in receipts. Secondary outcomes include written displacement, lost-update fraction, reference drift, all rejection reasons, costs and same-precision parity. Random rounding may increase physical displacement and protection KL; existing gates must reject it when necessary.
+
+## Verification, budgets and stop conditions
+
+42 CPU tests pass, including exhaustive 256-draw dyadic-grid expectations, positive/negative/zero brackets, exact representable values, invalid requests, fixed-seed real tiny-model editing, global-RNG preservation, rejected-edit restoration and single-matrix auditing. These are synthetic CPU checks, not native validation. The worker first executes the two reserved native mechanical rows with stochastic rounding, finite/repeatable GGN, normal-forward parity and rollback. A mechanically rejected edit can still pass checks; it is not scientific acceptance.
+
+Run20261001E7 on pro5000 physicalGPU5 UUID GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca. New finite ceilings: 7200seconds,1024GGN,8cases,3steps,16CGiterations,Judge0. Preserve prior1334GGN/8522.28328455775seconds. Storage20GiB, teacher cache2GiB, setup free space28GiB; require66000MiB free GPU memory at launch. Previous BF16 allocation was about58GiB; rounding buffers add an estimated1–2GiB, leaving launch margin. Expected30–60minutes; actual receipts decide. Stop on runtime, nonrepeatable forward, mutation, rollback or required reload failure; diagnose before any recovery. No same-error blind retry.
+
+Every accepted matrix is consumed by an independent native BF16 process with logits tolerance1e-3, exact generated-token parity, no editor/adapter imports or hooks. Delete that temporary matrix only after the last required consumer. Retain raw private evidence and sanitized receipts. Do not load CP/LoRA state, use GPUs6/7 or terminate other processes.
+
+Freeze source/config/protocol bindings before launch. All earlier protocols and results remain immutable. Verified visual pairs, non-target medical scopes and independent calibration/evaluation remain unavailable: W_EVIDENCE scientific admission is BLOCKED_DATA. No invented medical negatives or paid Judge.

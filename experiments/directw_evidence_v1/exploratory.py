@@ -141,6 +141,8 @@ def run(config,approval,trusted):
             cg_rtol=1e-4,tolerance=1e-6,arithmetic_dtype=torch.float32,
             constraint_value_mode=config.get('constraint_value_mode','functional'),
             record_trial_diagnostics=config.get('record_trial_diagnostics',False),
+            rounding_mode=config.get('rounding_mode','nearest'),
+            rounding_seed=config.get('rounding_seed',20261001)+1009*(10000 if mechanical else int(index)),
             max_ggn_calls=config['maximum_GGN_calls']-total_ggn)
         result=edit_one(runtime,[constraint],[group],settings,'W_FUNCTIONAL_QP',attempt_log=root/f'{index}.attempts.private.jsonl')
         total_ggn+=result.ggn_calls
@@ -158,6 +160,7 @@ def run(config,approval,trusted):
             same_precision_parity=parity,cross_precision_max_difference=float((fp-physical).abs().max()),
             constraint_value_mode=settings.constraint_value_mode,historical_control_parity=control is not None,
             native_deployment_dtype=str(runtime.weight.dtype),
+            rounding_mode=settings.rounding_mode,rounding_seed=settings.rounding_seed,
             exact_GGN=diagnostic,attempts=result.attempts,
             elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))

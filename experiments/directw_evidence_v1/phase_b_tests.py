@@ -10,6 +10,54 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_stochastic_bf16_brackets_and_exact_grid_expectation(self):
+        from .editor import stochastic_bf16_round
+        # Exhaust all 256 evenly spaced draws, with dyadic interpolation fractions.
+        lower=torch.tensor([-2.,-1.,0.,.5,1.,2.],dtype=torch.bfloat16)
+        upper=torch.nextafter(lower,torch.full_like(lower,torch.inf))
+        for p in (0.,.25,.5,.75,1.):
+            value=lower.float()+p*(upper.float()-lower.float())
+            x=value[None,:].expand(256,-1)
+            u=((torch.arange(256,dtype=torch.float32)+.5)/256)[:,None].expand_as(x)
+            y=stochastic_bf16_round(x,u)
+            self.assertTrue(((y==lower)|(y==upper)).all())
+            self.assertTrue(torch.equal(y,stochastic_bf16_round(x,u)))
+            self.assertTrue(torch.allclose(y.double().mean(0),value.double(),atol=0,rtol=0))
+        exact=torch.tensor([-2.,-0.,0.,1.,2.])
+        self.assertTrue(torch.equal(stochastic_bf16_round(exact,torch.full_like(exact,.5)).float(),exact))
+        for x,u in [(torch.tensor([float('nan')]),torch.tensor([.5])),
+                    (torch.tensor([torch.finfo(torch.float32).max]),torch.tensor([.5])),
+                    (torch.ones(1),torch.ones(1)),(torch.ones(1),torch.tensor([-.1])),
+                    (torch.ones(1),torch.tensor([float('nan')])),
+                    (torch.ones(2),torch.ones(1)*.5),(torch.ones(1).double(),torch.ones(1)*.5)]:
+            with self.assertRaises(ValueError):stochastic_bf16_round(x,u)
+
+    def test_stochastic_bf16_edit_repeatability_and_rollback(self):
+        from .editor import edit_one
+        runs=[]
+        for _ in range(2):
+            runtime,_,c,g,cfg=self.fp32_case()
+            cfg.rounding_mode='stochastic_bf16';cfg.constraint_value_mode='native_value'
+            cfg.record_trial_diagnostics=True
+            rng=torch.random.get_rng_state().clone()
+            result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+            self.assertEqual(result.status,'ACCEPTED',result)
+            self.assertTrue(torch.equal(rng,torch.random.get_rng_state()))
+            self.assertTrue(all(a['trial_diagnostics']['native_repeat_exact'] for a in result.attempts))
+            runtime.audit(runtime.base_state,runtime.base_hooks)
+            runs.append((runtime.weight.detach().clone(),result.attempts))
+        self.assertTrue(torch.equal(runs[0][0],runs[1][0]));self.assertEqual(runs[0][1],runs[1][1])
+        runtime,_,c,g,cfg=self.fp32_case()
+        cfg.rounding_mode='stochastic_bf16';cfg.max_steps=1;c.threshold=100.
+        result=edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+        self.assertTrue(result.attempts);self.assertTrue(result.rollback)
+        self.assertNotEqual(result.status,'ACCEPTED');self.assertIsNone(result.error)
+        self.assertTrue(torch.equal(runtime.weight,runtime.base))
+        runtime.audit(runtime.base_state,runtime.base_hooks)
+        runtime,_,c,g,cfg=self.fp32_case(deployment_dtype=torch.float32)
+        cfg.rounding_mode='stochastic_bf16'
+        with self.assertRaises(ValueError):edit_one(runtime,[c],[g],cfg,'W_FUNCTIONAL_QP')
+
     def test_explicit_native_fp32_control_preserves_initial_values(self):
         from .native_io import deployment_dtype
         from .editor import edit_one

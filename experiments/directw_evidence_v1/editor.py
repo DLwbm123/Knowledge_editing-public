@@ -19,6 +19,23 @@ from .numerics import FrozenGGN, position_weights, protection_kl, protection_gra
 BRANCHES = ("W_FT", "W_EUCLIDEAN_QP", "W_KEY_QP", "W_FUNCTIONAL_QP", "W_EVIDENCE_QP")
 
 
+def stochastic_bf16_round(value: Tensor, uniform: Tensor) -> Tensor:
+    """Adjacent-value rounding; caller reuses one uniform draw across line search."""
+    if (value.dtype != torch.float32 or uniform.dtype != torch.float32
+        or value.shape != uniform.shape or value.device != uniform.device
+        or not torch.isfinite(value).all() or not torch.isfinite(uniform).all()
+        or not ((uniform >= 0) & (uniform < 1)).all()):
+        raise ValueError("finite FP32 values and aligned uniform draws in [0,1) required")
+    nearest = value.to(torch.bfloat16)
+    lower = torch.where(nearest.float() > value, torch.nextafter(nearest, torch.full_like(nearest, -torch.inf)), nearest)
+    upper = torch.where(nearest.float() < value, torch.nextafter(nearest, torch.full_like(nearest, torch.inf)), nearest)
+    if not (torch.isfinite(lower).all() and torch.isfinite(upper).all()):
+        raise ValueError("candidate outside finite BF16 brackets")
+    span = upper.float() - lower.float()
+    probability = (value - lower.float()) / torch.where(span > 0, span, torch.ones_like(span))
+    return torch.where(uniform < probability, upper, lower)
+
+
 def tensor_digest(value: Tensor) -> str:
     raw = value.detach().cpu().contiguous().reshape(-1).view(torch.uint8).numpy().tobytes()
     return hashlib.sha256(raw).hexdigest()
@@ -198,10 +215,13 @@ class MatrixRuntime:
             raise ValueError("ambiguous reused editable module")
         return captured[0]
 
-    def write(self, candidate: Tensor) -> None:
+    def write(self, candidate: Tensor, *, rounding_uniform: Tensor | None = None) -> None:
         if candidate.shape != self.weight.shape or not torch.isfinite(candidate).all():
             raise ValueError("invalid candidate weight")
-        rounded = candidate.to(self.weight)
+        if rounding_uniform is not None and self.weight.dtype != torch.bfloat16:
+            raise ValueError("stochastic rounding requires BF16 deployment")
+        rounded = (candidate.to(self.weight) if rounding_uniform is None
+                   else stochastic_bf16_round(candidate, rounding_uniform))
         if not torch.isfinite(rounded).all():
             raise ValueError("nonfinite deployment dtype")
         requested = candidate - self.weight.detach().to(candidate)
@@ -272,8 +292,12 @@ class EditConfig:
     max_ggn_calls: int | None = None
     constraint_value_mode: str = "functional"
     record_trial_diagnostics: bool = False
+    rounding_mode: str = "nearest"
+    rounding_seed: int = 20261001
 
     def __post_init__(self) -> None:
+        if self.rounding_mode not in {"nearest", "stochastic_bf16"} or type(self.rounding_seed) is not int or not 0 <= self.rounding_seed < 2**63:
+            raise ValueError("invalid rounding mode/seed")
         if type(self.record_trial_diagnostics) is not bool:
             raise ValueError("trial diagnostics must be boolean")
         if self.constraint_value_mode not in {"functional", "native_value"}:
@@ -327,6 +351,8 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
         raise ValueError("explicit normal-forward scores and bound deployment teachers required")
     if runtime.weight.dtype in (torch.bfloat16, torch.float16) and config.arithmetic_dtype != torch.float32:
         raise ValueError("low-precision deployment requires explicit FP32 solver arithmetic")
+    if config.rounding_mode == "stochastic_bf16" and runtime.weight.dtype != torch.bfloat16:
+        raise ValueError("stochastic rounding requires BF16 deployment")
     snapshot = {k: v.detach().cpu().clone() for k, v in runtime.model.state_dict().items()}
     buffer_snapshot = {k: v.detach().cpu().clone() for k, v in runtime.model.named_buffers(remove_duplicate=False)}
     hooks = runtime.hooks()
@@ -418,11 +444,15 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                 direction = direction * (config.trust_radius / norm)
             before = float((thresholds - deployed_values).clamp_min(0).square().sum())
             accepted = False
+            uniform = None
+            if config.rounding_mode == "stochastic_bf16":
+                generator = torch.Generator(device=w.device).manual_seed(config.rounding_seed + step)
+                uniform = torch.rand(w.shape, device=w.device, dtype=torch.float32, generator=generator)
             for factor in config.factors:
                 attempt = dict(step=step,factor=factor,accepted=False,status="STARTED")
                 result.attempts.append(attempt)
                 journal(dict(event="ATTEMPT",**attempt))
-                runtime.write(w.detach() + factor * direction)
+                runtime.write(w.detach() + factor * direction, rounding_uniform=uniform)
                 runtime.audit(snapshot, hooks, buffer_snapshot=buffer_snapshot)
                 values, losses = evaluate()
                 merit = float((thresholds - values).clamp_min(0).square().sum())
