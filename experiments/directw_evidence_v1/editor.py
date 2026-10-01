@@ -142,7 +142,7 @@ class MatrixRuntime:
         result = self.model(**inputs)
         return result.logits if hasattr(result, "logits") else result
 
-    def bind_inputs(self, inputs: dict[str, Any]) -> Callable[[Tensor], Tensor]:
+    def bind_inputs(self, inputs: dict[str, Any], *, arithmetic_dtype: torch.dtype | None = None) -> Callable[[Tensor], Tensor]:
         """Freeze tensor inputs, template prefixes and masks for one solver batch."""
         if "past_key_values" in inputs or inputs.get("use_cache", False):
             raise ValueError("cannot bind an inference KV cache")
@@ -150,6 +150,21 @@ class MatrixRuntime:
         for key, value in fixed.items():
             if isinstance(value, Tensor):
                 fixed[key] = value.detach().clone()
+        if arithmetic_dtype is not None:
+            if arithmetic_dtype != torch.float32:
+                raise ValueError("temporary native arithmetic supports explicit FP32 only")
+            # Promote the complete functional calculation, not just W followed by
+            # a BF16 cast. The physical deployment model is never converted.
+            state = {k: v.to(arithmetic_dtype) if v.is_floating_point() else v
+                     for k, v in self.functional_state.items()}
+            fixed = {k: v.to(arithmetic_dtype) if isinstance(v, Tensor) and v.is_floating_point() else v
+                     for k, v in fixed.items()}
+            def promoted(weight: Tensor) -> Tensor:
+                if weight.dtype != arithmetic_dtype:
+                    raise ValueError("solver coordinate and functional arithmetic must match")
+                result = torch.func.functional_call(self.model, {**state, self.path: weight}, (), fixed, strict=True)
+                return result.logits if hasattr(result, "logits") else result
+            return promoted
         return lambda w: self.logits(w, fixed)
 
     def capture_input(self, inputs: dict[str, Any]) -> Tensor:

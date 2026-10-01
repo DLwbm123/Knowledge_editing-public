@@ -1,0 +1,166 @@
+{
+  "passed": true,
+  "tests": 29,
+  "failures": 0,
+  "errors": 0,
+  "wall_seconds": 1.5711259589879774,
+  "scope": "CPU synthetic; not native qualification",
+  "metrics": {
+    "test_01_explicit_ggn": {
+      "max_error": 1.1102230246251565e-16,
+      "atol": 1e-08,
+      "rtol": 1e-06
+    },
+    "test_02_symmetry_psd": {
+      "max_error": 1.1102230246251565e-16,
+      "minimum_eigenvalue": -2.1134855106699772e-16,
+      "damping": 0.1
+    },
+    "test_03_zero_gradient_nonzero_fisher": {
+      "max_error": 3.5968519038833344e-17,
+      "fisher_norm": 0.16020714036320707
+    },
+    "test_04_finite_difference": {
+      "max_error": 1.4067172405041184e-05,
+      "errors": [
+        0.00045722896373037725,
+        0.00013970757886014318,
+        4.6809260128871655e-05,
+        1.4067172405041184e-05
+      ],
+      "curvature": 0.219639717494017,
+      "atol": 0.0001
+    },
+    "test_05_preservation_linear_term": {
+      "max_error": 0.0,
+      "before": 0.005614189723963954,
+      "after": 0.004509112205699684,
+      "gradient_norm": 0.10781169646288222
+    },
+    "test_06_cg_and_failure": {
+      "max_error": 1.54303653188137e-15,
+      "residual": 1.864357658576169e-14,
+      "iterations": 8
+    },
+    "test_07_hard_soft_independent_primal": {
+      "max_error": 4.132894027009115e-11,
+      "kkt": {
+        "primal": 7.40949523958534e-11,
+        "stationarity": 6.866350197783356e-16,
+        "complementarity": 5.290966399340346e-10,
+        "slack_stationarity": 8.881784197001252e-16,
+        "dual_projected": 7.409450830664355e-11
+      },
+      "independent_oracle": "SciPy SLSQP primal d,xi",
+      "atol": 1e-06
+    },
+    "test_08_clip_backtrack_all_branches": {
+      "branches": [
+        "W_FT",
+        "W_EUCLIDEAN_QP",
+        "W_KEY_QP",
+        "W_FUNCTIONAL_QP"
+      ],
+      "rejection_attempts": 7,
+      "max_error": 0.1,
+      "semantic_tolerance": 1e-06
+    },
+    "test_09_visual_both_endpoints": {
+      "max_error": 0.0,
+      "two_endpoint_guard": "BACKTRACK_REJECTED",
+      "cross_redundant": false,
+      "note": "cross=.3 exceeds two .1 endpoint margins; not redundant"
+    },
+    "test_10_image_diagnostics_and_linear_bound": {
+      "max_error": 0.0,
+      "geometry": {
+        "distance": 2.8284271247461903,
+        "plus_norm": 1.4142135623730951,
+        "minus_norm": 1.4142135623730951,
+        "cosine": -0.9999999999999998,
+        "gradient_cosine": -1.0000000000000002
+      },
+      "minimum_bound_gap": 1.635425274089024
+    },
+    "test_11_predictor_mask_shift_eos": {
+      "max_error": 0.0,
+      "eos_policy": "excluded content, separate optional EOS",
+      "prefix_positions": 3
+    },
+    "test_12_data_rejections": {
+      "rejected_reasons": [
+        "EVALUATION_TO_FIT",
+        "FUTURE_INFORMATION",
+        "UNQUALIFIED_VISUAL_PAIR",
+        "HISTORY_TEACHER_CONFLICT",
+        "WRONG_MODEL_TEACHER"
+      ],
+      "max_error": 0.0
+    },
+    "test_13_missing_visual_branch_only": {
+      "branches": {
+        "W_FT": "PENDING_NATIVE_CHECK",
+        "W_EUCLIDEAN_QP": "PENDING_NATIVE_CHECK",
+        "W_KEY_QP": "PENDING_NATIVE_CHECK",
+        "W_FUNCTIONAL_QP": "PENDING_NATIVE_CHECK",
+        "W_EVIDENCE_QP": "BLOCKED"
+      },
+      "max_error": 0.0
+    },
+    "test_14_only_original_matrix": {
+      "changed": [
+        "mlp.down_proj.weight"
+      ],
+      "new_deployment_parameters": 0,
+      "max_error": 0.0
+    },
+    "test_15_native_export_clean_process": {
+      "max_error": 0.0,
+      "clean_subprocess": true,
+      "synthetic_generation_equal": true,
+      "bf16_zeroed_fraction": 1.0,
+      "native": "PENDING_NATIVE_CHECK"
+    },
+    "test_16_exception_reset_and_sequential": {
+      "max_error": 0.0,
+      "exception_rollback": true,
+      "interrupt_rollback": true,
+      "single_reset": true,
+      "sequential_inheritance": true
+    },
+    "test_17_fixed_rng_cache_history": {
+      "max_error": 0.0,
+      "history": {
+        "inputs": 2,
+        "sources": 1,
+        "positions": 4,
+        "bytes": 614
+      },
+      "evictions": 2
+    },
+    "test_18_gate_before_loader": {
+      "max_error": 0.0,
+      "binding_budget_rejections": 17,
+      "loader_calls": 0
+    },
+    "test_19_failed_missing_judge_denominator": {
+      "max_error": 0.0,
+      "intended": 4,
+      "scored": 1,
+      "missing": 3,
+      "status_counts": {
+        "ACCEPTED": 1,
+        "TRAINING_FAILED": 1,
+        "ROLLED_BACK": 1,
+        "MISSING_JUDGE_KEY": 1
+      },
+      "correctness_lower": 0.25,
+      "correctness_upper": 1.0
+    },
+    "test_20_cleanup_scope_consumers_storage": {
+      "max_error": 0.0,
+      "outside_preserved": true,
+      "dry_run": true
+    }
+  }
+}

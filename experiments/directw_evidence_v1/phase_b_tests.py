@@ -4,12 +4,55 @@ import torch
 from .contracts import SMOKE, FIT, audit_data, method_eligibility, AttemptLedger, digest
 from .gate import BINDINGS, default_config, require_external_approval
 from .tests import row
-from .numerics import cg, solve_step
+from .numerics import cg, solve_step, FrozenGGN
 from .editor import MatrixRuntime
 from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_reused_inverse_verified_against_current_operator(self):
+        q=torch.diag(torch.tensor([1.,2.,3.],dtype=torch.float64));op=lambda v:q@v
+        a=torch.tensor([[1.,1.,0.],[0.,1.,1.]],dtype=torch.float64)
+        g=torch.tensor([.2,-.1,.3],dtype=torch.float64);b=torch.tensor([.4,.1],dtype=torch.float64)
+        saved=[cg(op,v,max_iter=4) for v in [g,*a]]
+        fresh=solve_step(op,a,b,g,cg_max_iter=4)
+        reused=solve_step(op,a,b,g,cg_max_iter=4,inverse_solutions=saved)
+        self.assertEqual(reused.status,'CONVERGED')
+        self.assertTrue(torch.allclose(fresh.direction,reused.direction,atol=1e-10,rtol=1e-10))
+        self.assertTrue(all(s.iterations==0 and s.calls==1 for s in reused.cg))
+        stale=solve_step(lambda v:2*q@v,a,b,g,cg_max_iter=4,inverse_solutions=saved)
+        self.assertEqual(stale.status,'NOT_CONVERGED')
+        self.assertTrue(any(s.relative_residual>1e-4 for s in stale.cg))
+
+    def test_bf16_cast_does_not_define_a_smooth_fp32_function(self):
+        point=torch.tensor([1.],requires_grad=True)
+        quantized=lambda w:w.to(torch.bfloat16).float().square().sum()
+        derivative=torch.autograd.grad(quantized(point),point)[0]
+        eps=1e-4
+        fd=(quantized(point.detach()+eps)-quantized(point.detach()-eps))/(2*eps)
+        self.assertEqual(float(derivative),2.)
+        self.assertEqual(float(fd),0.)
+
+    def test_fp32_functional_arithmetic_preserves_bf16_deployment(self):
+        torch.manual_seed(20261001)
+        model=TinyModel(dtype=torch.bfloat16)
+        with torch.no_grad():model.mlp.down_proj.weight.normal_(0,.2)
+        runtime=MatrixRuntime(model,'mlp.down_proj.weight')
+        inputs=dict(tokens=torch.randn(1,2,2).bfloat16(),image=torch.randn(1,2).bfloat16())
+        fn=runtime.bind_inputs(inputs,arithmetic_dtype=torch.float32)
+        point=runtime.base.float();weights=torch.ones(1,2)/2
+        F=FrozenGGN(fn,point,weights);u=torch.randn_like(point);v=torch.randn_like(point)
+        self.assertEqual(fn(point).dtype,torch.float32)
+        self.assertLess(abs(float((u*F(v)).sum()-(v*F(u)).sum())),1e-5)
+        eps=.001
+        _,jv=torch.func.jvp(fn,(point,),(u,))
+        fd=(fn(point+eps*u)-fn(point-eps*u))/(2*eps)
+        self.assertTrue(torch.allclose(fd,jv,atol=1e-4,rtol=1e-3))
+        runtime.audit(runtime.base_state,runtime.hooks())
+        self.assertEqual(runtime.weight.dtype,torch.bfloat16)
+        self.assertTrue(torch.equal(runtime.weight,runtime.base))
+        with self.assertRaises(ValueError):fn(runtime.base)
+
     def test_nonpersistent_buffers_strict_functional_reset_and_alias(self):
         model=TinyModel()
         model.register_buffer('fixed',torch.tensor(1.,dtype=torch.float64),persistent=False)

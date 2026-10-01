@@ -1,0 +1,69 @@
+{
+  "result_kind": "MECHANICAL_NATIVE_VALIDATION",
+  "native_smoke_status": "NOT_QUALIFIED",
+  "precision_mode": "FP32_FUNCTIONAL_ARITHMETIC_DIAGNOSTIC",
+  "deployment_dtype": "torch.bfloat16",
+  "GGN_calls": 10,
+  "candidate_writes": 0,
+  "paid_judge_calls": 0,
+  "real_pilot_started": false,
+  "sequential_started": false,
+  "deployment_comparison": {
+    "max_logit_difference": 0.4348287582397461,
+    "mean_logit_difference": 0.018127767369151115,
+    "argmax_equal_fraction": 0.9834162592887878,
+    "answer_predictor_argmax_equal": true,
+    "frozen_max_logit_tolerance": 0.001,
+    "within_frozen_parity_tolerance": false
+  },
+  "FP32_gradient": {
+    "norm": 28.262943267822266,
+    "finite": true,
+    "dtype": "torch.float32",
+    "index": 2224108
+  },
+  "finite_difference": {
+    "epsilon": 0.001,
+    "analytic": -0.8028130531311035,
+    "central_difference": -0.7979869246482849,
+    "relative_error": 0.00601152218937635,
+    "frozen_relative_tolerance": 0.2,
+    "passed": true,
+    "definition": "smooth FP32 functional calculation, not the rounded BF16 deployment map"
+  },
+  "GGN": {
+    "symmetry_absolute_error": 5.21540641784668e-08,
+    "u_Fv": 0.007531127892434597,
+    "v_Fu": 0.0075310757383704185,
+    "PSD_quadratic": 0.08183905482292175,
+    "repeated_max_difference": 0.0,
+    "GGN_norm": 1.909480094909668,
+    "seconds_per_matvec": 1.1937657110393047,
+    "symmetry_pass": true,
+    "PSD_pass": true,
+    "finite": true,
+    "approximation_used": false
+  },
+  "CG": {
+    "status": "CONVERGED",
+    "relative_residual": 5.839914691859291e-05,
+    "iterations": 4,
+    "calls": 7,
+    "recursive_relative_residuals": [
+      0.07030139752389032,
+      0.009724170501099952,
+      0.0010936917644601247,
+      5.8300686123955165e-05
+    ],
+    "condition_surrogate": 1.3821110139913972,
+    "frozen_rtol": 0.0001,
+    "frozen_max_iter": 4,
+    "damping": 100.0
+  },
+  "deployment_state_unchanged": true,
+  "status": "DIAGNOSTIC_COMPLETE",
+  "final_Base_W_bitwise_equal": true,
+  "elapsed_seconds": 30.263296682969667,
+  "peak_gpu_allocated_bytes": 50934401536,
+  "peak_host_rss_bytes": 18342907904
+}

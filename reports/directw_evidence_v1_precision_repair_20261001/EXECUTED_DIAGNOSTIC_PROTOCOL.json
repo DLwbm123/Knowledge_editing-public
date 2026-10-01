@@ -1,0 +1,23 @@
+{
+  "attention_backend": "eager",
+  "deployment_dtype": "BF16",
+  "solver_patch": "FP32 only if BF16 CG fails frozen rtol",
+  "damping": 100.0,
+  "trust_radius": 0.1,
+  "max_active": 2,
+  "max_steps": 1,
+  "cg_rtol": 0.0001,
+  "cg_max_iter": 4,
+  "dual_tol": 1e-08,
+  "normal_forward_atol": 0.001,
+  "protection_budget": 0.001,
+  "finite_difference_rtol": 0.2,
+  "maximum_GGN_calls": 48,
+  "max_tokens": 8,
+  "no_Judge": true,
+  "no_Pilot": true,
+  "no_Sequential": true,
+  "diagnostic": "FP32 entire functional arithmetic; unchanged BF16 physical deployment; no candidate writes",
+  "CG_max_iter": 4,
+  "diagnostic_GGN_max_calls": 10
+}

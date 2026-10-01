@@ -4,7 +4,7 @@ Dense parameter geometry is allowed ONLY in the bounded hard-QP reference.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import combinations
 from typing import Callable
 import torch
@@ -85,6 +85,7 @@ class CGResult:
     iterations: int
     calls: int
     condition_surrogate: float
+    recursive_relative_residuals: list[float] = field(default_factory=list)
 
 
 def cg(operator: Operator, rhs: Tensor, *, rtol: float = 1e-8, max_iter: int = 32) -> CGResult:
@@ -101,7 +102,7 @@ def cg(operator: Operator, rhs: Tensor, *, rtol: float = 1e-8, max_iter: int = 3
     if norm == 0:
         return CGResult(x, "CONVERGED", 0., 0, calls, 1.)
     rr = (r * r).sum()
-    rayleigh = []
+    rayleigh, residuals = [], []
     status, iterations = "NOT_CONVERGED", 0
     for iterations in range(1, max_iter + 1):
         ap = operator(p); calls += 1
@@ -113,6 +114,7 @@ def cg(operator: Operator, rhs: Tensor, *, rtol: float = 1e-8, max_iter: int = 3
         x = x + alpha * p
         r = r - alpha * ap
         next_rr = (r * r).sum()
+        residuals.append(float(next_rr.sqrt()) / norm)
         if float(next_rr.sqrt()) <= rtol * norm:
             status = "CONVERGED"; break
         p = r + (next_rr / rr) * p
@@ -121,7 +123,7 @@ def cg(operator: Operator, rhs: Tensor, *, rtol: float = 1e-8, max_iter: int = 3
     if actual > rtol and status == "CONVERGED":
         status = "NOT_CONVERGED"
     condition = max(rayleigh) / min(rayleigh) if rayleigh else float("inf")
-    return CGResult(x, status, actual, iterations, calls, condition)
+    return CGResult(x, status, actual, iterations, calls, condition, residuals)
 
 
 @dataclass
@@ -139,14 +141,31 @@ class StepResult:
 def solve_step(operator: Operator, constraints: Tensor, rhs: Tensor, preservation_grad: Tensor,
                *, nu: float = 10., max_active: int = 8, cg_rtol: float = 1e-8,
                cg_max_iter: int = 64, dual_tol: float = 1e-8,
-               dual_max_iter: int = 10000) -> StepResult:
+               dual_max_iter: int = 10000,
+               inverse_solutions: list[CGResult] | None = None) -> StepResult:
     """Soft QP via nonnegative dual coordinate descent, never a parameter inverse."""
     a, b, g = constraints, rhs, preservation_grad.reshape(-1)
     if nu <= 0 or a.ndim != 2 or a.shape != (len(b), g.numel()) or not 0 < len(b) <= max_active:
         raise ValueError("invalid slack QP/active constraint budget")
     if not all(torch.isfinite(t).all() for t in (a, b, g)):
         raise ValueError("nonfinite QP")
-    solves = [cg(operator, v, rtol=cg_rtol, max_iter=cg_max_iter) for v in [g, *a]]
+    vectors = [g, *a]
+    if inverse_solutions is None:
+        solves = [cg(operator, v, rtol=cg_rtol, max_iter=cg_max_iter) for v in vectors]
+    else:
+        if len(inverse_solutions) != len(vectors):
+            raise ValueError("one inverse solution per preservation/constraint RHS required")
+        solves = []
+        for prior, v in zip(inverse_solutions, vectors):
+            value = prior.value.reshape(-1)
+            if value.shape != v.shape or value.dtype != v.dtype or value.device != v.device:
+                raise ValueError("reused inverse shape/dtype/device mismatch")
+            # Reuse never trusts an old convergence flag: verify the CURRENT Q.
+            residual = operator(value) - v
+            norm = float(v.norm())
+            relative = float(residual.norm()) / norm if norm else (0. if torch.equal(residual, torch.zeros_like(v)) else float("inf"))
+            okay = prior.status == "CONVERGED" and bool(torch.isfinite(residual).all()) and relative <= cg_rtol
+            solves.append(CGResult(value, "CONVERGED" if okay else "NOT_CONVERGED", relative, 0, 1, prior.condition_surrogate))
     qg = solves[0].value
     qa = torch.stack([s.value for s in solves[1:]], dim=1)
     h = a @ qa + torch.eye(len(b), dtype=a.dtype, device=a.device) / nu
