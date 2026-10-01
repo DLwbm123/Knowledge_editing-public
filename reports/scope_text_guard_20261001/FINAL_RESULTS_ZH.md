@@ -21,3 +21,5 @@ DEV与old47为暴露面板；REG即便执行也为EXPOSED_REGRESSION，不是ind
 REG 按同一冻结门槛复核为 PASS：bank24 Pressure 已知正确从43/60到54/60，增益+11，shared-key missing精确差界[18.333,18.333] pp（共有missing变量相消）；全部T0/T1G/T2G/合格T2L与old35各prefix新增错误为0。完整资格分母与界见 REG_JOINT_REVIEW.json；这仍是暴露回归，不能声称独立或临床确认。
 
 技术恢复已完成：old47 order=0历史绑定优先采用明确REG cohort，989 DEV及1058 REG旧绑定全通过；原失败证据、已完成结果和全部消耗保留。健康worker自然退出后释放剩余任务，未干预其他进程，未重复Judge payload。见RUNTIME_RECOVERY_AUDIT.json。
+
+已公开交付：[PR13](https://github.com/DLwbm123/Knowledge_editing-public/pull/13)；分支 `review/scope-text-guard-20261001`。源代码及本阶段必需报告已发布，远端提交及匿名报告访问已核验。
