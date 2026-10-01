@@ -2,6 +2,10 @@
 
 ## Latest state — 2026-10-01 hourly follow-up
 
+At the 14:15 China-time follow-up E3 had completed 8/8 with 0 accepted, five BACKTRACK_REJECTED and three NOT_SATISFIED. All initial-control parity and Base-restoration receipts passed. The native-value change did not improve the primary endpoint. Results are published under `reports/directw_evidence_v1_native_value_20261001/FINAL_REPORT.md` (commit330f104). Cumulative consumption is566GGN and3329.959252seconds.
+
+The current successor is `20261001E4`, launch PID1268295, GPU5 only. Read `reports/directw_evidence_v1_step_budget_20261001/PROTOCOL.md` and SOURCE_BINDINGS.json. It changes only the E3 scientific-case step ceiling from3 to12 for all eight cases; every target/protection/solver acceptance rule is unchanged. Source is unchanged from6d7ebe5; prior38 CPU tests are reused, not rerun. New-run ceiling4hours/4096GGN. Compare complete outcomes and first-three-step trajectories to E3; if zero acceptance persists, do not blindly increase steps again. Verify live state before acting. The following E1/E2/E3 launch descriptions are historical.
+
 E1/E2 is complete: 8/8 cases, 0 accepted, five BACKTRACK_REJECTED and three NOT_SATISFIED; all restored. Results are published in FINAL_REPORT.md / FINAL_RESULTS.json (commit 417cea5). Historical cumulative consumption is 304 GGN and 1850.591329 seconds.
 
 The active successor is `20261001E3`, PID at launch `1245009`, using only GPU5. Read `reports/directw_evidence_v1_native_value_20261001/PROTOCOL.md` and its bound JSON/source manifest. This is the predeclared native-value-anchored QP ablation on the same eight development cases with historical E1/E2 controls. All acceptance thresholds and budgets within each case remain fixed; the local QP right-hand side changes from the FP32 functional value to the current normal BF16 value. New-run ceiling: 4 hours / 4096 GGN. Verify live state before any action; the following E2 continuation text is historical.
