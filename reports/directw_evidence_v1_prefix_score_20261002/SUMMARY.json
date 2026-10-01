@@ -1,0 +1,103 @@
+{
+  "state": "EXPERIMENT_COMPLETE",
+  "cases": 8,
+  "accepted": 0,
+  "actual_target_sequence_successes": 0,
+  "efficacy": "FAIL",
+  "statuses": {
+    "NOT_SATISFIED": 4,
+    "BACKTRACK_REJECTED": 3,
+    "SOLVER_NOT_CONVERGED": 1
+  },
+  "all_initial_controls": true,
+  "all_Base_restored": true,
+  "mechanical_exact": true,
+  "generation_tokens_unchanged": true,
+  "probes": 199,
+  "probe_score_drops": 0,
+  "probe_KL_exceedances": 0,
+  "score_path": "native_prefix",
+  "case3_terminal": {
+    "step": 0,
+    "status": "NOT_CONVERGED",
+    "kkt": {
+      "primal": 1.1444091796875e-05,
+      "stationarity": 0.0006155512528494,
+      "complementarity": 1.8312640577278216e-06,
+      "slack_stationarity": 0.0,
+      "dual_projected": 9.5367431640625e-07
+    },
+    "dual_tol": 1e-06,
+    "dual_iterations": 1,
+    "cg": [
+      {
+        "status": "CONVERGED",
+        "residual": 0.0,
+        "iterations": 0,
+        "calls": 2
+      },
+      {
+        "status": "CONVERGED",
+        "residual": 4.027379097952281e-05,
+        "iterations": 3,
+        "calls": 6
+      }
+    ]
+  },
+  "cases_progress": [
+    {
+      "index": "0",
+      "initial_prefix_margin": -6.75,
+      "last_accepted_prefix_margin": -0.4375,
+      "accepted_steps": 6
+    },
+    {
+      "index": "1",
+      "initial_prefix_margin": -13.71875,
+      "last_accepted_prefix_margin": -3.3125,
+      "accepted_steps": 6
+    },
+    {
+      "index": "2",
+      "initial_prefix_margin": -10.25,
+      "last_accepted_prefix_margin": -7.875,
+      "accepted_steps": 3
+    },
+    {
+      "index": "3",
+      "initial_prefix_margin": -14.59375,
+      "last_accepted_prefix_margin": null,
+      "accepted_steps": 0
+    },
+    {
+      "index": "4",
+      "initial_prefix_margin": -14.9375,
+      "last_accepted_prefix_margin": -5.375,
+      "accepted_steps": 3
+    },
+    {
+      "index": "5",
+      "initial_prefix_margin": -13.59375,
+      "last_accepted_prefix_margin": -6.125,
+      "accepted_steps": 6
+    },
+    {
+      "index": "6",
+      "initial_prefix_margin": -8.5625,
+      "last_accepted_prefix_margin": -1.75,
+      "accepted_steps": 6
+    },
+    {
+      "index": "7",
+      "initial_prefix_margin": -8.25,
+      "last_accepted_prefix_margin": -8.0,
+      "accepted_steps": 1
+    }
+  ],
+  "new_GGN_calls": 482,
+  "elapsed_seconds": 3665.596205755952,
+  "cumulative_GGN_calls": 4311,
+  "cumulative_native_seconds": 32026.65622001479,
+  "matrices_created": 0,
+  "remaining_matrices": 0
+}
