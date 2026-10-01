@@ -8,7 +8,7 @@ from .contracts import digest
 from .gate import require_external_approval
 from .editor import MatrixRuntime,Constraint,ProtectionGroup,EditConfig,edit_one,mean_answer_logprob
 from .numerics import FrozenGGN
-from .native_io import load,prepare,WEIGHT
+from .native_io import load,prepare,WEIGHT,generation_snapshot
 
 
 REPLAY_FIELDS = ('status','accepted_steps','ggn_calls','base_score','FP32_base_score',
@@ -118,6 +118,8 @@ def run(config,approval,trusted):
         if sum(p[-1].numel()*p[-1].element_size() for p in probes)>config['teacher_cache_limit_gib']*1024**3:
             raise RuntimeError('diagnostic teacher cache limit exceeded')
         prepared=[prepare(model,tokenizer,processor,r) for r in (row,reference)]
+        generation_before=(generation_snapshot(model,tokenizer,prepared[0][2],row['answer'],
+            config['generation_max_new_tokens']) if config.get('generation_max_new_tokens') else None)
         inputs,labels=combine(prepared)
         with torch.no_grad():
             physical=runtime.normal_logits(inputs).float()
@@ -208,6 +210,12 @@ def run(config,approval,trusted):
                     scored_state='FINAL_ACCEPTED' if result.status=='ACCEPTED' else 'RESTORED_BASE'))
             runtime.audit(runtime.base_state,runtime.base_hooks)
             receipt.update(elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
+        if generation_before is not None:
+            generation_after=generation_snapshot(model,tokenizer,prepared[0][2],row['answer'],config['generation_max_new_tokens'])
+            (root/f'{index}.generation.private.json').write_text(json.dumps(dict(before=generation_before,after=generation_after),indent=2))
+            receipt['generation_diagnostic']=dict(before=generation_before['metrics'],after=generation_after['metrics'],
+                tokens_changed=generation_before['tokens']!=generation_after['tokens'])
+            receipt.update(elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
         (root/f'{index}.result.json').write_text(json.dumps(receipt,indent=2,allow_nan=False))
         if mechanical and not result.attempts:raise RuntimeError('native regression did not exercise solver/write path')
         if changed and not mechanical:
@@ -243,6 +251,11 @@ def run(config,approval,trusted):
                 difference=float((expected['logits']-actual['logits']).abs().max())
                 if difference>1e-3 or not torch.equal(expected['tokens'],actual['tokens']) or actual['hooks'] or actual['editor_imported'] or actual['prohibited_parameter_names']:
                     raise RuntimeError('clean export/reload parity failed')
+                if config.get('generation_max_new_tokens'):
+                    diagnostic=json.loads((root/f'{i}.generation.private.json').read_text())['after']
+                    if diagnostic!=actual['generation_diagnostic']:
+                        raise RuntimeError('full answer generation reload parity failed')
+                    result['generation_diagnostic']['clean_reload_equal']=True
                 result['clean_reload']=dict(logit_max_difference=difference,generation_equal=True,editor_imported=False)
                 path=Path(result.pop('export'));size=path.stat().st_size;path.unlink()
                 result['checkpoint_lifecycle']=dict(deleted_after_final_consumer=True,bytes=size)

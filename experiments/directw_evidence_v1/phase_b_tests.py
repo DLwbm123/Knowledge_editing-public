@@ -10,6 +10,33 @@ from .fixture import TinyModel
 
 
 class PhaseBChecks(unittest.TestCase):
+    def test_generation_suffix_scoring_and_truncation(self):
+        from types import SimpleNamespace
+        from .native_io import generation_snapshot,answer_metrics
+        self.assertTrue(answer_metrics('  YES!  ','Yes')['normalized_exact_match'])
+        self.assertFalse(answer_metrics('No, not yes','Yes')['normalized_exact_match'])
+        self.assertEqual(answer_metrics('kidney kidney','kidney')['token_F1'],2/3)
+        self.assertEqual(answer_metrics('','yes')['token_F1'],0)
+        with self.assertRaises(ValueError):answer_metrics('yes','...')
+        class Model:
+            def generate(self,**kw):
+                assert kw['max_new_tokens']==2 and kw['do_sample'] is False
+                assert kw['return_dict_in_generate'] and kw['output_scores']
+                return SimpleNamespace(sequences=torch.tensor([[99,10,2]]),scores=(None,None))
+        class Tokenizer:
+            eos_token_id=2
+            def decode(self,tokens,skip_special_tokens):
+                assert tokens==[10,2] and skip_special_tokens
+                return 'Yes.'
+        rng=torch.random.get_rng_state().clone()
+        result=generation_snapshot(Model(),Tokenizer(),dict(do_sample=False,max_new_tokens=8),'yes',2)
+        self.assertTrue(result['metrics']['normalized_exact_match'])
+        self.assertFalse(result['metrics']['hit_token_cap'])
+        self.assertTrue(torch.equal(rng,torch.random.get_rng_state()))
+        Tokenizer.eos_token_id=3
+        self.assertTrue(generation_snapshot(Model(),Tokenizer(),dict(do_sample=False),'yes',2)['metrics']['hit_token_cap'])
+        with self.assertRaises(ValueError):generation_snapshot(Model(),Tokenizer(),{},'yes',65)
+
     def test_native_diagnostic_probes_are_read_only_and_do_not_change_edit(self):
         from .exploratory import probe_snapshot
         from .editor import edit_one

@@ -2,10 +2,42 @@
 import sys
 import resource
 import time
+import unicodedata
+from collections import Counter
 import torch
 from PIL import Image
 
 WEIGHT = 'model.layers.21.mlp.down_proj.weight'
+
+
+def answer_metrics(prediction, reference):
+    """Conservative lexical diagnostics, not semantic or clinical grading."""
+    def normalize(text):
+        return ' '.join(''.join(c for c in unicodedata.normalize('NFKC',text).casefold()
+                               if not unicodedata.category(c).startswith('P')).split())
+    p,r=normalize(prediction),normalize(reference)
+    if not r:raise ValueError('empty normalized reference')
+    pt,rt=p.split(),r.split();overlap=sum((Counter(pt)&Counter(rt)).values())
+    return dict(normalized_exact_match=p==r,token_F1=2*overlap/(len(pt)+len(rt)))
+
+
+def generation_snapshot(model, tokenizer, generation, reference, max_new_tokens):
+    if not isinstance(max_new_tokens,int) or not 1<=max_new_tokens<=64:
+        raise ValueError('generation diagnostic token cap must be 1..64')
+    with torch.no_grad():
+        out=model.generate(**dict(generation,max_new_tokens=max_new_tokens,
+            return_dict_in_generate=True,output_scores=True))
+    # Native inputs_embeds generation can include a BOS prefix. The number of
+    # decoding scores identifies the generated suffix without guessing a prefix.
+    n=len(out.scores)
+    if not 0<n<=max_new_tokens or out.sequences.shape[0]!=1 or out.sequences.shape[1]<n:
+        raise RuntimeError('unexpected native generation output')
+    tokens=out.sequences[0,-n:].detach().cpu().tolist()
+    text=tokenizer.decode(tokens,skip_special_tokens=True)
+    eos=tokenizer.eos_token_id in tokens
+    return dict(tokens=tokens,text=text,reference=reference,metrics=dict(
+        **answer_metrics(text,reference),generated_tokens=n,eos_reached=eos,
+        hit_token_cap=n==max_new_tokens and not eos))
 
 
 def deployment_dtype(config):
@@ -80,9 +112,11 @@ def clean_reload(config):
     with torch.no_grad():
         logits=model(**inputs).logits.float()
         tokens=model.generate(**generation)
+    diagnostic=(generation_snapshot(model,tokenizer,generation,config['smoke_row']['answer'],
+                config['generation_max_new_tokens']) if config.get('generation_max_new_tokens') else None)
     hooks=sum(len(m._forward_hooks)+len(m._forward_pre_hooks)+len(m._backward_hooks) for m in model.modules())
     prohibited=[name for name,_ in model.named_parameters() if any(t in name.lower() for t in ('lora','adapter','tucker','router'))]
-    torch.save(dict(logits=logits.cpu(),tokens=tokens.cpu(),hooks=hooks,prohibited_parameter_names=prohibited,
+    torch.save(dict(logits=logits.cpu(),tokens=tokens.cpu(),generation_diagnostic=diagnostic,hooks=hooks,prohibited_parameter_names=prohibited,
                     editor_imported=any(k.endswith('.editor') for k in sys.modules),
                     wall_seconds=time.monotonic()-started,peak_gpu_bytes=torch.cuda.max_memory_allocated(),
                     host_peak_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024),config['reload_result'])
