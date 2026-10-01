@@ -1,8 +1,8 @@
 # GPU5 continuation and autonomous follow-up
 
-## Latest state — 2026-10-01 E11 frozen after explicit user continuation
+## Latest state — 2026-10-01 E11 launched after explicit user continuation
 
-User requested: 好的，按照你的想法继续实验. E11 adds paired actual greedy answer generation (64-token cap, lexical exact match/F1, truncation) and expands extra-QA diagnostics to all199 eligible slots/27distinct QA on the same3 images, around exact E9B8case trajectories. Protocol: `reports/directw_evidence_v1_generation_pool_20261001/PROTOCOL.md` and PROTOCOL.json. Source CPU44tests PASS. Fresh RUN_ROOT `20261001E11`; GPU5 only; new7200seconds/1024GGN finite ceiling, inherited2274GGN/15675.648759132833seconds. No changes to acceptance or solver.
+User requested: 好的，按照你的想法继续实验. E11 adds paired actual greedy answer generation (64-token cap, lexical exact match/F1, truncation) and expands extra-QA diagnostics to all199 eligible slots/27distinct QA on the same3 images, around exact E9B8case trajectories. Protocol: `reports/directw_evidence_v1_generation_pool_20261001/PROTOCOL.md` and PROTOCOL.json. Source CPU44tests PASS. Fresh RUN_ROOT `20261001E11`, PID1371486 launched and initial loading/neutral argv verified without immediate failure; GPU5 only; new7200seconds/1024GGN finite ceiling, inherited2274GGN/15675.648759132833seconds. No changes to acceptance or solver.
 
 Before any continuation, inspect E11 actual STATUS/process and lease; never duplicate a running worker. Once E11 completes, publish full sanitized results including generation-before/after transitions and all probe metrics, with aggregate denominators. Lexical exact match is not semantic clinical accuracy; raw tokens/text stay private. Any error gets diagnosed and minimally repaired under a separately named run, with costs preserved.
 
