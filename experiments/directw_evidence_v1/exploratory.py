@@ -15,6 +15,23 @@ REPLAY_FIELDS = ('status','accepted_steps','ggn_calls','base_score','FP32_base_s
                  'threshold','final_deployed_score','attempts')
 
 
+def summarize_prefix_trace(prefix_trace, attempts, repeat):
+    """Bind observations to existing evaluation order and validate their scalar scores."""
+    trials=[a for a in attempts if 'actual_scores' in a]
+    stride=2 if repeat else 1
+    if len(prefix_trace)!=4+stride*len(trials):
+        raise RuntimeError('unexpected prefix trace evaluation count')
+    for j,trial in enumerate(trials):
+        values=prefix_trace[2+stride*j]
+        if min(values)!=trial['actual_scores'][0] or (stride==2 and values!=prefix_trace[3+stride*j]):
+            raise RuntimeError('prefix trace scalar/repeat mismatch')
+    return dict(base=prefix_trace[0],editor_initial=prefix_trace[1],
+        trials=[dict(step=a['step'],factor=a['factor'],accepted=a['accepted'],
+                     margins=prefix_trace[2+stride*j]) for j,a in enumerate(trials)],
+        terminal_before_rollback=prefix_trace[-2],final=prefix_trace[-1],
+        position_policy='zero-based target positions; final position is EOS; no token IDs')
+
+
 def probe_snapshot(runtime, inputs, labels, eos_id):
     """Read native answer-position distributions; probes never enter the solver."""
     if labels.shape[0] != 1:
@@ -143,7 +160,8 @@ def run(config,approval,trusted):
         objective='mean_logprob_gain' if mechanical else config.get('target_objective','mean_logprob_gain')
         score=(lambda z:minimum_target_margin(z,labels)) if objective=='minimum_token_margin' else answer_logprob
         prefix_path=not mechanical and config.get('deployed_target_path')=='native_prefix'
-        deployed_score=(lambda:prefix_target_margin(model,prepared[0][2],prepared[0][1])) if prefix_path else lambda:score(normal())
+        prefix_trace=[] if prefix_path and config.get('prefix_margin_trace',False) else None
+        deployed_score=(lambda:prefix_target_margin(model,prepared[0][2],prepared[0][1],prefix_trace)) if prefix_path else lambda:score(normal())
         point=runtime.base.float()
         with torch.no_grad():fp=smooth(point).float()
         batched_base_score=float(score(physical))
@@ -227,6 +245,8 @@ def run(config,approval,trusted):
             qp_dual_tol=settings.qp_dual_tol,qp_double_accumulation=settings.qp_double_accumulation,
             exact_GGN=diagnostic,attempts=result.attempts,
             elapsed_seconds=time.monotonic()-before,peak_gpu_bytes=torch.cuda.max_memory_allocated())
+        if prefix_trace is not None:
+            receipt['prefix_margin_trace']=summarize_prefix_trace(prefix_trace,result.attempts,settings.record_trial_diagnostics)
         expected=config.get('expected_replay_digests',{}).get(index)
         if expected is not None:
             receipt['replay_exact']=digest({k:receipt[k] for k in REPLAY_FIELDS})==expected

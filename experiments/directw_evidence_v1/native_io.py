@@ -52,7 +52,7 @@ def generation_snapshot(model, tokenizer, generation, reference, max_new_tokens)
         hit_token_cap=n==max_new_tokens and not eos))
 
 
-def prefix_target_margin(model, generation, labels):
+def prefix_target_margin(model, generation, labels, trace=None):
     """Deployed minimum margin on independently supplied native target prefixes."""
     if labels.ndim!=2 or labels.shape[0]!=1:
         raise ValueError('single aligned target sequence required')
@@ -70,7 +70,9 @@ def prefix_target_margin(model, generation, labels):
             values,indices=z.topk(2)
             other=torch.where(indices[0]==target,values[1],values[0])
             margins.append(z[target]-other)
-    return torch.stack(margins).min()
+    values=torch.stack(margins)
+    if trace is not None:trace.append(values.detach().cpu().tolist())
+    return values.min()
 
 
 def token_path_audit(model, prepared, batch_logits, batch_labels):

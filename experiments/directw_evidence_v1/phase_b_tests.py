@@ -52,6 +52,30 @@ class PhaseBChecks(unittest.TestCase):
         with self.assertRaises(ValueError):prefix_target_margin(model,generation,labels.repeat(2,1))
         with self.assertRaises(ValueError):prefix_target_margin(model,generation,torch.full_like(labels,-100))
 
+    def test_prefix_trace_observation_and_trial_alignment(self):
+        from types import SimpleNamespace
+        from .native_io import prefix_target_margin
+        from .exploratory import summarize_prefix_trace
+        class Model:
+            def generate(self,**kwargs):
+                j=kwargs['inputs'].shape[1]-1
+                return SimpleNamespace(scores=(torch.tensor([[0.,2.,-1.]]) if j==0 else torch.tensor([[0.,1.,.5]]),))
+        labels=torch.tensor([[-100,1,2]]);generation=dict(inputs=torch.tensor([[4]]))
+        rng=torch.get_rng_state().clone();trace=[]
+        plain=prefix_target_margin(Model(),generation,labels)
+        observed=prefix_target_margin(Model(),generation,labels,trace)
+        self.assertEqual(plain,observed);self.assertEqual(trace,[[2.,-.5]])
+        self.assertTrue(torch.equal(rng,torch.get_rng_state()))
+        a=dict(step=0,factor=.5,accepted=True,actual_scores=[-.25])
+        calls=[[2.,-.5],[2.,-.5],[1.,-.25],[1.,-.25],[1.,-.25],[2.,-.5]]
+        result=summarize_prefix_trace(calls,[a],True)
+        self.assertEqual(result['trials'][0]['margins'],[1.,-.25])
+        self.assertEqual(result['terminal_before_rollback'],[1.,-.25])
+        self.assertEqual(result['final'],[2.,-.5])
+        with self.assertRaises(RuntimeError):summarize_prefix_trace(calls[:-1],[a],True)
+        calls[3]=[1.,-.5]
+        with self.assertRaises(RuntimeError):summarize_prefix_trace(calls,[a],True)
+
     def test_token_path_audit_separates_batch_prefix_mask_and_preserves_inputs(self):
         from types import SimpleNamespace
         from .native_io import token_path_audit
