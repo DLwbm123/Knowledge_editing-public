@@ -1,0 +1,110 @@
+{
+  "state": "EXPERIMENT_COMPLETE",
+  "cases": 8,
+  "accepted": 0,
+  "actual_target_sequence_successes": 0,
+  "numerical_criterion": "PASS",
+  "efficacy": "FAIL",
+  "statuses": {
+    "NOT_SATISFIED": 3,
+    "BACKTRACK_REJECTED": 5
+  },
+  "all_initial_controls": true,
+  "all_Base_restored": true,
+  "mechanical_exact": true,
+  "case3_first_QP": {
+    "status": "CONVERGED",
+    "slack": [
+      0.016001772934549484
+    ],
+    "kkt": {
+      "primal": 0.0,
+      "stationarity": 0.0006157288958322692,
+      "complementarity": 5.510428913533786e-10,
+      "slack_stationarity": 2.7755575615628914e-17,
+      "dual_projected": 0.0
+    },
+    "cg": [
+      {
+        "status": "CONVERGED",
+        "residual": 0.0,
+        "iterations": 0,
+        "calls": 2,
+        "condition_surrogate": 1.0
+      },
+      {
+        "status": "CONVERGED",
+        "residual": 4.027379097952281e-05,
+        "iterations": 3,
+        "calls": 6,
+        "condition_surrogate": 3.8805874840357597
+      }
+    ],
+    "matvecs": 9,
+    "active": [
+      0
+    ]
+  },
+  "maximum_primal": 1.0550678553045145e-08,
+  "maximum_complementarity": 1.1684153783717097e-09,
+  "generation_tokens_unchanged": true,
+  "last_accepted": [
+    {
+      "index": "0",
+      "status": "NOT_SATISFIED",
+      "margin": -0.4375,
+      "accepted_steps": 6
+    },
+    {
+      "index": "1",
+      "status": "BACKTRACK_REJECTED",
+      "margin": -3.96875,
+      "accepted_steps": 4
+    },
+    {
+      "index": "2",
+      "status": "BACKTRACK_REJECTED",
+      "margin": -7.5625,
+      "accepted_steps": 5
+    },
+    {
+      "index": "3",
+      "status": "NOT_SATISFIED",
+      "margin": -1.0,
+      "accepted_steps": 6
+    },
+    {
+      "index": "4",
+      "status": "BACKTRACK_REJECTED",
+      "margin": -3.9375,
+      "accepted_steps": 4
+    },
+    {
+      "index": "5",
+      "status": "BACKTRACK_REJECTED",
+      "margin": -6.25,
+      "accepted_steps": 4
+    },
+    {
+      "index": "6",
+      "status": "NOT_SATISFIED",
+      "margin": -0.125,
+      "accepted_steps": 6
+    },
+    {
+      "index": "7",
+      "status": "BACKTRACK_REJECTED",
+      "margin": -8.0,
+      "accepted_steps": 1
+    }
+  ],
+  "probes": 199,
+  "probe_score_drops": 0,
+  "probe_KL_exceedances": 0,
+  "new_GGN_calls": 567,
+  "elapsed_seconds": 4093.273155711009,
+  "cumulative_GGN_calls": 4878,
+  "cumulative_native_seconds": 36119.92937801685,
+  "matrices_created": 0,
+  "remaining_matrices": 0
+}
