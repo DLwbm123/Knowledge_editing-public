@@ -431,6 +431,29 @@ class PhaseBChecks(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError,'explicit normal-forward'):
                     edit_one(runtime,[c],[g],cfg,branch)
 
+    def test_native_value_gradient_uses_physical_deficit_without_qp(self):
+        from unittest.mock import patch
+        from .editor import edit_one
+        runtime,inputs,c,g,cfg=self.fp32_case()
+        normal=c.normal_score;c.normal_score=lambda:normal()-.2
+        cfg.constraint_value_mode='native_value';cfg.max_steps=1;cfg.factors=(1.,)
+        cfg.trust_radius=10.;cfg.base_drift_limit=10.;cfg.edit_drift_limit=10.
+        w=runtime.weight.detach().float().clone().requires_grad_(True)
+        gradient=torch.autograd.grad(c.score(w),w)[0]
+        deficit=max(c.threshold-float(c.normal_score()),0.)
+        expected=w.detach()+cfg.ft_lr*deficit*gradient
+        requested=[];write=runtime.write
+        def record(value,**kwargs):
+            requested.append(value.detach().clone());return write(value,**kwargs)
+        runtime.write=record
+        with patch('experiments.directw_evidence_v1.editor.solve_step',side_effect=AssertionError('gradient branch must not solve QP')):
+            result=edit_one(runtime,[c],[g],cfg,'W_FT')
+        self.assertNotEqual(result.status,'EXCEPTION_ROLLED_BACK',result.error)
+        self.assertTrue(torch.allclose(requested[0],expected,atol=1e-6,rtol=1e-6))
+        self.assertEqual(result.ggn_calls,0)
+        self.assertTrue(all(a['qp'] is None for a in result.attempts))
+        self.assertEqual(runtime.weight.dtype,torch.bfloat16)
+
     def test_fp32_satisfied_does_not_override_failed_bf16_score(self):
         from .editor import edit_one
         runtime,inputs,c,g,cfg=self.fp32_case()

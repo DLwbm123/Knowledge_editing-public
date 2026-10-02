@@ -343,8 +343,6 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
     """
     if branch not in BRANCHES or not constraints or not groups:
         raise ValueError("branch, legal constraints and protection groups required")
-    if branch == "W_FT" and config.constraint_value_mode != "functional":
-        raise ValueError("native value anchoring is a QP ablation only")
     if branch == "W_EVIDENCE_QP" and not any(c.cross_image for c in constraints):
         raise ValueError("BLOCKED_DATA: evidence branch requires verified pairs")
     if len({g.name for g in groups}) != len(groups) or any(
@@ -435,8 +433,14 @@ def edit_one(runtime: MatrixRuntime, constraints: list[Constraint], groups: list
                 return out.reshape_as(v)
             qp = None
             if branch == "W_FT":
-                objective = .5 * (thresholds - full).clamp_min(0).square().sum() + preservation + .5 * config.tau * (w - coordinate_start).square().sum()
-                direction = -config.ft_lr * torch.autograd.grad(objective, w)[0].detach()
+                if config.constraint_value_mode == "native_value":
+                    # Same deployed deficit as the QP; retain the FP32 surrogate Jacobian.
+                    deficit = (thresholds - deployed_values).clamp_min(0).detach()
+                    target_gradient = torch.autograd.grad(full, w, grad_outputs=-deficit)[0].detach()
+                    direction = -config.ft_lr * (target_gradient + gpres + config.tau * (w.detach() - coordinate_start))
+                else:
+                    objective = .5 * (thresholds - full).clamp_min(0).square().sum() + preservation + .5 * config.tau * (w - coordinate_start).square().sum()
+                    direction = -config.ft_lr * torch.autograd.grad(objective, w)[0].detach()
             else:
                 qp = solve_step(operator, a, b, gpres, nu=config.nu, max_active=config.max_active,
                                 cg_rtol=config.cg_rtol, cg_max_iter=config.cg_max_iter,dual_tol=config.qp_dual_tol,
