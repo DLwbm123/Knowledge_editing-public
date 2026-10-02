@@ -196,7 +196,7 @@ def run(config,approval,trusted):
             qp_double_accumulation=False if mechanical else config.get('qp_double_accumulation',False),
             constraint_value_mode=config.get('constraint_value_mode','functional'),
             record_trial_diagnostics=config.get('record_trial_diagnostics',False),
-            rounding_mode=config.get('rounding_mode','nearest'),
+            rounding_mode=config.get('mechanical_rounding_mode' if mechanical else 'rounding_mode',config.get('rounding_mode','nearest')),
             rounding_seed=config.get('rounding_seed',20261001)+1009*(10000 if mechanical else int(index)),
             max_ggn_calls=config['maximum_GGN_calls']-total_ggn)
         branch='W_FUNCTIONAL_QP' if mechanical else config.get('editor_branch','W_FUNCTIONAL_QP')
