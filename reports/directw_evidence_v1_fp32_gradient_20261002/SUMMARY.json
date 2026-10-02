@@ -1,0 +1,129 @@
+{
+  "state": "EXPERIMENT_COMPLETE",
+  "cases": 8,
+  "accepted": 2,
+  "actual_target_corrections": 2,
+  "probe_slots": 199,
+  "probe_score_drops": 6,
+  "full_FP32_criterion": "FAIL:6 probe score drops below-0.1",
+  "secondary_criterion": "FAIL:6 backtracking failures versus required<=3",
+  "BF16_deployment_success": "NOT_ESTABLISHED",
+  "all_Base_restored": true,
+  "new_GGN_calls": 11,
+  "elapsed_seconds": 4372.422388298088,
+  "cumulative_GGN_calls": 5938,
+  "cumulative_native_seconds": 51999.771838501794,
+  "cases_detail": [
+    {
+      "index": "0",
+      "status": "BACKTRACK_REJECTED",
+      "accepted_steps": 3,
+      "actual_target_correction": false,
+      "probe_slots": 25,
+      "probe_score_drops": 0,
+      "minimum_probe_score_change": 0.0,
+      "clean_reload": null,
+      "checkpoint_lifecycle": null,
+      "Base_restored": true
+    },
+    {
+      "index": "1",
+      "status": "BACKTRACK_REJECTED",
+      "accepted_steps": 4,
+      "actual_target_correction": false,
+      "probe_slots": 25,
+      "probe_score_drops": 0,
+      "minimum_probe_score_change": 0.0,
+      "clean_reload": null,
+      "checkpoint_lifecycle": null,
+      "Base_restored": true
+    },
+    {
+      "index": "2",
+      "status": "BACKTRACK_REJECTED",
+      "accepted_steps": 2,
+      "actual_target_correction": false,
+      "probe_slots": 25,
+      "probe_score_drops": 0,
+      "minimum_probe_score_change": 0.0,
+      "clean_reload": null,
+      "checkpoint_lifecycle": null,
+      "Base_restored": true
+    },
+    {
+      "index": "3",
+      "status": "ACCEPTED",
+      "accepted_steps": 4,
+      "actual_target_correction": true,
+      "probe_slots": 25,
+      "probe_score_drops": 0,
+      "minimum_probe_score_change": -0.01430945098400116,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 234882664
+      },
+      "Base_restored": true
+    },
+    {
+      "index": "4",
+      "status": "ACCEPTED",
+      "accepted_steps": 4,
+      "actual_target_correction": true,
+      "probe_slots": 25,
+      "probe_score_drops": 6,
+      "minimum_probe_score_change": -0.9710360765457153,
+      "clean_reload": {
+        "logit_max_difference": 0.0,
+        "generation_equal": true,
+        "editor_imported": false
+      },
+      "checkpoint_lifecycle": {
+        "deleted_after_final_consumer": true,
+        "bytes": 234882664
+      },
+      "Base_restored": true
+    },
+    {
+      "index": "5",
+      "status": "BACKTRACK_REJECTED",
+      "accepted_steps": 4,
+      "actual_target_correction": false,
+      "probe_slots": 25,
+      "probe_score_drops": 0,
+      "minimum_probe_score_change": 0.0,
+      "clean_reload": null,
+      "checkpoint_lifecycle": null,
+      "Base_restored": true
+    },
+    {
+      "index": "6",
+      "status": "BACKTRACK_REJECTED",
+      "accepted_steps": 5,
+      "actual_target_correction": false,
+      "probe_slots": 24,
+      "probe_score_drops": 0,
+      "minimum_probe_score_change": 0.0,
+      "clean_reload": null,
+      "checkpoint_lifecycle": null,
+      "Base_restored": true
+    },
+    {
+      "index": "7",
+      "status": "BACKTRACK_REJECTED",
+      "accepted_steps": 1,
+      "actual_target_correction": false,
+      "probe_slots": 25,
+      "probe_score_drops": 0,
+      "minimum_probe_score_change": 0.0,
+      "clean_reload": null,
+      "checkpoint_lifecycle": null,
+      "Base_restored": true
+    }
+  ],
+  "research_state": "PAUSED_BY_USER_NO_GPU_CONTINUATION"
+}
