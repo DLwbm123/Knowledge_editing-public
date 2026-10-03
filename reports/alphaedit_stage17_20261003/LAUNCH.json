@@ -1,0 +1,65 @@
+{
+  "LAUNCH.json": {
+    "jobs": [
+      {
+        "mode": "statistics",
+        "pid": 2137829,
+        "gpu": 5,
+        "uuid": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+        "argv": [
+          "/data/bmw/envs/s0/bin/python",
+          "-"
+        ],
+        "free_MiB_before": 72830
+      },
+      {
+        "mode": "single_layer",
+        "pid": 2137830,
+        "gpu": 6,
+        "uuid": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6",
+        "argv": [
+          "/data/bmw/envs/s0/bin/python",
+          "-"
+        ],
+        "free_MiB_before": 72830
+      },
+      {
+        "mode": "multi_layer",
+        "pid": 2137831,
+        "gpu": 7,
+        "uuid": "GPU-578b486c-6eae-13b0-23be-353ed09220ec",
+        "argv": [
+          "/data/bmw/envs/s0/bin/python",
+          "-"
+        ],
+        "free_MiB_before": 72830
+      }
+    ],
+    "started_epoch": 1791038003.9126072,
+    "deadline_epoch": 1791066802.3701272
+  },
+  "SOURCE_BINDINGS.json": {
+    "commit": "aeab1e96441ca9201bc32c7bd333a31c82ef7c3c",
+    "protocol": "A2_146_V1"
+  },
+  "statistics/NATIVE_MECHANICS.json": {
+    "state": "PASS",
+    "FP16": true,
+    "gradient_layers": [
+      21,
+      23
+    ],
+    "frozen_versions_unchanged": true,
+    "prompt_image_binding": true,
+    "hooks": 0
+  },
+  "startup_check": {
+    "native_FP16_mechanics": "PASS",
+    "statistics_documents_observed": 425,
+    "statistics_intended": 10000,
+    "GPU5_observed_MiB": 21182,
+    "editing_workers": "WAITING_FOR_STATISTICS",
+    "all_observed_argv_neutral": true,
+    "status": "RUNNING_NOT_COMPLETE"
+  }
+}
