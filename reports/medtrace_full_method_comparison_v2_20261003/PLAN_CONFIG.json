@@ -1,0 +1,180 @@
+{
+  "schema_version": "medtrace-full-method-comparison-v2-available-H",
+  "date": "2026-10-03",
+  "status": "FROZEN_CPU_ADMISSION_PENDING",
+  "execution_authorized_by_this_document": true,
+  "preserve_user_pause": false,
+  "hourly_monitor": "ACTIVE_UNTIL_THIS_COMPARISON_ENDS",
+  "comparison": "whole-pipeline effectiveness; H supervision is a MedTRACE method feature",
+  "primary_methods": [
+    "MedTRACE_AVAILABLE_H_R0",
+    "BalancEdit_locked_adaptation",
+    "BELoRA_V2_effect_repaired"
+  ],
+  "historical_C_NO_H": "supplementary historical ablation; no unbound H-only causal claim",
+  "additional_new_training_arms": [],
+  "cohort": {
+    "target_N": 146,
+    "freeze_id": "fea41e32c8b7780f45b060192343f3bb11c2e43b2e046fd709db19df6c0eef92",
+    "preserve_membership_order_probe_roles": true,
+    "current_E_U": 146,
+    "current_E_H": 8,
+    "current_H_eval_supported": 0,
+    "minimum_verified_H_fit_per_edit": 0,
+    "require_full_queue_H_and_U_admission": false,
+    "partial_subset_requires_separate_plan": false,
+    "scope_positive_CAL_is_not_H_fit": true,
+    "require_all_146_U_admission": true,
+    "all_original_146_required": true,
+    "H_supported_edits_qualified": 8,
+    "H_qualified_relations": 12,
+    "unknown_H_training_allowed": false
+  },
+  "method_lock_sources": {
+    "C_FACT": "medtrace_stage18_cfact_20260917/FULL_METHOD_LOCK.json",
+    "baselines_and_R0": "medtrace_stage17_20260912/METHOD_LOCK.json",
+    "evaluation": "medtrace_stage17_20260912/EVALUATION_CONTRACT.json"
+  },
+  "generation": {
+    "backbone": "llava_med_v1_5_mistral_7b",
+    "runtime": "runtime_b_official_native/current_stack_v4",
+    "dtype": "float16",
+    "batch_size": 1,
+    "do_sample": false,
+    "num_beams": 1,
+    "max_new_tokens": 1024,
+    "use_cache": true,
+    "answers_in_prompt": false,
+    "gold_length_truncation": false
+  },
+  "matrix": {
+    "single": true,
+    "sequential": true,
+    "prefixes": [
+      1,
+      50,
+      100,
+      146
+    ],
+    "training_seed_namespace": 20260912,
+    "C_and_BE_sequential": "bound expert insertion and real full-bank generation",
+    "BELoRA_sequential": "preserve original native continuous state semantics"
+  },
+  "judge": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "high",
+    "immutable_snapshot": null,
+    "protocol": "original Stage17 blind strict JSON protocol",
+    "primary_scores": "one common new comparison scoring epoch for Base and all three arms",
+    "old_scores": "historical reference only; do not mix into the new primary epoch",
+    "new_epoch_requires_preexecution_manifest_and_authorization": true,
+    "old_permanent_missing": "inherit by shared identity; never rejudge",
+    "attempts_per_new_full_bound_payload_key": 1,
+    "stop_after_consecutive_new_transport_failures": 3,
+    "primary_Base_masks": "original frozen masks and membership",
+    "new_Base_masks": "separate declared sensitivity panel, never native reselection"
+  },
+  "metrics": {
+    "primary_setting": "sequential final prefix146",
+    "primary_tasks": [
+      "T0_PostAcc",
+      "T1G_Fix",
+      "T2G_Fix",
+      "T2L_Retention"
+    ],
+    "other_registered_metrics": [
+      "generality_PostAcc",
+      "T1L_Retention",
+      "c2w",
+      "insertion_to_final",
+      "costs"
+    ],
+    "optional_independent_H_eval": [
+      "PairCorrect",
+      "H_preservation"
+    ],
+    "primary_aggregation": "edit_macro",
+    "secondary_aggregation": "probe_micro_and_counts",
+    "comparisons": [
+      "MedTRACE_AVAILABLE_H minus BalancEdit",
+      "MedTRACE_AVAILABLE_H minus BELoRA"
+    ],
+    "bootstrap_repetitions": 10000,
+    "bootstrap_seed": 20260912,
+    "source_group_sensitivity": true,
+    "shared_key_missing_exact_bounds": true,
+    "unseen_confirmation_claim": false,
+    "patient_independence": "UNKNOWN unless documented",
+    "ten_task_overall": false
+  },
+  "proposed_first_round_hard_caps": {
+    "not_an_expenditure_authorization": false,
+    "cumulative_GPU_hours": 32,
+    "first_execution_wall_hours": 72,
+    "new_judge_payload_key_attempts": 32000,
+    "generated_checkpoint_and_optimizer_peak_GiB": 64,
+    "additional_minimum_free_GiB": 8,
+    "failed_attempt_costs_included": true,
+    "clock_and_ledger_reset_permitted": false,
+    "starting_epoch": 1791036070.2599673,
+    "deadline_epoch": 1791295270.2599673
+  },
+  "hardware_if_later_authorized": {
+    "host": "pro5000",
+    "physical_GPU_allowlist": [
+      4,
+      5
+    ],
+    "physical_GPU_forbidden": [],
+    "own_resident_models_per_card_max": 1,
+    "run_root": "/data/bmw/Knowledge_editing/outputs/medtrace-full-method-comparison-v2-20261003/run",
+    "neutral_visible_argv": true,
+    "interfere_with_other_processes": false,
+    "authority": "Latest direct user steering: use GPU4/5 to avoid DirectW on6/7"
+  },
+  "next_seed_stage_proposal": {
+    "auto_start": false,
+    "trigger_for_each_baseline": {
+      "T0_T1G_T2G_macro_delta_shared_missing_lower_bound_pp_min": -1,
+      "T2L_macro_delta_shared_missing_lower_bound_pp_min": 5,
+      "not_a_confidence_lower_bound_or_superiority_test": true,
+      "no_unresolved_execution_or_binding_failures": true
+    },
+    "seeds_including_first": [
+      20260912,
+      20261003,
+      20261004
+    ],
+    "additional_seed_count": 2,
+    "all_three_methods_required": true,
+    "real_training_randomness_required": true,
+    "proposed_additional_GPU_hours_total": 64,
+    "proposed_additional_judge_keys_total": 64000,
+    "separate_freeze_admission_and_execution_authorization": true
+  },
+  "actual_new_work_this_turn": {
+    "GPU_jobs": 0,
+    "training_steps": 0,
+    "generation": 0,
+    "Judge_requests": 0,
+    "data_labels_created": 0,
+    "automation_resumed": false,
+    "files_deleted": 0
+  },
+  "available_H_policy": {
+    "authority": "Latest direct user authorization: if H-completion-v2 cannot legally supply146H, proceed on original146 with actually qualified H",
+    "data_frozen_before_new_model_outputs": true,
+    "source": "PR20 source-qualified12 relations on8 edits; H-completion-v2 added0 accepted",
+    "H_available_branch": "C_FACT unchanged native/fit/U +1H CE",
+    "H_missing_branch": "C_NO_H unchanged native/fit/U continuation",
+    "scientific_arm_name": "MedTRACE_AVAILABLE_H_R0",
+    "do_not_call_all146_C_FACT": true,
+    "do_not_reduce_cohort": true,
+    "retain_historical_results": true,
+    "writer_objectives_and_R0_unchanged": true,
+    "deploy_new_whole_bank_not_spliced_old_NO_H_outputs": true,
+    "missing_H_not_imputed": true,
+    "H_eval": null,
+    "patient_independence": "UNKNOWN; source/case exclusions must pass; no independent-patient claim"
+  }
+}
