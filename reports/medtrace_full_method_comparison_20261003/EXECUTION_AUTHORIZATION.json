@@ -1,0 +1,21 @@
+{
+  "status": "USER_AUTHORIZED_EXECUTION_AFTER_ADMISSION",
+  "date": "2026-10-03",
+  "user_instruction": "好的，按照你的计划开始执行，只要 gpu 有足够显存，就直接运行",
+  "scope": "Execute P0 admission and, only after its scientific/data/runtime gates pass, the complete 146-edit C_FACT/BalancEdit/BELoRA comparison",
+  "prior_pause_revoked_for_this_new_comparison": true,
+  "old_scientific_runs_resume": false,
+  "hourly_monitor_auto_resume": false,
+  "adopted_first_round_caps": {
+    "cumulative_GPU_hours": 32,
+    "first_execution_wall_hours": 72,
+    "new_judge_payload_key_attempts": 32000,
+    "checkpoint_optimizer_peak_GiB": 64
+  },
+  "physical_GPU_allowlist": [6, 7],
+  "physical_GPU_forbidden": [5],
+  "explicitly_do_not_require_idle_GPU": true,
+  "data_H_and_U_admission_remains_required": true,
+  "do_not_substitute_NO_H_or_smaller_cohort": true,
+  "extra_seed_stage_not_started_by_this_authorization": true
+}
