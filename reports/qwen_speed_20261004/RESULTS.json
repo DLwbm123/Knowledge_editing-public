@@ -1,0 +1,111 @@
+{
+  "completed_epoch": 1791116156.2040977,
+  "results": [
+    {
+      "state": "COMPLETE",
+      "concurrency": 2,
+      "records": 200,
+      "format_valid": 200,
+      "measurement_seconds": 219.3168305020081,
+      "records_per_minute": 54.715363032250856,
+      "input_tokens": 60755,
+      "output_tokens": 17530,
+      "input_tokens_per_second": 277.0193234187001,
+      "output_tokens_per_second": 79.93002616294646,
+      "load_seconds": 25.484397073974833,
+      "warmup_seconds": 58.36304844706319,
+      "warmup_records": 8,
+      "max_prompt_tokens": 618,
+      "mean_prompt_tokens": 303.775,
+      "max_model_len": 2048,
+      "memory_used_MiB": 54718,
+      "packages": {
+        "torch": "2.8.0",
+        "transformers": "4.55.2",
+        "vllm": "0.10.2"
+      },
+      "snapshot": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+      "quantization_backend": "awq_marlin",
+      "thinking": false,
+      "temperature": 0,
+      "prefix_caching": false,
+      "scope": "Throughput benchmark only; no verdict is admitted into formal Astra comparison"
+    },
+    {
+      "state": "COMPLETE",
+      "concurrency": 32,
+      "records": 200,
+      "format_valid": 200,
+      "measurement_seconds": 38.369294445961714,
+      "records_per_minute": 312.75008241031065,
+      "input_tokens": 60755,
+      "output_tokens": 17530,
+      "input_tokens_per_second": 1583.4276047365352,
+      "output_tokens_per_second": 456.8757453877288,
+      "load_seconds": 25.707720565027557,
+      "warmup_seconds": 4.6954778579529375,
+      "warmup_records": 8,
+      "max_prompt_tokens": 618,
+      "mean_prompt_tokens": 303.775,
+      "max_model_len": 2048,
+      "memory_used_MiB": 55878,
+      "packages": {
+        "torch": "2.8.0",
+        "transformers": "4.55.2",
+        "vllm": "0.10.2"
+      },
+      "snapshot": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+      "quantization_backend": "awq_marlin",
+      "thinking": false,
+      "temperature": 0,
+      "prefix_caching": false,
+      "scope": "Throughput benchmark only; no verdict is admitted into formal Astra comparison"
+    }
+  ],
+  "validation": [
+    {
+      "concurrency": 2,
+      "records": 200,
+      "input_order_match": true,
+      "output_token_count_match": true,
+      "neutral_process_audit": true
+    },
+    {
+      "concurrency": 32,
+      "records": 200,
+      "input_order_match": true,
+      "output_token_count_match": true,
+      "neutral_process_audit": true
+    }
+  ],
+  "hardware": "NVIDIA RTX PRO 5000 72GB Blackwell",
+  "method": "Qwen3-32B-AWQ",
+  "speedup_c32_over_c2": 5.715946401122597,
+  "timing_scope": "Measured 200-input pass only; excludes loading and 8-input warm-up.",
+  "repeats_per_arm": 1,
+  "accuracy_evaluated": false,
+  "source_commit": "a6c23015c223331850d113f6a9b4bf0955ea7dca",
+  "protocol": "PROTOCOL.md",
+  "environment_repairs": "STARTUP_REPAIR.json",
+  "public_scope": "Aggregates only; raw inputs, model answers, generated decisions and private manifests are excluded.",
+  "astra_observed_comparison": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "high",
+    "completed_batches": 137,
+    "batch_size": 50,
+    "completed_records": 6850,
+    "first_started_at_utc": "2026-10-04T10:04:06.370788+00:00",
+    "last_completed_at_utc": "2026-10-04T12:56:55.378155+00:00",
+    "successful_batch_seconds": 10342.553977,
+    "elapsed_span_seconds": 10369.007367,
+    "mean_seconds_per_batch": 75.49309472262773,
+    "records_per_minute_by_span": 39.637352492200236,
+    "records_per_minute_by_batch_seconds": 39.7387338672818,
+    "full_queue_complete": false,
+    "comparison_scope": "Observed workflow throughput, not identical-model or identical-serving-stack benchmark. Astra snapshot is incomplete.",
+    "qwen_speed_ratios": {
+      "2": 1.380399032529169,
+      "32": 7.890286882098218
+    }
+  }
+}
