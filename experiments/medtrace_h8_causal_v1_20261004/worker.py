@@ -107,7 +107,17 @@ def continuation(runtime,t,init,record,cfg,arm,mechanical):
     expert=clone(init,t['seed'],runtime.device);W0=cf.state_hash(expert)
     binding=dict(input=t['native'],fit=t['fit_questions'],U=t['U_fit'],H=rows,arm=arm,seed=t['seed'],W_init=W0,steps=320,fit_order=fit,H_order=order,extra_weight=weight if arm!='A_NO_H' else None,D_rule='next ordinary fit in frozen cyclic fit_order',source=cfg['code_commit'],execution_source=cfg['execution_source'],runtime=cfg['runtime_lock'],generation=runtime.generation_config)
     if final.exists():
-        state=torch.load(final,map_location='cpu',weights_only=True);assert state['binding']==binding and state['step']==320
+        state=torch.load(final,map_location='cpu',weights_only=True);assert state['step']==320
+        if state['binding']!=binding:
+            approval=read(RUN/'private/INITIALIZATION_REUSE_APPROVAL.json')
+            assert t['order'] in approval['orders'] and arm=='A_NO_H'
+            assert state['binding']['execution_source'] in approval['approved_execution_versions']
+            assert dict(state['binding'],execution_source=binding['execution_source'])==binding
+            done=read(directory/'TRAINING.json');check=read(directory/'ONE_STEP_CHECK.json')
+            assert done['status']=='COMPLETE' and done['steps']==320 and len(done['curve'])==320
+            assert check['status']=='PASS' and check['diagnostics_parity'] and check['save_load_resume']
+            assert done['final_sha256']==sha(final) and done['final_state_hash']==state['state_hash']
+            write(directory/'FINAL_REUSE_BINDING.json',dict(status='PASS',original=state['binding'],current=binding,reason='mechanical fixture repair only; completed original NO_H branch retained without rewriting or retraining'))
         del expert;return final
     # Build both mechanical control objects before fixing the formal RNG state.
     # This removes constructor/setup state from the ON/OFF comparison.
