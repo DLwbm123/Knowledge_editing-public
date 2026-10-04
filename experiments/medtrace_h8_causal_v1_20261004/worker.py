@@ -353,6 +353,10 @@ def evaluate_H(runtime,t,record,bank,points,cfg):
 
 
 def main():
+    import torch
+    assert os.environ.get('CUBLAS_WORKSPACE_CONFIG')==':4096:8'
+    assert read(RUN/'RUNTIME_REPRODUCIBILITY_AMENDMENT.json')['deterministic_algorithms'] is True
+    torch.use_deterministic_algorithms(True)
     gpu=int(os.environ['GPU']);action=os.environ['ACTION'];assert gpu in (4,5)
     with legacy.lease(gpu):
         runtime,bindings=legacy.load(gpu);ledger=read(RUN/'private/legacy_stage17/COHORT_AND_SUPPORT_LEDGER.json');by={t['edit_id']:t for t in ledger['tasks']};tasks=[by[e] for e in ledger['main_T0']]
