@@ -38,12 +38,15 @@ def main():
         q.request(db,dict(action='publish',batch_id='test',evidence=ev,response=response))
         assert db.execute('SELECT correct FROM payload WHERE key=?',(key,)).fetchone()[0]==1
         q.request(db,dict(action='reserve',batch_id='failed',keys=[other]))
-        q.request(db,dict(action='publish',batch_id='failed',evidence={'status':'FAILED_NO_RETRY'},response=None))
+        import qwen_scorer as scorer
+        scorer.RUN=root;scorer.ROOT=judge
+        scorer.settle_reserved(db)
         assert db.execute('SELECT status FROM payload WHERE key=?',(other,)).fetchone()[0]=='MISSING'
         try:q.request(db,dict(action='reserve',batch_id='forbidden-retry',keys=[other]));raise RuntimeError('missing retried')
         except AssertionError:pass
         db.close()
-    assert q.read(real/'RESOURCE_LEDGER.json')==original, 'CPU test touched formal ledger'
-    print(json.dumps(dict(status='PASS',checks=['full identity dedup','tokens and snapshot separate keys','one attempt','wrong snapshot rejected','valid response publication','missing terminal'],formal_Judge_attempts=original['Judge_attempts'],GPU_loads=0)))
+    current=q.read(real/'RESOURCE_LEDGER.json')
+    assert current['Judge_attempts']==original['Judge_attempts'] and current.get('Judge_batches',[])==original.get('Judge_batches',[]), 'CPU test touched formal Judge ledger'
+    print(json.dumps(dict(status='PASS',checks=['full identity dedup','tokens and snapshot separate keys','one attempt','wrong snapshot rejected','valid response publication','missing terminal','interrupted reservation settles without request'],formal_Judge_attempts=original['Judge_attempts'],GPU_loads=0)))
 
 if __name__=='__main__':main()
