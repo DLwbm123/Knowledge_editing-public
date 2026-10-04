@@ -13,5 +13,16 @@
     ],
     "torch": "2.8.0+cu128",
     "frozen_uuid_match": true
+  },
+  "python_headers_repair": {
+    "failure_stage": "Model loaded, process audit passed, then first 8-input warm-up call failed compiling Triton cuda_utils because Python.h was absent. No 200-input measurement began.",
+    "model_load_log_seconds": 6.834317,
+    "model_load_log_GiB": 18.1411,
+    "package": "libpython3.12-dev=3.12.3-1ubuntu0.17",
+    "installation": "apt-get download then dpkg-deb -x into the isolated environment headers directory; no system package installation.",
+    "compiler_include_path": "<env>/headers/usr/include/python3.12:<env>/headers/usr/include",
+    "validation": "Triton CUDA driver compilation and initialization",
+    "benchmark_protocol_changed": false,
+    "failure_evidence": "Archived privately before restarting the unchanged warm-up and measured protocol."
   }
 }
