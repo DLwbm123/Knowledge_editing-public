@@ -24,7 +24,23 @@
   "probe_package": "torch==2.8.0 cp312 manylinux_2_28_x86_64",
   "probe_note": "Bounded range request; not sustained full-package throughput.",
   "selected_index": "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple",
-  "completed_downloads": "Reuse completed wheels via find-links; exclude the incomplete torch wheel.",
+  "completed_downloads": "Preserved 11 completed wheels (471591987 bytes) and supplied find-links. pip selected mirror downloads for vLLM and some other packages; cache preservation does not imply each wheel was reused.",
   "inference_started_before_change": false,
-  "global_pip_config_changed": false
+  "global_pip_config_changed": false,
+  "startup_validation": {
+    "state": "INSTALLING_VLLM",
+    "index_confirmed_in_log": true,
+    "visible_process_names_checked": true,
+    "vllm_full_download_log": {
+      "size_MB": 436.4,
+      "reported_MB_per_second": 24.2,
+      "reported_elapsed_seconds": 14
+    },
+    "original_vllm_download_log": {
+      "reported_kB_per_second": 222.1,
+      "reported_elapsed_seconds": 1959
+    },
+    "global_config_changed": false,
+    "model_recopied": false
+  }
 }
