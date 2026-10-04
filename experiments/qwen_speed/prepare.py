@@ -41,9 +41,9 @@ def main():
         entry=Path(config['neutral_entry'])
         entry.write_text('from experiments.qwen_speed.run import main\nif __name__ == "__main__": main()\n')
         for concurrency in (2,32):
-            gpu=subprocess.check_output(['nvidia-smi','-i',config['gpu_uuid'],'--query-gpu=uuid,memory.free','--format=csv,noheader,nounits'],text=True).strip().split(', ')
+            gpu=subprocess.check_output(['nvidia-smi','-i',config['gpu_uuid'],'--query-gpu=uuid,memory.free,index','--format=csv,noheader,nounits'],text=True).strip().split(', ')
             if gpu[0]!=config['gpu_uuid'] or int(gpu[1])<57000:raise RuntimeError('GPU identity/free memory gate failed')
-            env=dict(os.environ,CUDA_VISIBLE_DEVICES=config['gpu_uuid'],CONCURRENCY=str(concurrency),
+            env=dict(os.environ,CUDA_VISIBLE_DEVICES=gpu[2],CUDA_DEVICE_ORDER='PCI_BUS_ID',CONCURRENCY=str(concurrency),
                      HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',VLLM_NO_USAGE_STATS='1',DO_NOT_TRACK='1',
                      VLLM_WORKER_MULTIPROC_METHOD='spawn',OMP_NUM_THREADS='8',MKL_NUM_THREADS='8',TOKENIZERS_PARALLELISM='false')
             with (root/f'c{concurrency}.private.log').open('w') as log:

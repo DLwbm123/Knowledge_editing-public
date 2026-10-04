@@ -1,0 +1,17 @@
+{
+  "reason": "vLLM 0.10.2 attempts int(CUDA_VISIBLE_DEVICES entry) during model registry inspection and rejects a GPU UUID.",
+  "failure_stage": "Before model weights loaded and before warm-up or measurement; zero inference calls.",
+  "change": "Resolve the frozen UUID to the current physical index, set CUDA_DEVICE_ORDER=PCI_BUS_ID, and verify the visible CUDA device UUID before importing vLLM.",
+  "gpu_changed": false,
+  "benchmark_protocol_changed": false,
+  "failed_attempt_evidence": "Preserved privately; model-load failure is not a throughput measurement.",
+  "read_only_device_check": {
+    "name": "NVIDIA RTX PRO 5000 72GB Blackwell",
+    "capability": [
+      12,
+      0
+    ],
+    "torch": "2.8.0+cu128",
+    "frozen_uuid_match": true
+  }
+}

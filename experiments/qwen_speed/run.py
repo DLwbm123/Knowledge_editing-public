@@ -32,6 +32,9 @@ def main():
     status=root/f'c{parallel}.STATUS.json';started=time.monotonic()
     def save(state,**kwargs):write(status,dict(state=state,concurrency=parallel,elapsed_seconds=time.monotonic()-started,**kwargs))
     try:
+        import torch
+        if str(torch.cuda.get_device_properties(0).uuid).removeprefix('GPU-')!=c['gpu_uuid'].removeprefix('GPU-'):
+            raise RuntimeError('CUDA logical device does not match the frozen GPU UUID')
         save('LOADING_TOKENIZER')
         from transformers import AutoTokenizer
         from vllm import LLM,SamplingParams
