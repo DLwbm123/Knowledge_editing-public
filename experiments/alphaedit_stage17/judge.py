@@ -130,22 +130,45 @@ def prepare(bundle,base_bundle,campaign,student,repository):
     return manifest
 
 
-def report(bundle,repository):
+def report(bundle,repository,hybrid_operator=None):
     op=bundle/'operator';c=read(bundle/'source/CONFIG.private.json')
-    if read(execution_path(op))['status']!='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED':raise ValueError('New Judge incomplete')
-    b=read(op/'BINDINGS.json');v=lines(op/'VERDICTS_ASTRA.jsonl');scores={r['opaque_query_id']:r['is_correct'] for r in v}
+    if hybrid_operator is None:
+        if read(execution_path(op))['status']!='COMPLETE_FORMAT_AND_COVERAGE_VALIDATED':raise ValueError('New Judge incomplete')
+        v=lines(op/'VERDICTS_ASTRA.jsonl')
+    else:
+        hybrid=read(hybrid_operator/'EXECUTION_RECORD.json')
+        if hybrid['status']!='COMPLETE_HYBRID_FORMAT_AND_COVERAGE_VALIDATED':raise ValueError('Hybrid Judge incomplete')
+        v=lines(hybrid_operator/'VERDICTS_HYBRID.jsonl')
+    b=read(op/'BINDINGS.json');scores={r['opaque_query_id']:r['is_correct'] for r in v}
     if len(scores)!=len(v) or set(scores)!=set(b):raise ValueError('New verdict coverage mismatch')
-    lookup={};native={};base={}
+    labels={r['opaque_query_id']:r['judge_model'] for r in v}
+    lookup={};label_lookup={};native={};base={};base_labels={}
     for r in read(op/'MODE_MAPPING.json'):
         if r['role']!='original':continue
         score=scores[r['opaque_query_id']];qid=r['query_id'];method=r['method'];mode=r['mode'];prefix=r['prefix']
-        if method=='Base_new':base[qid]=score;continue
+        if method=='Base_new':base[qid]=score;base_labels[qid]=labels[r['opaque_query_id']];continue
         eid=c['tasks'][r['index']-1]['edit_id']
-        if mode=='single' or prefix in c['prefixes']:lookup[method,mode,prefix,eid if mode=='single' else None,qid]=score
+        if mode=='single' or prefix in c['prefixes']:
+            key=(method,mode,prefix,eid if mode=='single' else None,qid)
+            lookup[key]=score;label_lookup[key]=labels[r['opaque_query_id']]
         if qid==eid:native[method,mode,r['index']]=score
     panels,macros,groups=panel_values(c,lookup,c['arms'])
     for p,m in zip(panels,macros):p['primary'].update(interval(m['values'],groups));p['precision']='float16'
     old=read(op/'HISTORICAL_VALIDATED.private.json');panels+=old['panels'];macros+=old['macros']
+    if hybrid_operator is not None:
+        for p in panels:
+            coverage={};tasks=c['tasks'] if p['mode']=='single' else c['tasks'][:p['prefix']]
+            for task in tasks:
+                for event in task['events']:
+                    if event['task']!=p['task']:continue
+                    for qid in event['all_probe_query_ids']:
+                        locality=p['task'].endswith('L')
+                        if locality and p['mode']=='sequential' and qid in c['active_targets'][str(p['prefix'])]:continue
+                        if not (c['Base_correctness'][qid] if locality else not c['Base_correctness'][qid]):continue
+                        label=label_lookup.get((p['method'],p['mode'],p['prefix'],task['edit_id'] if p['mode']=='single' else None,qid),'gpt-6-astra')
+                        coverage[label]=coverage.get(label,0)+1
+            if sum(coverage.values())!=p['primary']['probes']:raise ValueError('Panel Judge coverage does not match primary denominator')
+            p['primary_judge_coverage']=coverage
     values={(m['method'],m['mode'],m['prefix'],m['task']):m['values'] for m in macros};paired=[]
     for arm in c['arms']:
         for m in [m for m in macros if m['method']==arm]:
@@ -167,13 +190,27 @@ def report(bundle,repository):
             'Historical hardware/runtime differ','LoRA single FP16 and sequence BF16; original FP16 sequence failed edit17 step4',
             'One fixed edit order; no order robustness or full patient independence','AlphaEdit VLM adaptation with bounded text-only projection statistics',
             'Source-answer agreement is not clinical validation'])
+    if hybrid_operator is not None:
+        result['status']='HYBRID_EXPLORATORY_COMPARISON_COMPLETE_PUBLICATION_PENDING'
+        result['judge']=hybrid['judge_summary']
+        result['base_audit']['judge_coverage']={label:list(base_labels.values()).count(label) for label in sorted(set(base_labels.values()))}
+        result['limitations'][:0]=[
+            'User-authorized mid-queue judge switch: accepted Astra prefix retained; only the remaining inputs were judged by Qwen3-32B-AWQ',
+            'Judge assignment follows queue order, not randomization; method/task comparisons may be confounded by grader changes',
+            'Historical baselines and Base eligibility masks remain Astra-based; hybrid scores are exploratory, not a uniform-judge confirmatory comparison',
+            'Paired confidence intervals quantify edit variation only and do not account for differences between judges']
     dest=repository/'reports/alphaedit_stage17_20261003'
-    write_new(dest/'SEMANTIC_RESULTS.json',result)
-    with (dest/'SEMANTIC_RESULTS.csv').open('x') as stream:
+    stem='HYBRID_SEMANTIC' if hybrid_operator is not None else 'SEMANTIC'
+    write_new(dest/(stem+'_RESULTS.json'),result)
+    with (dest/(stem+'_RESULTS.csv')).open('x') as stream:
         fields=['method','mode','prefix','task','primary_metric','numerator','probes','edits','micro','macro'];writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader()
         for p in panels:writer.writerow({**{k:p[k] for k in fields[:5]},**{k:p['primary'][k] for k in fields[5:]}})
     text=['# Frozen 146-edit semantic comparison','',
           'Astra/high judged all new AlphaEdit and Base outputs. Historical four-method bound verdicts reproduce the published point estimates and are reused. C_NO_H is the no-H version. Values below are edit-macro percentages; all denominators and confidence intervals are in SEMANTIC_RESULTS.json.','']
+    if hybrid_operator is not None:
+        text=['# Exploratory 146-edit comparison with mixed judges','',
+              'The user requested switching the remaining queue from Astra/high to Qwen3-32B-AWQ at concurrency 32. Accepted Astra scores are retained; the remaining inputs are scored once by Qwen. Per-record provenance is retained privately, and primary-panel judge counts are in HYBRID_SEMANTIC_RESULTS.json. Historical baselines and Base eligibility masks remain Astra-based. Differences below may reflect both the editing method and the judge; this is not a uniform-judge ranking.','',
+              'New-record judge coverage: '+json.dumps(hybrid['judge_summary']['record_counts'])+'. Values are edit-macro percentages; C_NO_H is the no-H version.','']
     for mode in ('single','sequential'):
         text+=['## '+mode+(' (prefix 146)' if mode=='sequential' else ''),'','| Method | T0 Fix | T1G Fix | T2G Fix | T2L retention |','|---|---:|---:|---:|---:|']
         for method in (*c['arms'],*METHODS):
@@ -185,8 +222,8 @@ def report(bundle,repository):
         text.append('')
     text+=['## Limits','',*['- '+s for s in result['limitations']],'',
         'Do not rank solely by target Fix: generalization, locality, paired uncertainty and supported denominators are required. Generation costs and adverse outputs are recorded separately in GENERATION_REPORT.md.']
-    (dest/'SEMANTIC_REPORT.md').write_text('\n'.join(text)+'\n')
-    return ['SEMANTIC_RESULTS.json','SEMANTIC_RESULTS.csv','SEMANTIC_REPORT.md']
+    (dest/(stem+'_REPORT.md')).write_text('\n'.join(text)+'\n')
+    return [stem+'_RESULTS.json',stem+'_RESULTS.csv',stem+'_REPORT.md']
 
 
 def publish(repository,names):
@@ -197,7 +234,8 @@ def publish(repository,names):
     if changed!=allowed or git('branch','--show-current')!='research/directw-evidence-v1' or git('remote','get-url','origin')!='https://github.com/DLwbm123/Knowledge_editing-public.git':raise RuntimeError('Publication boundary changed; preserve report without touching unrelated work')
     git('add',*sorted(allowed));git('commit','-m','Report frozen AlphaEdit 146-edit semantic comparison');commit=git('rev-parse','HEAD');git('push','origin','research/directw-evidence-v1')
     if git('ls-remote','origin','refs/heads/research/directw-evidence-v1').split()[0]!=commit:raise RuntimeError('Remote SHA not verified')
-    url='https://github.com/DLwbm123/Knowledge_editing-public/blob/'+commit+'/reports/alphaedit_stage17_20261003/SEMANTIC_REPORT.md'
+    report_name=next(name for name in names if name.endswith('_REPORT.md'))
+    url='https://github.com/DLwbm123/Knowledge_editing-public/blob/'+commit+'/reports/alphaedit_stage17_20261003/'+report_name
     subprocess.run(['curl','--fail','--silent','--show-error','--location','--max-time','30','--output',os.devnull,url],env=env,check=True)
     return dict(commit=commit,url=url)
 

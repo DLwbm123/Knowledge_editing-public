@@ -1,0 +1,20 @@
+{
+  "decision": "APPROVED_BY_USER",
+  "authorized_at_utc": "2026-10-04T13:08:37.456510+00:00",
+  "user_request": "太慢了，能否后面的改为 qwen",
+  "scope": "Current AlphaEdit A2 scoring queue: retain the accepted Astra prefix and score only the unaccepted remainder with Qwen3-32B-AWQ at concurrency 32.",
+  "accepted_astra_batches": 143,
+  "accepted_astra_records": 7150,
+  "qwen_remaining_records": 5828,
+  "total_records": 12978,
+  "interrupted_astra_batch": "batch_144",
+  "completed_scores_rescored": false,
+  "historical_baselines_rescored": false,
+  "maximum_new_qwen_records": 5828,
+  "maximum_gpu_worker_seconds": 2700,
+  "model_revision": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+  "semantic_retries": 0,
+  "failure_policy": "Preserve accepted chunks and stop; no automatic retry.",
+  "report_policy": "Separate HYBRID_SEMANTIC artifacts with per-record provenance privately and public per-panel judge counts. Existing Astra protocol, locks, accepted scores, and interrupted-attempt evidence remain unchanged.",
+  "interpretation": "Exploratory mixed-judge comparison; grader and method effects may be confounded. No uniform-judge superiority claim."
+}
