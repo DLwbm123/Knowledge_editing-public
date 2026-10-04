@@ -7,7 +7,9 @@ RUN=Path(os.environ['RUN_ROOT']);sys.path.insert(0,str(RUN/'private/tools'))
 from audit import read,write,digest
 def main():
     import torch
+    sys.path.insert(0,str(RUN/'private/tools'))
     import worker
+    assert Path(worker.__file__).parent==RUN/'private/tools'
     from methods.medtrace import AsymmetricCPExpert
     from methods.medtrace.selective_write import LowRankExpert,optimizer_for
     from scripts.medtrace.stage18_cfact import state_hash,extra_schedule

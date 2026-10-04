@@ -116,7 +116,7 @@ def route_diagnosis(tasks,H,raw,lookup,scores,full):
     hist=[json.loads(s) for s in (RUN/'private/HISTORICAL_ATTRIBUTION.jsonl').read_text().splitlines()]
     damaged={(r['edit_id'],r['query_id']) for r in hist if r.get('task')=='T1G' and r.get('mode')=='sequential' and r.get('prefix')==146 and r.get('new_correct')==0}
     # Use the exact original single/final intersection, rather than all final errors.
-    hist_t1g=read(RUN/'public/HISTORICAL_ATTRIBUTION_SUMMARY.json')['T1G']['damage_occurrences']
+    hist_t1g=read(RUN/'public/PHASE_A_ATTRIBUTION.json')['T1G']['damage_occurrences']
     direct=sum(r['historical_explanation']=='DIRECTLY_BOUND' and r['category']=='OWN_EXPERT_CAN_ANSWER_R0_REJECTED_OR_OTHER' and (r['edit_id'],r['query_id']) in damaged for r in rows)
     offs=[d for (a,m,p,q),d in raw.items() if a=='A_NO_H' and m=='sequential' and p==146 and not d.get('effective_expert')]
     return dict(status='ORACLE_DIAGNOSTIC_ONLY',all_priority_counts=dict(count),historical_T1G_denominator=hist_t1g,historical_direct_explainable_occurrences=direct,historical_direct_explainable_fraction=direct/hist_t1g if hist_t1g else None,nearest_OFF_unique_queries=len(offs),nearest_OFF_with_other_own_radius_candidate=sum(bool(x.get('other_own_radius_candidates')) for x in offs),patient_independence='UNKNOWN',no_fallback_deployed=True)
