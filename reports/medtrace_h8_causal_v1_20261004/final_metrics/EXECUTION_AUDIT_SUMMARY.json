@@ -1,0 +1,69 @@
+{
+  "status": "REPORTED_PUBLICATION_PENDING",
+  "complete_phase_counts": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "GPU_mechanical": "PASS",
+  "H8": 8,
+  "branches": 32,
+  "shared_experts": 138,
+  "judge": {
+    "payloads": 3524,
+    "valid": 3524,
+    "permanent_missing": 0,
+    "inherited_PR22_missing": 0,
+    "new_attempts": 3524,
+    "model": "Qwen/Qwen3-32B-AWQ",
+    "immutable_snapshot": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+    "concurrency": 32,
+    "records_per_context": 1,
+    "old_scores_in_main": 0
+  },
+  "cost": {
+    "GPU_hours": 13.49089511109723,
+    "generated_weights_observed_peak_bytes": 102126672,
+    "exact_storage_peak_known": false,
+    "retained_weight_files": 328,
+    "retained_weight_bytes": 59661013,
+    "first_clock_wall_seconds": 35733.77637529373,
+    "CPU_reporting_seconds": 69.28191351890564
+  },
+  "execution_source": {
+    "commit": "fdfa51c0f64eb0372e02c6ce3b0b8026dd1e50d8",
+    "worker_sha256": "bd723df90cf9567acb4614874ce996c5bfe272046e51124bf85a8a4bf050539c",
+    "controller_sha256": "30d47b1721e33e23690f73f3b1530e3658a0eadf179ed6ca8a4c573f9b888db4",
+    "plan_sha256": "549906620eddb91c8c318fa55e42f1f145874b5f119b340060e0f88e11101452",
+    "runtime_amendment_sha256": "5adc500469bddaaa47a6de7d09b34a38fbf6331c48a7b8c190783b315bd84b81",
+    "deterministic_algorithms": true,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "legacy_source_read_only": true
+  },
+  "runtime_reproducibility_amendment": {
+    "status": "FROZEN_BEFORE_REPAIRED_FORMAL_CONTINUATIONS",
+    "revision": "H8_V1_MECHANICAL_REPRODUCIBILITY_1",
+    "reason": "Repeated original H updates diverge under the original nondeterministic execution mode; exact logging parity cannot be qualified in that mode.",
+    "deterministic_algorithms": true,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "same_for_all_arms_and_shared_experts": true,
+    "precision_writer_loss_optimizer_steps_seed_data_router_unchanged": true,
+    "original_stage18_update_source_unchanged": true,
+    "strict_tensor_equality_gate_unchanged": true,
+    "original_first_clock_and_all_failure_costs_retained": true,
+    "same_saved_W_init_for_each_four_arm_pair": true,
+    "existing_CP_initializations_reused": [
+      31,
+      35
+    ],
+    "old_completed_NO_H_branches_retained_as_prior_mode_evidence": 2,
+    "old_completed_NO_H_branches_in_repaired_matched_main_comparison": 0,
+    "old_completed_NO_H_reason_not_reused": "All matched continuations must use the same execution mode; affected two branches must be regenerated from their saved W_init, without score-based selection.",
+    "historical_runtime_drift_disclosed": true,
+    "diagnostic_only_repetitions": "Original-original and original-logged H step comparisons: original mode differs; CuBLAS workspace alone differs; deterministic algorithms plus workspace compare exactly.",
+    "specific_nondeterministic_operator_not_yet_identified": true,
+    "new_scientific_arm_or_hyperparameter_search": false
+  },
+  "public_delivery_pending": true
+}
