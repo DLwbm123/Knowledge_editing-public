@@ -27,7 +27,13 @@ LAYER=legacy.LAYER
 def budget(*_):
     legacy_original_budget()
     files=[p for p in (RUN/'private').rglob('*.pt') if not p.is_symlink()]
-    used=sum(p.stat().st_size for p in files);ledger=read(RUN/'RESOURCE_LEDGER.json')
+    used=0
+    for p in files:
+        try:used+=p.stat().st_size
+        except FileNotFoundError:
+            # Another worker may finish and delete its owned temporary checkpoint.
+            # Only ENOENT is benign; permission/I/O errors must still stop the run.
+            continue
     with legacy.locked_ledger() as ledger:
         ledger['weights_observed_peak_bytes']=max(ledger.get('weights_observed_peak_bytes',0),used)
     if used>=4*1024**3:raise OSError('Frozen4GiB generated-weight cap reached')
