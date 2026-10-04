@@ -40,7 +40,10 @@ def main():
     assert not subprocess.check_output(['git','status','--porcelain'],cwd=official,text=True).strip()
     import selfcheck
     selfcheck.main()
-    import torch,worker
+    import torch,importlib.util
+    spec=importlib.util.spec_from_file_location("structured_worker",RUN/"private/tools/worker.py")
+    worker=importlib.util.module_from_spec(spec);spec.loader.exec_module(worker)
+    assert Path(worker.legacy.__file__).resolve()==(RUN/"private/tools/legacy_worker.py").resolve()
     from methods.medtrace import AsymmetricCPExpert
     from methods.medtrace.selective_write import LowRankExpert
     from structures import TuckerC4,optimizer_for
