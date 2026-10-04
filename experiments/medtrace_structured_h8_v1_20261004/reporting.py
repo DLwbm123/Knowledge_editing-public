@@ -72,6 +72,11 @@ def load():
     for c in db.execute('SELECT * FROM consumer'):
         key=(c['method'],c['mode'],c['edit_order'],c['query_id']);assert key not in lookup
         lookup[key]=c['payload_key']
+        if c['method']=='Base':
+            row=l['queries'][c['query_id']];b=bases[row['opaque_Base_id']]
+            assert c['output_binding']==digest(b)
+            full=dict(query_id=row['query_id'],question=row['question'],reference=row['reference'],image_sha256=row['image_sha256'],image_path=b['image_path'],prompt_ids=b['prompt_ids'],attention_mask=b['attention_mask'],runtime=b['runtime'],generation=b['generation'],output=dict(raw_answer=b['output']['model_answer_raw'],raw_token_ids=b['output']['raw_generated_token_ids']),judge=judge_identity)
+            assert json.loads(ps[c['payload_key']]['binding'])==full
         if c['method']!='Base':
             d=read(c['path']);assert digest(d)==c['output_binding'];raw[key]=d
             assert d['binding']['arm']==c['method']
