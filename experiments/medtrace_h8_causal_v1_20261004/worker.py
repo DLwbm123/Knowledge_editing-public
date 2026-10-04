@@ -109,6 +109,14 @@ def continuation(runtime,t,init,record,cfg,arm,mechanical):
     if final.exists():
         state=torch.load(final,map_location='cpu',weights_only=True);assert state['binding']==binding and state['step']==320
         del expert;return final
+    # Build both mechanical control objects before fixing the formal RNG state.
+    # This removes constructor/setup state from the ON/OFF comparison.
+    reference=clone(init,t['seed'],runtime.device).requires_grad_(True) if mechanical else None
+    ropt=optimizer_for(reference,runtime.model) if mechanical else None
+    if mechanical:
+        assert cf.state_hash(reference)==W0
+        assert all(p.data_ptr()!=q.data_ptr() for p,q in zip(expert.parameters(),reference.parameters()))
+        assert not ropt.state
     seed_everything(t['seed']);expert.requires_grad_(True);opt=optimizer_for(expert,runtime.model);assert not opt.state
     curve=[];start=0
     if point.exists():start,curve=cf.resume(point,binding,expert,opt)
@@ -126,12 +134,11 @@ def continuation(runtime,t,init,record,cfg,arm,mechanical):
             item.update(step=step,fit_index=fi,extra_index=ei,extra_role='H_fit' if rows else 'EXTRA_FIT' if extra else None,
                 H_gradient=None if not rows else item['terms']['extra']['weighted_gradient_norm'])
             if mechanical and step==1:
-                after=cf.rng_state();reference=clone(init,t['seed'],runtime.device).requires_grad_(True)
-                assert all(p.data_ptr()!=q.data_ptr() for p,q in zip(expert.parameters(),reference.parameters()))
-                ropt=optimizer_for(reference,runtime.model);assert not ropt.state
+                after=cf.rng_state()
                 hook.detach();rh=MedTraceLayerHook(runtime.get_module(LAYER),reference);rh.attach();reset_rng(rng)
-                try:cf.update(runtime,rh,reference,ropt,batches[0],batches[fi],teachers[0],extra,extra_weight=weight)
+                try:reference_item=cf.update(runtime,rh,reference,ropt,batches[0],batches[fi],teachers[0],extra,extra_weight=weight)
                 finally:rh.detach();reset_rng(after);hook.attach()
+                write(directory/'ONE_STEP_RAW_EVIDENCE.json',dict(W_init=W0,logged=item,unlogged=reference_item,max_parameter_difference=[float((p-q).abs().max()) for p,q in zip(expert.parameters(),reference.parameters())]))
                 assert all(torch.equal(p,q) for p,q in zip(expert.parameters(),reference.parameters())), 'Diagnostic ON/OFF changed actual one-step update'
                 assert arm not in ('B_H1','C_H025') or item['H_gradient']>0
                 assert arm!='D_EXTRA_FIT' or (not rows and len(hb)==0 and item['extra_role']=='EXTRA_FIT')
@@ -169,7 +176,13 @@ def train_edit(runtime,bindings,ledger,t,cfg,paired=False,mechanical=False):
     raw,b=legacy.check_input(runtime,t['native'],bindings);initpoint=d/'W_init.pt';began=time.time()
     init_binding=dict(input=t['native'],seed=t['seed'],fit=t['fit_questions'],U=t['U_fit'],source=cfg['code_commit'],execution_source=cfg['execution_source'],runtime=cfg['runtime_lock'],generation=runtime.generation_config,procedure='nativeCP-A2_80-CPW0_320-freeR4-before-continuation')
     if initpoint.exists():
-        saved=torch.load(initpoint,map_location='cpu',weights_only=True);assert saved['binding']==init_binding;init=saved['expert']
+        saved=torch.load(initpoint,map_location='cpu',weights_only=True)
+        if saved['binding']!=init_binding:
+            approval=read(RUN/'private/INITIALIZATION_REUSE_APPROVAL.json')
+            assert saved['binding']['execution_source'] in approval['approved_execution_versions']
+            assert dict(saved['binding'],execution_source=init_binding['execution_source'])==init_binding
+            write(d/'INITIALIZATION_REUSE_BINDING.json',dict(status='PASS',original=saved['binding'],current=init_binding,reason='mechanical-validator correction only; exact same original CP procedure/data/runtime; initialization never repeated'))
+        init=saved['expert']
     else:
         if mechanical:
             rng=cf.rng_state();zero=LowRankExpert(AsymmetricCPExpert(14336,4096,4).to(runtime.device),t['seed'],rank=4).to(runtime.device)
@@ -201,6 +214,8 @@ def train_edit(runtime,bindings,ledger,t,cfg,paired=False,mechanical=False):
         save(initpoint,dict(expert=init,binding=init_binding,state_hash=W0))
         write(d/'INITIALIZATION.json',dict(seconds=time.time()-began,W_init=W0,CP_count=1,transfer_checks='PASS',compact_bytes=initpoint.stat().st_size))
         del cp,expert,x
+        # Registered W_init is the sole parent of every continuation branch.
+        saved=torch.load(initpoint,map_location='cpu',weights_only=True);assert saved['binding']==init_binding;init=saved['expert']
     points={}
     for arm in ARMS if paired else ['SHARED_NO_H']:
         points[arm]=continuation(runtime,t,init,record,cfg,arm,mechanical)
