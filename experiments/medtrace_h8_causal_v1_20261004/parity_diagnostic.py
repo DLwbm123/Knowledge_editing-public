@@ -57,6 +57,7 @@ def main():
         for i,j in [(0,1),(0,2),(1,2),(2,3)]:
             comparisons.append(dict(i=i,j=j,exact=all(torch.equal(a,b) for a,b in zip(experts[i].parameters(),experts[j].parameters())),max_abs_difference=[float((a-b).abs().max()) for a,b in zip(experts[i].parameters(),experts[j].parameters())],grad_max_abs_difference=[float((a.grad-b.grad).abs().max()) for a,b in zip(experts[i].parameters(),experts[j].parameters())]))
         name='RAW_PARITY_DIAGNOSTIC.json' if role=='A_NO_H' else 'RAW_H_PARITY_DIAGNOSTIC.json'
+        if os.environ.get('CUBLAS_WORKSPACE_CONFIG'):name='RAW_H_CUBLAS_ONLY_DIAGNOSTIC.json'
         if os.environ.get('DIAGNOSTIC_DETERMINISM')=='1':name='RAW_H_DETERMINISTIC_DIAGNOSTIC.json'
         write(RUN/'private/recovery/GPU_STEP_PARITY'/name,dict(results=results,comparisons=comparisons,metadata=metadata,model_training=runtime.model.training,seed=t['seed'],arm=role,scope='mechanical only; no accepted continuation outputs',epoch=time.time()))
         print(json.dumps(dict(comparisons=comparisons,losses=[{k:v['unweighted'] for k,v in r['item']['terms'].items()} for r in results])),flush=True)
