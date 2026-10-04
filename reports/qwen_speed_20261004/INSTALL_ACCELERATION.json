@@ -1,0 +1,30 @@
+{
+  "user_request": "这很奇怪，能不能用镜像或者其他方式加速",
+  "scope": "Change the installer index for the existing isolated environment; benchmark protocol unchanged.",
+  "probes": [
+    {
+      "index": "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple",
+      "bytes": 16777216,
+      "seconds": 0.618,
+      "MB_per_second": 27.149
+    },
+    {
+      "index": "https://mirrors.aliyun.com/pypi/simple",
+      "bytes": 1572864,
+      "seconds": 18.027,
+      "MB_per_second": 0.087
+    },
+    {
+      "index": "https://pypi.org/simple",
+      "bytes": 4718592,
+      "seconds": 18.467,
+      "MB_per_second": 0.256
+    }
+  ],
+  "probe_package": "torch==2.8.0 cp312 manylinux_2_28_x86_64",
+  "probe_note": "Bounded range request; not sustained full-package throughput.",
+  "selected_index": "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple",
+  "completed_downloads": "Reuse completed wheels via find-links; exclude the incomplete torch wheel.",
+  "inference_started_before_change": false,
+  "global_pip_config_changed": false
+}

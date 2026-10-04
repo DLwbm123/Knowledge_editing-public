@@ -14,15 +14,22 @@ def main():
     root=Path(os.environ['RUN_DIR']);config=json.loads((root/'CONFIG.private.json').read_text())
     def state(value,**kw):write(root/'STATUS.json',dict(state=value,updated_epoch=time.time(),**kw))
     try:
-        state('CREATING_ENVIRONMENT');envroot=Path(config['environment'])
-        if envroot.exists():raise FileExistsError('New isolated environment already exists')
-        subprocess.run(['/usr/bin/python3','-m','venv','--without-pip',str(envroot)],check=True)
+        envroot=Path(config['environment'])
+        if os.environ.get('RESUME_SETUP')=='1':
+            previous=json.loads((root/'STATUS.json').read_text())
+            if previous['state']!='INSTALLING_VLLM' or list(root.glob('c*.STATUS.json')):
+                raise RuntimeError('Setup resume requires an interrupted pre-inference installation')
+            if not (envroot/'bin/python').is_file():raise FileNotFoundError('Missing isolated environment')
+        else:
+            state('CREATING_ENVIRONMENT')
+            if envroot.exists():raise FileExistsError('New isolated environment already exists')
+            subprocess.run(['/usr/bin/python3','-m','venv','--without-pip',str(envroot)],check=True)
         exe=str(envroot/'bin/python')
         state('INSTALLING_VLLM')
         with (root/'install.private.log').open('w') as log:
             subprocess.run([sys.executable,'-m','pip','--python',exe,'install','--disable-pip-version-check',
                 'vllm==0.10.2','transformers==4.55.2','numpy==2.2.6','openai==1.99.9',
-                '--index-url','https://pypi.org/simple'],stdout=log,stderr=subprocess.STDOUT,check=True)
+                '--index-url',os.environ.get('PIP_INDEX_URL','https://pypi.org/simple')],stdout=log,stderr=subprocess.STDOUT,check=True)
         state('WAITING_FOR_MODEL_COPY')
         while not (root/'MODEL_READY.json').exists():
             if (root/'MODEL_TRANSFER_FAILED.json').exists():raise RuntimeError('Model transfer failed')
