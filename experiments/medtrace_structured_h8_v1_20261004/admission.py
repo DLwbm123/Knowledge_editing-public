@@ -56,7 +56,8 @@ def main():
         assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in clone.parameters());opt.step()
         assert set(clone.state_dict())==set(e.state_dict())
     assert set(worker.ARMS)==set(plan['arms']) and worker.legacy.GPUS=={int(k):v for k,v in plan['hardware']['UUIDs'].items()}
-    import controller
+    spec=importlib.util.spec_from_file_location("structured_controller",RUN/"private/tools/controller.py")
+    controller=importlib.util.module_from_spec(spec);spec.loader.exec_module(controller)
     controller.guard()
     write(RUN/'private/CPU_ADMISSION.json',dict(status='PASS',phase='INDEPENDENT_MECHANICAL_AND_P1_ONLY',N=146,freeze_id=ledger['freeze_id'],H8=8,H_relations=12,paths_checked=len(paths),source_read_only=True,compact_clone_optimizer_inference_three_structures='PASS',full_model_GPU_mechanical='PENDING',parent_bank_admission='PENDING',Judge_and_report_implementation='PENDING',seconds=time.time()-began,execution_source=read(RUN/'private/GPU_SOURCE_VERSION.json')))
     with worker.legacy.locked_ledger() as costs:costs['CPU_admission_seconds']=time.time()-began
