@@ -1,0 +1,237 @@
+{
+  "stage": "medtrace_structured_h8_v1_20261004",
+  "status": "FROZEN_BEFORE_OUTPUTS_IMPLEMENTATION_GATE_REQUIRED",
+  "authorization": "User 2026-10-04: automatic next validation after H8, hourly maintenance, technical repair; latest GPU restriction5/6",
+  "frozen_at_utc": "2026-10-04T15:04:44.133202+00:00",
+  "parent_run": "/data/bmw/Knowledge_editing/outputs/medtrace-h8-causal-v1-20261004/run",
+  "parent_local_source": "913af7afc0cc141a603e657bad348ece3c22b4ea",
+  "run_root": "/data/bmw/Knowledge_editing/outputs/medtrace-structured-h8-v1-20261004/run",
+  "H8_orders": [
+    31,
+    35,
+    49,
+    71,
+    87,
+    125,
+    126,
+    146
+  ],
+  "original_N": 146,
+  "H_relations": 12,
+  "arms": {
+    "CP_NO_H": {
+      "structure": "CP4",
+      "H_weight": 0
+    },
+    "CP_H1": {
+      "structure": "CP4",
+      "H_weight": 1
+    },
+    "TK_NO_H": {
+      "structure": "TuckerC4",
+      "H_weight": 0
+    },
+    "TK_H1": {
+      "structure": "TuckerC4",
+      "H_weight": 1
+    },
+    "FREE_NO_H": {
+      "structure": "FREE4",
+      "H_weight": 0
+    },
+    "FREE_H1": {
+      "structure": "FREE4",
+      "H_weight": 1
+    }
+  },
+  "continuations": 48,
+  "seed_namespace": 20260912,
+  "steps_per_continuation": 320,
+  "initialization": {
+    "procedure": "Original nativeCP -> A2_80 -> CPW0_320, once per H8 edit; save actual CP factors and clone to all six branches",
+    "why_rebuild": "Parent retained only expanded A/B W_init; original CP coordinates were reclaimed. No inverse SVD guesses or parent final weight used as W0.",
+    "Tucker_embedding": "U1=CP.u_out,U2=CP.v_out,U3=CP.u_in,U4=CP.v_in; R[5k,k]=1; L[5k,k]=CP.rho[k]*CP.beta/sqrt(4); other L/R zero",
+    "FREE_embedding": "exact original LowRankExpert(cp, canonical_seed, rank=4)",
+    "pairing": "same residual function at W0, structure-specific coordinates; same RNG schedule, fresh optimizer per branch; numerical parity gate required; no claim optimizer trajectories are equivalent"
+  },
+  "model_runtime": {
+    "reference": "parent GPU source fdfa51c plus mechanical storage repair54b5e6c; clean original LLaVA lock unchanged",
+    "base": "frozen FP16",
+    "expert": "FP32",
+    "layer": "model.layers.21.mlp.down_proj",
+    "deterministic": true,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "normalize_input": "original RMS +1e-6"
+  },
+  "training": {
+    "common_objective": {
+      "native": 0.5,
+      "fit": 0.5,
+      "KL_U": 0.01
+    },
+    "H_objective": "original stage18.update extra CE, weight1; same12 qualified H relations, no new H",
+    "fit": "original four native-only questions and cyclic permutation by canonical seed",
+    "U": "original bound U, not independent CAL",
+    "H_schedule": "original source-balanced extra_schedule",
+    "optimizer": "Adam betas0.9/0.999 eps1e-8 weight_decay0; input group1e-4 output group1e-3, fresh states",
+    "groups": {
+      "CP4": [
+        "u_in,v_in",
+        "u_out,v_out,rho"
+      ],
+      "TuckerC4": [
+        "u3,u4,R",
+        "u1,u2,L"
+      ],
+      "FREE4": [
+        "A",
+        "B"
+      ]
+    },
+    "clip": "original global grad norm1.0 before step",
+    "normalization": "CP and FREE original normalize_factors_; Tucker none, as historical TuckerC4; this coordinate/optimizer distinction is part of tested recipe and must be disclosed",
+    "diagnostic_steps": [
+      1,
+      20,
+      80,
+      160,
+      320
+    ]
+  },
+  "generation": {
+    "single": "H8 all original probes; parent nonH138 single raw outputs may be reused only after full bindings; count full146 denominator explicitly",
+    "sequential": "six hybrid banks: same138 immutable parent FREE_NO_H experts + eight respective new experts, original insertion order and prefixes1/50/100/146; true whole-bank routing, no eight-only surrogate",
+    "routing": "unchanged R0 nearest first then own radius, no fallback; identical frozen key/radius per edit across arms",
+    "storage": "persist CP/Tucker factors, never overwrite with expanded A/B; expand in memory for matched main inference, no training after final expansion",
+    "H_fit": "training diagnostic only; H_eval NA",
+    "pressure": "No new pressure sample collection in this round. Do not substitute H_fit or original standard T2L for prior separate pressure set. Historical pressure results are context, not matched current metrics. Pressure coverage NA prevents promotion claim."
+  },
+  "primary_contrasts": [
+    [
+      "TK_H1",
+      "FREE_H1"
+    ],
+    [
+      "TK_H1",
+      "CP_H1"
+    ],
+    [
+      "TK_H1",
+      "TK_NO_H"
+    ]
+  ],
+  "secondary_contrasts": [
+    [
+      "CP_H1",
+      "CP_NO_H"
+    ],
+    [
+      "FREE_H1",
+      "FREE_NO_H"
+    ],
+    [
+      "TK_NO_H",
+      "CP_NO_H"
+    ],
+    [
+      "CP_H1",
+      "FREE_H1"
+    ]
+  ],
+  "interaction": "(TK_H1-TK_NO_H)-(CP_H1-CP_NO_H), paired exact missing bounds; no best-arm selection",
+  "parent_results": "Complete and review parent first, record H and routing findings. New stage proceeds regardless of parent scientific effect direction; no conditional H weights, no changes to frozen R0. Parent raw free scores are historical context, six new arms are primary matched experiment.",
+  "trigger": {
+    "required": [
+      "parent P0/P1/P2/P3 complete",
+      "all generation/controller/scorer terminal receipts",
+      "all parent payload FORMAT_VALID or permanent MISSING",
+      "all parent GPU leases ended",
+      "parent metrics full-binding audit PASS and review receipt",
+      "new CPU data/source/full146/H audit PASS",
+      "new source version frozen and mechanical GPU31/35 all six branches PASS"
+    ],
+    "publication": "Attempt parent privacy-reviewed delivery first. Proxy publication-only blocker is recorded and may not force science recomputation or indefinite stop of this already authorized next stage; new science may start after review and other gates. Deliver both separately once proxy recovers.",
+    "mechanical_reuse": "The12 real mechanical continuation branches are part of48, no repeat training.",
+    "insufficient_parent": "Repair runtime within original caps; do not waive scientific/data gates. If parent cannot complete within caps, retain partial and mark dependency blocked; no automatic cap extension."
+  },
+  "metrics": {
+    "masks": "unchanged original Base masks; common-Qwen Base mask sensitivity separate",
+    "primary": "H8 edit-macro T0/T1G/T2G/T1L/T2L single and original146 hybrid bank prefixes; original full denominators and micro counts",
+    "strata": [
+      "owner H8/nonH8",
+      "selected H8/nonH8/Base"
+    ],
+    "bootstrap": 10000,
+    "bootstrap_seed": 20260912,
+    "source_sensitivity": "original native/H shared-source connected components; unknown patients disclosed",
+    "missing": "complete denominators, shared exact key point/difference bounds; never successful subset",
+    "resource": [
+      "parameter count",
+      "actual serialized checkpoint bytes incl overhead",
+      "router and metadata bytes separately",
+      "snapshot GPU resident usage vs exact peak unknown",
+      "load/expansion wall time",
+      "GPU wall leases including failures and Judge"
+    ]
+  },
+  "decision": {
+    "status_labels": [
+      "SUPPORTED_ON_EXPOSED_PANEL",
+      "NOT_SUPPORTED",
+      "INCONCLUSIVE"
+    ],
+    "supported_gate": "For TK_H1 against FREE_H1: H8 T0=8/8 single and full146 T0=146/146 final bank; single and final bank T1G/T2G exact macro difference lower bound>=-1pp; T2L exact micro difference lower bound>=0 and macro lower bound>=0; checkpoint parameter payload at least10x smaller. Any necessary empty denominator/missing ambiguity => INCONCLUSIVE. These are exploratory decision gates, not clinical confirmation.",
+    "promotion": "Even pass does not automatically replace MedTRACE mainline: tiny H8/exposed data, H_eval NA and absent matched pressure panel prevent general superiority or full146 Tucker claims. No subsequent round automatically authorized."
+  },
+  "caps": {
+    "GPU_hours_cumulative": 16,
+    "wall_hours_from_first_execution": 48,
+    "new_Judge_payload_attempts": 12000,
+    "generated_checkpoint_optimizer_router_teacher_peak_GiB": 4,
+    "min_free_GiB": 8,
+    "max_resident_model_per_assigned_GPU": 1,
+    "all_failures_included": true,
+    "reset_allowed": false,
+    "first_clock": "first executed CPU/GPU operation of this new stage; design-only file creation excluded; CPU tests start clock"
+  },
+  "judge": {
+    "reuse_protocol_from_parent": true,
+    "model": "Qwen/Qwen3-32B-AWQ",
+    "snapshot": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+    "concurrency": 32,
+    "one_record_per_context": true,
+    "prompt": "original Stage17 same four fields, no tools/memory",
+    "configuration": "inherit exact parent QWEN_JUDGE_AMENDMENT decoding/versions; no silent changes",
+    "one_attempt_per_full_key": true,
+    "old_identical_Qwen_keys": "inherit FORMAT_VALID with full evidence or permanent MISSING; no epoch salt for a fresh attempt; runtime/model/generation/inputs/rawtokens bind key",
+    "old_Astra_SOL": "read-only different-judge evidence, not common primary scores",
+    "consumer_binding": "arm/step/order/prefix/complete bank ancestry retained separately",
+    "stop": "three consecutive new transport faults stop requests; nontransport/binding/isolation faults immediate stop, save evidence; do not reattempt reserved/failed keys"
+  },
+  "hardware": {
+    "host": "pro5000",
+    "physical_GPUs": [
+      5,
+      6
+    ],
+    "UUIDs": {
+      "5": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+      "6": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6"
+    },
+    "admission": "fresh free memory check with prior measured model peak + reasonable margin, sharing permitted; never touch unrelated processes",
+    "GPU4": "not allowed for this next stage; existing healthy H8 GPU4 task finishes under original authorization"
+  },
+  "lifecycle": {
+    "parent_hold": "138 shared experts and146 routers and all generation/Judge bindings are registered read-only dependencies until six new banks close; never delete parent owned artifacts from new controller",
+    "new": "8 CP W0 +48 compact final experts +latest resume only; no copy of shared model weights; delete exact owned intermediates after last consumer, keep small reproducibility evidence",
+    "new_final_last_consumer": "single, sequential prefixes, save-load/parity/resource measurements and frozen raw outputs ready; final deletion via explicit inventory after final review, no unlimited archives"
+  },
+  "automation": {
+    "id": "medtrace-gpu567",
+    "interval": "hourly",
+    "workflow": "same-thread heartbeat agent checks parent, repairs technical failures with evidence, completes/reviews/publishes parent, implements and verifies next frozen stage, admits and launches without user reapproval; monitors through next delivery",
+    "notifications": "only substantive failure/repair, phase launch/completion, delivery or new external blocker",
+    "stop": "pause after this next stage finishes and is delivered; user stop saves state, stops only own jobs, pauses heartbeat"
+  },
+  "publication": "source/config/tests/anonymous aggregates/Chinese report only; new draft PR in DLwbm123/Knowledge_editing-public, through local127.0.0.1:7897 proxy; verify remoteSHA and anonymous access; attach_artifact. Old PRs unchanged."
+}
