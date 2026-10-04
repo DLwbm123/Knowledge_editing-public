@@ -19,6 +19,9 @@ environment and model; check GPU identity and available memory before each run.
 Record this judge choice when preparing each new scoring protocol and report the
 model revision, prompt, runtime settings and provenance with its results.
 Keep Astra-labelled and Qwen-labelled results distinguishable; this throughput
-benchmark does not establish scoring equivalence. The already-running Astra
-comparison continues under its original frozen protocol. This preference alone
-does not launch a new run or authorize rescoring historical results.
+benchmark does not establish scoring equivalence. A later explicit request on
+2026-10-04 authorized switching the active AlphaEdit A2 queue: retain 7,150
+accepted Astra records and score only the remaining 5,828 with Qwen. See
+`reports/alphaedit_stage17_20261003/QWEN_SWITCH_AUTHORIZATION.json`; report this
+as a mixed-judge exploratory comparison. The future-default preference alone
+does not launch additional runs or authorize rescoring historical results.
