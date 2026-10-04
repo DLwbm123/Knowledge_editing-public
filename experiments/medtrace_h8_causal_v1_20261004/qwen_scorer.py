@@ -30,6 +30,18 @@ def packet(rows,bid):
     assert all(set(r['record'])=={'opaque_query_id','question','gold_answer','raw_base_answer'} for r in rows)
     return dict(batch_id=bid,records=[r['record'] for r in rows])
 
+def settle_reserved(db):
+    """Recover retained publication only; absent responses become terminal missing."""
+    for batch in q.read(RUN/'RESOURCE_LEDGER.json').get('Judge_batches',[]):
+        if batch['status']!='RESERVED':continue
+        path=ROOT/'evidence'/(batch['id']+'.json')
+        if path.exists():
+            saved=read(path);evidence=saved['evidence'];response=saved['response']
+        else:
+            evidence=dict(status='FAILED_NO_RETRY',reason='Worker stopped without a retained valid response; never resubmit');response=None
+        q.request(db,dict(action='publish',batch_id=batch['id'],evidence=evidence,response=response,transport_failure=False))
+
+
 def child():
     import torch
     from transformers import AutoTokenizer
@@ -107,6 +119,7 @@ def main():
         while any(not s.get('ended_epoch') for s in read(RUN/'RESOURCE_LEDGER.json')['gpu_sessions']):
             caps();time.sleep(10)
         db=q.connect();q.initialize(db);q.ingest(db)
+        settle_reserved(db)
         # A restarted scorer never resubmits any reserved object.
         assert not db.execute("SELECT 1 FROM payload WHERE status='RESERVED'").fetchone(), 'Reserved attempt requires evidence review'
         rows=pending(db)
@@ -150,5 +163,9 @@ if __name__=='__main__':
         if os.environ.get('QWEN_ROLE')=='child':child()
         else:main()
     except Exception as error:
+        if os.environ.get('QWEN_ROLE')!='child':
+            db=q.connect()
+            try:settle_reserved(db)
+            finally:db.close()
         write(ROOT/('QWEN_CHILD_FAILURE.json' if os.environ.get('QWEN_ROLE')=='child' else 'SCORER_FAILURE.json'),dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time(),new_requests_stopped=True))
         raise
