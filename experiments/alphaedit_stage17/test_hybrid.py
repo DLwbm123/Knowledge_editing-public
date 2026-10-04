@@ -21,6 +21,7 @@ class HybridMergeTests(unittest.TestCase):
         self.put(self.op/'SOURCE_IDS.json',ids)
         self.put(self.op/'ASTRA_ACCEPTED.json',[dict(opaque_query_id=f'source_{i}',judge_model='gpt-6-astra',is_correct=True) for i in range(2)])
         self.put(self.op/'gpu_result/STATUS.json',{'state':'COMPLETE','completed_records':3})
+        self.put(self.op/'gpu_result/CONTROLLER_RESULT.json',{'exit_code':0})
         self.verdicts=[dict(opaque_query_id=oid,is_correct=False,judge_model=MODEL,model_revision=REVISION,protocol=PROTOCOL) for oid in bindings]
         self.output=self.op/'gpu_result/chunks/000000.VERDICTS.json';self.put(self.output,self.verdicts)
 
@@ -41,6 +42,10 @@ class HybridMergeTests(unittest.TestCase):
     def test_rejects_duplicate_verdicts_even_with_expected_count(self):
         self.verdicts[1]=self.verdicts[0];self.put(self.output,self.verdicts)
         with self.assertRaisesRegex(ValueError,'coverage'):merge(self.root)
+
+    def test_rejects_results_from_failed_worker_exit(self):
+        self.put(self.op/'gpu_result/CONTROLLER_RESULT.json',{'exit_code':1})
+        with self.assertRaisesRegex(ValueError,'exit successfully'):merge(self.root)
 
 
 if __name__=='__main__':unittest.main()

@@ -124,6 +124,7 @@ def worker():
 def merge(bundle):
     op=bundle/'operator_hybrid';lock=read(op/'QWEN_LOCK.json')
     gpu=op/'gpu_result';status=read(gpu/'STATUS.json');bounds=read(op/'QWEN_BINDINGS.json');source_ids=read(op/'SOURCE_IDS.json')
+    if read(gpu/'CONTROLLER_RESULT.json')['exit_code']!=0:raise ValueError('Qwen worker did not exit successfully')
     if status['state']!='COMPLETE' or status['completed_records']!=len(bounds):raise ValueError('Remaining Qwen queue incomplete')
     if digest({k:v for k,v in lock.items() if k!='config_sha256'})!=lock['config_sha256']:raise ValueError('Qwen lock changed')
     verdicts=[]
@@ -159,7 +160,10 @@ def follow(config):
         state('QWEN_REMAINDER_RUNNING')
         while True:
             if time.time()>config['deadline_epoch']:raise TimeoutError('Remote job deadline exceeded; inspect retained remote state')
-            script='from pathlib import Path\np=Path('+repr(remote)+')/"STATUS.json"\nprint(p.read_text() if p.exists() else "{}")\n'
+            script=('from pathlib import Path\nimport json\nr=Path('+repr(remote)+')\np=r/"STATUS.json"\n'
+                    's=json.loads(p.read_text()) if p.exists() else {}\n'
+                    'if s.get("state")=="COMPLETE" and not (r/"CONTROLLER_RESULT.json").exists():s["state"]="WAITING_FOR_WORKER_EXIT"\n'
+                    'print(json.dumps(s))\n')
             p=subprocess.run(['ssh','pro5000','python3','-'],input=script,text=True,capture_output=True,timeout=30)
             p.check_returncode();status=json.loads(p.stdout)
             state('QWEN_REMAINDER_RUNNING',remote_status=status)
@@ -168,7 +172,7 @@ def follow(config):
             time.sleep(20)
         target=op/'gpu_result';target.mkdir()
         # Retrieve only this completed job's small records and receipts, never model files.
-        script='import tarfile,sys\nfrom pathlib import Path\nr=Path('+repr(remote)+')\nt=tarfile.open(fileobj=sys.stdout.buffer,mode="w|")\nfor n in ["STATUS.json","chunks","c32.PROCESS_AUDIT.private.json"]:t.add(r/n,arcname=n)\nt.close()\n'
+        script='import tarfile,sys\nfrom pathlib import Path\nr=Path('+repr(remote)+')\nt=tarfile.open(fileobj=sys.stdout.buffer,mode="w|")\nfor n in ["STATUS.json","CONTROLLER_RESULT.json","chunks","c32.PROCESS_AUDIT.private.json"]:t.add(r/n,arcname=n)\nt.close()\n'
         transport=subprocess.run(['ssh','pro5000','python3','-'],input=script.encode(),stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=120)
         transport.check_returncode()
         import io,tarfile
