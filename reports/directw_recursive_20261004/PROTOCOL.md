@@ -79,3 +79,33 @@ state files and write a deletion receipt; keep failure resume states. No shared
 model, historical checkpoint or first-route artifact is modified. Source,
 protocol and sanitized results are published; private medical queries, answers,
 tokens, paths and model weights are excluded.
+
+## Completion scoring, 2026-10-04
+
+After the user requested live status, generation completion was verified and
+the pending scoring packet was frozen before any new verdicts. Reuse the validated
+Qwen3-32B-AWQ revision `0499c3ac83fdef8810b907a23894ba91e95eddd8`, concurrency
+32, AWQ Marlin, thinking off, temperature 0, seed 0 and full constrained JSON
+responses. The existing Qwen worker is reused with only its protocol identifier
+set to `DIRECTW_RECURSIVE8_QWEN32_20261004_V1`. Prompt and execution settings are
+recorded in the scoring lock. No historical Astra verdict is reused as a new
+Qwen verdict. Identical query/reference/candidate-text inputs within this pilot
+are scored once and mapped back to every occurrence; all tokens remain saved.
+
+The packet contains Base and both final 123-query panels plus 16 insertion-target
+answers (385 occurrences). Primary panels retain the original Base eligibility
+and exclude the eight inserted targets from locality. Their identity matches
+the original active-target mapping restricted to the first eight edits. Report
+fresh Base Qwen agreement and any changed Base labels alongside both arms;
+original Astra-derived masks do not become Qwen-derived masks. No input truncation,
+score-based retry or new edit is allowed. Scoring on GPU 6 uses the remaining
+original wall deadline, with no overlap with the completed editing process.
+
+The user subsequently requested hourly monitoring and repair/continuation when
+problems occur. This authorizes recovery from operational faults within the
+existing scope and deadline. The first scorer attempt failed before producing
+any verdict because Python multiprocessing spawn tried to reopen `<stdin>`.
+Its logs/status remain preserved. Removing the synthetic main-file metadata
+repairs the neutral entry; no model, prompt, input, parameter or scoring rule is
+changed, and the deadline is not reset. This is a startup repair, not a retry
+selected by score. The hourly monitor ends after verified publication.
