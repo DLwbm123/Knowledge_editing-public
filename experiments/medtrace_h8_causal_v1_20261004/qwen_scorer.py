@@ -62,7 +62,10 @@ def child():
             family=found
         commands={p:args for p,parent,args in processes if int(p) in family}
         assert not any(word in command for command in commands.values() for word in ('wangbomin','Knowledge_editing','Qwen','qwen_scorer'))
-        write(ROOT/'QWEN_PROCESS_AUDIT.json',dict(commands=commands,neutral_argv=True,GPU_UUID=os.environ['JUDGE_GPU_UUID']))
+        compute=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid,process_name,used_memory','--format=csv,noheader'],text=True).splitlines()
+        own=[line for line in compute if int(line.split(',')[0]) in family]
+        assert own and all(line.split(',')[1].strip()==os.environ['JUDGE_GPU_UUID'] for line in own)
+        write(ROOT/'QWEN_PROCESS_AUDIT.json',dict(commands=commands,neutral_argv=True,GPU_UUID=os.environ['JUDGE_GPU_UUID'],GPU_processes=own))
         for offset in range(0,len(rows),32):
             caps();group=rows[offset:offset+32];bid=digest([q.lock()['epoch'],[r['key'] for r in group]])
             batch=packet(group,bid)
