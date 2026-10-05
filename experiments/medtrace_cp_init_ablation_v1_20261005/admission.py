@@ -52,7 +52,8 @@ def main():
     # Validate recursive inheritance across both completed epochs, including inherited rows.
     q.parent_result({'synthetic_absent_key':True});assert q._PARENT_CACHE and all(row['status'] in ('FORMAT_VALID','MISSING') for row,saved in q._PARENT_CACHE.values())
     db.close()
-    import controller
+    spec=importlib.util.spec_from_file_location("cp_init_controller",RUN/"private/tools/controller.py")
+    controller=importlib.util.module_from_spec(spec);spec.loader.exec_module(controller)
     controller.guard()
     write(RUN/'private/SCORING_IMPLEMENTATION_ADMISSION.json',dict(status='PASS',four_arms=True,full_key_inheritance=True,inherited_catalog_size=len(q._PARENT_CACHE),synthetic_missing_no_retry=True,shared_missing_exact_bounds=True,bootstrap10000=True,formal_attempts=read(RUN/'RESOURCE_LEDGER.json')['Judge_attempts']))
     write(RUN/'private/CPU_ADMISSION.json',dict(status='PASS',original_N=146,evaluated_N=8,H_relations=12,paths_checked=len(paths),CPU_initializer_checks='PASS',source_clean=True,GPU_mechanical='PENDING',seconds=time.time()-began))
