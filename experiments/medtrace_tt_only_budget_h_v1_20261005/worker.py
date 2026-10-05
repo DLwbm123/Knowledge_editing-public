@@ -356,7 +356,8 @@ def main():
         action=os.environ['ACTION']
         if action=='mechanical':
             from qualification import gpu_check
-            gpu_check(runtime,tasks[0],cfg);write(RUN/'private/GPU_MECHANICAL.json',dict(status='PASS',epoch=time.time(),all_four_shapes=True,formal_training_not_started=True));return
+            from types import SimpleNamespace
+            gpu_check(runtime,tasks[0],cfg,SimpleNamespace(RUN=RUN,legacy=legacy,H=H,LAYER=LAYER,logged_update=logged_update,budget=budget));write(RUN/'private/GPU_MECHANICAL.json',dict(status='PASS',epoch=time.time(),all_four_shapes=True,formal_training_not_started=True));return
         assert action=='p1' and read(RUN/'private/GPU_MECHANICAL.json')['status']=='PASS'
         phase=os.environ['PHASE'];structures=('TT44','TT88') if phase=='primary' else ('TT84','TT48')
         selected=tasks[int(os.environ['PARTITION'])::4]

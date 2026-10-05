@@ -59,9 +59,8 @@ def cpu_check():
     return dict(structures=checks,PR26_TT44_initialization_and_single_update='PASS',guard_one_candidate_shrink_reject_resume='PASS')
 
 
-def gpu_check(runtime,t,cfg):
+def gpu_check(runtime,t,cfg,w):
     from audit import read,write
-    import worker as w
     from scripts.medtrace import stage18_cfact as cf
     from methods.medtrace import MedTraceLayerHook
     from dataclasses import replace
