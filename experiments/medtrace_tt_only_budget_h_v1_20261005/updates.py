@@ -13,7 +13,8 @@ def restore_rng(s):
     if s[2] is not None:torch.cuda.set_rng_state(s[2].cpu())
 def hook_state(h):return {k:copy.deepcopy(getattr(h,k)) for k in HOOK_FIELDS}
 def restore_hook(h,s):
-    for k,v in s.items():setattr(h,k,v)
+    device=next(h.expert.parameters()).device
+    for k,v in s.items():setattr(h,k,v.to(device) if isinstance(v,torch.Tensor) else v)
 @contextmanager
 def preserve(h,e=None):
     r=rng();hs=hook_state(h);grads=[None if p.grad is None else p.grad.clone() for p in e.parameters()] if e is not None else None

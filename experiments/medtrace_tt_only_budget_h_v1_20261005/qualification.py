@@ -89,7 +89,7 @@ def gpu_check(runtime,t,cfg,w):
             # Nonzero real-model gradients for all four cores after the G1 opening step.
             cf.update(runtime,h,e,opt,batches[0],batches[1],teachers[0],(hb,rows[0]));assert all(p.grad.norm()>0 and torch.isfinite(p.grad).all() for p in e.parameters())
             snapshot=copy.deepcopy(e.state_dict());osnap=copy.deepcopy(opt.state_dict());rng=updates.rng();hs=updates.hook_state(h)
-            stream=io.BytesIO();torch.save(dict(e=snapshot,o=osnap,r=rng,h=hs),stream);stream.seek(0);saved=torch.load(stream,map_location=runtime.device,weights_only=True)
+            stream=io.BytesIO();torch.save(dict(e=snapshot,o=osnap,r=rng,h=hs),stream);stream.seek(0);saved=torch.load(stream,map_location='cpu',weights_only=True)
             cf.update(runtime,h,e,opt,batches[0],batches[1],teachers[0],(hb,rows[0]));expected=copy.deepcopy(e.state_dict());expectedopt=copy.deepcopy(opt.state_dict());expected_rng=updates.rng()
             e.load_state_dict(saved['e']);opt.load_state_dict(saved['o']);updates.restore_rng(saved['r']);updates.restore_hook(h,saved['h'])
             cf.update(runtime,h,e,opt,batches[0],batches[1],teachers[0],(hb,rows[0]));assert equal(expected,e.state_dict()) and equal(expectedopt,opt.state_dict()) and equal(expected_rng,updates.rng())

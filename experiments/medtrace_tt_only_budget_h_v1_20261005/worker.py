@@ -90,6 +90,16 @@ def reset_rng(state):
     if state['cuda_rng'] is not None:torch.cuda.set_rng_state(state['cuda_rng'].cpu())
 
 
+def resume(path,binding,expert,optimizer):
+    # CPU checkpoint deserialization preserves the original noncapturable Adam
+    # step-counter placement; load_state_dict moves moments to parameter devices.
+    import torch
+    saved=torch.load(path,map_location='cpu',weights_only=True)
+    assert saved['binding']==binding
+    expert.load_state_dict(saved['expert']);optimizer.load_state_dict(saved['optimizer']);reset_rng(saved)
+    return saved['step'],saved['curve']
+
+
 def continuation(runtime,t,init,record,cfg,arm,mechanical=False):
     import torch
     from methods.medtrace import MedTraceLayerHook
@@ -121,7 +131,7 @@ def continuation(runtime,t,init,record,cfg,arm,mechanical=False):
         d0,f0=updates.diagnostic(runtime,hook,e,[batches[0],batches[fit[0]]],teachers,hb[order[0]],1. if hasH else 0.,activations)
         write(directory/'W0_DIAGNOSTIC.json',dict(diagnostic=d0,protection=baseline,thresholds=thresholds,training_activation_shape=list(activations.shape),temporary_AB_parameters=0))
         if point.exists():
-            start,curve=cf.resume(point,binding,e,opt);loaded=torch.load(point,map_location='cpu',weights_only=True);updates.restore_hook(hook,loaded['hook_state'])
+            start,curve=resume(point,binding,e,opt);loaded=torch.load(point,map_location='cpu',weights_only=True);updates.restore_hook(hook,loaded['hook_state'])
         else:save(point,dict(binding=binding,expert=e.state_dict(),optimizer=opt.state_dict(),step=0,curve=[],hook_state=updates.hook_state(hook),**cf.rng_state()))
         cumulative_parameter=curve[-1]['cumulative_parameter_displacement'] if curve else 0.
         cumulative_function=curve[-1]['cumulative_function_displacement'] if curve else 0.
@@ -185,7 +195,7 @@ def warmup(runtime,t,record,native_steps,cfg,route):
             if final.exists():
                 saved=torch.load(final,map_location='cpu',weights_only=True);assert saved['binding']==binding and saved['step']==steps;e.load_state_dict(saved['expert']);continue
             start=0;curve=[]
-            if point.exists():start,curve=cf.resume(point,binding,e,opt)
+            if point.exists():start,curve=resume(point,binding,e,opt)
             began=time.time()
             for step in range(start+1,steps+1):
                 budget();opt.zero_grad(set_to_none=True);indices=[0] if phase=='native' else [0,1+(step-1)%4];values=[]
@@ -199,7 +209,7 @@ def warmup(runtime,t,record,native_steps,cfg,route):
                     save(point,dict(binding=binding,expert=e.state_dict(),optimizer=opt.state_dict(),step=step,curve=curve,**cf.rng_state()))
                     if step==1:
                         checked=clone(e.state_dict(),t['seed'],runtime.device);co=torch.optim.AdamW(checked.parameters(),lr=1e-3,weight_decay=0) if phase!='W0' else optimizer_for(checked,runtime.model)
-                        after=cf.rng_state();cs,cc=cf.resume(point,binding,checked,co);assert cs==1 and cc==curve and cf.state_hash(checked)==cf.state_hash(e);reset_rng(after);del checked,co
+                        after=cf.rng_state();cs,cc=resume(point,binding,checked,co);assert cs==1 and cc==curve and cf.state_hash(checked)==cf.state_hash(e);reset_rng(after);del checked,co
                     print('WARMUP',t['order'],phase,step,steps,flush=True)
             save(final,dict(binding=binding,expert=e.state_dict(),step=steps,state_hash=cf.state_hash(e)))
             write(d/(phase+'_TRAINING.json'),dict(status='COMPLETE',binding=binding,steps=steps,curve=curve,seconds=time.time()-began,initial_random_state=start_state,final_state_hash=cf.state_hash(e),fresh_optimizer=True,save_load_step1=True))
