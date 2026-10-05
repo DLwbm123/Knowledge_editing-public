@@ -1,0 +1,15 @@
+# 实现与启动说明
+
+冻结计划 eead619。实现39aa42a；CPU模块显式导入修复8a82cb4/da69b91，均在首次GPU工作前完成。旧阶段源码、评分账本和结果只读。
+
+worker沿用已公开structured H8的原stage18续训、诊断、路由和输出绑定函数，新增DIRECT零残差初始化及N/80/320预训练；四臂最终均FREE。CP调用原stage15.initialize，不重写native早停或A2/CP_W0。DIRECT各阶段使用相同训练样本/更新次数及原AdamW/Adam配置，每阶段空优化器。CP所选native步数仅由原native训练信号决定，DIRECT不按自己的评测/评分再选步数。训练计算量、坐标不同，单次canonical seed，报告不得声称纯代数分解或多seed效果。
+
+私有工具目录复用前轮只读辅助文件audit.py/admit.py/legacy_worker.py/legacy_queue.py/legacy_metrics.py/structures.py；原SOURCE为2b3f308f2bcb442cd18e66ac98a83c1528c0692b，官方LLaVA30697ca50b5c29a8e955c99330b259776aef27b9。实际执行工具逐文件版本在GPU_SOURCE_VERSION.json，评分/CPU环境和完整数据绑定私有保留。
+
+本轮CPU初始化/真实路径资格及共享missing精确界、10000次bootstrap检查通过。评分合成检查通过：完整键去重、tokens/模型区分、单attempt预留、保留响应结算、永久missing禁止重试、父有效/缺失继承及篡改拒绝。两前轮有效键目录统一验证，不因更换阶段重复请求同键。
+
+部署时修复新运行目录遗漏的原derived_inputs只读映射；CPU导入遇到旧worker/controller同名模块，改用明确文件入口。三次CPU失败原日志/源码/回执及失败耗时上界保留private/recovery，首次clock不重置；GPU和Judge成本均0。Qwen复用上轮短VLLM_RPC_BASE_PATH方案，启动前实际ZMQ bind已通过。
+
+后台controller先GPU6机械31/35，八条正式续训产物纳入总32，随后GPU6/5分区执行剩余H8；完成single/Hfit后释放训练模型，运行同锁Qwen32，再CPU报告。无whole146银行阶段，无旧父权重依赖，无小时监测恢复。控制器遇到运行故障停并保留状态，不盲目重试；新科学结果不触发追加实验。
+
+CPU PASS不代表原生GPU机械或科学效果PASS。实际结束后仍须审阅完整指标/成本/限制，按明确owned清单清理最后消费者完成的权重，公开匿名报告到新draft PR。当前尚未产生最终结果。
