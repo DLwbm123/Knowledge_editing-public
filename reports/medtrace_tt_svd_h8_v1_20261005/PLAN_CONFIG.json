@@ -1,0 +1,130 @@
+{
+  "stage": "medtrace_tt_svd_h8_v1_20261005",
+  "frozen_utc": "2026-10-05T04:10:45.952295+00:00",
+  "authorization": "User requested TT and SVD each FREE/structured; confirmed eight arms and trainable orthogonal SVD factors",
+  "scope": "original H8 independent single-edit initialization ablation; not full146 sequential comparison",
+  "original_cohort_N": 146,
+  "evaluated_edit_N": 8,
+  "H8_orders": [
+    31,
+    35,
+    49,
+    71,
+    87,
+    125,
+    126,
+    146
+  ],
+  "arms": [
+    "TTKEEP_NO_H",
+    "TTKEEP_H1",
+    "TTFREE_NO_H",
+    "TTFREE_H1",
+    "SVDKEEP_NO_H",
+    "SVDKEEP_H1",
+    "SVDFREE_NO_H",
+    "SVDFREE_H1"
+  ],
+  "parent_run": "/data/bmw/Knowledge_editing/outputs/medtrace-h8-causal-v1-20261004/run",
+  "historical_structured_run": "/data/bmw/Knowledge_editing/outputs/medtrace-structured-h8-v1-20261004/run",
+  "run_root": "/data/bmw/Knowledge_editing/outputs/medtrace-tt-svd-h8-v1-20261005/run",
+  "initialization": {
+    "TT": "Independent seeded right-orthogonal TT cores, first output core zero; tensor shape[64,64,112,128],ranks[1,4,4,4,1],3584 trainable parameters. No CP learned weights copied.",
+    "SVD": "Independent orthogonal Gaussian U/V, all4 signed singular coefficients zero; QR with canonical positive diagonal in each forward, trainable U/V/s;73732 parameters. Not fixed basis. Signed/unsorted s gives SVD up to signs/order.",
+    "native_steps_by_order": {
+      "31": 140,
+      "35": 140,
+      "49": 120,
+      "71": 120,
+      "87": 140,
+      "125": 140,
+      "126": 140,
+      "146": 160
+    },
+    "step_provenance": "Previous frozen CP initialization native stopping receipts, fixed before this run; no evaluation selection. Both new routes use sameN, A2 80,W0 320.",
+    "matching": "Independent TT/SVD native+80+320 warmup, then each warm state cloned into KEEP/FREE and H0/H1; every continuation320 with fresh optimizer; within-route initial functions equal, cross-route warm functions not assumed equal.",
+    "FREE": "Contract TT to rank4 B/A; SVD B=Q(U)*s, A=Q(V).T; expansion preserves the actual function. FREE73728 parameters and original normalization.",
+    "native_and_A2_optimizer": "AdamW all params lr1e-3 betas.9/.999 eps1e-8 wd0 clip1",
+    "W0_and_continuation": "Adam TT G3/G4 input1e-4,G1/G2 output1e-3; SVD V input1e-4,U/s output1e-3; FREE original groups. betas.9/.999 eps1e-8 wd0 clip1; phase optimizer reset. TT/SVD no post-step rescaling; SVD forward QR constrains orthogonality.",
+    "objective": "warmup native only then mean native/rotatingfit; continuation .5native+.5fit+.01KL_U;H1+1HCE;RMS input fixed",
+    "seed": "original canonical edit seed; local CPU generator, no new seeds",
+    "interpretation": "TT compact structure versus its free expansion; SVD orthogonal coordinate optimization versus free factorization, both same rank4 function family. SVD has no additional storage compression versus existing rank4 FREE. No claim of tensorizing/compressing pretrained Base or isolated capacity."
+  },
+  "continuations": 64,
+  "mechanical_orders": [
+    31,
+    35
+  ],
+  "mechanical_products_reused": true,
+  "metrics": {
+    "primary": [
+      "TTFREE_NO_H-TTKEEP_NO_H",
+      "SVDFREE_NO_H-SVDKEEP_NO_H"
+    ],
+    "secondary": [
+      "TTFREE_H1-TTKEEP_H1",
+      "SVDFREE_H1-SVDKEEP_H1",
+      "SVDKEEP_NO_H-TTKEEP_NO_H",
+      "SVDFREE_NO_H-TTFREE_NO_H",
+      "SVDKEEP_H1-TTKEEP_H1",
+      "SVDFREE_H1-TTFREE_H1",
+      "TTKEEP_H1-TTKEEP_NO_H",
+      "TTFREE_H1-TTFREE_NO_H",
+      "SVDKEEP_H1-SVDKEEP_NO_H",
+      "SVDFREE_H1-SVDFREE_NO_H"
+    ],
+    "interaction": [
+      "(TTFREE_H1-TTFREE_NO_H)-(TTKEEP_H1-TTKEEP_NO_H)",
+      "(SVDFREE_H1-SVDFREE_NO_H)-(SVDKEEP_H1-SVDKEEP_NO_H)"
+    ],
+    "panels": [
+      "T0",
+      "T1G",
+      "T2G",
+      "T1L",
+      "T2L",
+      "H_fit diagnostic"
+    ],
+    "mask": "original Base masks full denominators; H_eval NA and patient UNKNOWN; new Base sensitivity separate",
+    "bootstrap_repetitions": 10000,
+    "bootstrap_seed": 20260912,
+    "source_sensitivity": "native image/source + shared H connected components",
+    "missing": "full denominator shared-key exact macro/micro difference bounds; no successful-subset selection",
+    "decision": "Two prespecified primary contrasts: report full exact point bounds and descriptive95% paired edit/source bootstrap intervals; no familywise significance claim, winner selection or automatic promotion. T0/T1G adverse results retained; empty localityNA."
+  },
+  "hardware": {
+    "host": "pro5000",
+    "physical_GPUs": [
+      5,
+      6
+    ],
+    "UUIDs": {
+      "5": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+      "6": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6"
+    }
+  },
+  "caps": {
+    "GPU_hours_cumulative": 12,
+    "wall_hours": 24,
+    "new_Judge_attempts": 2000,
+    "owned_weights_GiB": 2,
+    "reserve_GiB": 8,
+    "reset_allowed": false,
+    "all_failures_count": true
+  },
+  "judge": "same fixed parent Qwen3-32B-AWQ snapshot/prompt/decode/runtime,32 independent contexts; exact-key valid and permanent missing evidence inheritance; oneattempt;3 consecutive transport stop; allother errorsstop",
+  "lifecycle": "owned finals retained until all single/Hfit/save-load/ancestry/storage consumers done; explicit inventory cleanup after report/review; no parent weight dependencies; historical weights already reclaimed and not restored",
+  "automation": "finite controller trains then scores then CPU report; no hourly automation resume; no next science",
+  "publication": "source/config/anonymous aggregate/Chinese report new draft PR via127.0.0.1:7897 after completion; no private QA/images/keys/tokens/weights",
+  "limitations": [
+    "8 H-supported edits previously exposed; not146 full-method evidence",
+    "12 H relationships from7 distinct source QA/images; Hfit not independent H_eval",
+    "Original shared U and patient independence limitations unchanged",
+    "Fixed per-edit seed; no multi-seed robustness claim",
+    "Matching updates/tokens does not equal matching wall-time or optimization geometry",
+    "SVD orthogonal and FREE rank4 have the same function family; difference is optimization coordinates, not compression or capacity",
+    "TT/SVD native warmups are independent; only within-route KEEP/FREE share identical warm function",
+    "Two primary contrasts, descriptive confidence intervals without multiple-testing correction"
+  ],
+  "historical_cp_init_run": "/data/bmw/Knowledge_editing/outputs/medtrace-cp-init-ablation-v1-20261005/run"
+}
