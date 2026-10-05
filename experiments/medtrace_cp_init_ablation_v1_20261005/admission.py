@@ -24,7 +24,9 @@ def main():
     for p,commit in [(RUN/'private/source',lock['commit']),(RUN/'private/official_llava',lock['official_source_commit'])]:
         assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=p,text=True).strip()==commit
         assert not subprocess.check_output(['git','status','--porcelain'],cwd=p,text=True).strip()
-    import worker as w,torch
+    import importlib.util,torch
+    spec=importlib.util.spec_from_file_location("cp_init_worker",RUN/"private/tools/worker.py")
+    w=importlib.util.module_from_spec(spec);spec.loader.exec_module(w)
     assert tuple(plan['arms'])==w.ARMS and set(w.legacy.GPUS)=={5,6}
     e=w.direct_zero(123,'cpu');f=w.direct_zero(123,'cpu');g=w.direct_zero(124,'cpu')
     assert torch.equal(e.A,f.A) and not torch.equal(e.A,g.A) and torch.count_nonzero(e.B)==0
