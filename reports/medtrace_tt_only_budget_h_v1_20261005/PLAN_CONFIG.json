@@ -1,0 +1,233 @@
+{
+  "stage": "medtrace_tt_only_budget_h_v1_20261005",
+  "frozen_utc": "2026-10-05T07:51:23.965383+00:00",
+  "authorization": "User attachment explicitly authorizes fixed TT-only 96 warmups/240 continuations,3 seeds,max48GPUh/24h/6000Judge,retain TT finals and W0; prior12GPUh cap belonged solely to PR26.",
+  "scope": "TT-only exposed H8 fixed budget and H mechanism; single edits only",
+  "original_cohort_N": 146,
+  "evaluated_edit_N": 8,
+  "H8_orders": [
+    31,
+    35,
+    49,
+    71,
+    87,
+    125,
+    126,
+    146
+  ],
+  "arms": [
+    "TT44_NO_H_s0",
+    "TT44_H1_s0",
+    "TT88_NO_H_s0",
+    "TT88_H1_s0",
+    "TT84_NO_H_s0",
+    "TT84_H1_s0",
+    "TT48_NO_H_s0",
+    "TT48_H1_s0",
+    "TT88_SMALL_LR_H_s0",
+    "TT88_GUARDED_H_s0",
+    "TT44_NO_H_s1",
+    "TT44_H1_s1",
+    "TT88_NO_H_s1",
+    "TT88_H1_s1",
+    "TT84_NO_H_s1",
+    "TT84_H1_s1",
+    "TT48_NO_H_s1",
+    "TT48_H1_s1",
+    "TT88_SMALL_LR_H_s1",
+    "TT88_GUARDED_H_s1",
+    "TT44_NO_H_s2",
+    "TT44_H1_s2",
+    "TT88_NO_H_s2",
+    "TT88_H1_s2",
+    "TT84_NO_H_s2",
+    "TT84_H1_s2",
+    "TT48_NO_H_s2",
+    "TT48_H1_s2",
+    "TT88_SMALL_LR_H_s2",
+    "TT88_GUARDED_H_s2"
+  ],
+  "parent_run": "/data/bmw/Knowledge_editing/outputs/medtrace-h8-causal-v1-20261004/run",
+  "historical_structured_run": "/data/bmw/Knowledge_editing/outputs/medtrace-structured-h8-v1-20261004/run",
+  "run_root": "/data/bmw/Knowledge_editing/outputs/medtrace-tt-only-budget-h-v1-20261005/run",
+  "initialization": {
+    "native_steps_by_order": {
+      "31": 140,
+      "35": 140,
+      "49": 120,
+      "71": 120,
+      "87": 140,
+      "125": 140,
+      "126": 140,
+      "146": 160
+    },
+    "A2_steps": 80,
+    "W0_steps": 320,
+    "kind": "native TT zero G1; seeded right orthogonal remaining cores; no learned teacher except frozen Base for U",
+    "optimizer_native_A2": "AdamW lr1e-3 betas.9/.999 eps1e-8 wd0",
+    "optimizer_W0_continuation": "Adam inputG3/G4 1e-4 outputG1/G2 1e-3 betas.9/.999 eps1e-8 wd0 clip1; phase reset",
+    "normalization": "none",
+    "continuation_outer_attempts": 320,
+    "seed_offsets": [
+      0,
+      1000003,
+      2000006
+    ]
+  },
+  "continuations": 240,
+  "mechanical_orders": [
+    31
+  ],
+  "mechanical_products_reused": false,
+  "metrics": {
+    "primary": [
+      "TT88_H1-TT44_H1",
+      "TT88_GUARDED_H-TT88_H1"
+    ],
+    "secondary": [
+      "TT88_NO_H-TT44_NO_H",
+      "TT84_H1-TT44_H1",
+      "TT48_H1-TT44_H1",
+      "TT84_H1-TT48_H1",
+      "TT88_GUARDED_H-TT88_SMALL_LR_H",
+      "TT88_SMALL_LR_H-TT88_H1",
+      "TT44_H1-TT44_NO_H",
+      "TT88_H1-TT88_NO_H",
+      "TT84_H1-TT84_NO_H",
+      "TT48_H1-TT48_NO_H"
+    ],
+    "H_interaction": "TT88/84/48 versus TT44",
+    "bootstrap": "10000 draws seed20260912; average seed contrasts within each edit BEFORE edit/source bootstrap; not24 independent edits",
+    "mask": "original full denominator; newBase sensitivity separate; exact shared-key missing bounds",
+    "panels": [
+      "T0",
+      "T1G",
+      "T2G",
+      "T1L",
+      "T2L",
+      "H_fit"
+    ],
+    "decision": "descriptive Pareto/INCONCLUSIVE; guard no H learning plus rejection STALLED; no automatic winner; fullmethodNOT_CONFIRMED"
+  },
+  "hardware": {
+    "host": "pro5000",
+    "physical_GPUs": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "UUIDs": {
+      "5": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+      "6": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6",
+      "3": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+      "4": "GPU-fb8f2a01-3910-41f5-39f3-9ce03b7cb7dd"
+    }
+  },
+  "caps": {
+    "GPU_hours_cumulative": 48,
+    "wall_hours": 24,
+    "new_Judge_attempts": 6000,
+    "owned_weights_GiB": 2,
+    "reserve_GiB": 8,
+    "reset_allowed": false,
+    "all_failures_count": true
+  },
+  "judge": "same fixed parent Qwen3-32B-AWQ snapshot/prompt/decode/runtime,32 independent contexts; exact-key valid and permanent missing evidence inheritance; oneattempt;3 consecutive transport stop; allother errorsstop",
+  "lifecycle": "Retain96 W0,240 final TT cores,8routers and bindings for audit/deployment. Keep active resume; delete only enumerated owned unused temporaries after final review. No independent AB files.",
+  "automation": "finite controller trains then scores then CPU report; no hourly automation resume; no next science",
+  "publication": "source/config/anonymous aggregate/Chinese report new draft PR via127.0.0.1:7897 after completion; no private QA/images/keys/tokens/weights",
+  "limitations": [
+    "8 exposed development edits;3seeds are optimization repeats not24 independent cases",
+    "12Hrelations from7QA/images; Hfit diagnosis only,H_evalNA",
+    "H8 locality eligible denominator0=NA; patientUNKNOWN; sharedU not independentCAL",
+    "rank4 middle remainsfixed; structures plus fixed optimizer differ,not purecapacity;84vs48 unequalparams",
+    "smallLR not parameter-displacement matched;guard benefits may be smallerupdates or learningstall",
+    "multiple secondary comparisons descriptive;CI containing0 not equivalence",
+    "no146bank;future146 must allTT,not H8hybrid"
+  ],
+  "historical_cp_init_run": "/data/bmw/Knowledge_editing/outputs/medtrace-cp-init-ablation-v1-20261005/run",
+  "reference_commit": "1b33de09237e62c4d655f42b459e5537149ae293",
+  "warmups": 96,
+  "historical_tt_svd_run": "/data/bmw/Knowledge_editing/outputs/medtrace-tt-svd-h8-v1-20261005/run",
+  "base_arms": [
+    "TT44_NO_H",
+    "TT44_H1",
+    "TT88_NO_H",
+    "TT88_H1",
+    "TT84_NO_H",
+    "TT84_H1",
+    "TT48_NO_H",
+    "TT48_H1",
+    "TT88_SMALL_LR_H",
+    "TT88_GUARDED_H"
+  ],
+  "structures": {
+    "TT44": {
+      "rL": 4,
+      "rR": 4,
+      "parameters": 3584
+    },
+    "TT88": {
+      "rL": 8,
+      "rR": 8,
+      "parameters": 7168
+    },
+    "TT84": {
+      "rL": 8,
+      "rR": 4,
+      "parameters": 4864
+    },
+    "TT48": {
+      "rL": 4,
+      "rR": 8,
+      "parameters": 5888
+    }
+  },
+  "guard": {
+    "reference": "own W0 each of native+4fit+allU; fixed thresholds; Base||student token mean full-vocabulary KL",
+    "CE": {
+      "absolute_slack": 0.02,
+      "relative_slack": 0.05
+    },
+    "KL": {
+      "absolute_slack": 0.01,
+      "relative_slack": 0.1
+    },
+    "alpha": [
+      1,
+      0.5,
+      0.25,
+      0.125
+    ],
+    "candidate": "one clipped original H1 Adam update; alpha1 uses actual candidate bits",
+    "accept": "first passing commits candidate Adam state once even alpha<1",
+    "reject": "restore cores and Adam moments/step; advance scheduled outer attempt",
+    "checks": "no_grad; preserve RNG and hook; nonfinite is engineering error"
+  },
+  "small_lr": {
+    "scale": 0.25,
+    "same_objective": "H1",
+    "not_per_step_displacement_matching": true
+  },
+  "priority": [
+    "P0 actual finite checks",
+    "TT44/TT88 all3seeds paired including TT88smallLR/guard",
+    "TT84/TT48 all3seeds paired",
+    "sameQwen scoring",
+    "seed-aware CPU report"
+  ],
+  "diagnostics": {
+    "points": [
+      "W0",
+      1,
+      20,
+      80,
+      160,
+      320
+    ],
+    "fixed_training_activations": "first<=16 assistant predictor activations per native/4fit/U row; unmodified inputs; never evaluation",
+    "term": "raw and weighted CE/KL and norms, H cosines, clip, percore norm/grad/update relative null for zero",
+    "path": "everyattempt parameter/function displacement including rejected0; no_grad temporary contractions"
+  }
+}
