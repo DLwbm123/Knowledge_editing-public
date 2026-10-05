@@ -1,0 +1,57 @@
+{
+  "status": "REPORTED_PUBLICATION_PENDING",
+  "complete_phase_counts": [
+    "P0",
+    "P1",
+    "P2"
+  ],
+  "GPU_mechanical": "PASS",
+  "H8": 8,
+  "branches": 48,
+  "shared_experts": 138,
+  "judge": {
+    "payloads": 3561,
+    "valid": 3561,
+    "permanent_missing": 0,
+    "inherited_parent_Qwen_payloads": 3509,
+    "inherited_parent_Qwen_missing": 0,
+    "new_attempts": 52,
+    "model": "Qwen/Qwen3-32B-AWQ",
+    "immutable_snapshot": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+    "concurrency": 32,
+    "records_per_context": 1,
+    "old_scores_in_main": "exact-parent-Qwen-full-key-only"
+  },
+  "cost": {
+    "GPU_hours": 4.289423795938492,
+    "generated_weights_observed_peak_bytes": 8159081,
+    "exact_storage_peak_known": false,
+    "retained_weight_files": 64,
+    "retained_weight_bytes": 5705944,
+    "first_clock_wall_seconds": 33128.5082962513,
+    "CPU_reporting_seconds": 180.2388777732849
+  },
+  "execution_source": {
+    "commit": "c23a645159c2e0c78c8e42d26489395273ce2494",
+    "science_worker_commit": "c23a645159c2e0c78c8e42d26489395273ce2494",
+    "files": {
+      "worker.py": "13e4444c8c363491b045eefdec4ffb2a82eb150305d6363c1db6d017df628834",
+      "structures.py": "ea3979c153614de7230c9958b5ec42ae42c27ff6583def6308a7396d2e9de8b5",
+      "admit.py": "caab7f72557080f570a43587a5eba9bc2d3433097ec0ee7d1b0254e42142cb1d",
+      "legacy_worker.py": "9677da459f7cbb12f53df1c90ba3b34d040494b8bae7c24453c7b1e7a3a05d42",
+      "admission.py": "3694cfecb6f777782e4697d635439a56254a4211c66cfa43552a940be5673168",
+      "controller.py": "6931938e3f649127d81672d1e198342bfc2cfb928c5540bb1564c86574c43aaf",
+      "audit.py": "c275751184554ab8037c90a016c62a8c5436c1220b876a23a9e260c806c6bd6b",
+      "selfcheck.py": "771841aae09ae321c8d564045a2a0b066acfa725978b44dc6273e8e52c2d017c"
+    },
+    "scope": "independent initialization/mechanical/P1 and gated bank executor; scoring and reporting separate later gates",
+    "CPU_preflight_fix": "explicit local worker/controller module binding",
+    "tools_commit": "56f831d"
+  },
+  "runtime_reproducibility_amendment": {
+    "deterministic_algorithms": true,
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "reference": "inherited frozen parent deterministic runtime, all six arms"
+  },
+  "public_delivery_pending": true
+}
