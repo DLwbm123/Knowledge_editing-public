@@ -214,7 +214,7 @@ def report():
             d=RUN/'private/edits'/f"e{t['order']:03d}"/a;check=read(d/'STRUCTURE_CHECK.json');assert check['status']=='PASS'
             start=time.perf_counter();saved=torch.load(d/'final.pt',map_location='cpu',weights_only=True);loaded=time.perf_counter()
             free=w.inference_state(saved['expert']);expanded=time.perf_counter()
-            storage.append(dict(edit_index=t['order'],arm=a,parameters=sum(v.numel() for v in saved['expert'].values()),parameter_payload_bytes=sum(v.numel()*v.element_size() for v in saved['expert'].values()),serialized_checkpoint_bytes=(d/'final.pt').stat().st_size(),expanded_parameters=sum(v.numel() for v in free.values()),CPU_load_seconds=loaded-start,CPU_expansion_seconds=expanded-loaded,measurement='read-only CPU closeout measurement, not GPU peak or training latency'))
+            storage.append(dict(edit_index=t['order'],arm=a,parameters=sum(v.numel() for v in saved['expert'].values()),parameter_payload_bytes=sum(v.numel()*v.element_size() for v in saved['expert'].values()),serialized_checkpoint_bytes=(d/'final.pt').stat().st_size,expanded_parameters=sum(v.numel() for v in free.values()),CPU_load_seconds=loaded-start,CPU_expansion_seconds=expanded-loaded,measurement='read-only CPU closeout measurement, not GPU peak or training latency'))
     ratios=[]
     for t in tasks:
         if t['edit_id'] not in H:continue
