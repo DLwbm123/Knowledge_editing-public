@@ -118,6 +118,16 @@ def evaluate(runtime,bindings,ledger,t,points,phase,h_only=False):
                     expert=clone(expert_state,t['seed'],runtime.device).requires_grad_(False);hook.expert=expert
                 else:expert.load_state_dict(expert_state)
                 output,diag=generate(runtime,hook,raw,True);onnll=nll(runtime,hook,batch,True)
+                if category=='panel' and q['query_id']==t['edit_id']:
+                    # End-to-end warm inference includes image preparation and R0.
+                    # The resident expert is deployed as TT cores, with transient A/B.
+                    hook.clear_request_routing();torch.cuda.reset_peak_memory_stats();memory_before=torch.cuda.memory_allocated();torch.cuda.synchronize();tick=time.perf_counter()
+                    raw2=runtime.adapter.prepare_inputs(Path(legacy.local_row(q)['image_path']),q['question'],None)
+                    with torch.inference_mode():decision2=editor._route(query)
+                    output2,_=generate(runtime,hook,raw2,bool(decision2.activated));torch.cuda.synchronize()
+                    elapsed=time.perf_counter()-tick
+                    assert decision_as_json(decision2)==route and output2==(output if on else offout)
+                    write(RUN/'private/inference'/f"{arm}_e{t['order']:03d}.json",dict(arm=arm,anonymous_edit=f"E{t['order']:03d}",seconds=elapsed,scope='warm resident Base+TT; input preprocessing+original R0+complete autoregressive VQA; excludes initial model/expert disk loading',repeats=1,peak_allocated=torch.cuda.max_memory_allocated(),incremental_peak_allocated=torch.cuda.max_memory_allocated()-memory_before,temporary_AB_bytes=sum(f.numel()*f.element_size() for f in expert.factors())))
                 for mode,value,loss,gd in [('ON',output,onnll,diag),('R0',output if on else offout,onnll if on else offnll,diag if on else offdiag),('OFF',offout,offnll,offdiag)]:
                     if category=='panel' and mode=='OFF':continue
                     folder={'panel':{'R0':'single','ON':'forced'},'H':{'R0':'H_fit','ON':'H_ON','OFF':'H_OFF'}}[category][mode]
