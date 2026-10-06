@@ -8,6 +8,8 @@ import tempfile
 import time
 import traceback
 from common import RUN,read,write,budget,used,digest
+import sys
+sys.path.insert(0,str(RUN/'private/tools'))
 import controller
 
 

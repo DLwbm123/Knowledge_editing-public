@@ -17,6 +17,8 @@ def amended_read(path):
     return result
 
 common.read=amended_read
+import sys
+sys.path.insert(0,str(RUN/'private/tools'))
 from common import read,write,lease,load,budget,digest
 import worker
 from train import teachers_for
