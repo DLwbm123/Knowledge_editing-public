@@ -20,7 +20,8 @@ def launch(action):
 
 
 def main():
-    launch('A_CPU');budget();assert available(6)
+    if not (RUN/'public/A_CPU_AUDIT.json').exists():launch('A_CPU')
+    budget();assert available(6)
     # Conservative first-stage admission; later work requires measured feature
     # throughput and real scope/reference eligibility, not invented negatives.
     estimate=1800;remaining=read(RUN/'RUN_MANIFEST.json')['GPU_seconds_limit']-used()

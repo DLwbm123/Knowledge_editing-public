@@ -49,6 +49,7 @@ def gpu_audit():
     from methods.medtrace.core import MedTraceLayerHook
     from m3bench_repro.editors.methods import BalanceEditPaperSpecEditor
     from m3bench_repro.editors.routing import MemoryRouter,decision_as_json
+    sys.path.insert(0,str(RUN/'private/official_llava'))
     gpu=int(os.environ['GPU']);queue=read(BASE/'private/QUEUES.json');ts=[t for t in queue['tasks'] if t['cohort']=='P2']
     with lease(gpu):
         runtime,bindings=load(gpu);editor=BalanceEditPaperSpecEditor(runtime)
