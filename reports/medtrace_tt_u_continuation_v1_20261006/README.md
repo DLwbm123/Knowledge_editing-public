@@ -21,3 +21,7 @@ this public code does not contain medical inputs, raw answers, source IDs,
 weights, Judge keys or private path mappings. The runtime loader, original TT
 shapes and fixed Qwen protocol are reused from the audited reference assets.
 Final result audit and public draft PR delivery occur after actual completion.
+
+Results are complete and audited. See [Chinese scientific report](SCIENTIFIC_REVIEW_ZH.md), [all metrics](RESULTS.csv), and [final audit](FINAL_AUDIT.json). U mitigated CE-only degradation in development; superiority to W0 and normal-bank generation preservation remain unconfirmed. The user subsequently authorized all eight idle GPUs for remaining independent inference only; no additional training or budget reset occurred.
+
+Executed scientific source: `daac5d38ca5abfa0107ce9ef74e99cecf79e7787`; final operational helper repair: `246c69d`. Later portability edits only replace host-specific launcher paths with `TMPDIR` and `QWEN_PYTHON` environment variables; they were not used to produce these results. Runtime source overlays and private data mappings are required for a rerun.

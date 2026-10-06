@@ -144,7 +144,7 @@ def main():
             fd,entry=tempfile.mkstemp(prefix='e.',suffix='.py');os.close(fd)
             Path(entry).write_text("import os,runpy\nrunpy.run_path(os.environ['QWEN_EXECUTION_FILE'],run_name='__main__')\n")
             env=dict(os.environ,QWEN_ROLE='child',JUDGE_GPU_UUID=uuids[gpu],CUDA_VISIBLE_DEVICES=str(gpu),VLLM_WORKER_MULTIPROC_METHOD='spawn')
-            p=subprocess.Popen(['/data/bmw/envs/s1/bin/python','-u',entry],env=env,stdout=(RUN/'logs/qwen_child.log').open('ab'),stderr=subprocess.STDOUT,start_new_session=True)
+            p=subprocess.Popen([os.environ['QWEN_PYTHON'],'-u',entry],env=env,stdout=(RUN/'logs/qwen_child.log').open('ab'),stderr=subprocess.STDOUT,start_new_session=True)
             identity=dict(pid=p.pid,start_ticks=Path(f'/proc/{p.pid}/stat').read_text().split()[21],started_epoch=time.time(),gpu_uuid=uuids[gpu],action='QWEN_JUDGE_C32')
             with q.resources() as a:a['gpu_sessions'].append(identity)
             write(ROOT/'QWEN_GPU_START.json',dict(identity,entry=entry,physical_gpu=gpu))
