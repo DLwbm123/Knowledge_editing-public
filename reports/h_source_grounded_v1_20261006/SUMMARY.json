@@ -1,0 +1,139 @@
+{
+  "protocol": "h-source-grounded-v1-20261006",
+  "N": 146,
+  "baseline_verified": {
+    "edits": 8,
+    "relations": 12,
+    "original_QA": 7,
+    "images": 7,
+    "source_groups": 7
+  },
+  "fit_verified": {
+    "edits": 9,
+    "relations": 31,
+    "original_QA": 7,
+    "images": 16,
+    "source_groups": 16
+  },
+  "fit_grounded": {
+    "edits": 5,
+    "relations": 13,
+    "original_QA": 5,
+    "images": 8,
+    "source_groups": 8
+  },
+  "fit_union": {
+    "edits": 9,
+    "relations": 44,
+    "original_QA": 11,
+    "images": 20,
+    "source_groups": 20
+  },
+  "fit_new": {
+    "edits": 9,
+    "relations": 32,
+    "original_QA": 5,
+    "images": 14,
+    "source_groups": 14
+  },
+  "new_verified_relations": 19,
+  "new_verified_edits_beyond_baseline": 1,
+  "new_fit_union_edits_beyond_baseline": 1,
+  "eval_verified": {
+    "edits": 3,
+    "relations": 24,
+    "original_QA": 1,
+    "images": 12,
+    "source_groups": 11
+  },
+  "eval_grounded": {
+    "edits": 3,
+    "relations": 6,
+    "original_QA": 2,
+    "images": 4,
+    "source_groups": 4
+  },
+  "all_candidate_status_counts": {
+    "SOURCE_VERIFIED": 55,
+    "UNKNOWN": 2787,
+    "SOURCE_GROUNDED": 19,
+    "REJECTED": 4
+  },
+  "all_candidates": 2865,
+  "historical_UNKNOWN_outcomes": {
+    "UNKNOWN": 16,
+    "SOURCE_GROUNDED": 5,
+    "REJECTED": 1
+  },
+  "historical_UNKNOWN_new_real_evidence": 0,
+  "new_generated_QA_relations": 23,
+  "new_original_QA_pairings": 9,
+  "near_boundary_confirmed": 0,
+  "near_boundary_note": "Anatomical location sources prioritized; modality/region or referent evidence insufficient for a blanket same-part same-modality claim. Detailed hardness review pending.",
+  "patient_independence": "UNKNOWN",
+  "API": {
+    "status": "NOT_EXECUTED_INTERFACE_PRICING_AND_OUTBOUND_POLICY_UNVERIFIED",
+    "new_requests": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "actual_cost_usd": 0,
+    "estimated_cost_usd": 0,
+    "unit_prices": null,
+    "cache_hits": 0,
+    "failures": [],
+    "models": [],
+    "current_session_codex_source_review": true,
+    "independent_auditor_executed": false
+  },
+  "source_pool_original_QA": 393,
+  "source_pool_images": 77,
+  "source_registry_entries": 427,
+  "cached_primary_figures": 34,
+  "CPU_seconds": 1.478061119,
+  "wall_seconds": 1.4780848026275635,
+  "GPU_hours": 0,
+  "student_training": 0,
+  "student_generation": 0,
+  "performance_claim": false,
+  "independent_audit_missing": true,
+  "cohort_and_order_preserved": true,
+  "eval_union": {
+    "edits": 6,
+    "relations": 30,
+    "original_QA": 3,
+    "images": 14,
+    "source_groups": 13
+  },
+  "new_original_QA_sources": 4,
+  "new_images": 13,
+  "new_source_groups": 13,
+  "near_duplicate_flags": 6,
+  "near_duplicate_cross_role_flags": 3,
+  "near_duplicate_quarantined_groups": 9,
+  "grounded_hardness_counts": {
+    "SAME_BODY_REGION_MODALITY_UNVERIFIED": 3,
+    "UNKNOWN": 7,
+    "ANATOMIC_LOCATION_BOUNDARY_MODALITY_UNVERIFIED": 8,
+    "SAME_ORGAN_MODALITY_UNVERIFIED": 1
+  },
+  "source_isolated_eval_not_patient_independent": true,
+  "finalization_CPU_seconds": 0.570132345,
+  "finalization_wall_seconds": 0.570127010345459,
+  "qualified_role_checks": "PASS",
+  "external_GPT_stage_not_completed": true,
+  "first_failed_build_CPU_unknown": true,
+  "applicability_counts": {
+    "APPLICABLE": 139,
+    "UNCERTAIN": 5,
+    "NOT_APPLICABLE_WITH_REASON": 2
+  },
+  "fit_gap_code_counts": {
+    "TARGET_NOT_EXCLUDED": 135,
+    "NO_INDEPENDENT_H_EVAL": 140,
+    "NEEDS_SPECIALIST_REVIEW": 53,
+    "H_APPLICABILITY_UNCERTAIN": 5,
+    "NO_SEMANTIC_MATCH": 2,
+    "NOT_APPLICABLE_FIXED_ENTITY_GENERAL_PROPOSITION": 2
+  },
+  "pilot_phase": "CPU_SCHEMA_SOURCE_ROLE_GATE_PASS; external API pipeline pending"
+}
