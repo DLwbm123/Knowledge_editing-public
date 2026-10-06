@@ -136,7 +136,7 @@ def report():
     write(RUN/'public/FROZEN_W0_RESULTS.json',dict(panels=[p for p in panels if 'FROZEN' in p['arm']],paired=[p for p in contrasts if 'FROZEN' in p['comparison']],mask='original'))
     write(RUN/'public/MECHANISM_BASELINE.json',dict(resource=mechanism,routing=route,W0_candidate_diagnostics=[read(p) for p in sorted((RUN/'private/P0_geometry').glob('*.json'))],full_inference=[read(p) for p in sorted((RUN/'private/inference').glob('*.json'))],core_norms='coordinate dependent, not intrinsic update magnitude',loss='0.5 native+0.5 rotating fit+0.01 full-vocabulary KL(Base||student)+1 H CE',EOS='included; no target truncation <=128',learning_rates=dict(G1=.001,G2=.001,G3=.0001,G4=.0001)))
     with (RUN/'public/RESULTS.csv').open('w') as f:
-        fields=sorted({k for p in panels for k in p});writer=csv.DictWriter(f,fieldnames=fields);writer.writeheader();writer.writerows(panels)
+        fields=sorted({k for p in panels for k in p});writer=csv.DictWriter(f,fieldnames=fields,lineterminator='\n');writer.writeheader();writer.writerows(panels)
     write(RUN/'public/BUDGET.json',dict(limit_GPU_hours=24,used_GPU_hours=resources['gpu_seconds_used']/3600,phases={a:sum(s.get('resident_seconds',0) for s in resources['gpu_sessions'] if s['action']==a)/3600 for a in sorted({s['action'] for s in resources['gpu_sessions']})},failures_counted=True,clock_reset=False))
     retained=read(RUN/'private/PARENT_REUSE_INVENTORY.json')['items'];banks={}
     for a in sorted({m['arm'] for m in mechanism}):
