@@ -1,0 +1,15 @@
+{
+ "protocol_version":"h-source-grounded-v1-20261006",
+ "max_candidates_per_edit":20,"pilot_edits":12,"target_initial_supported_edits":32,
+ "target_independent_h_fit_per_edit":2,"target_independent_h_eval_per_edit":2,
+ "max_new_api_requests":400,"max_total_input_tokens":800000,"max_total_output_tokens":200000,
+ "max_estimated_api_cost_usd":30,"max_concurrency":3,
+ "external_api_enabled":false,"external_api_block_reason":"No verified billable GPT interface/pricing or text outbound policy established; configured Codex subscription CLI is not assumed to be a priced API",
+ "codex_semantic_review":"current-session source/text review, exact serving model snapshot unavailable; not independent clinical or API audit",
+ "pilot_positions":[1,2,7,20,24,31,35,49,57,66,87,121],
+ "pilot_selection":"frozen by source/question types, before new candidate results; excludes student performance",
+ "source_group_role_policy":"existing H and U training groups FIT; other source/case groups deterministic SHA256 identifier modulo 3: 0 EVAL, otherwise FIT; freeze before edit matching",
+ "patient_independence":"UNKNOWN unless original source provides a patient/study binding",
+ "eval_loader_boundary":"sealed_eval directory, separately exported; fit loader forbids EVAL or sealed paths",
+ "source_pool_passes":1,"new_downloads":false,"clinical_signoff":false
+}
