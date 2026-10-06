@@ -1,0 +1,114 @@
+{
+  "stage": "medtrace_tt_u_continuation_v1",
+  "hardware": {
+    "host": "pro5000",
+    "physical_GPUs": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "UUIDs": {
+      "5": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+      "6": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6",
+      "3": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+      "4": "GPU-fb8f2a01-3910-41f5-39f3-9ce03b7cb7dd"
+    }
+  },
+  "P1": {
+    "edits": 8,
+    "seeds": 3,
+    "conditions": [
+      "FROZEN_W0",
+      "CE_ONLY",
+      "CE_U_CLEAN"
+    ],
+    "steps": 320,
+    "nodes": [
+      0,
+      40,
+      80,
+      160,
+      320
+    ],
+    "forced_nodes": [
+      0,
+      80,
+      320
+    ]
+  },
+  "P2": {
+    "edits": 24,
+    "blocks": [
+      8,
+      8,
+      8
+    ],
+    "seed_slot": 0,
+    "conditions": [
+      "FROZEN_W0",
+      "CE_ONLY",
+      "CE_U_SINGLE",
+      "CE_U_MULTI"
+    ],
+    "warmup": [
+      140,
+      80,
+      320
+    ],
+    "bank_prefixes": [
+      8,
+      16,
+      24
+    ]
+  },
+  "optimizer": {
+    "input_lr": 0.0001,
+    "output_lr": 0.001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0,
+    "clip": 1
+  },
+  "loss": {
+    "native": 0.5,
+    "fit": 0.5,
+    "U": 0.01,
+    "KL": "Base||student full vocab token mean, source-balanced round robin"
+  },
+  "structure": "TT88",
+  "parameters": 7168,
+  "selection": {
+    "lengths": [
+      40,
+      80,
+      160,
+      320
+    ],
+    "minimum_CAL_groups": 4,
+    "T0_drop_pp": 0,
+    "T1G_T2G_drop_pp": 2,
+    "CAL_KL_relative_reduction": 0.2,
+    "require_CE_ONLY_improvement": true,
+    "require_above_P0_repeat_error": true,
+    "near_zero": "max(1e-8,10*P0_repeat_error)",
+    "fallback": 80,
+    "prefer_shortest": true
+  },
+  "caps": {
+    "GPU_hours": 24,
+    "wall_hours": 24,
+    "Judge": 6000,
+    "weights_GiB": 2,
+    "reserve_GiB": 8,
+    "max_training_GPUs": 2
+  },
+  "U": {
+    "FIT": 5,
+    "CAL": 4,
+    "CHECK": 4
+  }
+}
