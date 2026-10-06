@@ -59,6 +59,7 @@
     "historical_arms": [
       "NO_H",
       "H1",
+      "SMALL_LR_H",
       "GUARDED_H"
     ],
     "patient": "UNKNOWN",
@@ -102,7 +103,8 @@
       "per_step_relative_tolerance": 0.02,
       "cumulative_relative_tolerance": 0.05,
       "unreachable": "commit closest sampled positive scale; mark MATCH_FAILED",
-      "zero": "exact parameters and optimizer rollback"
+      "zero": "exact parameters and optimizer rollback",
+      "zero_pattern": "Actual parameter zero/nonzero pattern must match too; functional-zero but parameter-nonzero DIR target yields MATCH_FAILED if unmatched"
     },
     "H_weight": 1,
     "stagnation": "no early stop; fixed320 endpoint; zero H-descent steps labeled H_LEARNING_STALLED, not global infeasibility",

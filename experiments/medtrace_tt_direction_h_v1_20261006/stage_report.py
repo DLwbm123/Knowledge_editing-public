@@ -59,7 +59,7 @@ def report():
                 m,u=metric(rr,scores);panels.append(dict(arm=family,seed_slots=[int(a.rsplit('_s',1)[1]) for a in members],task=task,mode=mode,**m))
                 units[family,task,mode]=u;eligible[family,task,mode]=rr
     contrasts=[]
-    comparisons=[('TT88_DIR',x) for x in ('TT88_FROZEN','TT88_NO_H','TT88_H1','TT88_GUARDED_H','TT88_MATCH')]+[('TT88_GUARDED_H','TT88_FROZEN')]+[('TT84_DIR',x) for x in ('TT84_FROZEN','TT84_NO_H','TT84_H1')]+[('MIDDLE_'+h,'OUTER_'+h) for h in ('NO_H','H1')]
+    comparisons=[('TT88_DIR',x) for x in ('TT88_FROZEN','TT88_NO_H','TT88_H1','TT88_SMALL_LR_H','TT88_GUARDED_H','TT88_MATCH')]+[('TT88_GUARDED_H','TT88_FROZEN')]+[('TT84_DIR',x) for x in ('TT84_FROZEN','TT84_NO_H','TT84_H1')]+[('MIDDLE_'+h,'OUTER_'+h) for h in ('NO_H','H1')]
     for a,b in comparisons:
         if a not in families or b not in families:continue
         for task in ('T0','T1G','T2G','H_fit','H_retain','H_repair'):

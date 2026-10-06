@@ -59,7 +59,7 @@ def step(runtime,hook,e,opt,update,batches,teachers,hbatch,thresholds,activation
     accepted=True;extra=0
     if kind=='DIR':
         metric=adam_metric(e,opt);started=time.perf_counter()
-        d,qp=project(dA,g,torch.tensor(thresholds,device=g.device)-torch.tensor(values,device=g.device),metric)
+        d,qp=project(dA,g,torch.tensor([limit-value for limit,value in zip(thresholds,values)],dtype=torch.float64),metric)
         d=d.to(device=before.device,dtype=before.dtype);qp['seconds']=time.perf_counter()-started;qp['H_dot_projected']=float(gh@d)
         qp['actual_linear_residual']=(g@d+torch.tensor(values,device=g.device)-torch.tensor(thresholds,device=g.device)).tolist()
         item['projection']=qp;trials=[];alpha=None

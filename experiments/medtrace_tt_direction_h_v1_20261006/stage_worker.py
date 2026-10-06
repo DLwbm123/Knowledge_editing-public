@@ -192,10 +192,10 @@ def continue_arm(runtime,t,record,cfg,init,arm,kind,match_path=None):
                 save(latest,dict(binding=binding,expert=e.state_dict(),optimizer=opt.state_dict(),step=index,curve=curve,hook_state=updates.hook_state(hook),**cf.rng_state()))
                 write(root/'PROGRESS.json',dict(step=index,steps=320,accepted=sum(c['accepted'] for c in curve),H_descent=sum(c['H_descent'] for c in curve)));print('UPDATE',t['order'],arm,index,flush=True)
         total=sum(c['function_update_norm'] for c in curve);match_error=abs(total-sum(targets['steps']))/max(sum(targets['steps']),1e-12) if targets else None
-        status='MATCH_FAILED' if match_error is not None and (match_error>.05 or any((c['function_update_norm']==0)!=(target==0) for c,target in zip(curve,targets['steps']))) else 'COMPLETE'
+        status='MATCH_FAILED' if match_error is not None and (match_error>.05 or any(c['nonzero']!=target for c,target in zip(curve,targets['parameter_nonzero']))) else 'COMPLETE'
         save(final,dict(binding=binding,expert=e.state_dict(),step=320,state_hash=cf.state_hash(e)))
         write(root/'TRAINING.json',dict(status=status,binding=binding,steps=320,curve=curve,seconds=time.time()-began,final_state_hash=cf.state_hash(e),parameters=sum(p.numel() for p in e.parameters()),TT_bytes=final.stat().st_size,temporary_AB_bytes=sum(f.numel()*f.element_size() for f in e.factors()),independent_AB_parameters=0,function_path=total,net_function_displacement=net,match_relative_error=match_error,accepted=sum(c['accepted'] for c in curve),nonzero=sum(c['nonzero'] for c in curve),H_descent=sum(c['H_descent'] for c in curve),H_learning_status='H_LEARNING_STALLED' if not any(c['H_descent'] for c in curve) else 'TRAINING_LOSS_DESCENT_OBSERVED_NOT_TASK_SUCCESS',peak_allocated=torch.cuda.max_memory_allocated(),peak_reserved=torch.cuda.max_memory_reserved()))
-        if kind=='DIR':write(root/'FUNCTION_TARGETS.json',dict(training_only=True,W0=binding['W0'],seed=t['seed'],activation_source='W0 native/fit/U first16 predictor activations per batch',steps=[c['function_update_norm'] for c in curve]))
+        if kind=='DIR':write(root/'FUNCTION_TARGETS.json',dict(training_only=True,W0=binding['W0'],seed=t['seed'],activation_source='W0 native/fit/U first16 predictor activations per batch',steps=[c['function_update_norm'] for c in curve],parameter_nonzero=[c['nonzero'] for c in curve]))
         checked=load_state(final);assert checked['state_hash']==cf.state_hash(e);latest.unlink()
     finally:hook.detach()
     del e,opt;gc.collect();torch.cuda.empty_cache();return final
@@ -209,7 +209,7 @@ def p0(runtime,bindings,ledger,t,cfg):
             points[f'{structure}_FROZEN_s{slot}']=path_for(t,structure,slot,warm=True)
             audit_geometry(runtime,dict(t,seed=t['seed']+slot*1000003),cfg,structure,slot)
         for condition in ('NO_H','H1'):points[f'TT84_{condition}_s{slot}']=path_for(t,'TT84',slot,condition=condition)
-        for condition in ('NO_H','H1','GUARDED_H'):points[f'TT88_{condition}_s{slot}']=path_for(t,'TT88',slot,condition=condition)
+        for condition in ('NO_H','H1','SMALL_LR_H','GUARDED_H'):points[f'TT88_{condition}_s{slot}']=path_for(t,'TT88',slot,condition=condition)
     evaluate(runtime,bindings,ledger,t,points,'P0')
     write(RUN/'private/P0'/f"e{t['order']:03d}.json",dict(status='GENERATED_NOT_SCORED',arms=list(points),formal_continuation=False))
 
