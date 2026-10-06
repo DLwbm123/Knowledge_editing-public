@@ -1,0 +1,167 @@
+{
+  "stage": "medtrace_tt_direction_h_v1_20261006",
+  "parent_commit": "ab601a3ac76ce57a221e20b9586d7ab558ad7c99",
+  "parent_run": "/data/bmw/Knowledge_editing/outputs/medtrace-tt-only-budget-h-v1-20261005/run",
+  "run_root": "/data/bmw/Knowledge_editing/outputs/medtrace-tt-direction-h-v1-20261006/run",
+  "hardware": {
+    "host": "pro5000",
+    "physical_GPUs": [
+      3,
+      4,
+      5,
+      6
+    ],
+    "UUIDs": {
+      "5": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+      "6": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6",
+      "3": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+      "4": "GPU-fb8f2a01-3910-41f5-39f3-9ce03b7cb7dd"
+    }
+  },
+  "H8_orders": [
+    31,
+    35,
+    49,
+    71,
+    87,
+    125,
+    126,
+    146
+  ],
+  "budget": {
+    "total_GPU_hours": 24,
+    "phase_suggested_hours": {
+      "P0": 2,
+      "P1": 12,
+      "P2": 6,
+      "P3": 4
+    },
+    "clock_never_reset": true,
+    "checkpoint_bytes": 2147483648,
+    "reserve_bytes": 8589934592,
+    "wall_capacity_wait_safety_days": 7
+  },
+  "P0": {
+    "structures": [
+      "TT88",
+      "TT84"
+    ],
+    "slots": [
+      0,
+      1,
+      2
+    ],
+    "H_modes": [
+      "OFF",
+      "ON",
+      "R0"
+    ],
+    "historical_arms": [
+      "NO_H",
+      "H1",
+      "GUARDED_H"
+    ],
+    "patient": "UNKNOWN",
+    "historical_TT84_arms": [
+      "NO_H",
+      "H1"
+    ]
+  },
+  "P1": {
+    "structure": "TT88",
+    "arms": [
+      "DIR",
+      "MATCH"
+    ],
+    "slots": [
+      0,
+      1,
+      2
+    ],
+    "steps": 320,
+    "optimizer": "PR27 reset Adam clipped1 inputG3G4 lr1e-4 outputG1G2 lr1e-3",
+    "metric": "diag(max((sqrt(v_candidate/(1-beta2**step))+eps)/actual_group_lr,1e-8))",
+    "projection": {
+      "dtype": "float64",
+      "solver": "enumerate <=64 active subsets with small Gram pseudoinverse rtol1e-12",
+      "primal_tolerance": 1e-08,
+      "dual_tolerance": 1e-08,
+      "zero_gradient_norm": 1e-14
+    },
+    "nonlinear_alphas": [
+      1,
+      0.5,
+      0.25,
+      0.125
+    ],
+    "matching": {
+      "scale_cap": 4,
+      "grid_intervals": 32,
+      "bisections": 16,
+      "first_crossing_bracket_only": true,
+      "per_step_relative_tolerance": 0.02,
+      "cumulative_relative_tolerance": 0.05,
+      "unreachable": "commit closest sampled positive scale; mark MATCH_FAILED",
+      "zero": "exact parameters and optimizer rollback"
+    },
+    "H_weight": 1,
+    "stagnation": "no early stop; fixed320 endpoint; zero H-descent steps labeled H_LEARNING_STALLED, not global infeasibility",
+    "diagnostic_steps": [
+      1,
+      20,
+      80,
+      160,
+      320
+    ]
+  },
+  "gate": {
+    "T0": 24,
+    "T1G": 90,
+    "T2G": 75,
+    "H_fit": 12,
+    "denominators": [
+      24,
+      93,
+      81,
+      36
+    ],
+    "source_groups_with_joint_gain_min": 2,
+    "joint_success_definition": "all-seed T0 correct, edit seed-mean T1G/T2G >= own FROZEN_W0, H_fit > own FROZEN_W0 in at least2 connected source groups"
+  },
+  "P2": {
+    "exclusive": true,
+    "pass_arm": "TT84_DIR",
+    "pass_runs": 24,
+    "fail_arms": [
+      "OUTER_NO_H",
+      "OUTER_H1",
+      "MIDDLE_NO_H",
+      "MIDDLE_H1"
+    ],
+    "fail_runs": 32,
+    "fail_seed_slot": 0,
+    "common_W0": "PR27 TT44 s0",
+    "embedding_random_seed_offset": 104729,
+    "embedding_scale": 0.01,
+    "added_path": "G1zero/G2nonzero and G3zero/G4nonzero for OUTER; G2zero/G3nonzero for MIDDLE",
+    "parity_tolerances": {
+      "residual_rtol": 2e-05,
+      "residual_atol": 2e-05,
+      "reference_loss_atol": 2e-05,
+      "logit_rtol": 0.001,
+      "logit_atol": 0.01,
+      "generated_tokens": "exact"
+    }
+  },
+  "P3": {
+    "data_gate": "source-isolated source-verified hard H plus qualified external T1L/T2L, patient UNKNOWN preserved",
+    "no_new_H_fit": true,
+    "sealed_until_algorithm_frozen": true,
+    "insufficient": "BLOCKED_DATA"
+  },
+  "monitoring": false,
+  "historical_structured_run": "/data/bmw/Knowledge_editing/outputs/medtrace-structured-h8-v1-20261004/run",
+  "historical_cp_init_run": "/data/bmw/Knowledge_editing/outputs/medtrace-cp-init-ablation-v1-20261005/run",
+  "historical_tt_svd_run": "/data/bmw/Knowledge_editing/outputs/medtrace-tt-svd-h8-v1-20261005/run",
+  "frozen_utc": "2026-10-06T03:28:15.528855+00:00"
+}
