@@ -29,7 +29,7 @@ def prepare(plan,source_dir,report_dir,commit,data_summary):
     for name in dependencies:shutil.copy2(old/'private/tools'/name,root/'private/tools'/name)
     for src,dest in [('worker.py','baseline_worker.py'),('controller.py','controller_parent.py'),('reporting.py','reporting_parent.py'),('qwen_queue.py','qwen_parent.py'),('qwen_scorer.py','qwen_scorer.py')]:
         shutil.copy2(old/'private/tools'/src,root/'private/tools'/dest)
-    qp=root/'private/tools/qwen_parent.py';qp.write_text(qp.read_text().replace("epoch='MEDTRACE_TT_SVD_H8_QWEN_C32_20261005_V1'","epoch='MEDTRACE_TT_DIRECTION_H_20261006_V1'"))
+    qp=root/'private/tools/qwen_parent.py';qp.write_text(qp.read_text().replace("epoch='MEDTRACE_TT_SVD_H8_QWEN_C32_20261005_V1'","epoch='MEDTRACE_TT_DIRECTION_H_20261006_V1'").replace("dest=ROOT/'inherited'/(row['batch']+'.json')","dest=ROOT/'inherited'/(row['batch']+'_'+digest(saved)+'.json')"))
     # Restrict Judge to idle GPUs too; this changes admission, not scoring identity.
     scorer=root/'private/tools/qwen_scorer.py';text=scorer.read_text()
     text=text.replace("if int(free)>=60000:gpu=g;break","if int(free)>=60000 and judge_idle(g,u):gpu=g;break")

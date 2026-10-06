@@ -65,6 +65,21 @@ def report():
         for task in ('T0','T1G','T2G','H_fit','H_retain','H_repair'):
             mode='H_fit' if task.startswith('H_') else 'single';ua=units[a,task,mode];ub=units[b,task,mode]
             contrasts.append(dict(comparison=a+'-'+b,task=task,**paired(ua,ub,scores,groups),micro_delta_bounds=micro_delta(eligible[a,task,mode],eligible[b,task,mode],scores)))
+    # Final descriptive source tables; use the same frozen support, never re-score.
+    source_panels=[];source_deltas=[]
+    for (family,task,mode),rr in eligible.items():
+        for group in sorted(gnames):
+            selected=[r for r in rr if groups[r['edit']]==group]
+            m,_=metric(selected,scores)
+            source_panels.append(dict(arm=family,task=task,mode=mode,source_group=gnames[group],**m))
+    lookup={(p['arm'],p['task'],p['mode'],p['source_group']):p for p in source_panels}
+    for contrast in contrasts:
+        a,b=contrast['comparison'].split('-');task=contrast['task'];mode='H_fit' if task.startswith('H_') else 'single'
+        for group in gnames.values():
+            left=lookup[a,task,mode,group];right=lookup[b,task,mode,group]
+            delta=left['macro']-right['macro'] if left['macro'] is not None and right['macro'] is not None else None
+            source_deltas.append(dict(comparison=contrast['comparison'],task=task,source_group=group,macro_delta=delta,edits=left['edits']))
+    write(RUN/'public/SOURCE_GROUP_RESULTS.json',dict(panels=source_panels,paired=source_deltas,interpretation='Descriptive within-source edit means; five groups, not independent confirmation'))
     # Private relation table joins scope evidence to Base/ON/R0 scores and NLL.
     scope=read(RUN/'private/SCOPE_AUDIT.json');private=[]
     for row in scope['rows']:
