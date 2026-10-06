@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import random
 import signal
+import subprocess
 import sys
 import time
 import traceback
@@ -267,6 +268,18 @@ def main():
     gpu=int(os.environ['GPU']);action=os.environ['ACTION'];legacy.GPUS={int(k):v for k,v in PLAN['hardware']['UUIDs'].items()}
     with legacy.lease(gpu):
         runtime,bindings=legacy.load(gpu);ledger=read(RUN/'private/legacy_stage17/COHORT_AND_SUPPORT_LEDGER.json');by={t['edit_id']:t for t in ledger['tasks']};tasks=[by[e] for e in ledger['main_T0'] if e in H]
+        processes=[line.strip().split(None,2) for line in subprocess.check_output(['ps','-ww','-eo','pid=,ppid=,args='],text=True).splitlines()]
+        family={os.getpid()}
+        while True:
+            expanded=family|{int(p) for p,ppid,*_ in processes if int(ppid) in family}
+            if expanded==family:break
+            family=expanded
+        commands={pid:args for pid,ppid,args in processes if int(pid) in family}
+        assert not any(word in command.lower() for command in commands.values() for word in ('wangbomin','knowledge_editing','medtrace','direction','stage_worker'))
+        compute=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid,process_name,used_memory','--format=csv,noheader'],text=True).splitlines()
+        owned=[line for line in compute if int(line.split(',')[0]) in family]
+        assert owned and all(line.split(',')[1].strip()==legacy.GPUS[gpu] for line in owned)
+        write(RUN/'private'/f'PROCESS_AUDIT_{action}_{gpu}.json',dict(commands=commands,GPU_processes=owned,neutral_argv=True,uuid=legacy.GPUS[gpu]))
         cfg=dict(code_commit=read(RUN/'private/SOURCE_COMMIT.json')['commit'],execution_source=read(RUN/'private/GPU_SOURCE_VERSION.json'),runtime_lock=read(RUN/'private/cpu_gate/locks/CANONICAL_LLVAMED_RUNTIME_LOCK.json'))
         if action=='mechanical':
             from qualification_direction import check
