@@ -18,7 +18,8 @@ def main():
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         auth=read(RUN/'private/ACCELERATION_AUTHORIZATION.json');jobs=[]
         for part,gpu in enumerate(auth['GPUs']):
-            budget();assert not (RUN/'private'/('ACCELERATION_PART_'+str(part)+'_DONE.json')).exists()
+            budget()
+            if (RUN/'private'/('ACCELERATION_PART_'+str(part)+'_DONE.json')).exists():continue
             uuid=auth['hardware']['UUIDs'][str(gpu)]
             jobs.append(controller.launch('parallel_inference.py',dict(ACTION='bank_accelerated',GPU=str(gpu),PARTITION=str(part),CUDA_VISIBLE_DEVICES=str(gpu),M3BENCH_FORMAL_EXPECTED_GPU_UUID=uuid),'accelerated_'+str(part)+'.log'))
         write(RUN/'private/ACCELERATION_JOBS.json',[s for p,s in jobs])
