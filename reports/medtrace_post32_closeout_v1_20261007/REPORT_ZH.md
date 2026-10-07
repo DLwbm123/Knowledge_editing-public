@@ -1,6 +1,6 @@
 # PR32后收尾：核心比较、8编辑结构对照与146回顾性基准
 
-已实际完成40条新增TT88续训、四条件×两个续训seed的真实8专家库与24专家混合库评估，以及8编辑TT88—归一化LoRA结构对照。全部保留正负结果。原146的single及真实prefix1/50/100/146生成、Qwen评分和统计均已完成；独立确认未完成。用户随后要求使用Astra、medium推理对本次同一批输出重新评分，作为独立评分版本保留。以下现有表格均为原Qwen版本。
+已实际完成40条新增TT88续训、四条件×两个续训seed的真实8专家库与24专家混合库评估，以及8编辑TT88—归一化LoRA结构对照。全部保留正负结果。原146的single及真实prefix1/50/100/146生成、Qwen评分和统计均已完成；独立确认未完成。用户随后要求使用Astra、medium推理对本次同一批输出重新评分，作为独立评分版本保留。本文件保留原Qwen表；最新已补齐的Astra完整结果见[补评后报告](ASTRA_MEDIUM_RECOVERED_REPORT_ZH.md)。
 
 主要结论：HOLD_U与原CE_U_MULTI任务分数相同，没有额外、合格的保护收益支持其晋级；U_ONLY虽然更贴近Base，却损害编辑及泛化。按预定资格门槛锁定W0+R0。8编辑TT与LoRA宏平均相同，TT使用更少参数；样本规模和结构预算差不支持等效或优越性声明。
 
@@ -92,6 +92,11 @@ LoRA预算为1×(14336+4096)=18432，是TT的2.571倍；TT参数少61.11%。LoRA
 
 用户要求的Astra medium版本覆盖全部2,137个输入而非只复核负例，原Qwen与新Astra结果并列。更换Judge发生在已观察Qwen结果之后，属于明确授权的事后重评，不将其包装为预注册独立确认。
 
-## Astra medium后续重评状态
+## Astra medium首次重评状态（补齐前存档）
 
 用户授权的Astra medium重评执行已结束：2087有效、50超时缺失，全部2137均已尝试，原Qwen版本不变。最新完整结果和解释见[ASTRA_MEDIUM_REPORT_ZH.md](ASTRA_MEDIUM_REPORT_ZH.md)，两队列统计见`ASTRA_MEDIUM_RESULTS.json`。Astra确认9条等参考假阴性，146 single/全库T0均为100%；T1G/T2G受缺失影响时报告界而非伪造点估计。8编辑TT—归一化LoRA T2G由原Qwen同分变为Astra96.875对84.375，因此须披露Judge敏感性。本文件前述旧Qwen阶段结论仅适用于其注明的评分版本。
+
+
+## 用户授权补齐后的最新完整版本
+
+50份超时项经用户明确授权追加一次后全部成功；现2137/2137有效、0缺失，累计Judge3882/6000。最新结果见[ASTRA_MEDIUM_RECOVERED_REPORT_ZH.md](ASTRA_MEDIUM_RECOVERED_REPORT_ZH.md)及`ASTRA_MEDIUM_RECOVERED_RESULTS.json`。146 single T0/T1G/T2G为100/100/94.349%，真实146库为100/86.644/93.151%；原76条T1G single正确→全库错误全部在完整Astra评分下成立。此前的50缺失版本和Qwen结果保留用于追溯。

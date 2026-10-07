@@ -69,6 +69,24 @@ def main():
     paired = {x['old_key']: x for x in new.execute('SELECT * FROM paired')}
     updated = {x['key']: x for x in new.execute('SELECT * FROM payload')}
     assert len(original) == len(paired) == len(updated) == 2137
+    recovery = os.environ.get('ASTRA_RECOVERY') == '1'
+    recovery_valid = 0
+    report_root = root
+    if recovery:
+        report_root = RUN/'private/judge_astra_medium_recovery1'
+        assert (report_root/'ALL_WORKERS_COMPLETE.json').exists()
+        retry = connect(report_root/'queue.sqlite')
+        extra = {x['key']: x for x in retry.execute('SELECT * FROM payload')}
+        expected = {k for k,v in updated.items() if v['status']=='MISSING'}
+        assert set(extra) == expected and len(expected) == 50
+        assert set(common.read(report_root/'AUTHORIZATION.json')['keys']) == expected
+        for k, row in extra.items():
+            assert row['status'] in ('FORMAT_VALID','MISSING')
+            assert row['binding'] == updated[k]['binding'] and row['record'] == updated[k]['record']
+            if row['status'] == 'FORMAT_VALID':
+                assert row['correct'] in (0,1)
+                updated[k] = row
+                recovery_valid += 1
     qwen = {k: v['correct'] for k, v in original.items()}
     astra = {k: updated[v['new_key']]['correct'] for k, v in paired.items()}
     assert all(x['status'] in ('FORMAT_VALID', 'MISSING') for x in updated.values())
@@ -153,7 +171,8 @@ def main():
     assert len(old_losses) == 76
     route_losses = Counter(str(astra[bypath[x['single']]])+'to'+str(astra[bypath[x['bank']]]) for x in old_losses)
     resource = common.read(RUN/'RESOURCE_LEDGER.json')
-    result = dict(status='SCORING_TERMINAL_WITH_50_MISSING', model='gpt-6-astra',reasoning_effort='medium',
+    missing = sum(v is None for v in astra.values())
+    result = dict(status='COMPLETE_NO_MISSING' if not missing else 'SCORING_TERMINAL_WITH_MISSING', model='gpt-6-astra',reasoning_effort='medium',
         all_payloads=2137,valid_payloads=sum(v is not None for v in astra.values()),missing_payloads=sum(v is None for v in astra.values()),
         consumers=9501,missing_consumers=sum(astra[c['payload_key']] is None for c in consumers),
         Judge_attempts=resource['Judge_attempts'],GPU_hours=resource['gpu_seconds_used']/3600,
@@ -162,9 +181,11 @@ def main():
         reconstruction_validation='All77 frozen Qwen panels reproduced: original denominators, masks, correct counts and macro scores',
         full_consumer_and_output_binding_preserved=True,bootstrap_draws=10000,bootstrap_seed=20260912,
         scientific_status='Retrospective development; not independent confirmation',locality='NA_SCOPE_NOT_QUALIFIED',
-        failure='One50-record batch reached600s local timeout; preserved missing, no retry',new_inference=False)
-    common.write(RUN/'public/ASTRA_MEDIUM_RESULTS.json',result)
-    common.write(root/'REPORT_COMPLETE.json',dict(epoch=time.time(),status='AGGREGATES_COMPLETE_PUBLICATION_PENDING',valid=2087,missing=50))
+        failure_history='One50-record first-attempt batch reached600s local timeout; original failed queue and evidence preserved',
+        user_authorized_recovery=recovery,recovery_valid_payloads=recovery_valid,new_inference=False)
+    filename = 'ASTRA_MEDIUM_RECOVERED_RESULTS.json' if recovery else 'ASTRA_MEDIUM_RESULTS.json'
+    common.write(RUN/'public'/filename,result)
+    common.write(report_root/'REPORT_COMPLETE.json',dict(epoch=time.time(),status='AGGREGATES_COMPLETE_PUBLICATION_PENDING',valid=2137-missing,missing=missing))
     print(json.dumps({k:v for k,v in result.items() if k not in ('panels','contrasts')},ensure_ascii=False))
 
 
