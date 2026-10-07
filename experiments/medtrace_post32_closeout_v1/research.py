@@ -19,6 +19,13 @@ def selected():
 
 def configure():
     """Record new source identity without altering old runtime/source receipts."""
+    import subprocess
+    def available(gpu):
+        common.budget()
+        uuid,free=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=uuid,memory.free','--format=csv,noheader,nounits'],text=True).strip().split(', ')
+        assert uuid==common.read(RUN/'PLAN_CONFIG.json')['hardware']['UUIDs'][str(gpu)]
+        return int(free)>=24000
+    common.available=available
     original = worker.write
     def write(path, data):
         if 'binding' in data and 'phase' in data['binding']:
@@ -123,9 +130,24 @@ def route_bank():
 def controller():
     import pipeline
     common.write(RUN/'public/RESEARCH_PROGRESS.json',dict(status='TWO_TRACKS_RUNNING',complete=False))
-    jobs=[pipeline.launch('research.py','research_u',i,i) for i in (0,1)]
-    jobs += [pipeline.launch('research.py','research_route',2+i,i) for i in (0,1)]
-    pipeline.wait(jobs)
+    starts=[]
+    for action,gpu,part,done in [('research_u',i,i,'RESEARCH_U_DONE_') for i in (0,1)]+[('research_route',2+i,i,'RESEARCH_ROUTE_DONE_') for i in (0,1)]:
+        end=RUN/'private'/(done+str(part)+'.json')
+        if end.exists():continue
+        receipt=RUN/'private'/('START_CHAIN_'+action+'_'+str(part)+'.json')
+        if receipt.exists():
+            st=common.read(receipt);proc=Path('/proc/'+str(st['pid'])+'/stat')
+            assert proc.exists() and proc.read_text().split()[21]==st['start_ticks'] and proc.read_text().split()[2]!='Z','Inspect stopped worker before explicit engineering recovery'
+        else:
+            pipeline.launch('research.py',action,gpu,part);st=common.read(receipt)
+        starts.append((st,end))
+    while not all(end.exists() for _,end in starts):
+        common.budget()
+        for st,end in starts:
+            if end.exists():continue
+            proc=Path('/proc/'+str(st['pid'])+'/stat')
+            assert proc.exists() and proc.read_text().split()[21]==st['start_ticks'] and proc.read_text().split()[2]!='Z','Worker failed; retain evidence for engineering review'
+        time.sleep(5)
     common.write(RUN/'private/RESEARCH_GENERATION_COMPLETE.json',dict(status='GENERATED_NOT_SCORED',epoch=time.time()))
     pipeline.wait([pipeline.launch('research_queue.py','research_ingest')])
     # Only newly generated paired continuation weights; historical W0 and fits are preserved.
