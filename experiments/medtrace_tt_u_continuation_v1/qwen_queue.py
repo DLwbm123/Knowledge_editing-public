@@ -108,7 +108,7 @@ def ingest(db):
         d=read(p);b=d['binding'];row=b['input'];key=payload(db,row,b['judge_input'],d['R0']);cid=digest([str(p),digest(d)])
         db.execute('INSERT OR IGNORE INTO consumer VALUES (?,?,?,?,?,?,?,?,?,?)',(cid,b['arm'],b['mode'],b['prefix'],b['owner_order'],b['panel'],row['query_id'],str(p),digest(d),key))
     pending=db.execute("SELECT count(*) FROM payload WHERE status='PENDING'").fetchone()[0]
-    assert pending+read(RUN/'RESOURCE_LEDGER.json')['Judge_attempts']<=6000,'Whole frozen phase exceeds remaining unique Judge cap'
+    assert pending+read(RUN/'RESOURCE_LEDGER.json')['Judge_attempts']<=read(RUN/'RUN_MANIFEST.json')['Judge_limit'],'Whole frozen phase exceeds remaining unique Judge cap'
     db.commit()
     write(ROOT/'QUEUE_ADMISSION.json',dict(status='PASS',new_pending=pending,total_consumers=status(db)['consumers'],full_key_inheritance=True))
 

@@ -20,7 +20,7 @@ def prepare():
         key=digest(dict(input=packet,Base_tokens=cache['tokens'],student_tokens=o['R0']['raw_token_ids'],image=b['input']['image_sha256'],runtime=b['judge_input']['runtime'],generation=b['judge_input']['generation'],judge=identity))
         payloads[key]=dict(key=key,packet=packet);consumers.append(dict(key=key,path=str(p),arm=b['arm'],mode=b['mode'],prefix=b['prefix'],token_equal=cache['tokens']==o['R0']['raw_token_ids'],source=digest(row['source_group']),patient='UNKNOWN',slot=b['phase']['slot'],role=b['panel']))
     parent=Path(os.environ.get('PARENT32_ROOT',read(RUN/'private/LAUNCH_ENV.json')['PARENT32_ROOT']))/'private/A1_SEMANTIC_RESULTS.json';old=read(parent);assert old['identity']==identity
-    inherited={k:v for k,v in old['results'].items() if k in payloads};packets=[v for k,v in payloads.items() if k not in inherited];random.Random(20261007).shuffle(packets);assert len(packets)<=6000
+    inherited={k:v for k,v in old['results'].items() if k in payloads};packets=[v for k,v in payloads.items() if k not in inherited];random.Random(20261007).shuffle(packets);assert len(packets)+read(RUN/'RESOURCE_LEDGER.json')['Judge_attempts']<=read(RUN/'RUN_MANIFEST.json')['Judge_limit']
     write(RUN/'private/A1_SEMANTIC_QUEUE.json',dict(identity=identity,payloads=packets,inherited=inherited,consumers=consumers,scope='Existing CAL/CHECK DEV; no image-factual qualification'))
     print('SEMANTIC_QUEUE',len(packets),len(consumers),flush=True)
 
@@ -49,7 +49,7 @@ def judge():
             for i in range(0,len(pending),32):
                 budget();group=pending[i:i+32]
                 with resources() as r:
-                    assert r['Judge_attempts']+len(group)<=6000;r['Judge_attempts']+=len(group);r.setdefault('Semantic_batches',[]).append(dict(id=digest([q['identity'],[p['key'] for p in group]]),keys=[p['key'] for p in group],status='RESERVED',started_epoch=time.time(),rubric='A1_BLIND_TEXT_SEMANTIC_ONLY'))
+                    assert r['Judge_attempts']+len(group)<=read(RUN/'RUN_MANIFEST.json')['Judge_limit'];r['Judge_attempts']+=len(group);r.setdefault('Semantic_batches',[]).append(dict(id=digest([q['identity'],[p['key'] for p in group]]),keys=[p['key'] for p in group],status='RESERVED',started_epoch=time.time(),rubric='A1_BLIND_TEXT_SEMANTIC_ONLY'))
                 out=llm.generate(prompts[i:i+32],SamplingParams(temperature=0,seed=0,max_tokens=256,guided_decoding=GuidedDecodingParams(choice=LABELS)),use_tqdm=False);assert len(out)==len(group)
                 for p,o in zip(group,out):
                     label=o.outputs[0].text.strip();assert label in LABELS;results[p['key']]=dict(label=label,raw=label,tokens=o.outputs[0].token_ids,medical_accuracy='NA_IMAGE_EVIDENCE_NOT_AVAILABLE',Base_correct_retention='NA_IMAGE_EVIDENCE_NOT_AVAILABLE')

@@ -20,8 +20,8 @@ class LoRA(nn.Module):
 def clone(state,seed,device):
     e=LoRA(seed).to(device);e.load_state_dict(state);return e
 
-def warm(runtime,t):
-    d=RUN/'private/lora'/t['anonymous_edit'];d.mkdir(parents=True,exist_ok=True);final=d/'W0.pt';latest=d/'latest.pt'
+def warm(runtime,t,directory=None):
+    d=Path(directory) if directory is not None else RUN/'private/lora'/t['anonymous_edit'];d.mkdir(parents=True,exist_ok=True);final=d/'W0.pt';latest=d/'latest.pt'
     if final.exists():return final
     e=LoRA(t['seed']).to(runtime.device);assert sum(p.numel() for p in e.parameters())==18432
     batches=[runtime.build_edit_batch(common.record(t))]+[runtime.build_edit_batch(replace(common.record(t),question=q)) for q in t['fit_questions']]
