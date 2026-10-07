@@ -12,17 +12,20 @@ spec = importlib.util.spec_from_file_location('parallel_astra', RUN/'private/too
 a = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(a)
 q = a.q
-q.ROOT = RUN/'private/judge_combo24_astra_medium'
-q.BATCH_LEDGER = 'Astra_combo24_batches'
-EPOCH = 'MEDTRACE_POST32_COMBO24_ASTRA_MEDIUM_20261008_V1'
-ARMS = ('CE_ONLY','CE_U_MULTI','COMBO24_CE_FIT5','COMBO24_CEU_FIT5')
+PHASE=os.environ.get('JUDGE_PHASE','COMBO24')
+assert PHASE in ('COMBO24','WEAK24')
+q.ROOT = RUN/('private/judge_'+PHASE.lower()+'_astra_medium')
+q.BATCH_LEDGER = 'Astra_'+PHASE.lower()+'_batches'
+EPOCH = 'MEDTRACE_POST32_'+PHASE+'_ASTRA_MEDIUM_20261008_V1'
+ARMS = ('CE_ONLY','CE_U_MULTI') + (('COMBO24_CE_FIT5','COMBO24_CEU_FIT5') if PHASE=='COMBO24' else ('WEAK24_CEU001',))
+WEIGHT_ARM=dict(zip(ARMS,('CE_ONLY','CE_U_MULTI','CE_ONLY','CE_U_MULTI') if PHASE=='COMBO24' else ARMS))
 
 
 def initialize(db):
     lock = dict(epoch=EPOCH,model='gpt-6-astra',reasoning_effort='medium',protocol=q.PROTOCOL,prompt=q.PROMPT,
         batch_size=50,workers=4,attempts_per_payload=1,Judge_limit_enabled=False,
         deadline_epoch=q.read(RUN/'RUN_MANIFEST.json')['deadline_epoch'],
-        scientific_lock=q.digest(q.read(RUN/'private/COMBO24_LOCK.json')))
+        scientific_lock=q.digest(q.read(RUN/('private/'+PHASE+'_LOCK.json'))))
     p = q.ROOT/'EPOCH_MANIFEST.json'
     if p.exists(): assert q.read(p)==lock
     else: q.write(p,lock)
@@ -45,7 +48,7 @@ def parent_rows():
         assert r['binding']==original[k][0]['binding'] and r['record']==original[k][0]['record']
     original.update(recovery)
     assert all(r['status']=='FORMAT_VALID' for r,_ in original.values())
-    for folder in ('judge_research_astra_medium','judge_lora146_astra_medium'):
+    for folder in ('judge_research_astra_medium','judge_lora146_astra_medium') + (('judge_combo24_astra_medium',) if PHASE=='WEAK24' else ()):
         for key,(r,origin) in rows(folder).items():
             assert r['status'] in ('FORMAT_VALID','MISSING')
             if key in original:
@@ -59,11 +62,11 @@ def parent_rows():
 
 def ingest(db):
     if (q.ROOT/'READY.json').exists(): return
-    assert (RUN/'private/COMBO24_GENERATION_COMPLETE.json').exists()
+    assert (RUN/('private/'+PHASE+'_GENERATION_COMPLETE.json')).exists()
     paths=[Path(p) for p in q.read(RUN/'private/COMBO24_BASELINE_PATHS.json')]
     for arm in ARMS[2:]:
         paths+=sorted((RUN/'private/outputs/bank').glob('*/s0/'+arm+'/n160/p24/R0/*.json'))
-    assert len(paths)==1132 and len(set(paths))==1132
+    assert len(paths)==len(ARMS)*283 and len(set(paths))==len(paths)
     rows=[]
     for path in paths:
         d=q.read(path);b=d['binding'];p=b['phase']
@@ -79,12 +82,12 @@ def ingest(db):
         if db.execute('SELECT 1 FROM consumer WHERE id=?',(cid,)).fetchone(): continue
         d=q.read(c['path']);b=d['binding'];phase=b['phase'];row=b['input']
         if c['arm'] in ARMS[2:]:
-            assert d['research_lock']==q.digest(q.read(RUN/'private/COMBO24_LOCK.json')) and phase['execution']==model_lock
+            assert d['research_lock']==q.digest(q.read(RUN/('private/'+PHASE+'_LOCK.json'))) and phase['execution']==model_lock
         assert b['arm']==c['arm'] and phase['slot']==0 and phase['node']==160 and phase['prefix']==24
         if not row.get('role'):
             assert row==ledger['queries'][c['query_id']] and b['judge_input']==bindings[row['opaque_Base_id']]
-        arm=ARMS[0] if c['arm'] in (ARMS[0],ARMS[2]) else ARMS[1]
-        assert phase['weights']==q.read(RUN/'private/COMBO24_WEIGHT_BINDINGS.json')[arm]
+        arm=WEIGHT_ARM[c['arm']]
+        assert phase['weights']==q.read(RUN/('private/'+PHASE+'_WEIGHT_BINDINGS.json'))[arm]
         assert d['TT_parameters_per_expert']==7168
         key = q.payload(db,row,b['judge_input'],d['R0'])
         if key in parents and not db.execute('SELECT 1 FROM inherited WHERE key=?',(key,)).fetchone():
@@ -131,7 +134,7 @@ if __name__=='__main__':
     if operation['action']=='next' and not (q.ROOT/'READY.json').exists():
         # Ingestion holds the write lock; waiting scorers must not block on its disk scan.
         stopped = time.time()>=q.read(RUN/'RUN_MANIFEST.json')['deadline_epoch']-600 or (RUN/'STOP').exists()
-        stopped = stopped or (RUN/'private/FAILURE_combo24_controller_all.json').exists()
+        stopped = stopped or (RUN/('private/FAILURE_'+PHASE.lower()+'_controller_all.json')).exists()
         print(json.dumps(dict(state=dict(status='STOPPED' if stopped else 'GENERATING',payloads={},stage='24-edit interaction generation and binding audit'),rows=[])))
         raise SystemExit(0)
     with (q.ROOT/'QUEUE.lock').open('a') as lock:

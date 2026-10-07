@@ -1,5 +1,6 @@
 """TT88 native/fit and optional full-vocabulary Base||student KL only."""
 import copy
+import math
 from dataclasses import replace
 import fcntl
 from pathlib import Path
@@ -59,7 +60,8 @@ def teachers_for(runtime,rows):
     return teachers
 
 def grad(e):return torch.cat([(p.grad.detach() if p.grad is not None else torch.zeros_like(p)).flatten().clone() for p in e.parameters()])
-def update(runtime,hook,e,opt,native,fit,teacher=None):
+def update(runtime,hook,e,opt,native,fit,teacher=None,u_weight=.01):
+    assert math.isfinite(u_weight) and u_weight>0
     opt.zero_grad(set_to_none=True);terms={};vectors=[];before={k:v.detach().clone() for k,v in e.state_dict().items()}
     for name,batch in [('native',native),('fit',fit)]:
         old=grad(e);hook.set_teacher_routing(batch.labels);loss=runtime.compute_loss(batch)
@@ -69,12 +71,12 @@ def update(runtime,hook,e,opt,native,fit,teacher=None):
     ce=vectors[0]+vectors[1];uv=torch.zeros_like(ce)
     if teacher is not None:
         kwargs,labels,mask,logp,row,_=teacher;old=grad(e);hook.set_teacher_routing(labels)
-        loss=full_vocab_kl(runtime.model(**kwargs).logits[mask],logp);(.01*loss).backward();uv=grad(e)-old
-        terms['U']=dict(unweighted=float(loss.detach()),weighted=.01*float(loss.detach()),tokens=int(mask.sum()),source=digest(row['source_group']),weighted_gradient_norm=float(uv.norm()),unweighted_gradient_norm=float(uv.norm())/.01,zero_reason='EXACT_ZERO_OR_NUMERICAL_ZERO' if uv.norm()==0 else None)
+        loss=full_vocab_kl(runtime.model(**kwargs).logits[mask],logp);(u_weight*loss).backward();uv=grad(e)-old
+        terms['U']=dict(unweighted=float(loss.detach()),weighted=u_weight*float(loss.detach()),tokens=int(mask.sum()),source=digest(row['source_group']),weighted_gradient_norm=float(uv.norm()),unweighted_gradient_norm=float(uv.norm())/u_weight,zero_reason='EXACT_ZERO_OR_NUMERICAL_ZERO' if uv.norm()==0 else None)
     norm=torch.nn.utils.clip_grad_norm_(e.parameters(),1.)
     assert torch.isfinite(norm) and all(p.grad is not None and torch.isfinite(p.grad).all() for p in e.parameters())
     post=float(grad(e).norm());opt.step();assert all(torch.isfinite(p).all() for p in e.parameters())
-    return dict(terms=terms,CE_gradient_norm=float(ce.norm()),U_gradient_norm=float(uv.norm())/.01,U_weighted_fraction=float(uv.norm()/(ce.norm()+uv.norm())) if ce.norm()+uv.norm()>0 else None,CE_U_cosine=float(torch.nn.functional.cosine_similarity(ce[None],uv[None]).item()) if ce.norm()>0 and uv.norm()>0 else None,preclip_norm=float(norm),postclip_norm=post,core_updates={k:float((v-before[k]).norm()) for k,v in e.state_dict().items()},learning_rates=[g['lr'] for g in opt.param_groups],Adam_steps=[int(s['step']) for s in opt.state.values()],forwards=2+int(teacher is not None),backwards=2+int(teacher is not None),train_tokens=sum(x['tokens'] for x in terms.values()))
+    return dict(terms=terms,CE_gradient_norm=float(ce.norm()),U_gradient_norm=float(uv.norm())/u_weight,U_weighted_fraction=float(uv.norm()/(ce.norm()+uv.norm())) if ce.norm()+uv.norm()>0 else None,CE_U_cosine=float(torch.nn.functional.cosine_similarity(ce[None],uv[None]).item()) if ce.norm()>0 and uv.norm()>0 else None,preclip_norm=float(norm),postclip_norm=post,core_updates={k:float((v-before[k]).norm()) for k,v in e.state_dict().items()},learning_rates=[g['lr'] for g in opt.param_groups],Adam_steps=[int(s['step']) for s in opt.state.values()],forwards=2+int(teacher is not None),backwards=2+int(teacher is not None),train_tokens=sum(x['tokens'] for x in terms.values()))
 
 def activations(runtime,hook,batches,teachers):
     result=[]
