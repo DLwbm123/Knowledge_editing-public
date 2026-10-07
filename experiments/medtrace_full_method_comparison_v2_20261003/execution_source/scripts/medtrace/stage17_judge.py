@@ -49,6 +49,9 @@ def profile(work, siblings, bundle, repository):
         '.codex/attachments')]
     blocked += [Path('/Volumes'), bundle.resolve(), repository.resolve(), *[p for p in siblings if p != work]]
     terms = ['(subpath '+json.dumps(str(p))+')' for p in blocked]
+    if os.environ.get('JUDGE_SHARED_ROOT'):
+        terms.append('(require-all (subpath '+json.dumps(os.environ['JUDGE_SHARED_ROOT'])+
+            ') (require-not (subpath '+json.dumps(str(work.resolve()))+')))')
     terms += ['(literal '+json.dumps(str(home/p))+')' for p in ('.codex/AGENTS.md','.codex/AGENTS.override.md')]
     return '(version 1)\n(allow default)\n(deny file-read* file-write*\n'+'\n'.join(terms)+')\n'
 

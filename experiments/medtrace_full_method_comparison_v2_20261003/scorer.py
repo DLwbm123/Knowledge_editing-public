@@ -33,6 +33,8 @@ def read(p):
 
 
 def remote(operation):
+    if 'JUDGE_WORKER' in os.environ:
+        operation = dict(operation, worker=int(os.environ['JUDGE_WORKER']))
     code = 'import os,runpy\nos.environ.update(RUN_ROOT=' + repr(RUN) + ',QUEUE_REQUEST=' + repr(json.dumps(operation)) + ')\nrunpy.run_path(os.environ["RUN_ROOT"]+"/private/tools/' + QUEUE_FILE + '",run_name="__main__")\n'
     p = subprocess.run(['ssh', 'pro5000', 'python3 -'], input=code, capture_output=True, text=True, timeout=300, check=True)
     return json.loads(p.stdout)

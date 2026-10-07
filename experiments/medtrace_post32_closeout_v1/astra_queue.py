@@ -1,5 +1,6 @@
 """User-requested medium Astra rejudging of all frozen current binary payloads."""
 import importlib.util
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -81,7 +82,37 @@ def selfcheck():
         pass
     else:
         raise AssertionError('Changed output was accepted')
-    return dict(status='PASS', tests=['medium identity', 'exact sharing', 'token separation', 'mismatch rejection'])
+    blocks = [{i for i in range(1, 2138) if ((i-1)//50)%4 == w} for w in range(4)]
+    assert set.union(*blocks) == set(range(1, 2138)) and sum(map(len, blocks)) == 2137
+    assert all(len({((i-1)//50)%4 for i in range(start, min(start+50, 2138))}) == 1 for start in range(1, 2138, 50))
+    return dict(status='PASS', tests=['medium identity', 'exact sharing', 'token separation', 'mismatch rejection', 'four disjoint exhaustive shards', 'original batch membership preserved'])
+
+
+def request(db, operation):
+    worker = operation.get('worker', 0)  # Already-running serial process becomes worker 0.
+    assert type(worker) is int and 0 <= worker < 4
+    action = operation['action']
+    if action == 'next':
+        q.reconcile(db)
+        remaining = q.read(RUN/'RUN_MANIFEST.json')['Judge_limit'] - q.read(RUN/'RESOURCE_LEDGER.json')['Judge_attempts']
+        rows = db.execute("SELECT key,record FROM payload WHERE status='PENDING' AND ((rowid-1)/50)%4=? ORDER BY rowid LIMIT ?", (worker, min(50, max(0, remaining)))).fetchall()
+        return dict(state=dict(q.status(db), worker=worker, completion_scope='WORKER_ONLY'), rows=[dict(key=r['key'], record=json.loads(r['record'])) for r in rows])
+    if action == 'reserved':
+        return [a for a in q.request(db, operation) if a.get('worker', 0) == worker]
+    if action == 'reserve':
+        assert all(((db.execute('SELECT rowid FROM payload WHERE key=?', (k,)).fetchone()[0]-1)//50)%4 == worker for k in operation['keys'])
+        result = q.request(db, operation)
+        with q.resources() as ledger:
+            next(a for a in ledger[q.BATCH_LEDGER] if a['id'] == operation['batch_id'])['worker'] = worker
+        return result
+    if action == 'publish':
+        batch = next(a for a in q.read(RUN/'RESOURCE_LEDGER.json')[q.BATCH_LEDGER] if a['id'] == operation['batch_id'])
+        assert batch.get('worker', 0) == worker, 'Cannot publish or recover another worker batch'
+        result = q.request(db, operation)
+        if not db.execute("SELECT 1 FROM payload WHERE status IN ('PENDING','RESERVED') LIMIT 1").fetchone():
+            q.write(q.ROOT/'ALL_WORKERS_COMPLETE.json', dict(status='SCORING_COMPLETE', state=q.status(db), epoch=time.time()))
+        return result
+    return q.request(db, operation)
 
 
 if __name__ == '__main__':
@@ -89,8 +120,11 @@ if __name__ == '__main__':
     if operation['action'] == 'selfcheck':
         answer = selfcheck()
     else:
-        db = q.connect()
-        initialize(db)
-        q.ingest = lambda db: None  # Frozen snapshot; no further generation is authorized here.
-        answer = q.request(db, operation)
+        q.ROOT.mkdir(parents=True, exist_ok=True)
+        with (q.ROOT/'QUEUE.lock').open('a') as lock:
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            db = q.connect()
+            initialize(db)
+            q.ingest = lambda db: None  # Frozen snapshot; no further generation is authorized here.
+            answer = request(db, operation)
     print(json.dumps(answer, ensure_ascii=False))
