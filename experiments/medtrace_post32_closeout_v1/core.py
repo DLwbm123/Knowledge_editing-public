@@ -3,7 +3,13 @@ import os,sys,time,copy,random
 from pathlib import Path
 from dataclasses import replace
 RUN=Path(os.environ['RUN_ROOT']);BASE=Path(os.environ['BASE_ROOT']);sys.path.insert(0,str(RUN/'private/tools'))
-import common,train,worker
+import common
+import importlib.util
+sys.path.insert(0,str(RUN/'private/tools'))
+def tool(name):
+    spec=importlib.util.spec_from_file_location('closeout_'+name,RUN/'private/tools'/(name+'.py'));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+train=tool('train');sys.modules['train']=train
+worker=tool('worker')
 import torch
 from methods.medtrace.core import MedTraceLayerHook
 
