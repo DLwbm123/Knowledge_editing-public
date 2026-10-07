@@ -35,6 +35,7 @@ def judge():
         tok=AutoTokenizer.from_pretrained(rt['model_path'],local_files_only=True)
         prompts=[tok.apply_chat_template([dict(role='user',content=PROMPT+'\n'+json.dumps(p['packet'],ensure_ascii=False))],tokenize=False,add_generation_prompt=True,enable_thinking=False) for p in pending]
         longest=max(len(tok.encode(p,add_special_tokens=False)) for p in prompts);context=next(n for n in cfg['context_candidates'] if n>=longest+256);budget()
+        Path(os.environ['VLLM_RPC_BASE_PATH']).mkdir(parents=True,exist_ok=True)
         llm=LLM(model=rt['model_path'],quantization=cfg['quantization'],dtype='half',max_model_len=context,gpu_memory_utilization=.75,max_num_seqs=32,max_num_batched_tokens=4096,enforce_eager=True,enable_chunked_prefill=True,enable_prefix_caching=False,generation_config='vllm',guided_decoding_backend='xgrammar',seed=0)
         try:
             from common import process_audit
