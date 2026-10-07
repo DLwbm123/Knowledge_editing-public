@@ -1,0 +1,80 @@
+{
+  "status": "CPU_DIAGNOSTIC_COMPLETE_NOT_METHOD_QUALIFICATION",
+  "source": "Existing native/fit positive information only; three fit paraphrases train and fourth CAL; no T1G/T2G/CHECK training",
+  "shared_trainable_scalars": 32,
+  "configs_scope": [
+    {
+      "router": "R_SCOPE",
+      "config_regularizer": 0.1,
+      "positive_recall": 1.0,
+      "recorded_owner_selection": 1.0,
+      "joint_recorded_owner_and_ON": 1.0,
+      "OOD_false_trigger": null,
+      "OOD_rejection": null,
+      "qualification": "POSITIVE_ONLY_DEV_PROXY_MULTIPLE_COMPATIBLE_OWNERS_UNKNOWN"
+    },
+    {
+      "router": "R_SCOPE",
+      "config_regularizer": 1.0,
+      "positive_recall": 1.0,
+      "recorded_owner_selection": 1.0,
+      "joint_recorded_owner_and_ON": 1.0,
+      "OOD_false_trigger": null,
+      "OOD_rejection": null,
+      "qualification": "POSITIVE_ONLY_DEV_PROXY_MULTIPLE_COMPATIBLE_OWNERS_UNKNOWN"
+    },
+    {
+      "router": "R_SCOPE",
+      "config_regularizer": 10.0,
+      "positive_recall": 1.0,
+      "recorded_owner_selection": 1.0,
+      "joint_recorded_owner_and_ON": 1.0,
+      "OOD_false_trigger": null,
+      "OOD_rejection": null,
+      "qualification": "POSITIVE_ONLY_DEV_PROXY_MULTIPLE_COMPATIBLE_OWNERS_UNKNOWN"
+    }
+  ],
+  "configs_radius": [
+    {
+      "router": "R_RADIUS",
+      "scale": 0.5,
+      "positive_recall": 1.0,
+      "recorded_owner_selection": 1.0,
+      "joint_recorded_owner_and_ON": 1.0,
+      "OOD_false_trigger": null,
+      "OOD_rejection": null,
+      "qualification": "POSITIVE_ONLY_DEV_DIAGNOSTIC"
+    },
+    {
+      "router": "R_RADIUS",
+      "scale": 0.75,
+      "positive_recall": 1.0,
+      "recorded_owner_selection": 1.0,
+      "joint_recorded_owner_and_ON": 1.0,
+      "OOD_false_trigger": null,
+      "OOD_rejection": null,
+      "qualification": "POSITIVE_ONLY_DEV_DIAGNOSTIC"
+    },
+    {
+      "router": "R_RADIUS",
+      "scale": 1.0,
+      "positive_recall": 1.0,
+      "recorded_owner_selection": 1.0,
+      "joint_recorded_owner_and_ON": 1.0,
+      "OOD_false_trigger": null,
+      "OOD_rejection": null,
+      "qualification": "POSITIVE_ONLY_DEV_DIAGNOSTIC"
+    }
+  ],
+  "selected_scope_config": 0,
+  "selected_radius": 0.5,
+  "OOD_status": "NA_NO_VERIFIED_SCOPE_NEGATIVES",
+  "scope_train_sources": 24,
+  "scope_cal_sources": 24,
+  "protection_TRAIN_sources": 0,
+  "protection_CAL_sources": 0,
+  "protection_CHECK_sources": 0,
+  "candidate": "NOT_CONFIRMED",
+  "normal_bank_generation": "NOT_RUN_YET",
+  "independent_confirmation": "BLOCKED_CONFIRMATION"
+}
