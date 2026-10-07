@@ -167,6 +167,14 @@ def controller():
     common.write(RUN/'private/LORA146_DELETION.json',dict(files=removed,backup=False,recovery='Retraining required',epoch=time.time()))
     common.write(RUN/'public/LORA146_LIFECYCLE.json',dict(weights_deleted=len(removed),bytes_deleted=sum(x['bytes'] for x in removed),
         all_GPU_consumers_complete=True,score_inputs_and_bindings_preserved=True,backup=False,recovery_requires_retraining=True))
+    finish()
+
+
+def finish():
+    """Resume only the score/report tail after reviewed worker recovery."""
+    import pipeline
+    assert (RUN/'private/LORA146_GENERATION_COMPLETE.json').exists()
+    assert (RUN/'private/LORA146_DELETION.json').exists()
     root = RUN/'private/judge_lora146_astra_medium'
     while not (root/'ALL_WORKERS_COMPLETE.json').exists():
         common.budget()
@@ -178,7 +186,7 @@ def controller():
 
 if __name__=='__main__':
     try:
-        {'lora146_prepare':prepare,'lora146_single':train_single,'lora146_bank':banks,'lora146_controller':controller}[os.environ['ACTION']]()
+        {'lora146_prepare':prepare,'lora146_single':train_single,'lora146_bank':banks,'lora146_controller':controller,'lora146_finish':finish}[os.environ['ACTION']]()
     except BaseException as error:
         common.write(RUN/'private'/('FAILURE_'+os.environ['ACTION']+'_'+os.environ.get('PARTITION','all')+'.json'),
             dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time(),retry=False))
