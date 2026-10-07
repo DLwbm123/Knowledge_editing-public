@@ -16,6 +16,24 @@ PREFIXES = (1, 50, 100, 146)
 ARM = 'TT88_W0_RETRO146'
 
 
+def shard_tasks(tasks, part, count=4, only=None):
+    """Keep every native target for active-target masks; partition queries only."""
+    import hashlib
+    def keep(q):
+        return q in only if only is not None else int(hashlib.sha256(q.encode()).hexdigest(),16)%count==part
+    return [dict(t,events=[dict(e,all_probe_query_ids=[q for q in e['all_probe_query_ids'] if keep(q)])
+                           for e in t['events']]) for t in tasks]
+
+
+def shard_test():
+    tasks=[dict(native={'target':i},events=[dict(all_probe_query_ids=['a',str(i),'shared'])]) for i in range(6)]
+    shards=[shard_tasks(tasks,i) for i in range(4)];sets=[query_ids(s) for s in shards]
+    assert set.union(*sets)==query_ids(tasks)
+    assert sum(map(len,sets))==len(query_ids(tasks))
+    assert all([t['native'] for t in s]==[t['native'] for t in tasks] for s in shards)
+    assert query_ids(shard_tasks(tasks,0,only={'shared'}))=={'shared'}
+
+
 def query_ids(tasks):
     return {q for t in tasks for e in t['events'] for q in e['all_probe_query_ids']}
 
@@ -139,6 +157,60 @@ def banks():
                 common.write(RUN/'private'/('BENCHMARK146_PREFIX_'+str(i)+'.json'),dict(status='GENERATED_NOT_SCORED',epoch=time.time()))
 
 
+def parallel_banks():
+    import subprocess
+    part,gpu=int(os.environ['PARTITION']),int(os.environ['GPU']);tasks=queue()['tasks']
+    assert gpu==4+part and all((RUN/'private'/('BENCHMARK146_SINGLE_'+str(p)+'.json')).exists() for p in (0,1))
+    def available(g):
+        common.budget()
+        uuid,free=subprocess.check_output(['nvidia-smi','-i',str(g),'--query-gpu=uuid,memory.free','--format=csv,noheader,nounits'],text=True).strip().split(', ')
+        assert uuid==common.read(RUN/'PLAN_CONFIG.json')['hardware']['UUIDs'][str(g)]
+        return int(free)>=24000  # Observed inference peak <17GiB; allow authorized shared GPU4.
+    common.available=available
+    with common.lease(gpu):
+        runtime,bindings=common.load(gpu);bank=[];points={}
+        # Same frozen prefix50 query on all GPUs, outside formal outputs; never overwrite evidence.
+        for t in tasks[:50]:bank+=worker.router(runtime,t);points[t['edit_id']]=point(t)
+        probe=sorted(query_ids(tasks[:50]))[0];panel=shard_tasks(tasks[:50],part,only={probe})
+        relative=Path('private/outputs/bank')/tasks[49]['anonymous_edit']/'s0'/ARM/'n0/p50/R0'/(common.digest(probe)+'.json')
+        reference=common.read(RUN/relative);root=RUN/'private'/('PARALLEL_PROBE_'+str(part));(root/'private/bank_bindings').mkdir(parents=True,exist_ok=True)
+        for name in ('EVAL_LEDGER.json','GPU_SOURCE_VERSION.json'):
+            target=root/'private'/name
+            if not target.exists():target.symlink_to(RUN/'private'/name)
+        oldroot=worker.RUN;worker.RUN=root
+        try:worker.evaluate(runtime,bindings,tasks[49],0,ARM,0,points,bank,panel,mode='bank',prefix=50)
+        finally:worker.RUN=oldroot
+        actual=common.read(root/relative)
+        assert all(actual[k]==reference[k] for k in ('binding','R0','route','effective_expert','weight','active_target')),'Parallel native identity/token test failed'
+        common.write(RUN/'private'/('PARALLEL_NATIVE_'+str(part)+'.json'),dict(status='PASS',GPU=gpu,exact_tokens_route_and_binding=True,epoch=time.time()))
+        bank=[];points={}
+        for i,t in enumerate(tasks,1):
+            bank+=worker.router(runtime,t);points[t['edit_id']]=point(t)
+            native=dict(t,events=[e for e in t['events'] if e['task']=='T0'])
+            panel=shard_tasks([native],part)
+            if query_ids(panel):worker.evaluate(runtime,bindings,t,0,ARM,0,points,bank,panel,mode='insertion',prefix=i)
+            if i in PREFIXES and not (RUN/'private'/('BENCHMARK146_PREFIX_'+str(i)+'.json')).exists():
+                worker.evaluate(runtime,bindings,t,0,ARM,0,points,bank,shard_tasks(tasks[:i],part),mode='bank',prefix=i)
+                common.write(RUN/'private'/('PARALLEL_PREFIX_'+str(i)+'_'+str(part)+'.json'),dict(status='GENERATED_NOT_SCORED',epoch=time.time()))
+    common.write(RUN/'private'/('PARALLEL_BANK_DONE_'+str(part)+'.json'),dict(status='COMPLETE',epoch=time.time()))
+
+
+def parallel_controller():
+    import pipeline
+    shard_test()
+    common.write(RUN/'public/PROGRESS.json',dict(status='TT88_RETROSPECTIVE146_FOUR_GPU_INFERENCE',training_complete=True,benchmark146_complete=False,whole_task_complete=False))
+    pipeline.wait([pipeline.launch('benchmark146.py','retro_parallel_bank',4+p,p) for p in range(4)])
+    tasks=queue()['tasks']
+    for n in PREFIXES:
+        folder=RUN/'private/outputs/bank'/tasks[n-1]['anonymous_edit']/'s0'/ARM/'n0'/('p'+str(n))/'R0'
+        assert {p.stem for p in folder.glob('*.json')}=={common.digest(q) for q in query_ids(tasks[:n])}
+        common.write(RUN/'private'/('BENCHMARK146_PREFIX_'+str(n)+'.json'),dict(status='GENERATED_NOT_SCORED',four_shard_coverage_verified=True,epoch=time.time()))
+    pipeline.score()
+    pipeline.wait([pipeline.launch('benchmark146.py','retro_report')])
+    common.write(RUN/'private/BENCHMARK146_COMPLETE.json',dict(epoch=time.time(),status='RESULTS_COMPLETE_REVIEW_PUBLICATION_PENDING'))
+    common.write(RUN/'public/PROGRESS.json',dict(status='RESULTS_COMPLETE_REVIEW_PUBLICATION_PENDING',training_complete=True,evaluation_complete=True,development_candidate_locked=True,independent_confirmation_complete=False,benchmark146_complete=True,publication_complete=False,whole_task_complete=False))
+
+
 def report():
     r = core.tool('report');records,scores=r.load();tasks=queue()['tasks'];panels=[]
     for mode,prefix in [('single_R0',1)]+[('bank_R0',n) for n in PREFIXES]:
@@ -173,7 +245,8 @@ def controller():
 if __name__ == '__main__':
     try:
         dict(retro_prepare=prepare,retro_single=train_single,retro_bank=banks,
-             retro_report=report,retro_controller=controller)[os.environ['ACTION']]()
+             retro_report=report,retro_controller=controller,retro_shard_test=shard_test,
+             retro_parallel_bank=parallel_banks,retro_parallel_controller=parallel_controller)[os.environ['ACTION']]()
     except BaseException as error:
         common.write(RUN/'private'/('FAILURE_'+os.environ['ACTION']+'_'+os.environ.get('PARTITION','all')+'.json'),
                      dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time(),retry=False))
