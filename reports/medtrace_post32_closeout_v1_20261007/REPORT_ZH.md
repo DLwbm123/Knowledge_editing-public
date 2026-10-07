@@ -100,3 +100,7 @@ LoRA预算为1×(14336+4096)=18432，是TT的2.571倍；TT参数少61.11%。LoRA
 ## 用户授权补齐后的最新完整版本
 
 50份超时项经用户明确授权追加一次后全部成功；现2137/2137有效、0缺失，累计Judge3882/6000。最新结果见[ASTRA_MEDIUM_RECOVERED_REPORT_ZH.md](ASTRA_MEDIUM_RECOVERED_REPORT_ZH.md)及`ASTRA_MEDIUM_RECOVERED_RESULTS.json`。146 single T0/T1G/T2G为100/100/94.349%，真实146库为100/86.644/93.151%；原76条T1G single正确→全库错误全部在完整Astra评分下成立。此前的50缺失版本和Qwen结果保留用于追溯。
+
+## 2026-10-08 两条新研究线已完成
+
+见 [两线完成审阅](RESEARCH_REVIEW_ZH.md)、[完整数值](RESEARCH_RESULTS.json) 与 [全配对表](RESEARCH_REPORT_ZH.md)。路由FITKEY5在146库使T1G提高0.856pp、T2G提高0.514pp；U相对同起点同160步CE在8库T2G提高4.688pp，但95%配对区间跨0。U明显降低分布偏移，自然路由CHECK的精确Base token一致率仍为0，医学保护不能据此确认。1770份载荷全部有效、0缺失。原LoRA146对照尚在运行，不能将本节当作整个项目或完整SOTA比较完成。

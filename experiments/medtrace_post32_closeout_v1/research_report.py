@@ -31,7 +31,9 @@ def main():
     for cohort,arm,node,mode,n,ts in specs:
         for task in ('T0','T1G','T2G','T1L','T2L'):
             m,c,g=r.panel(records,scores,cohort,arm,node,mode,task,ts,n)
-            m.update(ar.bootstrap(c,scores,g));panels.append(m);coefs[(arm,mode,n,task)]=c;groups.update(g)
+            m.update(ar.bootstrap(c,scores,g))
+            if arm=='TT88_W0_RETRO146':m['route_ON']=None  # Compact baseline omits routing; never report invented zero.
+            panels.append(m);coefs[(arm,mode,n,task)]=c;groups.update(g)
     contrasts=[]
     for a,b,mode,n in [(research.ARMS[1],research.ARMS[0],mode,n) for mode,n in [('single_R0',1),('bank_R0',8),('bank_R0',24)]]+[(research.ROUTE_ARM,'TT88_W0_RETRO146','bank_R0',146)]:
         for task in ('T0','T1G','T2G','T1L','T2L'):
@@ -53,6 +55,16 @@ def main():
         primary_U='CE+U minus CE T2G macro at bank8, two matched seed repeats',primary_routing='FITKEY5 minus R0 T1G macro at bank146',
         U_training_edits=8,U_seed_repeats=2,bank24_background16='unchanged W0',route_evaluation='Final frozen bank146; not a new sequential-order benchmark',
         independent_confirmation=False,scope_qualified_sources=0,medical_protection='NA',missing_payloads=missing,Judge_attempts=common.read(RUN/'RESOURCE_LEDGER.json')['Judge_attempts'])
+    result['scoring']=common.read(root/'READY.json')
+    result['scoring'].update(valid_payloads=db.execute("SELECT count(*) FROM payload WHERE status='FORMAT_VALID'").fetchone()[0],new_payload_attempts=result['scoring']['payloads']-result['scoring']['inherited'])
+    sessions=[x for x in common.read(RUN/'RESOURCE_LEDGER.json')['gpu_sessions'] if x['action'].startswith('research_')]
+    assert all(x.get('ended_epoch') for x in sessions)
+    result['new_phase_GPU_hours']=sum(x['resident_seconds'] for x in sessions)/3600
+    deleted=common.read(RUN/'private/RESEARCH_DELETION.json')['files'];assert len(deleted)==16
+    result['lifecycle']=dict(new_continuation_weights_deleted=16,deleted_bytes=sum(x['bytes'] for x in deleted),all_GPU_consumers_complete=True,rebuild_requires_retraining=True)
+    for u in result['U']:
+        if u['mode']=='bank_R0':
+            u['bank_contexts']=u.pop('edits');u['bank_source_relations']=u.pop('edit_source_relations')
     common.write(RUN/'public/RESEARCH_RESULTS.json',result)
     text='# 路由泛化与 U 净收益：两线开发实验\n\n原146和旧CAL/CHECK均已经暴露，结果仅用于开发；不声明独立确认或医学保护。U以同W0、同seed、同CE批次和160步的CE为对照；U多一次KL前反向，真实成本单独记录。24库只更新前8，另16固定W0。路由只增加native及已有4条FIT改写锚点，半径/专家权重/生成不变；仅评估最终146库。\n\n|比较|模式|库大小|任务|差值下界pp|差值上界pp|\n|---|---|---:|---|---:|---:|\n'
     for c in contrasts:
