@@ -64,7 +64,7 @@ def native_check(runtime,t,init,teachers,baseline):
             assert not any(p.grad is not None for p in runtime.model.parameters())
             opt=train.optimizer_for(e,runtime.model);item=update_for('U_ONLY',baseline,[1,2,3,4])(runtime,h,e,opt,native,fit,teachers[0]);assert item['forwards']==item['backwards']==1
             assert teachers[0][2].sum()==len(teachers[0][-1]['tokens']) and native.target_token_ids[-1]==runtime.adapter.tokenizer.eos_token_id
-        common.write(RUN/'public/NATIVE_TEST_'+os.environ['PARTITION']+'.json',dict(status='PASS',hinge_initial_zero=True,hinge_trigger_gradient=True,TT_gradient=True,Base_gradient=False,teacher_all_editing_off=True,token_mask_EOS=True,parameters=7168,epsilon=0.,extra_forwards=2,extra_backward=2))
+        common.write(RUN/'public'/('NATIVE_TEST_'+os.environ['PARTITION']+'.json'),dict(status='PASS',hinge_initial_zero=True,hinge_trigger_gradient=True,TT_gradient=True,Base_gradient=False,teacher_all_editing_off=True,token_mask_EOS=True,parameters=7168,epsilon=0.,extra_forwards=2,extra_backward=2))
     finally:h.detach()
 
 
