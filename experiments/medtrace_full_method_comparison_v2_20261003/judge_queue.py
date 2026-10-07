@@ -14,6 +14,8 @@ from scripts.medtrace.stage17_prepare import PROMPT, PROTOCOL, digest
 from scripts.medtrace.astra_judge_bundle import validate
 
 ROOT = RUN / 'private/judge_common'
+EFFORT = 'high'
+BATCH_LEDGER = 'Judge_batches'
 
 
 def read(p):
@@ -175,7 +177,7 @@ def ingest(db):
 
 def reconcile(db):
     ledger = read(RUN / 'RESOURCE_LEDGER.json')
-    for a in ledger.get('Judge_batches', []):
+    for a in ledger.get(BATCH_LEDGER, []):
         for key in a['keys']:
             if a['status'] == 'RESERVED':
                 db.execute("UPDATE payload SET status='RESERVED',batch=? WHERE key=? AND status='PENDING'", (a['id'], key))
@@ -210,7 +212,7 @@ def request(db, operation):
             m = read(RUN / 'RUN_MANIFEST.json')
             assert time.time() < m['deadline_epoch'] - 600 and not (RUN / 'STOP').exists()
             assert ledger['Judge_attempts'] + len(keys) <= m['Judge_limit']
-            attempts = ledger.setdefault('Judge_batches', [])
+            attempts = ledger.setdefault(BATCH_LEDGER, [])
             assert not any(a['id'] == bid or set(a['keys']) & set(keys) for a in attempts)
             previous = list(reversed(attempts))
             consecutive = 0
@@ -221,17 +223,17 @@ def request(db, operation):
                     break
             assert consecutive < 3, 'Three transport failures: no new requests'
             ledger['Judge_attempts'] += len(keys)
-            attempts.append(dict(id=bid, keys=keys, status='RESERVED', started_epoch=time.time(), model='gpt-6-astra', reasoning_effort='high'))
+            attempts.append(dict(id=bid, keys=keys, status='RESERVED', started_epoch=time.time(), model='gpt-6-astra', reasoning_effort=EFFORT))
         reconcile(db)
         return dict(status='RESERVED', items=len(keys))
     if operation['action'] == 'publish':
         bid = operation['batch_id']; evidence = operation['evidence']; response = operation.get('response')
-        ledger = read(RUN / 'RESOURCE_LEDGER.json'); a = next(x for x in ledger['Judge_batches'] if x['id'] == bid)
+        ledger = read(RUN / 'RESOURCE_LEDGER.json'); a = next(x for x in ledger[BATCH_LEDGER] if x['id'] == bid)
         rows = [db.execute('SELECT * FROM payload WHERE key=?', (k,)).fetchone() for k in a['keys']]
         batch = dict(batch_id=bid, records=[json.loads(r['record']) for r in rows])
         valid = evidence.get('status') == 'FORMAT_VALID' and response is not None
         if valid:
-            assert evidence['actual_model'] == 'gpt-6-astra' and evidence['reasoning_effort'] == 'high' and evidence['input_binding'] == digest(batch)
+            assert evidence['actual_model'] == 'gpt-6-astra' and evidence['reasoning_effort'] == EFFORT and evidence['input_binding'] == digest(batch)
             assert evidence['exit_code'] == 0 and not evidence.get('errors') and not evidence['tool_event_types'] and all(evidence['isolation_checks'].values())
             decisions = validate(batch, response)
         else:
@@ -253,7 +255,7 @@ def request(db, operation):
                     (new, int(decision['is_correct']) if valid else None, bid, row['key']))
         db.commit()
         with resources() as ledger:
-            a = next(x for x in ledger['Judge_batches'] if x['id'] == bid)
+            a = next(x for x in ledger[BATCH_LEDGER] if x['id'] == bid)
             a.update(status='FORMAT_VALID' if valid else 'FAILED_NO_RETRY', ended_epoch=time.time(), transport_failure=operation.get('transport_failure', False))
             if not valid:
                 ledger['Judge_failed_payloads'] = ledger.get('Judge_failed_payloads', 0) + len(rows)
@@ -262,7 +264,7 @@ def request(db, operation):
     if operation['action'] == 'status':
         return status(db)
     if operation['action'] == 'reserved':
-        return [a for a in read(RUN / 'RESOURCE_LEDGER.json').get('Judge_batches', []) if a['status'] == 'RESERVED']
+        return [a for a in read(RUN / 'RESOURCE_LEDGER.json').get(BATCH_LEDGER, []) if a['status'] == 'RESERVED']
     raise ValueError('Unknown action')
 
 

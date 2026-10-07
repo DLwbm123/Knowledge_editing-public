@@ -18,9 +18,9 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
-def flags(work, explicit_proxy=False):
+def flags(work, explicit_proxy=False, reasoning_effort="high"):
     values = dict(project_doc_max_bytes='0', developer_instructions='""', web_search='"disabled"',
-        model_reasoning_effort='"high"', model_reasoning_summary='"none"',
+        model_reasoning_effort=json.dumps(reasoning_effort), model_reasoning_summary='"none"',
         sqlite_home=json.dumps(str(work/'state')), log_dir=json.dumps(str(work/'logs')),
         mcp_servers='{}', **{'memories.use_memories':'false', 'memories.generate_memories':'false',
         'skills.include_instructions':'false', 'suppress_unstable_features_warning':'true',
@@ -72,7 +72,8 @@ def isolation_check(work, sibling, bundle, repository, sandbox):
     return checks
 
 
-def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=None, explicit_proxy=False):
+def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=None, explicit_proxy=False, reasoning_effort="high"):
+    assert reasoning_effort in ("high", "medium")
     name = batch['batch_id']; operator = output_operator or bundle/'operator'
     attempt = operator/'execution_evidence'/f'{name}.json'
     destination = operator/'responses'/f'{name}.json'
@@ -91,10 +92,10 @@ def run_batch(bundle, batch, work, siblings, repository, cli, output_operator=No
     sandbox = work/'boundary.sb'; sandbox.write_text(profile(work,siblings,bundle,repository))
     isolation = isolation_check(work,next(p for p in siblings if p != work),bundle,repository,sandbox)
     command = ['/usr/bin/sandbox-exec','-f',str(sandbox),str(cli),'exec','--ignore-user-config',
-        '--ignore-rules','--ephemeral','--skip-git-repo-check','--model','gpt-6-astra',*flags(work, explicit_proxy),
+        '--ignore-rules','--ephemeral','--skip-git-repo-check','--model','gpt-6-astra',*flags(work, explicit_proxy, reasoning_effort),
         '--output-schema',str(work/'input.schema.json'),'--output-last-message',str(work/'final.json'),'--json','-']
     evidence = dict(batch_id=name,status='STARTING',started_at_utc=now(),actual_model='gpt-6-astra',
-        reasoning_effort='high',immutable_snapshot=None,isolation_checks=isolation,
+        reasoning_effort=reasoning_effort,immutable_snapshot=None,isolation_checks=isolation,
         fresh_session=True,command=command,tool_event_types=[],protocol=PROTOCOL,
         cli_version=subprocess.check_output([cli,'--version'],text=True).strip(),
         authentication='existing local login, no credentials read/copied by operator',
