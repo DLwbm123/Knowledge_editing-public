@@ -14,6 +14,21 @@ def wait_existing():
             if not (RUN/'private'/('TRAIN_PART_'+str(i)+'.json')).exists():assert stat.exists() and stat.read_text().split()[21]==x['start_ticks'] and stat.read_text().split()[2]!='Z','Own core worker stopped; retain evidence, no blind retry'
         time.sleep(5)
 
+def adopt_evaluation():
+    """Adopt only the recorded live evaluation workers; never duplicate them."""
+    if all((RUN/'private'/('EVAL_PART_'+str(i)+'.json')).exists() for i in [0,1]):return True
+    starts=[RUN/'private'/('START_CHAIN_core_eval_'+str(i)+'.json') for i in [0,1]]
+    if not all(p.exists() for p in starts):return False
+    while not all((RUN/'private'/('EVAL_PART_'+str(i)+'.json')).exists() for i in [0,1]):
+        common.budget()
+        for i,p in enumerate(starts):
+            if (RUN/'private'/('EVAL_PART_'+str(i)+'.json')).exists():continue
+            x=common.read(p);stat=Path('/proc/'+str(x['pid'])+'/stat')
+            assert stat.exists() and stat.read_text().split()[21]==x['start_ticks'] and stat.read_text().split()[2]!='Z','Recorded evaluation worker failed; inspect before resuming'
+        time.sleep(5)
+    return True
+
+
 def launch(file,action,gpu=None,part=None,python=None):
     import tempfile
     fd,entry=tempfile.mkstemp(prefix='e.',suffix='.py',dir=os.environ['TMPDIR']);os.close(fd);Path(entry).write_text("import os,sys,runpy\nsys.path.insert(0,os.environ['RUN_ROOT']+'/private/tools')\nrunpy.run_path(os.environ['TASK_FILE'],run_name='__main__')\n")
@@ -43,12 +58,14 @@ def score():
 
 def main():
     wait_existing();common.write(RUN/'public/PROGRESS.json',dict(status='CORE_TRAINING_COMPLETE_BANK_EVAL_RUNNING',whole_task_complete=False))
-    wait([launch('evaluate.py','core_eval',5,0),launch('evaluate.py','core_eval',6,1)]);score();wait([launch('semantic.py','semantic_prepare')]);wait([launch('semantic.py','A1_JUDGE',7,0,python=os.environ['QWEN_PYTHON'])]);wait([launch('results.py','core_report')])
-    assert common.used()<=8*3600
-    common.write(RUN/'STAGE_CAP.json',dict(stage='FINAL_COMPARISON',GPU_seconds_limit=24*3600,development_used_seconds=common.used(),minimum_final_reserve=16*3600))
+    if not adopt_evaluation():wait([launch('evaluate.py','core_eval',5,0),launch('evaluate.py','core_eval',6,1)])
+    score();wait([launch('semantic.py','semantic_prepare')]);wait([launch('semantic.py','A1_JUDGE',7,0,python=os.environ['QWEN_PYTHON'])]);wait([launch('results.py','core_report')])
+    unlimited=not common.read(RUN/'RUN_MANIFEST.json').get('GPU_time_limit_enabled',True)
+    if not unlimited:assert common.used()<=8*3600
+    common.write(RUN/'STAGE_CAP.json',dict(stage='FINAL_COMPARISON',GPU_seconds_limit=10**18 if unlimited else 24*3600,GPU_time_limit_enabled=not unlimited,development_used_seconds=common.used(),minimum_final_reserve=None if unlimited else 16*3600))
     common.write(RUN/'public/PROGRESS.json',dict(status='CORE_EVALUATION_COMPLETE_FINAL_STRUCTURAL_COMPARISON_RUNNING',whole_task_complete=False))
     wait([launch('lora.py','lora_train',5,0),launch('lora.py','lora_train',6,1)]);wait([launch('lora.py','lora_eval',7,0)]);score();wait([launch('final_report.py','final_report')])
-    common.write(RUN/'public/PROGRESS.json',dict(status='BOUNDED_RUN_ENDED_REPORT_REVIEW_PUBLICATION_PENDING',training_complete=True,evaluation_complete=True,development_candidate_locked=True,independent_confirmation_complete=False,benchmark146_complete=False,publication_complete=False,whole_task_complete=False,no_next_round=True))
+    common.write(RUN/'public/PROGRESS.json',dict(status='BOUNDED_RUN_ENDED_REPORT_REVIEW_PUBLICATION_PENDING',training_complete=True,evaluation_complete=True,development_candidate_locked=True,independent_confirmation_complete=False,benchmark146_complete=False,publication_complete=False,whole_task_complete=False,next_research='HOURLY_REVIEW_WITH_PREREGISTRATION'))
     common.write(RUN/'private/CONTROLLER_COMPLETE.json',dict(epoch=time.time(),all_executed_GPU_sessions_ended=all(x.get('ended_epoch') for x in common.read(RUN/'RESOURCE_LEDGER.json')['gpu_sessions']),scientific_and_publication_review_pending=True))
 if __name__=='__main__':
     try:main()
