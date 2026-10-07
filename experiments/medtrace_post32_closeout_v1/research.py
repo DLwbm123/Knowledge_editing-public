@@ -17,7 +17,7 @@ def selected():
     return [t for t in common.read(BASE/'private/QUEUES.json')['tasks'] if t['cohort']=='P2']
 
 
-def configure():
+def configure(lock_name="RESEARCH_LOCK.json"):
     """Record new source identity without altering old runtime/source receipts."""
     import subprocess
     def available(gpu):
@@ -29,7 +29,7 @@ def configure():
     original = worker.write
     def write(path, data):
         if 'binding' in data and 'phase' in data['binding']:
-            data['research_lock'] = common.digest(common.read(RUN/'private/RESEARCH_LOCK.json'))
+            data['research_lock'] = common.digest(common.read(RUN/'private'/lock_name))
         original(path, data)
     worker.write = write
 
@@ -82,6 +82,22 @@ def choose(distances, radii):
     return i, bool(distances[i]<=radii[i])
 
 
+def install_fitkeys(ts):
+    import torch
+    from m3bench_repro.editors.routing import MemoryRouter, RouteDecision, distances
+    folder=RUN/'private/research/keys'
+    extras={t['edit_id']:torch.load(folder/(t['anonymous_edit']+'.pt'),map_location='cpu',weights_only=True)['keys'] for t in ts}
+    def route(router,query):
+        if not router.keys:return RouteDecision(None,None,None,None,False,router.distance)
+        query=query.detach().float().reshape(-1)
+        keys=torch.stack([k for eid,key in zip(router.logical_ids,router.keys) for k in [key.cpu()]+extras[eid]]).to(query.device)
+        ds=distances(keys,query,router.distance).reshape(len(router.logical_ids),5).min(dim=1).values
+        i,on=choose(ds,torch.tensor(router.radii,device=ds.device))
+        eid=router.logical_ids[i]
+        return RouteDecision(eid if on else None,eid,float(ds[i]),router.radii[i],on,router.distance)
+    MemoryRouter.route=route
+
+
 def route_bank():
     import torch
     from m3bench_repro.editors.methods import BalanceEditPaperSpecEditor
@@ -110,16 +126,7 @@ def route_bank():
             common.budget()
             assert not list((RUN/'private').glob('FAILURE_research_route_*.json'))
             time.sleep(5)
-        extras={t['edit_id']:torch.load(folder/(t['anonymous_edit']+'.pt'),map_location='cpu',weights_only=True)['keys'] for t in ts}
-        def route(router,query):
-            if not router.keys:return RouteDecision(None,None,None,None,False,router.distance)
-            query=query.detach().float().reshape(-1)
-            keys=torch.stack([k for eid,key in zip(router.logical_ids,router.keys) for k in [key.cpu()]+extras[eid]]).to(query.device)
-            ds=distances(keys,query,router.distance).reshape(len(router.logical_ids),5).min(dim=1).values
-            i,on=choose(ds,torch.tensor(router.radii,device=ds.device))
-            eid=router.logical_ids[i]
-            return RouteDecision(eid if on else None,eid,float(ds[i]),router.radii[i],on,router.distance)
-        MemoryRouter.route=route
+        install_fitkeys(ts)
         bank=[];points={}
         for t in ts:bank+=worker.router(runtime,t);points[t['edit_id']]=retro.point(t)
         # Both workers retain all native identities; only query IDs are partitioned.
