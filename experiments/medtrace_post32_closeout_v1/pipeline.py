@@ -43,7 +43,7 @@ def score():
 
 def main():
     wait_existing();common.write(RUN/'public/PROGRESS.json',dict(status='CORE_TRAINING_COMPLETE_BANK_EVAL_RUNNING',whole_task_complete=False))
-    wait([launch('evaluate.py','core_eval',5,0),launch('evaluate.py','core_eval',6,1)]);score();wait([launch('results.py','core_report')])
+    wait([launch('evaluate.py','core_eval',5,0),launch('evaluate.py','core_eval',6,1)]);score();wait([launch('semantic.py','semantic_prepare')]);wait([launch('semantic.py','A1_JUDGE',7,0,python=os.environ['QWEN_PYTHON'])]);wait([launch('results.py','core_report')])
     assert common.used()<=8*3600
     common.write(RUN/'STAGE_CAP.json',dict(stage='FINAL_COMPARISON',GPU_seconds_limit=24*3600,development_used_seconds=common.used(),minimum_final_reserve=16*3600))
     common.write(RUN/'public/PROGRESS.json',dict(status='CORE_EVALUATION_COMPLETE_FINAL_STRUCTURAL_COMPARISON_RUNNING',whole_task_complete=False))
