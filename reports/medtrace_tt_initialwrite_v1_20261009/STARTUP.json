@@ -1,5 +1,6 @@
 {
-  "status": "MECHANICAL_RUNNING_NOT_FORMAL_TRAINING_COMPLETE",
+  "status": "FORMAL_TRAINING_RUNNING",
+  "epoch": 1791477218.6404667,
   "source": {
     "commit": "ed44ec56e2c2abd25e15752d6515af977dce3362",
     "files": {
@@ -8,7 +9,12 @@
       "initialwrite_report.py": "b3d731d9c05576f9b4b91dd77b77b8f5c20b0f4d68d2126218961fc04c3866ab"
     }
   },
-  "epoch": 1791477059.968568,
+  "endpoint_parity": {
+    "status": "PASS",
+    "exact_all_cores": true,
+    "steps": 540
+  },
+  "final_experts_completed": 5,
   "starts": [
     {
       "receipt": "START_CHAIN_initialwrite_controller_None.json",
@@ -17,8 +23,14 @@
       "neutral_argv": true
     },
     {
-      "receipt": "START_CHAIN_initialwrite_mechanical_0.json",
-      "pid": 36978,
+      "receipt": "START_CHAIN_initialwrite_train_0.json",
+      "pid": 38261,
+      "alive": true,
+      "neutral_argv": true
+    },
+    {
+      "receipt": "START_CHAIN_initialwrite_train_1.json",
+      "pid": 38262,
       "alive": true,
       "neutral_argv": true
     }
