@@ -151,14 +151,14 @@ def cache():
     with lease(gpu):
         runtime,_=c.load(gpu)
         route_layer=runtime.target_lock['balancedit']['targets'][0]
-        if part==0:mechanical(runtime)
+        if part==0 and not (RUN/'public/GPU_MECHANICAL.json').exists():mechanical(runtime)
         for i,row in enumerate(rows[part::3]):
             path=feature_path(row)
             if path.exists():continue
             raw=runtime.adapter.prepare_inputs(Path(c.local_path(row['image_path'])),row['question'],None)
             assert raw['image_sha256']==row['image_sha256']
             with torch.no_grad():
-                embeds,att,pos,_=runtime._expand_multimodal(raw_input_ids=raw['input_ids'],attention_mask=raw['attention_mask'],labels=None,images=raw['images'])
+                embeds,att,pos,_=runtime._expand_multimodal(raw_input_ids=raw['input_ids'],attention_mask=raw['attention_mask'],labels=torch.full_like(raw['input_ids'],-100),images=raw['images'])
                 masks=s.token_masks(raw['input_ids'][0],embeds.shape[1],None if att is None else att[0],IMAGE_TOKEN_INDEX)
                 captured=[];route_captured=[]
                 route_handle=runtime.get_module(route_layer).register_forward_pre_hook(lambda _,args:route_captured.append(s.pool(args[0][0],masks)))
