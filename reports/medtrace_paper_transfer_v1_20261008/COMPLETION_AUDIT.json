@@ -1,0 +1,104 @@
+{
+  "status": "PASS_EXECUTION_TERMINAL_WITH_MISSING_SCORES",
+  "report_completed_at": "2026-10-08T12:27:08.732985+08:00",
+  "source_commit_TT": "3226922",
+  "scope": "TT_ONLY_20261008_V1",
+  "CP_formal_training_started": false,
+  "consumers": {
+    "A_W0_INTRINSIC_ALL": 1513,
+    "A_W0_INTRINSIC_MODAL": 1513,
+    "A_W0_MODAL": 1513,
+    "A_W0_NORM_MEAN": 1513,
+    "A_W0_R0": 1513,
+    "B_TT_ALIGN_INTRINSIC_MODAL": 283,
+    "B_TT_ALIGN_MODAL": 283,
+    "B_TT_ALIGN_R0": 283,
+    "B_TT_CE_INTRINSIC_MODAL": 283,
+    "B_TT_CE_MODAL": 283,
+    "B_TT_CE_R0": 283,
+    "B_TT_FIXED_A_INTRINSIC_MODAL": 283,
+    "B_TT_FIXED_A_MODAL": 283,
+    "B_TT_FIXED_A_R0": 283,
+    "D_TT_ALIGN_INTRINSIC_MODAL_MIX": 283
+  },
+  "payload_status": {
+    "FORMAT_VALID": 5065,
+    "MISSING": 100
+  },
+  "inherited_valid_payloads": 1825,
+  "new_judge_batches": {
+    "FORMAT_VALID": 71,
+    "FAILED_NO_RETRY": 2
+  },
+  "failed_batches": [
+    {
+      "payloads": 50,
+      "status": "FAILED_NO_RETRY",
+      "transport_failure": true,
+      "worker": 0,
+      "started_epoch": 1791432132.5901496,
+      "ended_epoch": 1791432186.4084427
+    },
+    {
+      "payloads": 50,
+      "status": "FAILED_NO_RETRY",
+      "transport_failure": true,
+      "worker": 2,
+      "started_epoch": 1791432187.8768103,
+      "ended_epoch": 1791432216.9253669
+    }
+  ],
+  "retry_performed": false,
+  "training": {
+    "TT_ALIGN": {
+      "experts": 24,
+      "updates_each": 160,
+      "parameters": [
+        7168
+      ],
+      "trainable": [
+        7168
+      ],
+      "first_alignment_mean": 3.1487268606821694,
+      "last_alignment_mean": 2.938684811194738
+    },
+    "TT_FIXED_A": {
+      "experts": 24,
+      "updates_each": 160,
+      "parameters": [
+        7168
+      ],
+      "trainable": [
+        2560
+      ]
+    }
+  },
+  "Base_gradient_all_false": true,
+  "panels": 75,
+  "contrasts": 45,
+  "global_scoring_receipt": {
+    "status": "SCORING_COMPLETE",
+    "epoch": 1791433412.1763756
+  },
+  "generation_receipt": {
+    "status": "COMPLETE",
+    "epoch": 1791433375.176139
+  },
+  "report_receipt": {
+    "status": "COMPLETE",
+    "epoch": 1791433628.7329845
+  },
+  "deletion": {
+    "status": "COMPLETE",
+    "epoch": 1791433386.3787644,
+    "all_consumers_complete": true,
+    "bindings_durable": true,
+    "files_deleted": 2149
+  },
+  "remaining_owned_weights": 0,
+  "remaining_feature_caches": 0,
+  "controller_alive": false,
+  "cost_unit_note": "GPU hours sum process residency, not physical card billing hours when processes overlap",
+  "independent_confirmation": false,
+  "medical_protection": "NA_SCOPE_NOT_QUALIFIED"
+}

@@ -1,0 +1,40 @@
+{
+  "status": "COMPLETE_NOT_PROMOTED",
+  "source_commit": "dfc2841548880d4099bcc479a4a55d1c56ff703c",
+  "checks": 24,
+  "baseline_reproduction": "PASS",
+  "query_inputs": 1513,
+  "guarded_OFF": 93,
+  "all_query_audit": {
+    "status": "COMPLETE_NOT_PROMOTED",
+    "all_veto_transitions": {
+      "unchanged": 38,
+      "gain": 22,
+      "missing": 1,
+      "loss": 32
+    },
+    "by_role": {
+      "PANEL": {
+        "unchanged": 37,
+        "gain": 21,
+        "missing": 1,
+        "loss": 32
+      },
+      "CHECK": {
+        "gain": 1,
+        "unchanged": 1
+      }
+    },
+    "decision": "Do not replace the primary method: veto also removes correct edits outside the Base-correct locality mask.",
+    "all_queries_scanned": true,
+    "score_missing_preserved": true
+  },
+  "new_training": 0,
+  "new_generation": 0,
+  "new_Judge_attempts": 0,
+  "new_GPU_process_hours": 0,
+  "inherited_missing_no_retry": 3,
+  "new_checkpoints": 0,
+  "scope_qualification": false,
+  "independent_confirmation": false
+}

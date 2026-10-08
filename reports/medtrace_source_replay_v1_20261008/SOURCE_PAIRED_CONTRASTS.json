@@ -1,0 +1,39 @@
+{
+  "bootstrap": "paired source-group percentile,2000 resamples,seed20261008",
+  "contrasts": [
+    {
+      "a": "SOURCE_REPLAY192",
+      "b": "W0",
+      "source_groups": 32,
+      "observations": 96,
+      "delta_pp": 44.791666666666664,
+      "source_paired_CI95": [
+        34.375,
+        54.166666666666664
+      ]
+    },
+    {
+      "a": "SOURCE_REPLAY192",
+      "b": "CE192",
+      "source_groups": 32,
+      "observations": 96,
+      "delta_pp": 45.83333333333333,
+      "source_paired_CI95": [
+        36.45833333333333,
+        55.20833333333333
+      ]
+    },
+    {
+      "a": "SOURCE_REPLAY192",
+      "b": "BASE",
+      "source_groups": 32,
+      "observations": 96,
+      "delta_pp": -5.208333333333333,
+      "source_paired_CI95": [
+        -12.5,
+        3.125
+      ]
+    }
+  ],
+  "scope": "forced first32 experts on96 source CHECK queries; development only"
+}

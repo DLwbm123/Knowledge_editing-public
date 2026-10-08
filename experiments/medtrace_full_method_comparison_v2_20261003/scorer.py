@@ -20,6 +20,11 @@ from scripts.medtrace import stage17_judge as judge
 from scripts.medtrace.stage17_prepare import digest, PROMPT, PROTOCOL
 from scripts.medtrace.astra_judge_bundle import schema, validate
 
+QUEUE_FILE = os.environ.get('JUDGE_QUEUE_FILE', 'judge_queue.py')
+RESULT_FOLDER = os.environ.get('JUDGE_RESULT_FOLDER', 'judge_common')
+EPOCH = os.environ.get('JUDGE_EPOCH', 'MEDTRACE_ORIGINAL146_COMMON_ASTRA_20261003_V1')
+EFFORT = os.environ.get('JUDGE_EFFORT', 'high')
+
 CLI = Path('/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex')
 
 
@@ -28,7 +33,9 @@ def read(p):
 
 
 def remote(operation):
-    code = 'import os,runpy\nos.environ.update(RUN_ROOT=' + repr(RUN) + ',QUEUE_REQUEST=' + repr(json.dumps(operation)) + ')\nrunpy.run_path(os.environ["RUN_ROOT"]+"/private/tools/judge_queue.py",run_name="__main__")\n'
+    if 'JUDGE_WORKER' in os.environ:
+        operation = dict(operation, worker=int(os.environ['JUDGE_WORKER']))
+    code = 'import os,runpy\nos.environ.update(RUN_ROOT=' + repr(RUN) + ',QUEUE_REQUEST=' + repr(json.dumps(operation)) + ')\nrunpy.run_path(os.environ["RUN_ROOT"]+"/private/tools/' + QUEUE_FILE + '",run_name="__main__")\n'
     p = subprocess.run(['ssh', 'pro5000', 'python3 -'], input=code, capture_output=True, text=True, timeout=300, check=True)
     return json.loads(p.stdout)
 
@@ -37,7 +44,7 @@ def publish_file(name, data):
     code = 'import pathlib,sys,os,json;d=json.loads(sys.stdin.buffer.readline());p=pathlib.Path(d["path"]);p.parent.mkdir(parents=True,exist_ok=True);t=p.with_suffix(p.suffix+".tmp");t.write_bytes(sys.stdin.buffer.read());os.replace(t,p)'
     # Keep archive data on stdin; the helper has a neutral visible command line.
     command = 'python3 -c ' + __import__('shlex').quote(code)
-    header = json.dumps(dict(path=RUN + '/private/judge_common/' + name)).encode() + b'\n'
+    header = json.dumps(dict(path=RUN + '/private/' + RESULT_FOLDER + '/' + name)).encode() + b'\n'
     subprocess.run(['ssh', 'pro5000', command], input=header + data, check=True, timeout=300)
 
 
@@ -104,13 +111,13 @@ def call(bundle, batch, work, sibling):
                 os.kill(int(child), signal.SIGTERM)
     timer = threading.Timer(600, timeout); timer.daemon = True; timer.start()
     try:
-        judge.run_batch(bundle, batch, work, [work, sibling], SOURCE, CLI, explicit_proxy=True)
+        judge.run_batch(bundle, batch, work, [work, sibling], SOURCE, CLI, explicit_proxy=True, reasoning_effort=EFFORT)
     finally:
         timer.cancel()
 
 
 def prepare(rows):
-    batch = dict(batch_id=digest(['MEDTRACE_ORIGINAL146_COMMON_ASTRA_20261003_V1', [r['key'] for r in rows]]), records=[r['record'] for r in rows])
+    batch = dict(batch_id=digest([EPOCH, [r['key'] for r in rows]]), records=[r['record'] for r in rows])
     bid = batch['batch_id']; bundle = LOCAL / 'batches' / bid; work = LOCAL / 'work' / bid; sibling = LOCAL / 'work/probe'
     for name in ['operator/execution_evidence', 'operator/responses', 'judge_only']:
         (bundle / name).mkdir(parents=True, exist_ok=False)

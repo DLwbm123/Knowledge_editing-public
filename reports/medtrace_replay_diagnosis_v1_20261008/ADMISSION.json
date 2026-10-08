@@ -1,0 +1,59 @@
+{
+  "selected_indices": [
+    0,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30
+  ],
+  "nodes": [
+    12,
+    48,
+    96
+  ],
+  "displayed_nodes": [
+    0,
+    12,
+    48,
+    96,
+    192
+  ],
+  "arms": [
+    "CE192",
+    "SOURCE_REPLAY192"
+  ],
+  "GPUs": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "main_queries": 174,
+  "CHECK_queries": 48,
+  "new_outputs": 1332,
+  "training_trajectories": 32,
+  "training_updates": 3264,
+  "node_weights": 96,
+  "selection": "even zero-based indices among original first32; no outcome selection",
+  "reference_mask": "all original queries whose frozen selected expert is in fixed16; conditional routed cohort",
+  "status": "PASS",
+  "checks": {
+    "status": "PASS",
+    "analytic_CE_gradient": true,
+    "replay_gradient_and_clipping": true,
+    "Base_gradient": false
+  },
+  "consumers": 2268,
+  "new_Judge_upper_bound": 1332
+}
