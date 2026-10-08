@@ -1,0 +1,84 @@
+{
+  "status": "PASS",
+  "checks": [
+    "TT shapes and rank",
+    "invertible gauge double precision",
+    "implicit F C A contraction",
+    "C shares original G2 storage",
+    "zero-effect split",
+    "identity P recovery",
+    "gamma zero actual shared update",
+    "local remains active",
+    "Sherman Morrison direct inverse",
+    "positive definite symmetric P",
+    "training-role isolation",
+    "unique-key deduplication",
+    "invalid gate closes",
+    "closed gate retains Adam candidate momentum",
+    "optimizer/history restore parity",
+    "diagnostics preserve RNG"
+  ],
+  "audit": {
+    "cores": {
+      "G1": {
+        "shape": [
+          1,
+          64,
+          8
+        ],
+        "parameters": 512,
+        "side": "output"
+      },
+      "G2": {
+        "shape": [
+          8,
+          64,
+          4
+        ],
+        "parameters": 2048,
+        "side": "output"
+      },
+      "G3": {
+        "shape": [
+          4,
+          112,
+          8
+        ],
+        "parameters": 3584,
+        "side": "input"
+      },
+      "G4": {
+        "shape": [
+          8,
+          128,
+          1
+        ],
+        "parameters": 1024,
+        "side": "input"
+      }
+    },
+    "total_parameters": 7168,
+    "trainable_parameters": 2048,
+    "connection_ranks": [
+      1,
+      8,
+      4,
+      8,
+      1
+    ],
+    "C_shape": [
+      512,
+      4
+    ],
+    "local_dimension": 2,
+    "shared_dimension": 2,
+    "input_gram_eigenvalues": [
+      0.9999998140037191,
+      0.9999999550094765,
+      1.0000000894118666,
+      1.0000001581342128
+    ],
+    "transform_condition": 1.0000001720652643,
+    "whiten_error": 4.440892098500626e-16
+  }
+}
