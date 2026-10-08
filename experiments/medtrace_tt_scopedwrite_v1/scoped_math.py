@@ -101,6 +101,8 @@ def selfcheck(TT4):
     for name,sl in [('joint',slice(None)),('local',slice(0,2)),('shared',slice(2,4))]:
         matrix=torch.eye(len(zs[0][sl]),dtype=torch.float64)+sum(torch.outer(z[sl],z[sl]) for z in zs)
         assert torch.allclose(getattr(history,name),torch.linalg.inv(matrix),atol=1e-12,rtol=1e-12)
+    assert torch.equal(precondition(candidate,ARMS[2],history.joint,history.local,history.shared,1.),
+                       precondition(candidate,ARMS[4],history.joint,history.local,history.shared,1.))
     try:history.absorb('bad',zs[0],'CHECK')
     except AssertionError:pass
     else:raise AssertionError('CHECK admitted')
@@ -115,7 +117,18 @@ def selfcheck(TT4):
         with torch.no_grad():param.copy_(old+delta)
     assert torch.count_nonzero(param[:,2:])==0 and opt.state[param]['step']==2
     assert opt.state[param]['exp_avg'][:,2:].abs().sum()>0
+    import io
+    buffer=io.BytesIO();torch.save(dict(parameter=param.detach(),optimizer=opt.state_dict(),history=history.state()),buffer)
+    buffer.seek(0);saved=torch.load(buffer,weights_only=True)
+    restored=torch.nn.Parameter(saved['parameter'].clone());newopt=torch.optim.Adam([restored],lr=.001)
+    newopt.load_state_dict(saved['optimizer']);newhistory=History();newhistory.restore(saved['history'])
+    assert torch.equal(newhistory.joint,history.joint) and len(newhistory.keys)==5
+    rng_before=torch.get_rng_state().clone()
+    for value,optimizer in ((param,opt),(restored,newopt)):
+        optimizer.zero_grad();value.square().sum().add(value.sum()).backward();optimizer.step()
+    assert torch.equal(param,restored) and torch.equal(torch.get_rng_state(),rng_before)
     return dict(status='PASS',checks=['TT shapes and rank','invertible gauge double precision','implicit F C A contraction',
         'C shares original G2 storage','zero-effect split','identity P recovery','gamma zero actual shared update',
         'local remains active','Sherman Morrison direct inverse','positive definite symmetric P','training-role isolation',
-        'unique-key deduplication','invalid gate closes','closed gate retains Adam candidate momentum'],audit=audit)
+        'unique-key deduplication','invalid gate closes','closed gate retains Adam candidate momentum',
+        'optimizer/history restore parity','diagnostics preserve RNG'],audit=audit)

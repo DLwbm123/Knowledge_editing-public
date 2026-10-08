@@ -5,6 +5,7 @@ import random
 import time
 import traceback
 from dataclasses import replace
+from functools import lru_cache
 from pathlib import Path
 import torch
 import replay
@@ -22,6 +23,13 @@ def prepared(t):return RUN/'private/prepared'/f"{t['order']}.pt"
 def node(t,arm,step):return RUN/'private/weights'/t['anonymous_edit']/arm/f'step{step:03d}.pt'
 def output(label,qid):return RUN/'private/outputs'/label/(c.digest(qid)+'.json')
 def label(arm,step):return arm+f'_s{step:03d}'
+
+
+@lru_cache(maxsize=1)
+def historical_index():return c.read(RUN/'private/HISTORICAL_OUTPUTS.json')
+
+
+def historical(arm,qid):return Path(historical_index()[arm][qid])
 
 
 def prepare():
@@ -158,9 +166,146 @@ def mechanical():
     p.done('MECHANICAL_'+str(part))
 
 
+def train():
+    from m3bench_repro.editors.llava_runtime import seed_everything
+    assert (RUN/'private/PLAN_COMPLETE.json').exists()
+    part=int(os.environ['PARTITION']);gpu=GPUS[part]
+    with p.lease(gpu):
+        runtime,_=c.load(gpu)
+        for t in selected()[part::2]:
+            init=p.load_state(prepared(t));features=init['features']
+            batches=[runtime.build_edit_batch(c.record(t))]+[runtime.build_edit_batch(replace(c.record(t),question=q)) for q in t['fit_questions']]
+            order=list(range(4));random.Random(t['seed']).shuffle(order)
+            old=c.read(SOURCE/'private/weights/CE192'/t['anonymous_edit']/'TRAINING.json')
+            assert old['binding']['fit_order']==order
+            for arm in ARMS:
+                directory=node(t,arm,192).parent;receipt=directory/'TRAINING.json';latest=directory/'latest.pt'
+                if receipt.exists():
+                    assert all(node(t,arm,n).exists() for n in NODES);continue
+                e=fixed_expert(init['expert'],t,runtime.device);opt=p.optimizer(e,runtime.model);history=sm.History()
+                hook=replay.MedTraceLayerHook(runtime.get_module(c.LAYER),e);hook.attach();seed_everything(t['seed'])
+                binding=dict(arm=arm,W0=init['state_hash'],scientific_lock=c.digest(c.read(RUN/'private/SCOPED_LOCK.json')),
+                    execution=c.read(RUN/'private/GPU_SOURCE_VERSION.json'),fit_order=order,loss='0.5native+0.5FIT',replay=False)
+                start=0;curve=[];fixed={k:v.detach().cpu().clone() for k,v in e.state_dict().items() if k!='G2'}
+                if latest.exists():
+                    saved=p.load_state(latest);assert saved['binding']==binding
+                    e.load_state_dict(saved['expert']);opt.load_state_dict(saved['optimizer']);history.restore(saved['history'])
+                    c.restore_rng(saved);start=saved['step'];curve=saved['curve']
+                try:
+                    for step in range(start+1,193):
+                        c.budget();item=update(runtime,hook,e,opt,batches,1+order[(step-1)%4],history,features,arm)
+                        if item['history_after']!=item['history_before'] or step in NODES:item['history_spectrum']=history.spectrum()
+                        item['step']=step;curve.append(item)
+                        if step in NODES:
+                            assert all(torch.equal(fixed[k],v.detach().cpu()) for k,v in e.state_dict().items() if k!='G2')
+                            c.save(node(t,arm,step),dict(expert=e.state_dict(),state_hash=c.state_hash(e),step=step,binding=binding))
+                        if step%32==0:
+                            c.save(latest,dict(expert=e.state_dict(),optimizer=opt.state_dict(),history=history.state(),step=step,curve=curve,binding=binding,**c.rng()))
+                            print('TRAIN',t['order'],arm,step,flush=True)
+                    c.write(receipt,dict(status='COMPLETE',binding=binding,updates=192,curve=curve,final_hash=c.state_hash(e),
+                        fixed_cores_unchanged=True,Base_gradient=False,unique_history_keys=len(history.keys),history_spectrum=history.spectrum(),
+                        gate_values=[x['gate']['gamma'] for x in features],key_norms=[float(x['key'].norm()) for x in features],
+                        training_parameters=2048,deployed_parameters=7168))
+                    latest.unlink()
+                finally:hook.detach()
+                del e,opt
+    p.done('TRAIN_'+str(part))
+
+
+def evaluate():
+    part=int(os.environ['PARTITION']);gpu=GPUS[part];jobs=c.read(RUN/'private/JOBS.json')
+    ts=p.tasks();byid={t['edit_id']:t for t in ts};chosen={t['edit_id'] for t in selected()}
+    states={};weights={};reference=c.read(RUN/'private/REFERENCE_WEIGHTS.json')
+    for job in jobs:
+        arm=job['arm']
+        if arm in weights:continue
+        weights[arm]=dict(reference)
+        if arm=='W0_NAT':continue
+        target_arm=ARMS[4] if job['variant'] else next(a for a in ARMS if arm.startswith(a+'_s'))
+        for t in selected():
+            saved=p.load_state(node(t,target_arm,job['node']));state=saved['expert']
+            if job['variant']:
+                initial=p.load_state(prepared(t))['expert'];state={k:v.clone() for k,v in state.items()}
+                sl=slice(2,4) if job['variant']=='local' else slice(0,2)
+                state['G2'][:,:,sl]=initial['G2'][:,:,sl]
+            states[arm,t['edit_id']]=state
+            weights[arm][t['edit_id']]=dict(hash=c.state_hash(p.expert(state,t['seed'])),path=str(node(t,target_arm,job['node'])),variant=job['variant'])
+    routes=c.read(RUN/'private/ROUTES.json');execution=c.read(RUN/'private/GPU_SOURCE_VERSION.json')
+    with p.lease(gpu):
+        runtime,bindings=c.load(gpu);loaded={}
+        # A fresh unchanged native output checks the negative-control reuse contract.
+        qid=[q for q in p.queries(146) if routes[q]['effective_expert'] not in chosen and routes[q]['effective_expert'] is not None][part]
+        old=c.read(historical('W0',qid))
+        owner=byid[old['effective_expert']];control_expert=p.expert(p.load_state(p.initial(owner))['expert'],owner['seed'],runtime.device)
+        hook=replay.MedTraceLayerHook(runtime.get_module(c.LAYER),control_expert);hook.attach()
+        try:
+            row=old['binding']['input'];raw=runtime.adapter.prepare_inputs(Path(c.local_path(row['image_path'])),row['question'],None)
+            with torch.inference_mode(),hook.generation_request():g=runtime.adapter.generate_prepared_with_result(raw,runtime.generation_config)
+            assert list(g.raw_token_ids)==old['R0']['raw_token_ids']
+        finally:hook.detach()
+        p.done('NEGATIVE_CONTROL_'+str(part),dict(original_output_equal=True,expert_unchanged=True))
+        for i,job in enumerate(jobs[part::2]):
+            c.budget();dest=Path(job['path']);row=job['row'];qid=row['query_id'];expert=job['expert']
+            phase=dict(arm=job['arm'],node=job['node'],prefix=146,slot=0,weights=weights[job['arm']],
+                execution=execution,scoped_lock=c.digest(c.read(RUN/'private/SCOPED_LOCK.json')),variant=job['variant'])
+            if dest.exists():assert c.read(dest)['binding']['phase']==phase;continue
+            old=c.read(historical('W0',qid))
+            bind=old['binding']['judge_input'];raw=runtime.adapter.prepare_inputs(Path(c.local_path(row['image_path'])),row['question'],None)
+            assert raw['image_sha256']==bind['image_sha256'] and raw['input_ids'][0].tolist()==bind['prompt_ids']
+            assert raw['attention_mask'][0].tolist()==bind['attention_mask'] and runtime.generation_config==bind['generation']
+            hook=None
+            if expert is not None:
+                key=job['arm'],expert
+                if key not in loaded:
+                    t=byid[expert];state=states.get(key)
+                    if state is None:
+                        assert job['arm']=='W0_NAT';state=p.load_state(p.initial(t))['expert']
+                    loaded[key]=p.expert(state,t['seed'],runtime.device).requires_grad_(False)
+                hook=replay.MedTraceLayerHook(runtime.get_module(c.LAYER),loaded[key]);hook.attach()
+            try:
+                with torch.inference_mode():
+                    if hook:
+                        with hook.generation_request():g=runtime.adapter.generate_prepared_with_result(raw,runtime.generation_config)
+                    else:g=runtime.adapter.generate_prepared_with_result(raw,runtime.generation_config)
+            finally:
+                if hook:hook.detach()
+            actual=dict(raw_answer=g.decoded_text,raw_token_ids=list(g.raw_token_ids))
+            base_path=historical_index().get('BASE',{}).get(qid)
+            base_tokens=c.read(base_path)['R0']['raw_token_ids'] if base_path else bindings[qid]['output']['raw_generated_token_ids']
+            c.write(dest,dict(binding=dict(input=row,judge_input=bind,phase=phase,arm=job['arm'],mode=job['mode']),
+                R0=actual,effective_expert=expert,route=routes[qid],active_target=old.get('active_target',False),U_KL=None,
+                Base_token_consistency=actual['raw_token_ids']==base_tokens))
+            if i%25==0:print('EVAL',part,i,len(jobs[part::2]),flush=True)
+    p.done('EVAL_'+str(part))
+
+
+def controller():
+    import pipeline
+    assert (RUN/'private/PLAN_COMPLETE.json').exists()
+    pipeline.wait([pipeline.launch('scoped.py','scoped_train',g,i) for i,g in enumerate(GPUS)])
+    pipeline.wait([pipeline.launch('scoped.py','scoped_eval',g,i) for i,g in enumerate(GPUS)])
+    consumers=c.read(RUN/'private/CONSUMERS.json');assert all(Path(x['path']).exists() for x in consumers)
+    removed=[]
+    for t in selected():
+        for arm in ARMS:
+            for step in (32,96):
+                path=node(t,arm,step);assert path.is_file() and not path.is_symlink()
+                removed.append(dict(path=str(path),bytes=path.stat().st_size));path.unlink()
+    # Route features are no longer consumers of training or scoring; final TT states stay retained.
+    for path in (RUN/'private/route_features').glob('*.pt'):
+        assert not path.is_symlink();removed.append(dict(path=str(path),bytes=path.stat().st_size));path.unlink()
+    c.write(RUN/'private/DELETION.json',dict(files=removed,final_TT_retained=40,historical_assets_untouched=True))
+    p.done('GENERATION_COMPLETE')
+    pipeline.wait([pipeline.launch('scoped_queue.py','scoped_ingest')])
+    root=RUN/'private/judge_scoped_astra_medium'
+    while not (root/'ALL_WORKERS_COMPLETE.json').exists():
+        c.budget();assert not list((root/'workers').glob('*/SCORER_FAILURE.json'));time.sleep(30)
+    pipeline.wait([pipeline.launch('scoped_report.py','scoped_report')])
+
+
 if __name__=='__main__':
     try:
-        {'prepare':prepare,'scoped_mechanical':mechanical}[os.environ['ACTION']]()
+        {'prepare':prepare,'scoped_mechanical':mechanical,'scoped_train':train,'scoped_eval':evaluate,'scoped_controller':controller}[os.environ['ACTION']]()
     except BaseException as error:
         c.write(RUN/'private'/('FAILURE_'+os.environ.get('ACTION','unknown')+'_'+os.environ.get('PARTITION','all')+'.json'),
             dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time()))
