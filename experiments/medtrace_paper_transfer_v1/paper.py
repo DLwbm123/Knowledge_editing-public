@@ -16,7 +16,7 @@ PARENT=Path(os.environ['PAPER_PARENT'])
 import torch
 from methods.medtrace.core import MedTraceLayerHook
 A_ROUTES=('R0','NORM_MEAN','MODAL','INTRINSIC_ALL','INTRINSIC_MODAL')
-ARMS=('TT_CE','TT_ALIGN','TT_FIXED_A','CP4_CE','CP4_ALIGN','CP19_CE','CP19_ALIGN')
+ARMS=('TT_CE','TT_ALIGN','TT_FIXED_A')
 ROUTES=('R0','MODAL','INTRINSIC_MODAL')
 
 def tasks(n=146):
@@ -27,14 +27,16 @@ def initial(t):
     return Path(q['reused'].get(t['edit_id'],str(PARENT/'private/edits'/t['anonymous_edit']/'warmup/W0.pt')))
 
 def point(t,arm):
+    assert arm in ('W0',)+ARMS, 'Only TT is authorized'
     if arm=='W0':return initial(t)
     if arm=='TT_CE':return BASE/'private/edits'/t['anonymous_edit']/'s0/CE_ONLY/step160.pt'
-    return RUN/'private/weights'/arm/t['anonymous_edit']/('W0.pt' if arm.endswith('_W0') else 'step160.pt')
+    return RUN/'private/weights'/arm/t['anonymous_edit']/'step160.pt'
 
 def load_state(p):return torch.load(p,map_location='cpu',weights_only=True)
 
 def expert(state,seed,device='cpu'):
-    e=s.CP(seed,len(state['ui'])) if 'ui' in state else tr.clone(state,seed,'cpu')
+    assert set(state)=={'G1','G2','G3','G4'}, 'Only TT cores are authorized'
+    e=tr.clone(state,seed,'cpu')
     e.load_state_dict(state);return e.to(device)
 
 def optimizer(e,base):
@@ -64,6 +66,8 @@ def features(row,route=False):return load_state(feature_path(row))['route_vector
 def train_rows(t):return [dict(t['native'],question=q) for q in [t['native']['question']]+t['fit_questions']]
 def queries(n):return c.read(RUN/'private/PAPER_QUERIES.json')[str(n)]
 def lock():return c.digest(c.read(RUN/'private/PAPER_LOCK.json'))
+def amendment():return c.digest(c.read(RUN/'private/TT_ONLY_AMENDMENT.json'))
+def execution(stage):return c.read(RUN/'private'/('GPU_SOURCE_VERSION.json' if stage=='A' else 'PAPER_TT_SOURCE_VERSION.json'))
 
 def cpucheck():
     result=s.selfcheck()
@@ -75,12 +79,15 @@ def cpucheck():
     opt=optimizer(e,base);e.residual(torch.randn(2,14336)).square().mean().backward();opt.step()
     assert all(torch.equal(a,b) and b.grad is None for a,b in zip(saved,e.parameter_groups()[0]))
     assert all(p.grad is not None for p in e.parameter_groups()[1])
-    other=s.CP(4,4)
-    with torch.no_grad():other.uo.normal_(0,.01)
+    other=tr.TT4(4,8,8)
+    with torch.no_grad():other.G1.normal_(0,.01)
     mixture=Mixture([e,other]);mixture.ids=[0,1];mixture.weights=[.3,.7]
     x=torch.randn(2,14336)
     assert torch.equal(mixture.residual(x),.3*e.residual(x)+.7*other.residual(x))
-    result['checks']+=['TT input factors unchanged after optimizer update','mixture exact weighted residual']
+    other.zero_grad(set_to_none=True)
+    (-s.input_score(other.factors()[1],torch.randn(3,14336))).backward()
+    assert other.G3.grad.norm()>0 and other.G4.grad.norm()>0 and other.G1.grad is None and other.G2.grad is None
+    result['checks']+=['TT intrinsic routing gradient reaches only input cores','TT input factors unchanged after optimizer update','mixture exact weighted residual']
     return result
 
 def prepare():
@@ -120,15 +127,15 @@ def prepare():
     c.write(RUN/'private/FEATURE_ROWS.json',list(rows.values()))
     assert len(old)==1792
     c.write(RUN/'private/REUSE_OUTPUTS.json',old)
-    result=cpucheck();result.update(feature_inputs=len(rows),consumers=14074,GPUs=[5,6,7])
+    result=cpucheck();result.update(feature_inputs=len(rows),consumers=10395,GPUs=[5,6,7])
     c.write(RUN/'public/ADMISSION.json',result)
 
 def mechanical(runtime):
     task=tasks(24)[0];record=c.record(task)
     batch=runtime.build_edit_batch(record)
     rows=[]
-    for kind in ('CP4','CP19','TT_FIXED_A'):
-        e=s.CP(task['seed'],int(kind[2:])).to(runtime.device) if kind.startswith('CP') else expert(load_state(initial(task))['expert'],task['seed'],runtime.device)
+    for kind in ('TT_FIXED_A',):
+        e=expert(load_state(initial(task))['expert'],task['seed'],runtime.device)
         if kind=='TT_FIXED_A':
             for parameter in e.parameter_groups()[0]:parameter.requires_grad_(False)
         fixed=[p.detach().clone() for p in e.parameter_groups()[0]]
@@ -190,60 +197,51 @@ def alignment(e,t,ts,negatives,x):
 def fit():
     gpu,part=int(os.environ['GPU']),int(os.environ['PARTITION']);stage=os.environ['FIT_STAGE'];ts=tasks(24)
     from m3bench_repro.editors.llava_runtime import seed_everything
+    assert stage=='fit', 'CP warmup is canceled'
     with lease(gpu):
         runtime,_=c.load(gpu)
-        if stage=='warm':
-            jobs=[(t,rank) for rank in (4,19) for t in ts][part::6]
-            for t,rank in jobs:
-                # Reuse the original exact warmup loop, changing only structure and optimizer.
-                w.TT4=lambda seed,*_,rank=rank:s.CP(seed,rank)
-                w.optimizer_for=optimizer
-                w.w0_path=lambda task,slot,rank=rank:point(task,'CP'+str(rank)+'_W0')
-                w.warmup(runtime,t)
-                print('CP_WARM_COMPLETE',rank,t['order'],flush=True)
-        else:
-            neg={}
-            jobs=[(t,arm) for arm in ARMS if arm!='TT_CE' for t in ts][part::6]
-            for t,arm in jobs:
-                dest=point(t,arm);receipt=dest.parent/'TRAINING.json'
-                if receipt.exists():assert dest.exists();continue
-                warm=initial(t) if arm.startswith('TT') else point(t,arm.split('_')[0]+'_W0')
-                state=load_state(warm);e=expert(state['expert'],t['seed'],runtime.device)
-                if arm=='TT_FIXED_A':
-                    for p in e.parameter_groups()[0]:p.requires_grad_(False)
-                opt=optimizer(e,runtime.model);rec=c.record(t)
-                batches=[runtime.build_edit_batch(rec)]+[runtime.build_edit_batch(replace(rec,question=q)) for q in t['fit_questions']]
-                assert all(b.target_token_ids[-1]==runtime.adapter.tokenizer.eos_token_id for b in batches)
-                order=list(range(1,5));random.Random(t['seed']).shuffle(order);seed_everything(t['seed'])
-                hook=MedTraceLayerHook(runtime.get_module(c.LAYER),e);hook.attach()
-                binding=dict(task=w.train_task(t,0,[]),arm=arm,W0=str(warm),W0_state=state['state_hash'],steps=160,fit_order=order,lock=lock(),alignment_weight=.5 if arm.endswith('ALIGN') else 0.)
-                latest=dest.parent/'latest.pt';curve=[];start=0;began=time.time()
-                try:
-                    if latest.exists():
-                        saved=load_state(latest);assert saved['binding']==binding;e.load_state_dict(saved['expert']);opt.load_state_dict(saved['optimizer']);c.restore_rng(saved);curve=saved['curve'];start=saved['step']
+        neg={}
+        jobs=[(t,arm) for arm in ARMS if arm!='TT_CE' for t in ts][part::6]
+        for t,arm in jobs:
+            dest=point(t,arm);receipt=dest.parent/'TRAINING.json'
+            if receipt.exists():assert dest.exists();continue
+            warm=initial(t)
+            state=load_state(warm);e=expert(state['expert'],t['seed'],runtime.device)
+            if arm=='TT_FIXED_A':
+                for p in e.parameter_groups()[0]:p.requires_grad_(False)
+            opt=optimizer(e,runtime.model);rec=c.record(t)
+            batches=[runtime.build_edit_batch(rec)]+[runtime.build_edit_batch(replace(rec,question=q)) for q in t['fit_questions']]
+            assert all(b.target_token_ids[-1]==runtime.adapter.tokenizer.eos_token_id for b in batches)
+            order=list(range(1,5));random.Random(t['seed']).shuffle(order);seed_everything(t['seed'])
+            hook=MedTraceLayerHook(runtime.get_module(c.LAYER),e);hook.attach()
+            binding=dict(task=w.train_task(t,0,[]),arm=arm,W0=str(warm),W0_state=state['state_hash'],steps=160,fit_order=order,lock=lock(),tt_only_amendment=amendment(),execution=execution('B'),alignment_weight=.5 if arm.endswith('ALIGN') else 0.)
+            latest=dest.parent/'latest.pt';curve=[];start=0;began=time.time()
+            try:
+                if latest.exists():
+                    saved=load_state(latest);assert saved['binding']==binding;e.load_state_dict(saved['expert']);opt.load_state_dict(saved['optimizer']);c.restore_rng(saved);curve=saved['curve'];start=saved['step']
+                if arm.endswith('ALIGN'):
+                    kind=arm.split('_')[0]
+                    if kind not in neg:
+                        neg[kind]=[expert(load_state(initial(o))['expert'],o['seed'],runtime.device).factors()[1].detach() for o in ts]
+                align_x=torch.stack([features(row) for row in train_rows(t)]).to(runtime.device) if arm.endswith('ALIGN') else None
+                frozen=[p.detach().clone() for p in e.parameter_groups()[0]] if arm=='TT_FIXED_A' else []
+                for step in range(start+1,161):
+                    c.budget();opt.zero_grad(set_to_none=True);values=[]
+                    for b in (batches[0],batches[order[(step-1)%4]]):
+                        hook.set_teacher_routing(b.labels);loss=runtime.compute_loss(b);assert torch.isfinite(loss);(.5*loss).backward();values.append(float(loss.detach()))
+                    al=None
                     if arm.endswith('ALIGN'):
-                        kind=arm.split('_')[0]
-                        if kind not in neg:
-                            neg[kind]=[expert(load_state(initial(o) if kind=='TT' else point(o,kind+'_W0'))['expert'],o['seed'],runtime.device).factors()[1].detach() for o in ts]
-                    align_x=torch.stack([features(row) for row in train_rows(t)]).to(runtime.device) if arm.endswith('ALIGN') else None
-                    frozen=[p.detach().clone() for p in e.parameter_groups()[0]] if arm=='TT_FIXED_A' else []
-                    for step in range(start+1,161):
-                        c.budget();opt.zero_grad(set_to_none=True);values=[]
-                        for b in (batches[0],batches[order[(step-1)%4]]):
-                            hook.set_teacher_routing(b.labels);loss=runtime.compute_loss(b);assert torch.isfinite(loss);(.5*loss).backward();values.append(float(loss.detach()))
-                        al=None
-                        if arm.endswith('ALIGN'):
-                            loss=alignment(e,t,ts,neg[arm.split('_')[0]],align_x);assert torch.isfinite(loss);(.5*loss).backward();al=float(loss.detach())
-                        params=[p for p in e.parameters() if p.requires_grad]
-                        norm=torch.nn.utils.clip_grad_norm_(params,1.);assert torch.isfinite(norm) and all(p.grad is not None and torch.isfinite(p.grad).all() for p in params)
-                        assert not any(p.grad is not None for p in runtime.model.parameters());opt.step();assert all(torch.isfinite(p).all() for p in e.parameters())
-                        curve.append(dict(step=step,CE=values,alignment=al,preclip_norm=float(norm)))
-                        if step%20==0:
-                            c.save(latest,dict(binding=binding,expert=e.state_dict(),optimizer=opt.state_dict(),curve=curve,step=step,**c.rng()));print('TRAIN',arm,t['order'],step,flush=True)
-                    assert all(torch.equal(a,b) for a,b in zip(frozen,e.parameter_groups()[0]))
-                    c.save(dest,dict(binding=binding,expert=e.state_dict(),step=160,state_hash=c.state_hash(e)))
-                    c.write(receipt,dict(status='COMPLETE',binding=binding,curve=curve,updates=160,seconds=time.time()-began,parameter_count=sum(p.numel() for p in e.parameters()),trainable=sum(p.numel() for p in e.parameters() if p.requires_grad),Base_gradient=False));latest.unlink()
-                finally:hook.detach()
+                        loss=alignment(e,t,ts,neg[arm.split('_')[0]],align_x);assert torch.isfinite(loss);(.5*loss).backward();al=float(loss.detach())
+                    params=[p for p in e.parameters() if p.requires_grad]
+                    norm=torch.nn.utils.clip_grad_norm_(params,1.);assert torch.isfinite(norm) and all(p.grad is not None and torch.isfinite(p.grad).all() for p in params)
+                    assert not any(p.grad is not None for p in runtime.model.parameters());opt.step();assert all(torch.isfinite(p).all() for p in e.parameters())
+                    curve.append(dict(step=step,CE=values,alignment=al,preclip_norm=float(norm)))
+                    if step%20==0:
+                        c.save(latest,dict(binding=binding,expert=e.state_dict(),optimizer=opt.state_dict(),curve=curve,step=step,**c.rng()));print('TRAIN',arm,t['order'],step,flush=True)
+                assert all(torch.equal(a,b) for a,b in zip(frozen,e.parameter_groups()[0]))
+                c.save(dest,dict(binding=binding,expert=e.state_dict(),step=160,state_hash=c.state_hash(e)))
+                c.write(receipt,dict(status='COMPLETE',binding=binding,curve=curve,updates=160,seconds=time.time()-began,parameter_count=sum(p.numel() for p in e.parameters()),trainable=sum(p.numel() for p in e.parameters() if p.requires_grad),Base_gradient=False));latest.unlink()
+            finally:hook.detach()
     done(stage.upper()+'_'+str(part))
 
 class Mixture(torch.nn.Module):
@@ -280,7 +278,7 @@ def routing(row,route,setup,threshold,ts,device,mix):
 
 def evaluate():
     gpu,part=int(os.environ['GPU']),int(os.environ['PARTITION']);stage=os.environ['EVAL_STAGE'];n=146 if stage=='A' else 24;ts=tasks(n)
-    jobs=[('W0',r,False) for r in A_ROUTES] if stage=='A' else [(a,r,False) for a in ARMS for r in ROUTES] if stage=='B' else [(a,'INTRINSIC_MODAL',True) for a in ('TT_ALIGN','CP19_ALIGN')]
+    jobs=[('W0',r,False) for r in A_ROUTES] if stage=='A' else [(a,r,False) for a in ARMS for r in ROUTES] if stage=='B' else [(a,'INTRINSIC_MODAL',True) for a in ('TT_ALIGN',)]
     shard_count=3 if stage=='A' else 6
     reuse=c.read(RUN/'private/REUSE_OUTPUTS.json')
     rows=queries(n);active={(t['native']['image_sha256'],t['native']['question']) for t in ts}
@@ -292,7 +290,7 @@ def evaluate():
             mixture=Mixture(es);hook=MedTraceLayerHook(runtime.get_module(c.LAYER),mixture);hook.attach()
             setup,threshold=route_setup(ts,es,route,runtime.device)
             weights={t['edit_id']:dict(path=str(point(t,arm)),hash=load_state(point(t,arm))['state_hash']) for t in ts}
-            phase=dict(mode='bank',prefix=n,arm=label,node=0 if n==146 else 160,slot=0,weights=weights,execution=c.read(RUN/'private/GPU_SOURCE_VERSION.json'),paper_lock=lock(),route=route,mix=mix,thresholds=threshold.tolist() if threshold is not None else None,calibration='five training inputs only; fixed pseudoinverse rtol1e-6; nonnegative adjusted score tolerance1e-6')
+            phase=dict(mode='bank',prefix=n,arm=label,node=0 if n==146 else 160,slot=0,weights=weights,execution=execution(stage),paper_lock=lock(),tt_only_amendment=amendment() if stage!='A' else None,route=route,mix=mix,thresholds=threshold.tolist() if threshold is not None else None,calibration='five training inputs only; fixed pseudoinverse rtol1e-6; nonnegative adjusted score tolerance1e-6')
             c.write(RUN/'private/bank_bindings'/(c.digest(phase)+'.json'),phase)
             try:
                 for qid,row in list(rows.items())[part::shard_count]:
@@ -331,16 +329,24 @@ def evaluate():
 
 def controller():
     import pipeline as p
-    progress('EXTRACTING_FROZEN_BASE_FEATURES')
-    p.wait([p.launch('paper.py','paper_cache',5+i,i) for i in range(3)])
-    progress('A_FROZEN146_ROUTING')
-    os.environ['EVAL_STAGE']='A';p.wait([p.launch('paper.py','paper_eval',5+i,i) for i in range(3)])
+    assert c.read(RUN/'private/TT_ONLY_AMENDMENT.json')['CP_enabled'] is False
+    assert all((RUN/'private'/('FEATURE_'+str(i)+'.json')).exists() for i in range(3))
+    progress('A_FROZEN146_ROUTING_TT_ONLY_TAIL')
+    # Adopt the recorded, already-running TT workers without regenerating A.
+    while True:
+        pending=[i for i in range(3) if not (RUN/'private'/('EVAL_A_'+str(i)+'.json')).exists()]
+        if not pending:break
+        c.budget()
+        for i in pending:
+            st=c.read(RUN/'private'/('START_CHAIN_paper_eval_'+str(i)+'.json'))
+            proc=Path('/proc/'+str(st['pid'])+'/stat')
+            alive=proc.exists() and proc.read_text().split()[21]==st['start_ticks'] and proc.read_text().split()[2]!='Z'
+            assert alive or (RUN/'private'/('EVAL_A_'+str(i)+'.json')).exists(), 'Recorded A worker failed; inspect before recovery'
+        time.sleep(5)
     p.wait([p.launch('paper_queue.py','paper_ingest')])
-    progress('C_CP_WARMUP')
-    os.environ['FIT_STAGE']='warm';p.wait([p.launch('paper.py','paper_fit',5+i%3,i) for i in range(6)])
-    progress('B_C_FIXED_TRAINING_COMPARISONS')
+    progress('B_TT_FIXED_TRAINING_COMPARISONS')
     os.environ['FIT_STAGE']='fit';p.wait([p.launch('paper.py','paper_fit',5+i%3,i) for i in range(6)])
-    progress('B_C_FINAL24_BANKS')
+    progress('B_TT_FINAL24_BANKS')
     os.environ['EVAL_STAGE']='B';p.wait([p.launch('paper.py','paper_eval',5+i%3,i) for i in range(6)])
     p.wait([p.launch('paper_queue.py','paper_ingest')])
     progress('D_SPARSE_MIXTURE')

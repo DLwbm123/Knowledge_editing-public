@@ -1,29 +1,5 @@
-"""Paper-inspired linear CP control and TT input-subspace routing primitives."""
+"""TT input-subspace routing primitives; the CP branch was canceled by the user."""
 import torch
-from torch import nn
-
-
-class CP(nn.Module):
-    def __init__(self, seed, rank):
-        super().__init__()
-        assert rank in (4,19)
-        self.rank,self.epsilon=rank,1e-6
-        rng=torch.Generator().manual_seed(seed)
-        for name,width in [('ui',112),('vi',128),('uo',64),('vo',64)]:
-            value=torch.randn(rank,width,generator=rng)
-            value=value/value.norm(dim=1,keepdim=True)
-            if name=='uo':value.zero_()
-            setattr(self,name,nn.Parameter(value))
-    def factors(self):
-        a=torch.einsum('ri,rj->rij',self.ui,self.vi).reshape(self.rank,14336)
-        b=torch.einsum('ri,rj->rij',self.uo,self.vo).reshape(self.rank,4096).T
-        return b,a
-    def residual(self,x):
-        b,a=self.factors();x=x.float();x=x/(x.square().mean(-1,keepdim=True).sqrt()+self.epsilon)
-        return (x@a.T)@b.T
-    def parameter_groups(self):return [self.ui,self.vi],[self.uo,self.vo]
-
-
 def normalized(x):return torch.nn.functional.normalize(x.float(),dim=-1,eps=1e-12)
 
 
@@ -94,25 +70,9 @@ def selfcheck():
     ids,weights,_=select(torch.tensor([.8,.7,.2]),torch.tensor([.5,.5,.5]),True)
     assert ids==[0,1] and abs(sum(weights)-1)<1e-6
     assert select(torch.tensor([.2]),torch.tensor([.5]))[0]==[]
-    for rank,count in [(4,1472),(19,6992)]:
-        e=CP(11,rank);assert sum(p.numel() for p in e.parameters())==count
-        y=e.residual(torch.randn(2,14336));assert y.shape==(2,4096) and y.count_nonzero()==0
-    # Once the zero output factor moves, all four CP factors receive CE gradients.
-    import io
-    for rank in (4,19):
-        e=CP(8,rank)
-        with torch.no_grad():e.uo.normal_(0,.01)
-        x=torch.randn(2,14336,generator=rng);y=e.residual(x)
-        y.square().mean().backward()
-        assert all(p.grad is not None and torch.isfinite(p.grad).all() and p.grad.norm()>0 for p in e.parameters())
-        buf=io.BytesIO();torch.save(e.state_dict(),buf);buf.seek(0)
-        loaded=CP(1,rank);loaded.load_state_dict(torch.load(buf,weights_only=True))
-        assert torch.equal(y,loaded.residual(x))
-        e.zero_grad();loss=-input_score(e.factors()[1],torch.randn(3,14336,generator=rng));loss.backward()
-        assert e.ui.grad.norm()>0 and e.vi.grad.norm()>0 and e.uo.grad is None
     # Different token counts change ALL but not an equal-modality summary.
     assert torch.allclose((features[1]+features[2])*.5,features[1:].mean(0))
-    return dict(status='PASS',checks=['CP sizes and zero initial output','row-space basis invariance','explicit orthogonal projection parity','image-token expansion masks','mean reconstruction','top2 convex weights','off fallback','CP forward/backward','CP exact save-load','input-only alignment gradient'])
+    return dict(status='PASS',checks=['row-space basis invariance','explicit orthogonal projection parity','image-token expansion masks','mean reconstruction','top2 convex weights','off fallback'])
 
 
 if __name__=='__main__':

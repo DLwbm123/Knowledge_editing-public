@@ -31,18 +31,26 @@ def initialize(db):
     path=q.ROOT/'EPOCH_MANIFEST.json'
     if path.exists():assert q.read(path)==lock
     else:q.write(path,lock)
+    scope=q.read(RUN/'private/TT_ONLY_AMENDMENT.json');assert scope['CP_enabled'] is False and scope['consumers']['total']==10395
+    scope_path=q.ROOT/'TT_ONLY_AMENDMENT.json'
+    if scope_path.exists():assert q.read(scope_path)==scope
+    else:q.write(scope_path,scope)
     db.execute('CREATE TABLE IF NOT EXISTS inherited (key TEXT PRIMARY KEY,parent_folder TEXT,parent_batch TEXT)')
 
 def ingest(db):
     parent=parents();evidence={}
     ledger=q.read(RUN/'private/EVAL_LEDGER.json');bindings=q.read(RUN/'private/EVAL_BINDINGS.json');source=q.read(RUN/'private/GPU_SOURCE_VERSION.json');scientific_lock=q.digest(q.read(RUN/'private/PAPER_LOCK.json'))
-    for stage,count,workers in [('A',7565,3),('B',5943,6),('D',566,6)]:
+    for stage,count,workers in [('A',7565,3),('B',2547,6),('D',283,6)]:
         if db.execute('SELECT 1 FROM done WHERE name=?',(stage,)).fetchone():continue
         if not all((RUN/'private'/('EVAL_'+stage+'_'+str(i)+'.json')).exists() for i in range(workers)):continue
         paths=sorted((RUN/'private/outputs').glob(stage+'_*/*.json'));assert len(paths)==count
         for index,path in enumerate(paths):
             d=q.read(path);b=d['binding'];row=b['input'];phase=b['phase']
-            assert d['research_lock']==scientific_lock and phase['execution']==source
+            expected_source=source if stage=='A' else q.read(RUN/'private/PAPER_TT_SOURCE_VERSION.json')
+            assert d['research_lock']==scientific_lock and phase['execution']==expected_source
+            if stage!='A':
+                assert phase['tt_only_amendment']==q.digest(q.read(RUN/'private/TT_ONLY_AMENDMENT.json'))
+                assert b['arm'] in (['B_'+arm+'_'+route for arm in ('TT_CE','TT_ALIGN','TT_FIXED_A') for route in ('R0','MODAL','INTRINSIC_MODAL')] if stage=='B' else ['D_TT_ALIGN_INTRINSIC_MODAL_MIX'])
             assert phase['slot']==0 and phase['prefix']==(146 if stage=='A' else 24)
             if not row.get('role'):
                 assert row==ledger['queries'][row['query_id']]
@@ -69,7 +77,7 @@ def ingest(db):
             if index%100==0:db.commit();print('INGEST',stage,index,flush=True)
         db.execute('INSERT INTO done VALUES (?)',(stage,));db.commit()
     if (RUN/'private/GENERATION_COMPLETE.json').exists():
-        assert db.execute('SELECT count(*) FROM consumer').fetchone()[0]==14074
+        assert db.execute('SELECT count(*) FROM consumer').fetchone()[0]==10395
         db.execute("INSERT OR IGNORE INTO done VALUES ('generation')");db.commit()
     q.write(q.ROOT/'READY.json',dict(consumers=db.execute('SELECT count(*) FROM consumer').fetchone()[0],payloads=db.execute('SELECT count(*) FROM payload').fetchone()[0],inherited=db.execute('SELECT count(*) FROM inherited').fetchone()[0],generation_complete=bool(db.execute("SELECT 1 FROM done WHERE name='generation'").fetchone())))
 
