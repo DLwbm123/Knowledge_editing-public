@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "arms": [
+    "RAW_DIR_540"
+  ],
+  "primary": "RAW_DIR_540",
+  "experts": 8,
+  "phases": [
+    [
+      "original_tail",
+      320
+    ]
+  ],
+  "optimizer_steps": 2880,
+  "training_forwards": 5760,
+  "training_backwards": 5760,
+  "endpoint_rebuild_extra_steps": 320,
+  "initial_state": "original_STAGED_220",
+  "new_generations": 110,
+  "Judge_upper_bound": 110,
+  "consumers": 7012,
+  "training_roles": [
+    "native",
+    "FIT"
+  ],
+  "replay": false,
+  "training_GPUs": [
+    4,
+    5
+  ],
+  "inference_GPUs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "parameters": 7168,
+  "final_TT": 8,
+  "selfcheck": {
+    "status": "PASS",
+    "group_step_norms_match_with_roundoff": true,
+    "raw_gradient_direction": true,
+    "zero_gradient_fallback_preserves_Adam": true
+  },
+  "Base_lookup_unique_inputs": 110
+}
