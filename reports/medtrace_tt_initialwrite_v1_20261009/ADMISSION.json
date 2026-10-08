@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "arms": [
+    "STAGED_220",
+    "JOINT_220"
+  ],
+  "primary": "JOINT_220",
+  "experts": 8,
+  "phases": [
+    [
+      "native",
+      140
+    ],
+    [
+      "A2",
+      80
+    ]
+  ],
+  "optimizer_steps": 3840,
+  "training_forwards": 6560,
+  "training_backwards": 6560,
+  "endpoint_rebuild_extra_steps": 320,
+  "initial_state": "seeded_zero_TT88",
+  "new_generations": 220,
+  "Judge_upper_bound": 220,
+  "consumers": 8621,
+  "training_roles": [
+    "native",
+    "FIT"
+  ],
+  "replay": false,
+  "training_GPUs": [
+    4,
+    5
+  ],
+  "inference_GPUs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "parameters": 7168,
+  "final_TT": 16,
+  "selfcheck": {
+    "status": "PASS",
+    "identical_phase_lengths_and_resets": true,
+    "paired_fit_schedule": true,
+    "original_STAGED_indices": true
+  },
+  "Base_lookup_unique_inputs": 110
+}
