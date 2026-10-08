@@ -8,6 +8,8 @@ import sqlite3
 import time
 
 RUN = Path(os.environ['RUN_ROOT'])
+import sys
+sys.path.insert(0, str(RUN/'private/tools'))
 import replay_queue as original
 q, a = original.q, original.a
 q.ROOT = RUN/'private/judge_replay_astra_medium_recovery1'

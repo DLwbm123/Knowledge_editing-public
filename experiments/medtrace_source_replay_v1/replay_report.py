@@ -32,10 +32,13 @@ def summary(rows):
         source_ci=[sorted(x[0] for x in samples)[49],sorted(x[1] for x in samples)[1949]])
 
 
-def main():
+def main(recovered_scores=None, recovery=None):
     root=queue.q.ROOT;assert (root/'ALL_WORKERS_COMPLETE.json').exists()
     db=sqlite3.connect('file:'+str(root/'queue.sqlite')+'?mode=ro',uri=True);db.row_factory=sqlite3.Row
-    scores={x['key']:x['correct'] for x in db.execute('SELECT * FROM payload')}
+    original_scores={x['key']:x['correct'] for x in db.execute('SELECT * FROM payload')}
+    scores=original_scores if recovered_scores is None else recovered_scores
+    assert set(scores)==set(original_scores)
+    assert all(scores[k]==v for k,v in original_scores.items() if v is not None)
     records=[];mapping={}
     for row in db.execute('SELECT * FROM consumer'):
         d=c.read(row['path']);assert c.digest(d)==row['output_binding']
@@ -52,7 +55,8 @@ def main():
     prior=c.read(exp.PARENT/'public/RESULTS.json')
     for panel in panels[:5]:
         old=next(x for x in prior['panels'] if x['arm']=='MARGIN_002' and x['task']==panel['task'])
-        for key in ('macro_bounds','observations','missing','edit_units','known_correct'):assert panel[key]==old[key]
+        check=panel if recovered_scores is None else r.panel(records,original_scores,'RETRO146','W0',0,'bank_R0',panel['task'],tasks,146)[0]
+        for key in ('macro_bounds','observations','missing','edit_units','known_correct'):assert check[key]==old[key]
     contrasts=[]
     for a,b in [(exp.ARMS[1],'W0'),(exp.ARMS[1],exp.ARMS[0])]:
         for task in ('T0','T1G','T2G','T1L','T2L'):
@@ -93,7 +97,14 @@ def main():
         deletion=c.read(RUN/'private/DELETION.json')['all_consumers_complete'],
         independent_confirmation=False,medical_scope_qualification=False,
         interpretation='Source-annotated development experiment; new source CHECK forces one of first32 experts, not natural bank routing. No automatic promotion.')
-    c.write(RUN/'public/RESULTS.json',result);exp.p.done('REPORT_COMPLETE');exp.p.progress('RESULTS_COMPLETE_REVIEW_PUBLICATION_PENDING')
+    if recovery is not None:
+        result['recovery']=recovery
+        result['scoring']['merged_valid']=sum(v is not None for v in scores.values())
+        result['scoring']['merged_missing']=sum(v is None for v in scores.values())
+    name='RESULTS' if recovery is None else 'RECOVERED_RESULTS'
+    c.write(RUN/'public'/(name+'.json'),result)
+    exp.p.done('REPORT_COMPLETE' if recovery is None else 'RECOVERED_REPORT_COMPLETE')
+    exp.p.progress('RESULTS_COMPLETE_REVIEW_PUBLICATION_PENDING')
 
 
 if __name__=='__main__':
