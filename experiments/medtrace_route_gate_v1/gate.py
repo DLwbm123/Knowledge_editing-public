@@ -153,7 +153,8 @@ def evaluate():
                         assert bool(ids)==on
                     selected=router.logical_ids[ids[0]] if ids else None
                     mixture.ids=ids;mixture.weights=[1.] if ids else [];hook.clear_request_routing()
-                    reused=available.get(selected);seconds=0.;kl=same=None
+                    reused=old if label in ('G_R0','G_OLD_MODAL') else available.get(selected)
+                    seconds=0.;kl=same=None
                     b=original['binding']['judge_input']
                     if reused:
                         assert reused['binding']['judge_input']==b
