@@ -32,6 +32,25 @@ def historical_index():return c.read(RUN/'private/HISTORICAL_OUTPUTS.json')
 def historical(arm,qid):return Path(historical_index()[arm][qid])
 
 
+def base_tokens(row,bindings):
+    qid=row['query_id'];expected=c.read(historical('W0',qid))['binding']['judge_input']
+    path=historical_index()['BASE'].get(qid)
+    if path:
+        saved=c.read(path);binding=saved['binding']['judge_input'];tokens=saved['R0']['raw_token_ids']
+    elif row.get('opaque_Base_id') in bindings:
+        binding=bindings[row['opaque_Base_id']];tokens=binding['output']['raw_generated_token_ids']
+    else:
+        assert qid.startswith('U_'),'No frozen Base output for query'
+        saved=p.load_state(p.PARENT/'private/teacher'/(qid[2:]+'.pt'));b=saved['binding']
+        assert c.digest(b['row'])==qid[2:] and b['teacher']=='FROZEN_BASE_ALL_EDITING_OFF'
+        binding=dict(question=b['row']['question'],image_sha256=b['input']['image'],
+            prompt_ids=b['input']['prompt_tokens'],generation=b['generation'])
+        tokens=saved['tokens']
+    assert all(binding[k]==expected[k] for k in ('question','image_sha256','prompt_ids','generation'))
+    assert isinstance(tokens,list) and tokens
+    return tokens
+
+
 def prepare():
     result=sm.selfcheck(p.tr.TT4)
     audits=[]
@@ -214,6 +233,8 @@ def train():
 
 def evaluate():
     part=int(os.environ['PARTITION']);gpu=GPUS[part];jobs=c.read(RUN/'private/JOBS.json')
+    bindings=c.read(RUN/'private/EVAL_BINDINGS.json')
+    base={row['query_id']:base_tokens(row,bindings) for row in {j['row']['query_id']:j['row'] for j in jobs}.values()}
     ts=p.tasks();byid={t['edit_id']:t for t in ts};chosen={t['edit_id'] for t in selected()}
     states={};weights={};reference=c.read(RUN/'private/REFERENCE_WEIGHTS.json')
     for job in jobs:
@@ -247,7 +268,8 @@ def evaluate():
         for i,job in enumerate(jobs[part::2]):
             c.budget();dest=Path(job['path']);row=job['row'];qid=row['query_id'];expert=job['expert']
             phase=dict(arm=job['arm'],node=job['node'],prefix=146,slot=0,weights=weights[job['arm']],
-                execution=execution,scoped_lock=c.digest(c.read(RUN/'private/SCOPED_LOCK.json')),variant=job['variant'])
+                execution=execution,evaluation_repair=c.read(RUN/'private/EVAL_REPAIR_SOURCE.json'),
+                scoped_lock=c.digest(c.read(RUN/'private/SCOPED_LOCK.json')),variant=job['variant'])
             if dest.exists():assert c.read(dest)['binding']['phase']==phase;continue
             old=c.read(historical('W0',qid))
             bind=old['binding']['judge_input'];raw=runtime.adapter.prepare_inputs(Path(c.local_path(row['image_path'])),row['question'],None)
@@ -270,11 +292,9 @@ def evaluate():
             finally:
                 if hook:hook.detach()
             actual=dict(raw_answer=g.decoded_text,raw_token_ids=list(g.raw_token_ids))
-            base_path=historical_index().get('BASE',{}).get(qid)
-            base_tokens=c.read(base_path)['R0']['raw_token_ids'] if base_path else bindings[qid]['output']['raw_generated_token_ids']
             c.write(dest,dict(binding=dict(input=row,judge_input=bind,phase=phase,arm=job['arm'],mode=job['mode']),
                 R0=actual,effective_expert=expert,route=routes[qid],active_target=old.get('active_target',False),U_KL=None,
-                Base_token_consistency=actual['raw_token_ids']==base_tokens))
+                Base_token_consistency=actual['raw_token_ids']==base[qid]))
             if i%25==0:print('EVAL',part,i,len(jobs[part::2]),flush=True)
     p.done('EVAL_'+str(part))
 
@@ -282,7 +302,11 @@ def evaluate():
 def controller():
     import pipeline
     assert (RUN/'private/PLAN_COMPLETE.json').exists()
-    pipeline.wait([pipeline.launch('scoped.py','scoped_train',g,i) for i,g in enumerate(GPUS)])
+    if os.environ['ACTION']=='scoped_controller':
+        pipeline.wait([pipeline.launch('scoped.py','scoped_train',g,i) for i,g in enumerate(GPUS)])
+    else:
+        assert all((RUN/'private'/('TRAIN_'+str(i)+'.json')).exists() for i in range(2))
+        assert all(c.read(node(t,a,192).parent/'TRAINING.json')['updates']==192 for t in selected() for a in ARMS)
     pipeline.wait([pipeline.launch('scoped.py','scoped_eval',g,i) for i,g in enumerate(GPUS)])
     consumers=c.read(RUN/'private/CONSUMERS.json');assert all(Path(x['path']).exists() for x in consumers)
     removed=[]
@@ -305,7 +329,8 @@ def controller():
 
 if __name__=='__main__':
     try:
-        {'prepare':prepare,'scoped_mechanical':mechanical,'scoped_train':train,'scoped_eval':evaluate,'scoped_controller':controller}[os.environ['ACTION']]()
+        {'prepare':prepare,'scoped_mechanical':mechanical,'scoped_train':train,'scoped_eval':evaluate,
+            'scoped_controller':controller,'scoped_eval_resume':controller}[os.environ['ACTION']]()
     except BaseException as error:
         c.write(RUN/'private'/('FAILURE_'+os.environ.get('ACTION','unknown')+'_'+os.environ.get('PARTITION','all')+'.json'),
             dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time()))
