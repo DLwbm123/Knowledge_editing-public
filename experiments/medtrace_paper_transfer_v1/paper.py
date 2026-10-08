@@ -47,7 +47,7 @@ def optimizer(e,base):
 @contextmanager
 def lease(gpu):
     import fcntl
-    assert gpu in (5,6,7)
+    assert gpu in c.read(RUN/'PLAN_CONFIG.json')['hardware']['physical_GPUs']
     uuid,free=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=uuid,memory.free','--format=csv,noheader,nounits'],text=True).strip().split(', ')
     assert uuid==c.read(RUN/'PLAN_CONFIG.json')['hardware']['UUIDs'][str(gpu)] and int(free)>=24000
     with (RUN/'private'/('lease.'+os.environ['ACTION']+'.'+os.environ.get('PARTITION','0'))).open('a') as f:
