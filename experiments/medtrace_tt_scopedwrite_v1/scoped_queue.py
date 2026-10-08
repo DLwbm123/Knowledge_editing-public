@@ -44,6 +44,8 @@ def ingest(db):
         if path.is_relative_to(RUN/'private/outputs'):
             assert b['phase']['execution'] == source and b['phase']['scoped_lock'] == scientific_lock
             assert b['phase']['evaluation_repair'] == q.read(RUN/'private/EVAL_REPAIR_SOURCE.json')
+            if b.get('evaluation_dispatch') is not None:
+                assert b['evaluation_dispatch'] == q.read(RUN/'private/SIX_GPU_SOURCE.json')
             assert b['arm'] == item['produced_arm'] and b['mode'] == item['mode']
         cid = q.digest(item)
         if db.execute('SELECT 1 FROM consumer WHERE id=?', (cid,)).fetchone():

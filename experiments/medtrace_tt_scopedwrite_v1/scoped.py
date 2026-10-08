@@ -232,7 +232,10 @@ def train():
 
 
 def evaluate():
-    part=int(os.environ['PARTITION']);gpu=GPUS[part];jobs=c.read(RUN/'private/JOBS.json')
+    part=int(os.environ['PARTITION']);six=os.environ['ACTION']=='scoped_eval6'
+    gpu=(2,3,4,5,6,7)[part] if six else GPUS[part];jobs=c.read(RUN/'private/JOBS.json')
+    assigned=c.read(RUN/'private/SIX_GPU_PLAN.json')['shards'][part] if six else jobs[part::2]
+    dispatch=c.read(RUN/'private/SIX_GPU_SOURCE.json') if six else None
     bindings=c.read(RUN/'private/EVAL_BINDINGS.json')
     base={row['query_id']:base_tokens(row,bindings) for row in {j['row']['query_id']:j['row'] for j in jobs}.values()}
     ts=p.tasks();byid={t['edit_id']:t for t in ts};chosen={t['edit_id'] for t in selected()}
@@ -264,8 +267,8 @@ def evaluate():
             with torch.inference_mode(),hook.generation_request():g=runtime.adapter.generate_prepared_with_result(raw,runtime.generation_config)
             assert list(g.raw_token_ids)==old['R0']['raw_token_ids']
         finally:hook.detach()
-        p.done('NEGATIVE_CONTROL_'+str(part),dict(original_output_equal=True,expert_unchanged=True))
-        for i,job in enumerate(jobs[part::2]):
+        p.done(('NEGATIVE_CONTROL6_' if six else 'NEGATIVE_CONTROL_')+str(part),dict(original_output_equal=True,expert_unchanged=True))
+        for i,job in enumerate(assigned):
             c.budget();dest=Path(job['path']);row=job['row'];qid=row['query_id'];expert=job['expert']
             phase=dict(arm=job['arm'],node=job['node'],prefix=146,slot=0,weights=weights[job['arm']],
                 execution=execution,evaluation_repair=c.read(RUN/'private/EVAL_REPAIR_SOURCE.json'),
@@ -292,11 +295,11 @@ def evaluate():
             finally:
                 if hook:hook.detach()
             actual=dict(raw_answer=g.decoded_text,raw_token_ids=list(g.raw_token_ids))
-            c.write(dest,dict(binding=dict(input=row,judge_input=bind,phase=phase,arm=job['arm'],mode=job['mode']),
+            c.write(dest,dict(binding=dict(input=row,judge_input=bind,phase=phase,arm=job['arm'],mode=job['mode'],evaluation_dispatch=dispatch),
                 R0=actual,effective_expert=expert,route=routes[qid],active_target=old.get('active_target',False),U_KL=None,
                 Base_token_consistency=actual['raw_token_ids']==base[qid]))
-            if i%25==0:print('EVAL',part,i,len(jobs[part::2]),flush=True)
-    p.done('EVAL_'+str(part))
+            if i%10==0:print('EVAL',part,i,len(assigned),flush=True)
+    p.done(('EVAL6_' if six else 'EVAL_')+str(part))
 
 
 def controller():
@@ -307,7 +310,9 @@ def controller():
     else:
         assert all((RUN/'private'/('TRAIN_'+str(i)+'.json')).exists() for i in range(2))
         assert all(c.read(node(t,a,192).parent/'TRAINING.json')['updates']==192 for t in selected() for a in ARMS)
-    pipeline.wait([pipeline.launch('scoped.py','scoped_eval',g,i) for i,g in enumerate(GPUS)])
+    six=os.environ['ACTION']=='scoped_six_resume'
+    pipeline.wait([pipeline.launch('scoped.py','scoped_eval6' if six else 'scoped_eval',g,i)
+        for i,g in enumerate((2,3,4,5,6,7) if six else GPUS)])
     consumers=c.read(RUN/'private/CONSUMERS.json');assert all(Path(x['path']).exists() for x in consumers)
     removed=[]
     for t in selected():
@@ -329,8 +334,8 @@ def controller():
 
 if __name__=='__main__':
     try:
-        {'prepare':prepare,'scoped_mechanical':mechanical,'scoped_train':train,'scoped_eval':evaluate,
-            'scoped_controller':controller,'scoped_eval_resume':controller}[os.environ['ACTION']]()
+        {'prepare':prepare,'scoped_mechanical':mechanical,'scoped_train':train,'scoped_eval':evaluate,'scoped_eval6':evaluate,
+            'scoped_controller':controller,'scoped_eval_resume':controller,'scoped_six_resume':controller}[os.environ['ACTION']]()
     except BaseException as error:
         c.write(RUN/'private'/('FAILURE_'+os.environ.get('ACTION','unknown')+'_'+os.environ.get('PARTITION','all')+'.json'),
             dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time()))
