@@ -49,6 +49,7 @@ def plan():
     lock = dict(arms=list(ARMS), GPUS=list(GPUS), layer=LAYER,
                 method='native W projected SGD; final-answer CE and scope supervision; Base distribution KL',
                 precision='NATIVE_FP32_LANGUAGE_FP16_VISION',native_forward=True,
+                training_prefill='cached native expansion at final precision',
                 full_paper_reproduction=False, trainable='one existing down_proj.weight',
                 learning_rate=.01, gradient_norm_cap=5., maximum_step_norm=.05, kl_weight=1.,
                 steps_per_edit=160, ordered_edits=8, trajectories=2, maximum_updates=2560,
@@ -103,14 +104,28 @@ def prepare(runtime, bindings, selected, training=False):
     ts={t['order']:t for t in data.tasks()}
     items=[]
     for row in selected:
-        current=data.prepare(runtime, bindings, ts[row['owner'] or 1], [row], training)
-        for item in current:
-            item[4]['runtime']['actual_precision']='NATIVE_FP32_LANGUAGE_FP16_VISION'
-            item[4]['runtime']['native_forward']=True
-            item[4]['runtime']['frozen_FP16_prefill']=False
-            item[4]['runtime']['training_cached_FP16_prefill']=training
-        items.extend(current)
+        raw=runtime.adapter.prepare_inputs(Path(c.local_path(row['image_path'])),row['question'],None)
+        if row.get('image_sha256'):assert raw['image_sha256']==row['image_sha256']
+        with torch.no_grad():
+            expanded=runtime.llava_model().prepare_inputs_labels_for_multimodal(
+                raw['input_ids'],None,raw['attention_mask'],None,None,raw['images'],image_sizes=None)
+        assert expanded[4].dtype==torch.float32
+        expanded=tuple(x.detach().cpu() if isinstance(x,torch.Tensor) else x for x in expanded)
+        binding=dict(question=row['question'],reference=row['reference'],image_sha256=raw['image_sha256'],
+                     image_path=row['image_path'],prompt_ids=raw['input_ids'][0].tolist(),
+                     attention_mask=raw['attention_mask'][0].tolist(),generation=runtime.generation_config,
+                     runtime=dict(inherited_runtime=next(iter(bindings.values()))['runtime'],
+                                  actual_precision='NATIVE_FP32_LANGUAGE_FP16_VISION',native_forward=True,
+                                  training_prefill='cached native expansion at final precision'))
+        batch=cpu_batch(runtime.build_edit_batch(data.record(ts[row['owner'] or 1],row))) if training else None
+        items.append((row,batch,raw,expanded,binding))
     return items
+
+
+def cpu_batch(batch):
+    kwargs={k:v.detach().cpu() if isinstance(v,torch.Tensor) else v for k,v in batch.forward_kwargs().items()}
+    assert kwargs['inputs_embeds'].dtype==torch.float32
+    return kwargs,batch.labels.detach().cpu(),tuple(batch.target_token_ids)
 
 
 def state_schema(model):
@@ -139,12 +154,12 @@ def base():
     with c.lease(gpu):
         runtime, bindings=c.load(gpu);counts,h=counters(runtime)
         try:
-            prepared=prepare(runtime,bindings,rows())
             fp32_language(runtime)
+            prepared=prepare(runtime,bindings,rows())
             for item in prepared:emit(runtime,item,'BASE',counts)
             c.write(RUN/'private/BASE_COMPLETE.json',dict(outputs=267,counts=counts,
                     parameters=sum(v.numel() for v in runtime.model.parameters()),schema=state_schema(runtime.model)))
-        finally:h.remove();c.write(RUN/'private/COUNTS_base.json',counts)
+        finally:h.remove();c.write(RUN/'private'/f'COUNTS_base_{os.getpid()}.json',counts)
 
 
 def smoke():
@@ -155,14 +170,15 @@ def smoke():
         runtime,bindings=c.load(GPUS[0]);counts,h=counters(runtime)
         try:
             selected=[r for r in rows() if r['owner']==1 and r['audit_role'] in ('NATIVE','FIT','GFIT')]
+            fp32_language(runtime)
             items=prepare(runtime,bindings,selected,True)
-            protection=old.cpu(data.q.protection_batch(runtime,data.q.split()[0][0],data.tasks()[0]))
-            fp32_language(runtime);weight=runtime.get_module(LAYER).weight
+            protection=cpu_batch(data.q.protection_batch(runtime,data.q.split()[0][0],data.tasks()[0]))
+            weight=runtime.get_module(LAYER).weight
             raw,expanded=items[0][2:4]
             with torch.no_grad():
                 native=runtime.llava_model().prepare_inputs_labels_for_multimodal(
                     raw['input_ids'],None,raw['attention_mask'],None,None,raw['images'],image_sizes=None)
-            assert torch.equal(native[4],expanded[4].to(runtime.device,torch.float32)), 'native FP16-visual prefill drift'
+            assert torch.equal(native[4],expanded[4].to(runtime.device)), 'native final-precision prefill drift'
             del native
             base=weight.detach().clone();q=row_basis(base)
             schema=state_schema(runtime.model)
@@ -196,7 +212,7 @@ def smoke():
                     parameters=sum(p.numel() for p in runtime.model.parameters()),added_parameters=0,
                     temporary_updates=2,base_exactly_restored=True,native_prefill_exact=True,counts=counts))
             print('MECHANICAL_PASS',list(weight.shape),reports,flush=True)
-        finally:h.remove();c.write(RUN/'private/COUNTS_smoke.json',counts)
+        finally:h.remove();c.write(RUN/'private'/f'COUNTS_smoke_{os.getpid()}.json',counts)
 
 
 def train():
@@ -211,10 +227,10 @@ def train():
         runtime,bindings=c.load(gpu);counts,h=counters(runtime)
         try:
             source_rows=[r for r in rows() if r['audit_role'] in ('NATIVE','FIT','GFIT')]
+            fp32_language(runtime)
             prepared=prepare(runtime,bindings,source_rows,True)
             basis=data.q.split()[0]
-            protection=[old.cpu(data.q.protection_batch(runtime,r,data.tasks()[0])) for r in basis]
-            fp32_language(runtime)
+            protection=[cpu_batch(data.q.protection_batch(runtime,r,data.tasks()[0])) for r in basis]
             weight=runtime.get_module(LAYER).weight
             schema=state_schema(runtime.model)
             assert schema==c.read(RUN/'private/BASE_COMPLETE.json')['schema']
@@ -326,8 +342,8 @@ def evaluate():
     with c.lease(gpu):
         runtime,bindings=c.load(gpu);counts,h=counters(runtime)
         try:
-            prepared=prepare(runtime,bindings,rows())
             fp32_language(runtime)
+            prepared=prepare(runtime,bindings,rows())
             saved=torch.load(RUN/'private/candidates'/f'{arm}.pt',map_location='cpu',weights_only=True)
             assert state_schema(runtime.model)==saved['schema']
             assert sum(v.numel() for v in runtime.model.parameters())==saved['parameter_count']
