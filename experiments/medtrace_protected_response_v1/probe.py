@@ -13,6 +13,7 @@ p, c, RUN, scoped = d.p, d.c, d.RUN, d.scoped
 GPUS = (2, 3, 4, 5, 6, 7)
 ARMS = ('RAW', 'PROJECTED', 'MATCHED_RAW')
 KEYS = ('G1', 'G2', 'G3', 'G4')
+VERIFY_ZERO_BASE = False
 
 
 def split():
@@ -65,12 +66,21 @@ def plan():
     p.done('PLAN_COMPLETE')
 
 
-def logits(runtime, hook, batch):
+def logits(runtime, hook, batch, verify_base=False):
     hook.set_teacher_routing(batch.labels)
     with torch.inference_mode():
         out = runtime.model(**batch.forward_kwargs())
+        if verify_base:
+            hook.enabled = False
+            try:
+                base = runtime.model(**batch.forward_kwargs())
+                assert torch.equal(out.logits, base.logits), 'Zero expert differs from unedited Base'
+            finally:
+                hook.enabled = True
     mask = batch.labels[:, 1:] != -100
-    return out.logits[:, :-1][mask].detach().cpu().double(), batch.labels[:, 1:][mask].cpu()
+    target = batch.labels[:, 1:][mask].cpu()
+    assert target[-1] == runtime.adapter.tokenizer.eos_token_id
+    return out.logits[:, :-1][mask].detach().cpu().double(), target
 
 
 def compare(reference, candidate, target):
@@ -142,7 +152,7 @@ def one(runtime, t):
             source = None if is_edit else held[i-5]
             batch = native[i] if is_edit else runtime.build_edit_batch(scoped.replay.record(source, t))
             expert.load_state_dict(before)
-            reference, target = logits(runtime, hook, batch)
+            reference, target = logits(runtime, hook, batch, verify_base=VERIFY_ZERO_BASE)
             if i == 0:
                 repeat, target2 = logits(runtime, hook, batch)
                 assert torch.equal(reference, repeat) and torch.equal(target, target2), 'Baseline repeat mismatch'
@@ -162,7 +172,8 @@ def one(runtime, t):
         assert not any(v.grad is not None for v in runtime.model.parameters())
         return dict(status='COMPLETE', expert_order=t['order'], geometry=geometry,
             function_matching=matching, map_norms={k:fm.map_norm(before,v) for k,v in states.items()},
-            RAW_groups=groups, diagnostics=diagnostics, forward_calls=503, backward_calls=98,
+            RAW_groups=groups, diagnostics=diagnostics, forward_calls=503+(101 if VERIFY_ZERO_BASE else 0), backward_calls=98,
+            zero_expert_Base_checks=101 if VERIFY_ZERO_BASE else 0,
             candidate_optimizer_steps=1, state_restored_exact=True, baseline_repeat_exact=True,
             Base_gradient=False, lock=c.digest(c.read(RUN/'private/PROBE_LOCK.json')))
     finally:
