@@ -1,11 +1,13 @@
 """One-attempt Astra medium audit; fixed paired denominators including missing scores."""
 import os
+import sys
 import json
 import fcntl
 import sqlite3
 import time
 import statistics
 from pathlib import Path
+sys.path.insert(0,os.environ['RUN_ROOT']+'/private/tools')
 import astra_queue as a
 q,RUN=a.q,a.RUN
 q.ROOT=RUN/'private/judge_damage_astra_medium'
