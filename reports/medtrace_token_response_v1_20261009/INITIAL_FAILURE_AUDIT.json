@@ -1,0 +1,41 @@
+{
+  "status": "ENGINEERING_BLOCKED",
+  "worker_failures": 6,
+  "worker_errors": [
+    "AssertionError(('Mean token gradient does not match sequence gradient', 0.0026503389071701965))",
+    "AssertionError(('Mean token gradient does not match sequence gradient', 0.003595650395685269))",
+    "AssertionError(('Mean token gradient does not match sequence gradient', 0.00272587512597))",
+    "AssertionError(('Mean token gradient does not match sequence gradient', 0.0029565951697142095))",
+    "AssertionError(('Mean token gradient does not match sequence gradient', 0.0030135846854833824))",
+    "AssertionError(('Mean token gradient does not match sequence gradient', 0.002947267032282461))"
+  ],
+  "complete_experts": 0,
+  "candidates": 0,
+  "new_generations": 0,
+  "new_Judge": 0,
+  "new_checkpoints": 0,
+  "new_GPU_process_hours": 0.03842063022984399,
+  "cumulative_GPU_process_hours": 40.635005952119826,
+  "cumulative_Judge": 12406,
+  "all_sessions_ended": true,
+  "failed_call_counts": "NOT_FULLY_INSTRUMENTED_BEFORE_ASSERTION",
+  "precision_diagnostic": {
+    "status": "COMPLETE",
+    "engineering_only": true,
+    "scientific_candidates": 0,
+    "forwards": 1,
+    "backwards": 17,
+    "tokens": 12,
+    "model_dtype": "torch.float16",
+    "logit_dtype": "torch.float16",
+    "expert_dtype": "torch.float32",
+    "embed_dtype": "torch.float16",
+    "loss_mean_error": 2.9802322387695312e-08,
+    "logits_mean_gradient_error": 0.0,
+    "logits_sum_gradient_error": 0.00041939137913904364,
+    "single_manual_mean_vs_original_parameter_gradient_error": 0.0,
+    "mean_of_individual_parameter_gradients_error": 0.0026503389071701965,
+    "state_unchanged": true,
+    "old_tolerance_unchanged": 0.001
+  }
+}

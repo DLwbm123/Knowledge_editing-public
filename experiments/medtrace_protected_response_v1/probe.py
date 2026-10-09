@@ -100,6 +100,21 @@ def compare(reference, candidate, target):
         all_argmax_correct=bool((new == target).all()))
 
 
+def basis_gradients(runtime, hook, basis, task, params):
+    rows = []
+    for i, row in enumerate(basis):
+        c.budget()
+        batch = protection_batch(runtime, row, task)
+        hook.set_teacher_routing(batch.labels)
+        loss = runtime.compute_loss(batch)
+        gradients = torch.autograd.grad(loss, [params[k] for k in KEYS])
+        rows.append(torch.cat([g.detach().cpu().double().flatten() for g in gradients]))
+        assert torch.isfinite(rows[-1]).all()
+        del batch, loss, gradients
+        if (i+1) % 24 == 0:print('BASIS', task['order'], i+1, flush=True)
+    return torch.stack(rows), len(basis), dict(rows=len(basis))
+
+
 def one(runtime, t):
     from m3bench_repro.editors.llava_runtime import seed_everything
     seed_everything(t['seed'])
@@ -107,21 +122,10 @@ def one(runtime, t):
     before = {k:v.detach().clone() for k,v in expert.state_dict().items()}
     hook = scoped.replay.MedTraceLayerHook(runtime.get_module(c.LAYER), expert)
     hook.attach()
-    rows = []
     basis, held = split()
     params = dict(expert.named_parameters())
     try:
-        for i, row in enumerate(basis):
-            c.budget()
-            batch = protection_batch(runtime, row, t)
-            hook.set_teacher_routing(batch.labels)
-            loss = runtime.compute_loss(batch)
-            gradients = torch.autograd.grad(loss, [params[k] for k in KEYS])
-            rows.append(torch.cat([g.detach().cpu().double().flatten() for g in gradients]))
-            assert torch.isfinite(rows[-1]).all()
-            del batch, loss, gradients
-            if (i+1) % 24 == 0:print('BASIS', t['order'], i+1, flush=True)
-        matrix = torch.stack(rows)
+        matrix, basis_backwards, basis_audit = basis_gradients(runtime, hook, basis, t, params)
         native = [runtime.build_edit_batch(replace(c.record(t), question=q))
                   for q in [t['native']['question']] + t['fit_questions']]
         assert len(native) == 5 and all(b.target_token_ids[-1] == runtime.adapter.tokenizer.eos_token_id for b in native)
@@ -177,7 +181,7 @@ def one(runtime, t):
         assert not any(v.grad is not None for v in runtime.model.parameters())
         return dict(status='COMPLETE', expert_order=t['order'], geometry=geometry,
             function_matching=matching, map_norms={k:fm.map_norm(before,v) for k,v in states.items()},
-            RAW_groups=groups, diagnostics=diagnostics, forward_calls=len(basis)+407+(101 if VERIFY_ZERO_BASE else 0), backward_calls=len(basis)+2,
+            RAW_groups=groups, diagnostics=diagnostics, forward_calls=len(basis)+407+(101 if VERIFY_ZERO_BASE else 0), backward_calls=basis_backwards+2, basis_audit=basis_audit,
             zero_expert_Base_checks=101 if VERIFY_ZERO_BASE else 0,
             candidate_optimizer_steps=1, state_restored_exact=True, baseline_repeat_exact=True,
             Base_gradient=False, lock=c.digest(c.read(RUN/'private/PROBE_LOCK.json')))
