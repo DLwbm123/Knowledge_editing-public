@@ -29,6 +29,15 @@ def main():
         assert d['lock']==c.digest(lock) and any(x['active_residual_norm']>0 for x in d['generation_trace'])
         b=c.read(d['baseline_path']);assert d['binding']['judge_input']==b['binding']['judge_input']
         for k in ('query_id','question','reference','image_sha256'):assert d['binding']['input'][k]==b['binding']['input'][k]
+    paired={(d['arm'],d['expert_order'],d['index']):d for d in outputs.values()}
+    assert len(paired)==80
+    pair_counts=dict(identical_answers=0,identical_tokens=0)
+    for order in range(1,9):
+        for index in range(5):
+            a,b=[paired[arm,order,index] for arm in ('RAW','ADAM')]
+            assert a['binding']==b['binding']
+            pair_counts['identical_answers']+=a['R0']['raw_answer']==b['R0']['raw_answer']
+            pair_counts['identical_tokens']+=a['R0']['raw_token_ids']==b['R0']['raw_token_ids']
     counts=[c.read(RUN/'private'/f'OPTIMIZER160_COUNTS_{i}.json') for i in range(6)]
     forwards=sum(x['forwards'] for x in counts);assert forwards==6092+sum(d['forwards'] for d in outputs.values())<=88012
     assert sum(x['updates'] for x in counts)==2560 and sum(x['backwards'] for x in counts)==5120
@@ -58,7 +67,7 @@ def main():
         all_EOS=all(d['EOS'] for d in outputs.values()),at_cap=sum(d['at_cap'] for d in outputs.values()),
         GPU_sessions_ended=6,recorded_remote_processes_ended=len(starts),new_Judge=attempts,
         payload_status=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),
-        no_retry=True,persistent_checkpoints_created=0,historical_assets_deleted=0,
+        no_retry=True,paired_outputs=pair_counts,persistent_checkpoints_created=0,historical_assets_deleted=0,
         heldout_access=False,protected_training_started=False,endpoint_selection=False,automatic_step_extension=False)
     c.write(RUN/'public/REVIEW_AUDIT.json',receipt);print(json.dumps(receipt))
 
