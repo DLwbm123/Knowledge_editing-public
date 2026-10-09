@@ -28,9 +28,12 @@ def selfcheck():
 
 def plan():
     values=rows();assert len(values)==157 and sum(x['semantic_correct'] for x in values)==124
+    config=next(iter(c.read(RUN/'private/EVAL_BINDINGS.json').values()))['generation']
+    assert config['max_new_tokens']==1024
+    assert all(c.read(row['response_path'])['binding']['judge_input']['generation']==config for row in values)
     lock=dict(queries=157,basis=61,heldout=96,previously_correct=124,FP32_generations=157,
-        native_control_generations=6,max_LLM_forwards=163*128,backwards=0,updates=0,new_Judge=0,
-        max_answer_tokens=128,checkpoint_outputs=0,source=c.read(RUN/'private/GPU_SOURCE_VERSION.json'),
+        native_control_generations=6,max_LLM_forwards=163*1024,backwards=0,updates=0,new_Judge=0,
+        max_answer_tokens=1024,checkpoint_outputs=0,source=c.read(RUN/'private/GPU_SOURCE_VERSION.json'),
         roles=c.digest(values),precision='MATH_FP32_SAME_FP16_PREFILL_AND_WEIGHT_VALUES')
     c.write(RUN/'private/BASELINE_LOCK.json',lock)
     c.write(RUN/'private/BASELINE_ROWS.json',values)
@@ -45,7 +48,7 @@ def worker():
     with p.lease(gpu):
         runtime,bindings=c.load(gpu);model=runtime.llava_model()
         assert not runtime.get_module(c.LAYER)._forward_hooks and not runtime.generation_config['do_sample']
-        assert runtime.generation_config['max_new_tokens']==128
+        assert runtime.generation_config['max_new_tokens']==1024
         selected=c.read(RUN/'private/BASELINE_ROWS.json')[part::6]
         original=model.prepare_inputs_labels_for_multimodal
         frozen=[]
@@ -95,12 +98,12 @@ def worker():
                 value['R0']=dict(raw_answer=answer.decoded_text,raw_token_ids=list(answer.raw_token_ids))
                 value['identity']=dict(role=row['identity_role'],index=row['identity_index'],
                     text_equal=same_text,tokens_equal=same_tokens,previously_correct=row['semantic_correct'],
-                    forwards=nf,generated_tokens=len(answer.raw_token_ids),at_cap=len(answer.raw_token_ids)>=128,
+                    forwards=nf,generated_tokens=len(answer.raw_token_ids),at_cap=len(answer.raw_token_ids)>=runtime.generation_config['max_new_tokens'],
                     ended_EOS=answer.raw_token_ids[-1]==runtime.adapter.tokenizer.eos_token_id)
                 value['binding']=dict(old['binding'],execution=c.read(RUN/'private/GPU_SOURCE_VERSION.json'))
                 value['precision']='MATH_FP32_FROZEN_FP16_PREFILL'
                 value['identity_parent']=row['response_path']
-                value['audit']=dict(old['audit'],annotation_audit_inherited_from_FP16=True,generated_tokens=len(answer.raw_token_ids),at_generation_cap=len(answer.raw_token_ids)>=128)
+                value['audit']=dict(old['audit'],annotation_audit_inherited_from_FP16=True,generated_tokens=len(answer.raw_token_ids),at_generation_cap=len(answer.raw_token_ids)>=runtime.generation_config['max_new_tokens'])
                 c.write(dest,value)
                 print('BASELINE',part,row['identity_index'],'TEXT_EQUAL',same_text,'TOKENS_EQUAL',same_tokens,flush=True)
             assert not any(v.grad is not None for v in runtime.model.parameters())
@@ -121,7 +124,7 @@ def report():
         rs=[x for x in values if x['role']==role or role=='PRIMARY63' and x['role']=='HELDOUT' and x['previously_correct']]
         panels[role]=dict(queries=len(rs),text_equal=sum(x['text_equal'] for x in rs),tokens_equal=sum(x['tokens_equal'] for x in rs),
             changed_previously_correct=sum(x['previously_correct'] and not x['text_equal'] for x in rs),at_cap=sum(x['at_cap'] for x in rs),EOS=sum(x['ended_EOS'] for x in rs))
-    total=sum(x['forwards'] for x in values+controls);assert total<=163*128
+    total=sum(x['forwards'] for x in values+controls);assert total<=163*1024
     result=dict(status='COMPLETE',decision=decision(values),panels=panels,native_controls=6,
         new_generations=163,LLM_forwards=total,backwards=0,updates=0,new_Judge=0,new_checkpoints=0,
         changed_texts=sum(not x['text_equal'] for x in values),no_requalification_or_training_claim=True,
