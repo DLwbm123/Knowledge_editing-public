@@ -1,0 +1,232 @@
+{
+  "status": "COMPLETE",
+  "decision": "STOP_RAW32_NO_NATIVE_REPAIR",
+  "panels": {
+    "NATIVE": {
+      "queries": 8,
+      "correct": 0,
+      "missing": 0
+    },
+    "FIT": {
+      "queries": 32,
+      "correct": 1,
+      "missing": 0
+    }
+  },
+  "baseline_native_correct": 0,
+  "baseline_native_wrong": 8,
+  "per_expert": [
+    {
+      "order": 1,
+      "native_correct": 0,
+      "edit_gain": 1.2956667227476832,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 595,
+            "first_active_predictor": 594,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.017355691641569138
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    },
+    {
+      "order": 2,
+      "native_correct": 0,
+      "edit_gain": 1.2136149507226053,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 601,
+            "first_active_predictor": 600,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.017795590683817863
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    },
+    {
+      "order": 3,
+      "native_correct": 0,
+      "edit_gain": 1.6739915549961788,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 597,
+            "first_active_predictor": 596,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.02099589630961418
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    },
+    {
+      "order": 4,
+      "native_correct": 0,
+      "edit_gain": 1.9381637819745112,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 602,
+            "first_active_predictor": 601,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.018986880779266357
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    },
+    {
+      "order": 5,
+      "native_correct": 0,
+      "edit_gain": 1.0529311405447979,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 603,
+            "first_active_predictor": 602,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.012109478935599327
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    },
+    {
+      "order": 6,
+      "native_correct": 0,
+      "edit_gain": 0.818107000550084,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 600,
+            "first_active_predictor": 599,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.02049131877720356
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    },
+    {
+      "order": 7,
+      "native_correct": 0,
+      "edit_gain": 1.261062243000544,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 600,
+            "first_active_predictor": 599,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.015836434438824654
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    },
+    {
+      "order": 8,
+      "native_correct": 0,
+      "edit_gain": 1.286876822449058,
+      "all_four_cores_updated": true,
+      "mechanical": {
+        "status": "PASS",
+        "generation_trace": [
+          {
+            "sequence_length": 607,
+            "first_active_predictor": 606,
+            "active_predictor_count": 1,
+            "active_residual_norm": 0.010827814228832722
+          }
+        ],
+        "logits_max_abs": 0.0,
+        "same_prefix": true
+      }
+    }
+  ],
+  "all_experts_preserved": true,
+  "heldout_evaluated": false,
+  "protected_training_started": false,
+  "generation": {
+    "status": "COMPLETE",
+    "counts": [
+      {
+        "forwards": 590,
+        "backwards": 128,
+        "updates": 64,
+        "generations": 10
+      },
+      {
+        "forwards": 817,
+        "backwards": 128,
+        "updates": 64,
+        "generations": 10
+      },
+      {
+        "forwards": 304,
+        "backwards": 64,
+        "updates": 32,
+        "generations": 5
+      },
+      {
+        "forwards": 430,
+        "backwards": 64,
+        "updates": 32,
+        "generations": 5
+      },
+      {
+        "forwards": 216,
+        "backwards": 64,
+        "updates": 32,
+        "generations": 5
+      },
+      {
+        "forwards": 218,
+        "backwards": 64,
+        "updates": 32,
+        "generations": 5
+      }
+    ],
+    "epoch": 1791534764.9677882
+  },
+  "queue": {
+    "consumers": 40,
+    "payloads": 40,
+    "inherited": 16,
+    "new_pending": 24
+  },
+  "payload_status": {
+    "FORMAT_VALID": 40
+  },
+  "resource": {
+    "new_GPU_process_hours": 0.1429670869641834,
+    "cumulative_GPU_process_hours": 44.733206089536345,
+    "new_Judge": 24,
+    "cumulative_Judge": 12516
+  }
+}
