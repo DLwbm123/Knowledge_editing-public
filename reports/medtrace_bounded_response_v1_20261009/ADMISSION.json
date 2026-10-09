@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "experts": 8,
+  "basis_questions": 61,
+  "basis_groups": 31,
+  "holdout_questions": 96,
+  "holdout_groups": 32,
+  "primary_heldout_questions": 63,
+  "primary_heldout_groups": 29,
+  "forward_calls": 4592,
+  "backward_calls": 13144,
+  "candidate_optimizer_steps": 8,
+  "new_generations": 0,
+  "new_Judge": 0,
+  "persistent_checkpoints": 0,
+  "initial_state": "ORIGINAL_SEEDED_ZERO_TT88",
+  "target": "EVERY_ACTUAL_QUALIFIED_BASE_RESPONSE_TOKEN_NLL",
+  "source_roles": [
+    "BASIS_SEMANTIC_CORRECT_ONLY"
+  ],
+  "heldout_geometry": false,
+  "CHECK_used": false,
+  "replay_CE_optimization": false,
+  "projection_selfcheck": {
+    "status": "PASS",
+    "duplicate_and_zero_rows": true,
+    "full_rank": true,
+    "empty_constraint": true,
+    "RANK_RTOL": 1e-06
+  },
+  "function_selfcheck": {
+    "status": "PASS",
+    "shrink_and_expand": true,
+    "zero_target": true,
+    "unreachable_target_stops": true,
+    "RTOL": 0.001,
+    "ATOL": 1e-10
+  },
+  "basis_token_constraints": 1514,
+  "mean_gradient_parity_checks": 488,
+  "algorithm": "BOUNDED_RESPONSE",
+  "edit_gain_fraction": 0.9,
+  "map_norm_cap": "RAW",
+  "response_metric": "QUESTION_BALANCED_RAW_TOKEN_JACOBIAN_SQUARED",
+  "arms": [
+    "RAW",
+    "BOUNDED",
+    "MATCHED_RAW"
+  ],
+  "constrained_solver_selfcheck": {
+    "status": "PASS",
+    "inactive_and_active_norm_bound": true,
+    "infeasible_and_singular_stop": true,
+    "TT_function_metric_and_gradient_whitening": true
+  }
+}
