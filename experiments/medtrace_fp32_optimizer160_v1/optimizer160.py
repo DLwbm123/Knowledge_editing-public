@@ -115,7 +115,7 @@ def prefix_check(runtime,hook,batch,reference):
         teacher_target_prefixes=True,actual_free_generation_prefixes=False,use_cache=False)
 
 
-def worker():
+def worker(on_source_complete=None):
     from m3bench_repro.editors.llava_runtime import seed_everything
     part=int(os.environ['PARTITION']);gpu=q.GPUS[part];old.calibration.require_memory(gpu)
     lock=c.read(RUN/'private/OPTIMIZER160_LOCK.json');totals=dict(forwards=0,backwards=0,updates=0,generations=0)
@@ -179,8 +179,9 @@ def worker():
                             baseline_path=str(parent_path),generation_trace=trace,forwards=totals['forwards']-before_gen,
                             EOS=answer.raw_token_ids[-1]==runtime.adapter.tokenizer.eos_token_id,at_cap=len(answer.raw_token_ids)>=1024,
                             lock=c.digest(lock),execution=c.read(RUN/'private/GPU_SOURCE_VERSION.json')))
+                    if on_source_complete is not None:on_source_complete(t,arm,expert,base)
                     expert.load_state_dict(base);assert all(torch.equal(v,base[k]) for k,v in expert.state_dict().items())
-                    p.done(f'OPTIMIZER160_CONSUMED_{arm}_{t["order"]}',dict(generations=5,persistent_checkpoints=0))
+                    p.done(f'OPTIMIZER160_CONSUMED_{arm}_{t["order"]}',dict(generations=5,persistent_checkpoints=int(on_source_complete is not None),source_consumers_complete=True))
                 finally:hook.detach()
                 assert not any(v.grad is not None for v in runtime.model.parameters())
         finally:handle.remove();c.write(RUN/'private'/f'OPTIMIZER160_COUNTS_{part}.json',totals)

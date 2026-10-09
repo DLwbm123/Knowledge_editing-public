@@ -1,5 +1,6 @@
 """Fixed full-TT RAW32 competence gate before expensive protected training."""
 import os
+from contextlib import nullcontext
 import time
 import traceback
 from pathlib import Path
@@ -76,11 +77,11 @@ def generate(runtime,hook,raw,expanded):
         return original(*args,**kwargs)
     model.prepare_inputs_labels_for_multimodal=prepared
     try:
-        with torch.inference_mode(),hook.generation_request():answer=runtime.adapter.generate_prepared_with_result(raw,runtime.generation_config)
+        with torch.inference_mode(),(hook.generation_request() if hook else nullcontext()):answer=runtime.adapter.generate_prepared_with_result(raw,runtime.generation_config)
     finally:model.prepare_inputs_labels_for_multimodal=original
     assert used[0]==1 and answer.raw_token_ids
-    trace=list(hook.last_generation_trace)
-    assert trace and any(x['active_residual_norm']>0 for x in trace)
+    trace=list(hook.last_generation_trace) if hook else []
+    assert hook is None or trace and any(x['active_residual_norm']>0 for x in trace)
     return answer,trace
 
 

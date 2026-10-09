@@ -1,0 +1,211 @@
+{
+  "status": "PASS",
+  "source_reproduction_outputs": 80,
+  "all_candidates_frozen_before_eval": true,
+  "updates": 2560,
+  "backwards": 5120,
+  "forwards": 51476,
+  "non_generation_forwards": 8204,
+  "new_generations": 1961,
+  "new_generation_EOS": 1961,
+  "at_cap": 0,
+  "scored_consumers": 1881,
+  "payload_status": {
+    "FORMAT_VALID": 750
+  },
+  "new_Judge": 549,
+  "inherited_payloads": 201,
+  "Judge_batches": 13,
+  "all_actual_Astra_medium_isolated": true,
+  "no_payload_retry": true,
+  "missing": 0,
+  "GPU_sessions_ended": 12,
+  "recorded_remote_processes_ended": 15,
+  "packages_deleted": 16,
+  "bytes_deleted": 974256,
+  "historical_deletions": 0,
+  "per_owner_held": {
+    "RAW": [
+      {
+        "owner": 1,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 67,
+        "retained": 61,
+        "still_wrong": 28,
+        "repaired": 6,
+        "new_damage": 1
+      },
+      {
+        "owner": 2,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 62,
+        "retained": 57,
+        "still_wrong": 29,
+        "new_damage": 5,
+        "repaired": 5
+      },
+      {
+        "owner": 3,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 63,
+        "retained": 56,
+        "still_wrong": 27,
+        "repaired": 7,
+        "new_damage": 6
+      },
+      {
+        "owner": 4,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 69,
+        "retained": 62,
+        "still_wrong": 27,
+        "repaired": 7
+      },
+      {
+        "owner": 5,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 59,
+        "retained": 58,
+        "still_wrong": 33,
+        "new_damage": 4,
+        "repaired": 1
+      },
+      {
+        "owner": 6,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 67,
+        "retained": 61,
+        "still_wrong": 28,
+        "repaired": 6,
+        "new_damage": 1
+      },
+      {
+        "owner": 7,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 65,
+        "retained": 61,
+        "still_wrong": 30,
+        "repaired": 4,
+        "new_damage": 1
+      },
+      {
+        "owner": 8,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 70,
+        "retained": 62,
+        "still_wrong": 26,
+        "repaired": 8
+      }
+    ],
+    "ADAM": [
+      {
+        "owner": 1,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 63,
+        "retained": 59,
+        "still_wrong": 30,
+        "repaired": 4,
+        "new_damage": 3
+      },
+      {
+        "owner": 2,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 54,
+        "retained": 53,
+        "still_wrong": 33,
+        "new_damage": 9,
+        "repaired": 1
+      },
+      {
+        "owner": 3,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 63,
+        "retained": 56,
+        "still_wrong": 27,
+        "repaired": 7,
+        "new_damage": 6
+      },
+      {
+        "owner": 4,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 68,
+        "retained": 61,
+        "still_wrong": 27,
+        "repaired": 7,
+        "new_damage": 1
+      },
+      {
+        "owner": 5,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 58,
+        "retained": 57,
+        "still_wrong": 33,
+        "new_damage": 5,
+        "repaired": 1
+      },
+      {
+        "owner": 6,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 65,
+        "retained": 61,
+        "still_wrong": 30,
+        "repaired": 4,
+        "new_damage": 1
+      },
+      {
+        "owner": 7,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 64,
+        "retained": 61,
+        "still_wrong": 31,
+        "new_damage": 1,
+        "repaired": 3
+      },
+      {
+        "owner": 8,
+        "queries": 96,
+        "Base_correct": 62,
+        "candidate_correct": 70,
+        "retained": 62,
+        "still_wrong": 26,
+        "repaired": 8
+      }
+    ]
+  },
+  "distinct_held_queries_damaged": {
+    "RAW": 13,
+    "ADAM": 15
+  },
+  "paired_held": {
+    "paired_held_queries": 768,
+    "same_text": 485,
+    "same_tokens": 485,
+    "RAW_only_correct": 17,
+    "ADAM_only_correct": 0,
+    "both_correct": 505,
+    "both_wrong": 246
+  },
+  "protected_training_started": false,
+  "automatic_next_experiment": false,
+  "original_precision_loss_preserved": true,
+  "limitations": [
+    "768=8experts x96queries; not768independent questions",
+    "496=8experts x62Base-correct queries",
+    "single forced owner, development audit"
+  ]
+}
