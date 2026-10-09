@@ -1,9 +1,11 @@
 """Requalify only changed FP32 answers without changing original panel membership."""
 import os
+import sys
 import json
 import fcntl
 import time
 from pathlib import Path
+sys.path.insert(0, os.environ["RUN_ROOT"]+"/private/tools")
 import astra_queue as a
 q, RUN = a.q, a.RUN
 q.ROOT = RUN/'private/judge_fp32_astra_medium'
