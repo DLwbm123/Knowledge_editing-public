@@ -39,6 +39,8 @@ def add(before, delta):
 
 
 def plan():
+    import probe_report
+    probe_report.selfcheck()
     basis, held = split()
     groups = {x['source_group'] for x in basis + held}
     excluded = {x['source_group'] for x in c.read(RUN/'private/EVAL_LEDGER.json')['queries'].values()}
