@@ -14,6 +14,7 @@ GPUS = (2, 3, 4, 5, 6, 7)
 ARMS = ('RAW', 'PROJECTED', 'MATCHED_RAW')
 KEYS = ('G1', 'G2', 'G3', 'G4')
 VERIFY_ZERO_BASE = False
+CANDIDATE_ARM = "PROJECTED"
 
 
 def split():
@@ -115,6 +116,12 @@ def basis_gradients(runtime, hook, basis, task, params):
     return torch.stack(rows), len(basis), dict(rows=len(basis))
 
 
+def candidate_direction(runtime, hook, expert, native, before, raw, matrix):
+    delta=flatten(raw)-flatten(before)
+    value,audit=pm.project(matrix,delta)
+    return value,audit,0,0
+
+
 def one(runtime, t):
     from m3bench_repro.editors.llava_runtime import seed_everything
     seed_everything(t['seed'])
@@ -144,14 +151,14 @@ def one(runtime, t):
         groups = d.apply_direction(opt, {id(v): before[k] for k,v in expert.named_parameters()}, 'RAW')
         raw = {k:v.detach().clone() for k,v in expert.state_dict().items()}
         delta = flatten(raw) - flatten(before)
-        projected, geometry = pm.project(matrix, delta)
+        projected, geometry, extra_forwards, extra_backwards = candidate_direction(runtime, hook, expert, native, before, raw, matrix)
         candidate = add(before, projected)
         actual = flatten(candidate) - flatten(before)
         matched, matching = fm.match(before, raw, fm.map_norm(before, candidate))
         geometry.update(actual_predicted_norm=float((matrix @ actual).norm()),
             raw_predicted_norm=float((matrix @ delta).norm()),
             roundoff_parameter_norm=float((actual - projected).norm()))
-        states = dict(RAW=raw, PROJECTED=candidate, MATCHED_RAW=matched)
+        states = {'RAW':raw, CANDIDATE_ARM:candidate, 'MATCHED_RAW':matched}
         diagnostics = []
         held_groups = list(dict.fromkeys(x['source_group'] for x in held))
         for i in range(101):
@@ -181,7 +188,7 @@ def one(runtime, t):
         assert not any(v.grad is not None for v in runtime.model.parameters())
         return dict(status='COMPLETE', expert_order=t['order'], geometry=geometry,
             function_matching=matching, map_norms={k:fm.map_norm(before,v) for k,v in states.items()},
-            RAW_groups=groups, diagnostics=diagnostics, forward_calls=len(basis)+407+(101 if VERIFY_ZERO_BASE else 0), backward_calls=basis_backwards+2, basis_audit=basis_audit,
+            RAW_groups=groups, diagnostics=diagnostics, forward_calls=len(basis)+407+(101 if VERIFY_ZERO_BASE else 0)+extra_forwards, backward_calls=basis_backwards+2+extra_backwards, basis_audit=basis_audit,
             zero_expert_Base_checks=101 if VERIFY_ZERO_BASE else 0,
             candidate_optimizer_steps=1, state_restored_exact=True, baseline_repeat_exact=True,
             Base_gradient=False, lock=c.digest(c.read(RUN/'private/PROBE_LOCK.json')))
