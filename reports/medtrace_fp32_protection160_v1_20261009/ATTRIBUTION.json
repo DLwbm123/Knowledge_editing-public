@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "summary": {
+    "RAW": {
+      "target_text_equal": 6,
+      "target_phrase_present": 6,
+      "diverges_first_token": 15,
+      "damage": 18,
+      "distinct_questions": 13,
+      "affected_multiple_owners": 4,
+      "owner_multiplicity_histogram": {
+        "3": 1,
+        "1": 9,
+        "2": 3
+      }
+    },
+    "ADAM": {
+      "target_text_equal": 9,
+      "target_phrase_present": 9,
+      "diverges_first_token": 21,
+      "damage": 26,
+      "distinct_questions": 15,
+      "affected_multiple_owners": 9,
+      "owner_multiplicity_histogram": {
+        "4": 1,
+        "2": 8,
+        "1": 6
+      }
+    }
+  },
+  "RAW_damage_subset_ADAM": true,
+  "model_calls": 0,
+  "new_Judge": 0,
+  "limitation": "Normalized text and token positions only; not clinical error labels or proof of causal target intrusion",
+  "training_geometry_uses_these_errors": false
+}
