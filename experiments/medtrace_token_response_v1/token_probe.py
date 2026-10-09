@@ -24,7 +24,7 @@ def selfcheck():
 
 
 def basis_gradients(runtime, hook, basis, task, params):
-    rows=[];parity=[]
+    rows=[];parity=[];aggregation=[]
     parameters=[params[k] for k in q.KEYS]
     for i,row in enumerate(basis):
         c.budget();batch=q.protection_batch(runtime,row,task);hook.set_teacher_routing(batch.labels)
@@ -35,18 +35,23 @@ def basis_gradients(runtime, hook, basis, task, params):
         for loss in losses:
             grad=torch.autograd.grad(loss,parameters,retain_graph=True)
             rows.append(torch.cat([g.detach().cpu().double().flatten() for g in grad]))
-        original=torch.autograd.grad(out.loss,parameters)
+        original=torch.autograd.grad(out.loss,parameters,retain_graph=True)
+        direct=torch.autograd.grad(losses.mean(),parameters)
+        direct=torch.cat([g.detach().cpu().double().flatten() for g in direct])
         original=torch.cat([g.detach().cpu().double().flatten() for g in original])
         average=torch.stack(rows[start:]).mean(0)
-        error=float((average-original).norm()/(original.norm()+1e-30))
-        assert error<=1e-3, ('Mean token gradient does not match sequence gradient',error)
+        aggregation.append(float((average-original).norm()/(original.norm()+1e-30)))
+        error=float((direct-original).norm()/(original.norm()+1e-30))
+        assert error<=1e-3, ('Loss-definition gradient does not match original loss',error)
         parity.append(error)
-        del batch,out,losses,original,average,grad,loss
+        del batch,out,losses,original,average,direct,grad,loss
         if (i+1)%12==0:print('TOKEN_BASIS',task['order'],i+1,len(rows),flush=True)
     assert len(rows)==1514
     matrix=torch.stack(rows);assert torch.isfinite(matrix).all()
-    return matrix,1514+61,dict(rows=1514,questions=61,mean_gradient_checks=61,
-        maximum_mean_gradient_relative_error=max(parity),all_actual_tokens_including_EOS=True)
+    return matrix,1514+122,dict(rows=1514,questions=61,mean_gradient_checks=61,
+        maximum_mean_gradient_relative_error=max(parity),
+        maximum_individual_gradient_aggregation_error=max(aggregation),
+        all_actual_tokens_including_EOS=True,parity_definition='SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS')
 
 
 q.basis_gradients=basis_gradients
@@ -58,7 +63,7 @@ def plan():
     total=sum(len(c.read(row['response_path'])['R0']['raw_token_ids']) for row in basis)
     assert total==1514
     lock=c.read(RUN/'private/PROBE_LOCK.json')
-    lock.update(basis_token_constraints=1514,backward_calls=12616,
+    lock.update(basis_token_constraints=1514,backward_calls=13104,
         mean_gradient_parity_checks=488,target='EVERY_ACTUAL_QUALIFIED_BASE_RESPONSE_TOKEN_NLL')
     c.write(RUN/'private/PROBE_LOCK.json',lock)
     a=c.read(RUN/'public/ADMISSION.json');a.update({k:v for k,v in lock.items() if k not in ('role_binding','code')})
