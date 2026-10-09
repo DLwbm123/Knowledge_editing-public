@@ -1,0 +1,128 @@
+{
+  "status": "PASS",
+  "kind": "POSTHOC_DESCRIPTIVE_READBACK",
+  "original_aggregate_reproduced": true,
+  "rows": [
+    {
+      "mode": "RAW",
+      "absolute_KL": {
+        "minimum": 3.90541240484418e-07,
+        "median": 6.948977233153089e-06,
+        "maximum": 0.00012827167579536428
+      },
+      "argmax_changes": 0,
+      "argmax_correct": 2040,
+      "token_observations": 2040,
+      "by_step": [
+        {
+          "step": 2,
+          "KL_ratio_median": 3.4889609483221378
+        },
+        {
+          "step": 80,
+          "KL_ratio_median": 10.572967587423502
+        },
+        {
+          "step": 160,
+          "KL_ratio_median": 14.336065402738596
+        },
+        {
+          "step": 320,
+          "KL_ratio_median": 19.136902301436375
+        }
+      ],
+      "states_KL_above_Adam": 32
+    },
+    {
+      "mode": "MOMENT",
+      "absolute_KL": {
+        "minimum": 5.851590942724806e-08,
+        "median": 1.732473859629618e-06,
+        "maximum": 0.00012481293468491047
+      },
+      "argmax_changes": 0,
+      "argmax_correct": 2040,
+      "token_observations": 2040,
+      "by_step": [
+        {
+          "step": 2,
+          "KL_ratio_median": 2.7589164731836133
+        },
+        {
+          "step": 80,
+          "KL_ratio_median": 2.8446504538154787
+        },
+        {
+          "step": 160,
+          "KL_ratio_median": 2.57950869968641
+        },
+        {
+          "step": 320,
+          "KL_ratio_median": 1.7500866935946973
+        }
+      ],
+      "states_KL_above_Adam": 31
+    },
+    {
+      "mode": "PRECOND",
+      "absolute_KL": {
+        "minimum": 1.3622491961039972e-07,
+        "median": 2.8934335634574647e-06,
+        "maximum": 6.259993366310637e-05
+      },
+      "argmax_changes": 0,
+      "argmax_correct": 2040,
+      "token_observations": 2040,
+      "by_step": [
+        {
+          "step": 2,
+          "KL_ratio_median": 1.3598355114846488
+        },
+        {
+          "step": 80,
+          "KL_ratio_median": 4.506962091443041
+        },
+        {
+          "step": 160,
+          "KL_ratio_median": 5.709986212569824
+        },
+        {
+          "step": 320,
+          "KL_ratio_median": 9.385249061058254
+        }
+      ],
+      "states_KL_above_Adam": 32
+    },
+    {
+      "mode": "ADAM",
+      "absolute_KL": {
+        "minimum": 8.207241665801485e-08,
+        "median": 5.493675959764084e-07,
+        "maximum": 5.291075333853442e-05
+      },
+      "argmax_changes": 0,
+      "argmax_correct": 2040,
+      "token_observations": 2040,
+      "by_step": [
+        {
+          "step": 2,
+          "KL_ratio_median": 1.0
+        },
+        {
+          "step": 80,
+          "KL_ratio_median": 1.0
+        },
+        {
+          "step": 160,
+          "KL_ratio_median": 1.0
+        },
+        {
+          "step": 320,
+          "KL_ratio_median": 1.0
+        }
+      ],
+      "states_KL_above_Adam": 0
+    }
+  ],
+  "scope": "Repeated native/FIT teacher-forced tokens, not independent samples, free generation, or protection outcomes."
+}
