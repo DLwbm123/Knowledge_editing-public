@@ -39,6 +39,10 @@ def add(before, delta):
     return result
 
 
+def protection_batch(runtime, row, task):
+    return runtime.build_edit_batch(scoped.replay.record(row, task))
+
+
 def plan():
     import probe_report
     probe_report.selfcheck()
@@ -109,7 +113,7 @@ def one(runtime, t):
     try:
         for i, row in enumerate(basis):
             c.budget()
-            batch = runtime.build_edit_batch(scoped.replay.record(row, t))
+            batch = protection_batch(runtime, row, t)
             hook.set_teacher_routing(batch.labels)
             loss = runtime.compute_loss(batch)
             gradients = torch.autograd.grad(loss, [params[k] for k in KEYS])
@@ -150,7 +154,7 @@ def one(runtime, t):
             c.budget()
             is_edit = i < 5
             source = None if is_edit else held[i-5]
-            batch = native[i] if is_edit else runtime.build_edit_batch(scoped.replay.record(source, t))
+            batch = native[i] if is_edit else protection_batch(runtime, source, t)
             expert.load_state_dict(before)
             reference, target = logits(runtime, hook, batch, verify_base=VERIFY_ZERO_BASE)
             if i == 0:
@@ -165,14 +169,15 @@ def one(runtime, t):
             base = compare(reference, reference, target)
             diagnostics.append(dict(role='EDIT' if is_edit else 'HELDOUT_FIT', index=i if is_edit else i-5,
                 group=None if is_edit else held_groups.index(source['source_group']),
-                kind=None if is_edit else source['answer_kind'], baseline=base, candidates=values))
+                kind=None if is_edit else source['answer_kind'],
+                semantic_correct=None if is_edit else source.get('semantic_correct'), baseline=base, candidates=values))
             if (i+1) % 24 == 0:print('DIAGNOSTIC', t['order'], i+1, flush=True)
         expert.load_state_dict(before)
         assert all(torch.equal(expert.state_dict()[k], v) for k,v in before.items())
         assert not any(v.grad is not None for v in runtime.model.parameters())
         return dict(status='COMPLETE', expert_order=t['order'], geometry=geometry,
             function_matching=matching, map_norms={k:fm.map_norm(before,v) for k,v in states.items()},
-            RAW_groups=groups, diagnostics=diagnostics, forward_calls=503+(101 if VERIFY_ZERO_BASE else 0), backward_calls=98,
+            RAW_groups=groups, diagnostics=diagnostics, forward_calls=len(basis)+407+(101 if VERIFY_ZERO_BASE else 0), backward_calls=len(basis)+2,
             zero_expert_Base_checks=101 if VERIFY_ZERO_BASE else 0,
             candidate_optimizer_steps=1, state_restored_exact=True, baseline_repeat_exact=True,
             Base_gradient=False, lock=c.digest(c.read(RUN/'private/PROBE_LOCK.json')))
