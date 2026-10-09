@@ -1,0 +1,102 @@
+{
+  "status": "COMPLETE",
+  "decision": "NO_LOCAL_SUPPORT",
+  "protection": {
+    "matched_KL": 2.0490128386385387e-06,
+    "projected_KL": 1.9497534801798782e-06,
+    "mean_difference": -9.925935845866038e-08,
+    "expert_CI": [
+      -2.9919714075219674e-07,
+      9.480271457874066e-08
+    ],
+    "source_CI": [
+      -2.9990894302771923e-07,
+      1.110549956742893e-07
+    ]
+  },
+  "edit_NLL_progress": {
+    "RAW": 0.0061634977049044495,
+    "PROJECTED": 0.004704140965074859,
+    "MATCHED_RAW": 0.005280199103824946
+  },
+  "projected_edit_lost_correct_tokens": 0,
+  "resource": {
+    "cumulative_GPU_process_hours": 40.3846038229598,
+    "new_GPU_process_hours": 0.13522874626848433,
+    "cumulative_Judge": 12214,
+    "new_Judge": 0,
+    "new_generations": 0,
+    "persistent_new_checkpoints": 0,
+    "forward_calls": 4832,
+    "backward_calls": 784,
+    "temporary_optimizer_steps": 8
+  },
+  "independent_confirmation": false,
+  "clinical_protection": false,
+  "full_training_success": false,
+  "next_full_training_registered": false,
+  "initial_state": "ORIGINAL_SEEDED_ZERO_TT88",
+  "previous_joint_gate": "NO_LOCAL_SUPPORT",
+  "content_EOS_panels": {
+    "content": {
+      "initial_correct_observations": 0,
+      "initial_correct_sources": 0,
+      "all_arms": {
+        "RAW": {
+          "KL": 2.7801325357496977e-06,
+          "NLL_change": -0.0006592437630486736,
+          "lost_correct_tokens": 1
+        },
+        "PROJECTED": {
+          "KL": 2.6052869868282685e-06,
+          "NLL_change": -0.00021391985507382655,
+          "lost_correct_tokens": 3
+        },
+        "MATCHED_RAW": {
+          "KL": 2.742079348475935e-06,
+          "NLL_change": -0.0005966515979997897,
+          "lost_correct_tokens": 0
+        }
+      },
+      "initially_correct_arms": null
+    },
+    "EOS": {
+      "initial_correct_observations": 768,
+      "initial_correct_sources": 32,
+      "all_arms": {
+        "RAW": {
+          "KL": 3.284470825409887e-07,
+          "NLL_change": 3.5226458589580804e-05,
+          "lost_correct_tokens": 0
+        },
+        "PROJECTED": {
+          "KL": 3.199300924150372e-07,
+          "NLL_change": 2.797327576942429e-05,
+          "lost_correct_tokens": 0
+        },
+        "MATCHED_RAW": {
+          "KL": 3.304963381786114e-07,
+          "NLL_change": 2.0872925428374014e-05,
+          "lost_correct_tokens": 0
+        }
+      },
+      "initially_correct_arms": {
+        "RAW": {
+          "KL": 3.284470825409887e-07,
+          "lost_correct_tokens": 0
+        },
+        "PROJECTED": {
+          "KL": 3.199300924150372e-07,
+          "lost_correct_tokens": 0
+        },
+        "MATCHED_RAW": {
+          "KL": 3.304963381786114e-07,
+          "lost_correct_tokens": 0
+        }
+      }
+    }
+  },
+  "correct_content_support_gate": false,
+  "no_extra_content_loss_gate": false,
+  "zero_expert_Base_checks": 808
+}
