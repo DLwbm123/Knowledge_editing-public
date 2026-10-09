@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "same_expert_step_schedule_binding": true,
+  "reference_endpoints_exact": 16,
+  "matched_training_steps": 5120,
+  "arms": [
+    {
+      "arm": "RAW_A_SCHEDULE",
+      "steps": 2560,
+      "maximum_relative_error": 0.0009997392668474386,
+      "scale_min": 0.39404296875,
+      "scale_median": 0.67578125,
+      "scale_max": 3.0546875,
+      "final_native_FIT_all_correct": true
+    },
+    {
+      "arm": "ADAM_R_SCHEDULE",
+      "steps": 2560,
+      "maximum_relative_error": 0.000997958148814058,
+      "scale_min": 0.32861328125,
+      "scale_median": 1.1279296875,
+      "scale_max": 5.71875,
+      "final_native_FIT_all_correct": true
+    }
+  ],
+  "reference_R_over_A": {
+    "n": 2560,
+    "minimum": 0.2880637097628886,
+    "median": 1.3002426652827261,
+    "maximum": 2.1979548915284415,
+    "above_one": 1959
+  },
+  "original_decisions_preserved": true,
+  "posthoc_descriptive_only": true
+}
