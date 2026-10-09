@@ -69,7 +69,8 @@ def main():
     ledger=c.read(RUN/'RESOURCE_LEDGER.json');before=c.read(RUN/'private/INHERITED_COST.json')
     assert len(ledger['gpu_sessions'])==6 and all(x.get('ended_epoch') for x in ledger['gpu_sessions'])
     result=dict(status='COMPLETE',decision=decision,panels=panels,per_expert=paired,primary_contrast=contrast,
-        edit_correct=edit_correct,edit_denominator=40,payload_status=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),
+        edit_correct=edit_correct,edit_missing={a:sum(r['correct'] is None for r in edit if r['arm']==a) for a in ('BASE',)+ARMS},
+        edit_denominator=40,edit_correct_counts_accepted_verdicts_only=True,payload_status=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),
         generation=c.read(RUN/'private/GENERATION_COMPLETE.json'),queue=c.read(root/'READY.json'),
         baseline=dict(original_correct=63,FP32_correct=62,primary_denominator=63),
         independent_confirmation=False,clinical_protection=False,full_training_evaluated=False,
