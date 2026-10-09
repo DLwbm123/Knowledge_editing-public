@@ -7,6 +7,16 @@ q,c,p,RUN=token.q,token.c,token.p,token.RUN
 q.CANDIDATE_ARM='BOUNDED'
 
 
+def metric_rows(matrix):
+    rows=matrix[:,:512].clone();offset=0
+    basis,_=token.prior.split()
+    for row in basis:
+        n=len(c.read(row['response_path'])['R0']['raw_token_ids'])
+        rows[offset:offset+n]/=(len(basis)*n)**.5;offset+=n
+    assert offset==1514
+    return rows
+
+
 def candidate_direction(runtime,hook,expert,native,before,raw,matrix):
     assert torch.count_nonzero(before['G1'])==0
     assert all(torch.equal(before[k],raw[k]) for k in ('G2','G3','G4'))
@@ -29,13 +39,8 @@ def candidate_direction(runtime,hook,expert,native,before,raw,matrix):
     gain_norm=float(gain.norm());gain=gain/gain_norm
     raw_progress=float(gain@raw_white)*gain_norm
     assert raw_progress>1e-8, 'No positive RAW linear editing progress'
-    rows=matrix[:,:512].clone();offset=0
-    basis,_=token.prior.split()
-    for row in basis:
-        n=len(c.read(row['response_path'])['R0']['raw_token_ids'])
-        rows[offset:offset+n]/=(len(basis)*n)**.5;offset+=n
-    assert offset==1514
-    white_rows=(rows.reshape(1514,64,8)@inverse.T).reshape(1514,512)
+    rows=metric_rows(matrix)
+    white_rows=(rows.reshape(len(rows),64,8)@inverse.T).reshape(len(rows),512)
     required=.9*raw_progress/(gain_norm*radius)
     value,audit=math.solve(white_rows*radius,gain,required)
     delta=torch.zeros_like(raw_delta)

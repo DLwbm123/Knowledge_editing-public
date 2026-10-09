@@ -15,6 +15,7 @@ ARMS = ('RAW', 'PROJECTED', 'MATCHED_RAW')
 KEYS = ('G1', 'G2', 'G3', 'G4')
 VERIFY_ZERO_BASE = False
 CANDIDATE_ARM = "PROJECTED"
+DIAGNOSE_BASIS = False
 
 
 def split():
@@ -161,13 +162,15 @@ def one(runtime, t):
         states = {'RAW':raw, CANDIDATE_ARM:candidate, 'MATCHED_RAW':matched}
         diagnostics = []
         held_groups = list(dict.fromkeys(x['source_group'] for x in held))
-        for i in range(101):
+        basis_groups = list(dict.fromkeys(x['source_group'] for x in basis))
+        for i in range(101 + (len(basis) if DIAGNOSE_BASIS else 0)):
             c.budget()
             is_edit = i < 5
-            source = None if is_edit else held[i-5]
+            is_basis = i >= 101
+            source = None if is_edit else (basis[i-101] if is_basis else held[i-5])
             batch = native[i] if is_edit else protection_batch(runtime, source, t)
             expert.load_state_dict(before)
-            reference, target = logits(runtime, hook, batch, verify_base=VERIFY_ZERO_BASE)
+            reference, target = logits(runtime, hook, batch, verify_base=VERIFY_ZERO_BASE and not is_basis)
             if i == 0:
                 repeat, target2 = logits(runtime, hook, batch)
                 assert torch.equal(reference, repeat) and torch.equal(target, target2), 'Baseline repeat mismatch'
@@ -178,8 +181,8 @@ def one(runtime, t):
                 assert torch.equal(target, target2)
                 values[label] = compare(reference, value, target)
             base = compare(reference, reference, target)
-            diagnostics.append(dict(role='EDIT' if is_edit else 'HELDOUT_FIT', index=i if is_edit else i-5,
-                group=None if is_edit else held_groups.index(source['source_group']),
+            diagnostics.append(dict(role='EDIT' if is_edit else ('BASIS_FIT' if is_basis else 'HELDOUT_FIT'), index=i if is_edit else (i-101 if is_basis else i-5),
+                group=None if is_edit else (basis_groups if is_basis else held_groups).index(source['source_group']),
                 kind=None if is_edit else source['answer_kind'],
                 semantic_correct=None if is_edit else source.get('semantic_correct'), baseline=base, candidates=values))
             if (i+1) % 24 == 0:print('DIAGNOSTIC', t['order'], i+1, flush=True)
@@ -188,7 +191,7 @@ def one(runtime, t):
         assert not any(v.grad is not None for v in runtime.model.parameters())
         return dict(status='COMPLETE', expert_order=t['order'], geometry=geometry,
             function_matching=matching, map_norms={k:fm.map_norm(before,v) for k,v in states.items()},
-            RAW_groups=groups, diagnostics=diagnostics, forward_calls=len(basis)+407+(101 if VERIFY_ZERO_BASE else 0)+extra_forwards, backward_calls=basis_backwards+2+extra_backwards, basis_audit=basis_audit,
+            RAW_groups=groups, diagnostics=diagnostics, forward_calls=len(basis)+407+(101 if VERIFY_ZERO_BASE else 0)+extra_forwards+(4*len(basis) if DIAGNOSE_BASIS else 0), backward_calls=basis_backwards+2+extra_backwards, basis_audit=basis_audit,
             zero_expert_Base_checks=101 if VERIFY_ZERO_BASE else 0,
             candidate_optimizer_steps=1, state_restored_exact=True, baseline_repeat_exact=True,
             Base_gradient=False, lock=c.digest(c.read(RUN/'private/PROBE_LOCK.json')))
