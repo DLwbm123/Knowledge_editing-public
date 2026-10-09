@@ -48,7 +48,7 @@ def plan():
     c.write(RUN / 'private/HELD_BASE.json', c.read(data.PARENT / 'private/HELD_BASE.json'))
     lock = dict(arms=list(ARMS), GPUS=list(GPUS), layer=LAYER,
                 method='native W projected SGD; final-answer CE and scope supervision; Base distribution KL',
-                precision='NATIVE_FP32_LANGUAGE_FP16_VISION',native_forward=True,
+                precision='NATIVE_FULL_FP32',native_forward=True,
                 training_prefill='cached native expansion at final precision',
                 full_paper_reproduction=False, trainable='one existing down_proj.weight',
                 learning_rate=.01, gradient_norm_cap=5., maximum_step_norm=.05, kl_weight=1.,
@@ -115,7 +115,7 @@ def prepare(runtime, bindings, selected, training=False):
                      image_path=row['image_path'],prompt_ids=raw['input_ids'][0].tolist(),
                      attention_mask=raw['attention_mask'][0].tolist(),generation=runtime.generation_config,
                      runtime=dict(inherited_runtime=next(iter(bindings.values()))['runtime'],
-                                  actual_precision='NATIVE_FP32_LANGUAGE_FP16_VISION',native_forward=True,
+                                  actual_precision='NATIVE_FULL_FP32',native_forward=True,
                                   training_prefill='cached native expansion at final precision'))
         batch=cpu_batch(runtime.build_edit_batch(data.record(ts[row['owner'] or 1],row))) if training else None
         items.append((row,batch,raw,expanded,binding))
@@ -132,14 +132,9 @@ def state_schema(model):
     return [[k,list(v.shape),str(v.dtype)] for k,v in model.state_dict().items()]
 
 
-def fp32_language(runtime):
-    # Keep the original visual arithmetic; the edited language stack is FP32.
+def fp32_native(runtime):
     old.fp32(runtime)
-    model=runtime.llava_model()
-    model.get_vision_tower().half()
-    model.get_model().mm_projector.half()
-    assert all(p.dtype==torch.float16 and not p.requires_grad for p in model.get_vision_tower().parameters())
-    assert all(p.dtype==torch.float16 and not p.requires_grad for p in model.get_model().mm_projector.parameters())
+    assert not any(p.requires_grad for p in runtime.model.parameters())
 
 
 def admission(gpu):
@@ -154,7 +149,7 @@ def base():
     with c.lease(gpu):
         runtime, bindings=c.load(gpu);counts,h=counters(runtime)
         try:
-            fp32_language(runtime)
+            fp32_native(runtime)
             prepared=prepare(runtime,bindings,rows())
             for item in prepared:emit(runtime,item,'BASE',counts)
             c.write(RUN/'private/BASE_COMPLETE.json',dict(outputs=267,counts=counts,
@@ -170,7 +165,7 @@ def smoke():
         runtime,bindings=c.load(GPUS[0]);counts,h=counters(runtime)
         try:
             selected=[r for r in rows() if r['owner']==1 and r['audit_role'] in ('NATIVE','FIT','GFIT')]
-            fp32_language(runtime)
+            fp32_native(runtime)
             items=prepare(runtime,bindings,selected,True)
             protection=cpu_batch(data.q.protection_batch(runtime,data.q.split()[0][0],data.tasks()[0]))
             weight=runtime.get_module(LAYER).weight
@@ -227,7 +222,7 @@ def train():
         runtime,bindings=c.load(gpu);counts,h=counters(runtime)
         try:
             source_rows=[r for r in rows() if r['audit_role'] in ('NATIVE','FIT','GFIT')]
-            fp32_language(runtime)
+            fp32_native(runtime)
             prepared=prepare(runtime,bindings,source_rows,True)
             basis=data.q.split()[0]
             protection=[cpu_batch(data.q.protection_batch(runtime,r,data.tasks()[0])) for r in basis]
@@ -342,7 +337,7 @@ def evaluate():
     with c.lease(gpu):
         runtime,bindings=c.load(gpu);counts,h=counters(runtime)
         try:
-            fp32_language(runtime)
+            fp32_native(runtime)
             prepared=prepare(runtime,bindings,rows())
             saved=torch.load(RUN/'private/candidates'/f'{arm}.pt',map_location='cpu',weights_only=True)
             assert state_schema(runtime.model)==saved['schema']

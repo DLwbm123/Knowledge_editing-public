@@ -10,7 +10,7 @@
   ],
   "layer": "model.layers.21.mlp.down_proj",
   "method": "native W projected SGD; final-answer CE and scope supervision; Base distribution KL",
-  "precision": "NATIVE_FP32_LANGUAGE_FP16_VISION",
+  "precision": "NATIVE_FULL_FP32",
   "native_forward": true,
   "training_prefill": "cached native expansion at final precision",
   "full_paper_reproduction": false,
@@ -75,7 +75,7 @@
     "两个臂都使用作用域数据与KL，只能比较投影增量，不能独立归因锚点或KL贡献。",
     "lr=0.01、梯度范数上限5和写入上限0.05是预先固定的适配设置，不沿用原论文调参结果；不作学习率/步数/种子搜索。",
     "源题、FIT、GFIT参与训练；GFIT不是未训练泛化。T1G/T2G/96题不得进入目标、几何或参数选择；所有结果为已暴露开发证据。",
-    "语言模型FP32、原视觉塔与投影FP16；原生模型前向与生成，无推理编辑分支。所有训练输入在最终精度配置下进行原生图文展开后缓存，并以重复原生展开验证一致性；只有语言侧一个已有weight更新，参数量和形状不增加，实际训练参数量以GPU回执确认。",
+    "全模型FP32原生前向与生成，无推理编辑分支。所有训练输入在最终FP32配置下进行原生图文展开后缓存，并以重复原生展开验证一致性；视觉侧冻结，只有语言侧一个已有weight更新，参数量和形状不增加，实际训练参数量以GPU回执确认。",
     "两臂各一次真实状态连续写入8项，不是8个独立专家；不沿用TT自然路由。第8项为独立修订版，原七项及历史第8项结果不覆盖。",
     "零空间是权重几何启发式，不保证临床scope正确或整模型函数不变；非零损伤或编辑/锚点保持失败不能报成功。",
     "每20步保存活动恢复；两份最终矩阵只保留到全部prefix/final与新进程native重载和持久评分材料完成，按具体文件清单删除；共享Base、数据、环境与其他实验资产只读。",
@@ -86,6 +86,7 @@
     "failed_admission": "FP16 cache differed from final-precision native expansion",
     "formal_updates_before_repair": 0,
     "generations_before_repair": 0,
-    "failure_and_cost_retained": true
+    "failure_and_cost_retained": true,
+    "second_failed_admission": "Mixed visual dtype was incompatible with native CLIP output dtype; use full FP32 natively"
   }
 }
