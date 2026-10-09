@@ -12,7 +12,7 @@ q,c,p,RUN = prior.q,prior.c,prior.p,prior.RUN
 PARENT = Path(os.environ['CALIBRATION_PARENT'])
 SCALES = (.25,.5,1.)
 ARMS = ('RAW','BOUNDED')
-PRECISIONS = ('ORIGINAL_FP16','FP32_SAME_INPUTS')
+PRECISIONS = ('ORIGINAL_FP16','MATH_FP16','MATH_FP32')
 
 
 def package(task):
@@ -24,12 +24,13 @@ def plan():
     assert len(basis)==61 and len(held)==96 and len(q.d.selected())==8
     assert c.read(PARENT/'public/RESULTS.json')['decision']=='NO_LOCAL_SUPPORT'
     assert sum(len(c.read(x['response_path'])['R0']['raw_token_ids']) for x in basis)==1514
+    assert all(package(t).is_file() for t in q.d.selected()),'Reuse completed original candidates only'
     lock=dict(experts=8,basis_questions=61,edit_questions=5,heldout_measured=False,
         scales=[0.,*SCALES],precisions=PRECISIONS,arms=ARMS,new_candidates=0,
-        candidate_reconstructions=8,forward_calls=10102,backward_passes=19904,
-        reconstruction_forwards=544,reconstruction_backwards=15672,
-        mechanical_forwards=22,mechanical_backwards=8,
-        diagnostic_forwards=9536,diagnostic_backwards=4224,
+        candidate_reconstructions=0,inherited_fixed_candidates=8,forward_calls=13279,backward_passes=4232,
+        reconstruction_forwards=0,reconstruction_backwards=0,
+        mechanical_forwards=31,mechanical_backwards=8,
+        diagnostic_forwards=13248,diagnostic_backwards=4224,
         JVP_method='autograd.functional.jvp double backward, no random probes',
         primary_gate_unchanged='PR47 NO_LOCAL_SUPPORT; calibration is not a method success test',
         new_generations=0,new_Judge=0,temporary_candidate_packages=8,
@@ -109,16 +110,21 @@ def measure(runtime,task,mechanical=False):
     changes={arm:saved['states'][arm]['G1'].to(base)-base for arm in ARMS}
     dtypes=[(tensor,tensor.dtype) for tensor in list(runtime.model.parameters())+list(runtime.model.buffers()) if tensor.is_floating_point()]
     tf32=(torch.backends.cuda.matmul.allow_tf32,torch.backends.cudnn.allow_tf32)
+    sdp=(torch.backends.cuda.flash_sdp_enabled(),torch.backends.cuda.mem_efficient_sdp_enabled(),
+         torch.backends.cuda.math_sdp_enabled(),torch.backends.cuda.cudnn_sdp_enabled())
+    native_references={}
     rows=[];counts=dict(forward_calls=0,backward_passes=0,zero_Base_checks=0,repeat_checks=0,JVP_zero_checks=0,parent_response_checks=0)
     parent={(x['role'],x['index']):x for x in c.read(PARENT/'private/results'/f"{task['order']}.json")['diagnostics']}
     try:
         batches=cpu_batches(runtime,task,mechanical)
         for precision in PRECISIONS:
-            if precision=='FP32_SAME_INPUTS':
-                runtime.model.float()
+            if precision!='ORIGINAL_FP16':
+                torch.backends.cuda.enable_flash_sdp(False);torch.backends.cuda.enable_mem_efficient_sdp(False)
+                torch.backends.cuda.enable_cudnn_sdp(False);torch.backends.cuda.enable_math_sdp(True)
                 torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False
+            if precision=='MATH_FP32':runtime.model.float()
             dtype=next(runtime.model.parameters()).dtype
-            assert dtype==(torch.float16 if precision=='ORIGINAL_FP16' else torch.float32)
+            assert dtype==(torch.float32 if precision=='MATH_FP32' else torch.float16)
             for batch_index,(role,index,cpu,labels) in enumerate(batches):
                 c.budget();labels=labels.to(runtime.device);mask=labels[:,1:]!=-100
                 target=labels[:,1:][mask].cpu()
@@ -138,19 +144,24 @@ def measure(runtime,task,mechanical=False):
                         with torch.no_grad():unedited=forward(0.).detach().cpu().double()
                     finally:hook.enabled=True
                     assert torch.equal(reference,unedited);counts['zero_Base_checks']+=1
+                if precision=='ORIGINAL_FP16':native_references[(role,index)]=reference
+                baseline_shift=q.compare(native_references[(role,index)],reference,target)['KL']
                 for arm in ARMS:
-                    alpha=torch.zeros((),device=runtime.device,dtype=torch.float32)
-                    with torch.enable_grad():
-                        z,tangent=torch.autograd.functional.jvp(lambda a:forward(a,arm),alpha,torch.ones_like(alpha),strict=True)
-                    counts['backward_passes']+=2
-                    assert torch.equal(reference,z.detach().cpu().double())
-                    assert torch.isfinite(tangent).all();counts['JVP_zero_checks']+=1
-                    tangent=tangent.detach().cpu().double()
+                    tangent=None
+                    if precision!='ORIGINAL_FP16':
+                        alpha=torch.zeros((),device=runtime.device,dtype=torch.float32)
+                        with torch.enable_grad():
+                            z,tangent=torch.autograd.functional.jvp(lambda a:forward(a,arm),alpha,torch.ones_like(alpha),strict=True)
+                        counts['backward_passes']+=2
+                        assert torch.equal(reference,z.detach().cpu().double())
+                        assert torch.isfinite(tangent).all();counts['JVP_zero_checks']+=1
+                        tangent=tangent.detach().cpu().double();del z
                     for scale in SCALES:
                         with torch.no_grad():candidate=forward(scale,arm).detach().cpu().double()
                         response=q.compare(reference,candidate,target)
                         row=dict(precision=precision,role=role,index=index,arm=arm,scale=scale,
                             **response,**math.response_metrics(reference,candidate,tangent,scale),
+                            baseline_KL_from_native=baseline_shift,
                             sketch_quadratic=saved['sketch_predictions'][arm][index]*scale**2 if role=='BASIS' else None)
                         if precision=='ORIGINAL_FP16' and scale==1.:
                             old=parent[('BASIS_FIT' if role=='BASIS' else 'EDIT',index)]['candidates'][arm]
@@ -158,7 +169,7 @@ def measure(runtime,task,mechanical=False):
                                 assert abs(row[key]-old[key])<=1e-12,('Parent response changed',role,index,arm,key,row[key],old[key])
                             counts['parent_response_checks']+=1
                         rows.append(row)
-                    del z,tangent,candidate
+                    del tangent,candidate
                 if (batch_index+1)%12==0:print('CALIBRATION',task['order'],precision,batch_index+1,flush=True)
         assert not any(v.grad is not None for v in runtime.model.parameters())
     finally:
@@ -167,14 +178,17 @@ def measure(runtime,task,mechanical=False):
         for tensor,dtype in dtypes:
             if tensor.dtype!=dtype:tensor.data=tensor.data.to(dtype)
         torch.backends.cuda.matmul.allow_tf32,torch.backends.cudnn.allow_tf32=tf32
+        for setter,value in zip((torch.backends.cuda.enable_flash_sdp,torch.backends.cuda.enable_mem_efficient_sdp,
+                                  torch.backends.cuda.enable_math_sdp,torch.backends.cuda.enable_cudnn_sdp),sdp):setter(value)
     assert all(torch.equal(expert.state_dict()[k].cpu(),v) for k,v in saved['states']['BASE'].items())
     expected=1 if mechanical else 66
-    assert counts['forward_calls']==18*expected+4 and counts['backward_passes']==8*expected
+    assert counts['forward_calls']==25*expected+6 and counts['backward_passes']==8*expected
     assert counts['parent_response_checks']==2*expected
     return dict(status='COMPLETE',expert_order=task['order'],mechanical_only=mechanical,
         rows=rows,counts=counts,state_restored_exact=True,
         original_dtypes_restored=all(t.dtype==dtype for t,dtype in dtypes),
-        float32_scope='same stored FP16 weights and frozen FP16 multimodal embeddings cast to FP32; TF32 disabled',
+        float32_scope='MATH_FP16/MATH_FP32 share math SDPA and disabled TF32; same FP16 weight values and frozen embeddings; native FP16 has no JVP',
+        original_TF32=list(tf32),original_SDP=list(sdp),
         zero_new_optimization=True)
 
 
@@ -200,7 +214,7 @@ def worker():
 
 def controller():
     import pipeline
-    pipeline.wait([pipeline.launch('calibration_probe.py','calibration_prepare',gpu,i) for i,gpu in enumerate(q.GPUS)])
+    assert all(package(t).is_file() for t in q.d.selected()),'Recovery must reuse original candidates'
     pipeline.wait([pipeline.launch('calibration_probe.py','calibration_mechanical',2)])
     pipeline.wait([pipeline.launch('calibration_probe.py','calibration_worker',gpu,i) for i,gpu in enumerate(q.GPUS)])
     pipeline.wait([pipeline.launch('calibration_report.py','calibration_report')])

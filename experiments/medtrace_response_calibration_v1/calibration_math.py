@@ -10,13 +10,13 @@ def quadratic(reference, change):
 
 def response_metrics(reference, candidate, tangent, scale):
     observed = candidate.double() - reference.double()
-    predicted = tangent.double() * scale
+    predicted = tangent.double() * scale if tangent is not None else None
     q_observed = quadratic(reference, observed)
-    q_predicted = quadratic(reference, predicted)
-    error = quadratic(reference, observed - predicted)
+    q_predicted = quadratic(reference, predicted) if predicted is not None else None
+    error = quadratic(reference, observed - predicted) if predicted is not None else None
     return dict(observed_logit_quadratic=q_observed, JVP_quadratic=q_predicted,
                 response_error_quadratic=error,
-                relative_response_error=(error / q_observed) ** .5 if q_observed > 0 else None,
+                relative_response_error=(error / q_observed) ** .5 if q_observed > 0 and error is not None else None,
                 logit_RMS=float(observed.square().mean().sqrt()),
                 changed_logit_fraction=float((observed != 0).double().mean()))
 
@@ -33,6 +33,7 @@ def selfcheck():
         m = response_metrics(z, f(scale), tangent, scale)
         assert m['response_error_quadratic'] < 1e-30
         assert abs(m['JVP_quadratic'] - scale ** 2 * quadratic(z, direction)) < 1e-14
+    assert response_metrics(z,f(1.),None,1.)['JVP_quadratic'] is None
     epsilon = 1e-3
     lp, lq = z.log_softmax(-1), f(epsilon).log_softmax(-1)
     kl = float((lp.exp() * (lp - lq)).sum(-1).mean())
