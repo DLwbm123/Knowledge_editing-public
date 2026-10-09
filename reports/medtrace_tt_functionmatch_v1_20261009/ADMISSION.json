@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "arms": [
+    "RAW_A_SCHEDULE",
+    "ADAM_R_SCHEDULE"
+  ],
+  "primary": "RAW_A_SCHEDULE",
+  "experts": 8,
+  "phases": [
+    [
+      "original_tail",
+      320
+    ]
+  ],
+  "optimizer_steps": 10240,
+  "training_forwards": 20480,
+  "training_backwards": 20480,
+  "endpoint_rebuild_extra_steps": 5120,
+  "initial_state": "original_STAGED_220",
+  "new_generations": 220,
+  "Judge_upper_bound": 220,
+  "consumers": 7012,
+  "training_roles": [
+    "native",
+    "FIT"
+  ],
+  "replay": false,
+  "training_GPUs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "inference_GPUs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "parameters": 7168,
+  "final_TT": 16,
+  "function_matching": {
+    "metric": "TT normalized-input linear-map Frobenius change",
+    "RTOL": 0.001,
+    "ATOL": 1e-10,
+    "max_scale": 16.0,
+    "max_bisections": 32
+  },
+  "reference_trajectories": 16,
+  "reference_steps": 5120,
+  "new_trajectories": 16,
+  "diagnostic_forwards": 160,
+  "selfcheck": {
+    "status": "PASS",
+    "shrink_and_expand": true,
+    "zero_target": true,
+    "unreachable_target_stops": true,
+    "RTOL": 0.001,
+    "ATOL": 1e-10
+  },
+  "Base_lookup_unique_inputs": 110
+}
