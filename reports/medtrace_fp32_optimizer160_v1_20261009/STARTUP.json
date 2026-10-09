@@ -1,0 +1,55 @@
+{
+  "status": "RUNNING_NOT_RESULTS",
+  "source": {
+    "commit": "004005203be7e2289506c66294f3c788e515375e",
+    "branch": "experiment/medtrace-fp32-optimizer160-v1-20261009"
+  },
+  "GPU_workers_started": 6,
+  "physical_GPUs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "neutral_argv_verified": true,
+  "model_loaded_all6": true,
+  "actual_progress": [
+    {
+      "arm": "RAW",
+      "expert": 2,
+      "step": 64
+    },
+    {
+      "arm": "RAW",
+      "expert": 1,
+      "step": 64
+    },
+    {
+      "arm": "RAW",
+      "expert": 3,
+      "step": 64
+    },
+    {
+      "arm": "ADAM",
+      "expert": 2,
+      "step": 64
+    },
+    {
+      "arm": "ADAM",
+      "expert": 1,
+      "step": 64
+    },
+    {
+      "arm": "ADAM",
+      "expert": 3,
+      "step": 64
+    }
+  ],
+  "fixed_steps": 160,
+  "trajectories": 16,
+  "endpoint_generations": 80,
+  "heldout_access": false,
+  "epoch": 1791537414.291887
+}
