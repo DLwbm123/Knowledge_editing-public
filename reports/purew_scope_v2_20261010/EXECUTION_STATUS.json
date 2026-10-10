@@ -1,15 +1,21 @@
 {
-  "status": "NOT_STARTED_SERVER_UNREACHABLE",
-  "recorded_at": "2026-10-10T02:33:29Z",
+  "status": "NOT_STARTED_GPU_DRIVER_UNAVAILABLE",
+  "recorded_at": "2026-10-10T03:17:26Z",
   "CPU_checks": "PASS",
-  "GPU_admission": "NOT_CHECKED_UNREACHABLE",
+  "GPU_admission": "FAILED_DRIVER_UNAVAILABLE",
   "GPU_updates": 0,
-  "reason": "Direct SSH closes before key exchange; authorized jump reports no route; user says host may be offline.",
+  "reason": "SSH recovered after reboot. PCI sees 8 NVIDIA cards, but nvidia-smi exits9; current kernel has no nvidia module, nouveau is loaded, no /dev/nvidia devices. Administrator driver recovery is required.",
   "old_results_preserved": true,
   "host": "pro5000",
   "GPUs": [
     3,
     4
   ],
-  "automatic_next_round": false
+  "automatic_next_round": false,
+  "SSH": "REACHABLE",
+  "kernel": "6.8.0-146-generic",
+  "new_run_root_exists": false,
+  "disk_mount": "/data",
+  "disk_free": "16T",
+  "experiment_deadline_started": false
 }
