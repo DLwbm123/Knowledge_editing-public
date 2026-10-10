@@ -1,0 +1,42 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>纯 W ScopeEdit 核心传播机制：第二轮冻结协议</title>
+<style>body{max-width:980px;margin:40px auto;padding:0 24px;font:17px/1.75 system-ui;color:#172337}h1{font-size:30px}h2{font-size:22px;margin-top:32px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ced6df;padding:10px;text-align:left}pre{white-space:pre-wrap;background:#eef3f8;padding:16px;border-radius:8px}.status{border-left:5px solid #ac6a00;padding:14px;background:#fff3d8}a{color:#175ca2}</style>
+<h1>纯 W ScopeEdit 核心传播机制：第二轮冻结协议</h1>
+<p>冻结日期：2026-10-10。机器可读协议以 <a href="PROTOCOL.json">PROTOCOL.json</a> 为准；<a href="CPU_VALIDATION.json">CPU_VALIDATION.json</a> 记录本地检查。首轮 <a href="../purew_scope_v1_20261009/RESULTS.json">结果</a> 完整保留，只作历史参照。</p>
+<p class="status">当前状态：CPU 检查通过，GPU 实验尚未启动。pro5000 的 SSH 在密钥交换前关闭，经已授权跳板也无路由；用户表示服务器可能离线。尚无本轮 GPU 数值结果。</p>
+<h2>问题和可检验假设</h2>
+<p>首轮用合法作用域锚点监督，却没有实现 ScopeEdit 的证据门控、私有/共享正交写入空间与历史 RLS。本轮检验：在相同双空间和历史约束下，图文证据门控能否减少不适当共享写入，同时保持源请求与已准入锚点的连续保持。不保证正结果。</p>
+<table><tr><th>条件</th><th>GATED</th><th>ALWAYS_ON</th></tr>
+<tr><td>共享写入系数 γ</td><td>sigmoid(10(cos−0.2)) × min(norm)/max(norm)</td><td>图文证据均非零时为1</td></tr>
+<tr><td>空间、历史更新、损失、顺序、步数</td><td colspan="2">完全相同；γ 同时用于共享梯度和共享历史键权重。零模态证据使 γ=0。</td></tr>
+<tr><td>唯一正式可归因差别</td><td colspan="2">传播门控的增量。首轮投影/未投影没有重跑，跨轮差别不能单独归因。</td></tr></table>
+<h2>纯 W 写入与传播</h2>
+<p>只写原有第21层 down_proj.weight（4096×14336）。初始 Base W 的右零空间内，固定生成互相正交的448维私有基与64维共享基，随机种子20261010。基、坐标系数和历史矩阵只在编辑阶段使用，不注册模型参数，也没有额外推理模块。</p>
+<pre>W = W_base + C_private A_private + C_shared A_shared
+ΔC_private = −lr G A_privateᵀ P_private
+ΔC_shared  = −lr γ G A_sharedᵀ P_shared
+z = √ρ k
+P_next = P_old − (P_old z zᵀ P_old) / (1 + zᵀ P_old z)</pre>
+<p>对原 W 的真实前向回答损失求梯度，映射到两空间后联合裁剪范数5，以lr=0.01更新，再合并写回原 W。实际 FP32 单步 Frobenius 范数不超过0.0501（0.05加预先声明数值容差）。两臂都用此约束。</p>
+<p>γ 来自固定共享基下的图文特征：文字采用因果答案预测位置的输入均值，图像采用视觉 patch 均值；共享历史键采用按位置数量加权的多模态均值。只有一个 down_proj 被编辑，其上游冻结；真实 VLM 机械准入必须验证这些输入特征在写入前后完全一致。余弦门控不提供临床标签有效性证明。</p>
+<p>P 初始为单位阵、以FP64保存。只在每项编辑结束后更新，供下一项编辑使用，当前编辑不会预先进入自己的 P。每项7条源/FIT/GFIT历史键固定权重0.25、0.0625×4、0.25×2；共享历史权重再乘各自 γ。每项另外加入一个按固定索引选取的 BASIS 私有键。历史几何没有旧目标 CE 重放。</p>
+<h2>损失、数据角色和预算</h2>
+<p>沿用首轮已准入8项和独立修订的第8项。每步0.25源题 CE + 0.25循环 FIT CE + 0.5循环 GFIT CE，加权重1的61条 BASIS 循环 KL(Base || current)。源题、32条FIT和16条GFIT参与训练；T1G/T2G和96条保护评价题不参与训练、几何或参数选择。共享 KL 梯度也使用当步源监督的加权 γ，防止门控旁路。</p>
+<table><tr><th>冻结项</th><th>数量或限制</th></tr>
+<tr><td>正式轨迹</td><td>两臂 × 8项 × 160步 = 2560次写入；不选种子、顺序、层或检查点。</td></tr>
+<tr><td>正式反向/机械检查</td><td>10240次正式反向 + 4次同状态机械反向；两次临时写入均恢复 Base。</td></tr>
+<tr><td>生成</td><td>继承267个完整绑定的 Base；新增最多754次：216个前缀、534个终态、2个原生重载、2个跨轮 Base 源题身份探针。</td></tr>
+<tr><td>评分</td><td>1019正式消费者；原 gpt-6-astra medium 隔离协议、4分片、每输入一次。相同全绑定旧评分复用；最多752个新尝试，不重试已尝试评分。</td></tr>
+<tr><td>资源</td><td>pro5000仅GPU3/4；每张准入至少60000MiB空闲；新轮首次安装起24小时硬截止；自产状态≤2GiB，磁盘保留8GiB。累计成本继承，工程失败单独留账。</td></tr></table>
+<h2>成功与比较判据</h2>
+<p>主臂 GATED 必须满足完整分母：每项插入时及之后所有前缀的源题/GFIT正确，终态8/8源题和16/16GFIT正确；原 Base 正确保护题不新增损伤；逐编辑 T1G/T2G 不丢原 Base 正确项，整体 T2G 超过 Base；模型参数键、形状、数量不变，并通过无编辑分支的新进程原生重载。缺评分不能判成功，平均提升不能抵消单项失败。</p>
+<p>传播门控的优势另行判断：至少一个登记行为面板提高，且源/GFIT/T1G/T2G或 Base 正确保护题没有任何“恒开臂正确、门控臂错误”的逐题退化。两臂持平不建立门控优势。所有结论仅为已暴露 DEV 证据。</p>
+<h2>恢复、日志和资产生命周期</h2>
+<p>绑定验证的阶段回执跳过已完成阶段；通过 PID 与 start_ticks 采纳仍在运行的自身进程。每步原子提交坐标/P状态并 fsync，状态作为提交依据；若提交后日志未写入，恢复时补写最后一条事件。每次调用尝试和失败另存，不清零成本。已有生成按原绑定读取，不重生成。</p>
+<p>每步 loss、γ、写入范数与每编辑历史几何独立存储，不随矩阵清理。基和参考缓存消费至训练；活动状态消费至完成训练；终态 W 消费至所有前缀/终态/原生重载通过，并已有持久完整评分输入。删除前保存具体自产路径清单，删除后保存回执；小型诊断、评分输出、失败与累计账本保留。历史轮资产、共享模型/数据/环境只读。</p>
+<h2>与原论文/作者代码的适配边界</h2>
+<p>参照 <a href="https://arxiv.org/html/2607.01978v1">ScopeEdit 公式14–24</a>；作者代码检查版本 <a href="https://github.com/lab-klc/ScopeEdit/tree/e90aa1326ab1e2200e9dd8b9d9e4ed98c2102a6f">e90aa13</a>。本轮采用论文的 √ρ 历史更新；作者代码使用不同的归一化和分支处理，不能宣称数值逐行等价。作者低秩分支的有效 W 在本轮显式合并，原生推理仅使用原 W。</p>
+<p>固定单层、固定 Base 权重零空间和医疗图文特征池化均为适配。没有 LOKI 动态 HSIC 选层、Adam累积位移约束，也没有 DOW-KE 多层输入/输出保护参数化；DOW-KE作者代码未找到，不声称三方法完整复现。CPU 等价检查不能替代真实 VLM 准入、独立临床验证或 SOTA 对照。</p>
+<h2>执行与公开交付</h2>
+<p>入口 <code>experiments/purew_scope_v2/deploy.py</code> 经中性入口运行，gpu阶段只部署并启动固定有限链，score阶段在生成完成后启动现有隔离评分器。私有运行资产仅在服务器，新轮不公开医疗问题、图像、回答、标签或路径。完成后发布匿名聚合结果、报告及复现代码，并通过显式代理验证GitHub推送和匿名访问。</p>
+</html>

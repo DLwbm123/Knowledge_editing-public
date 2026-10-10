@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "checks": {
+    "math": {
+      "status": "PASS",
+      "merged_forward": true,
+      "dense_branch_gradient": true,
+      "recursive_inverse": true,
+      "zero_gate_skips_geometry": true,
+      "aligned_conflict_weak_evidence": true,
+      "causal_feature_mask": true,
+      "checkpoint_reconstruction_exact": true,
+      "step_cap": true
+    },
+    "journal": {
+      "status": "PASS",
+      "binding_rejection": true,
+      "checkpoint_log_gap_repaired": true,
+      "completed_receipt_skipped": true,
+      "dead_process_rejected": true
+    },
+    "recovery": {
+      "status": "PASS",
+      "interrupted_trajectory_bit_exact": true,
+      "loss_sequence_exact": true,
+      "native_reload_exact": true,
+      "no_added_parameters": true,
+      "event_gap_repaired": true,
+      "basis": {
+        "orthogonal_max_error": 1.1920928955078125e-07,
+        "relative_null_error": 1.248958199084882e-07,
+        "seed": 7,
+        "fixed_initial_weight_nullspace": true
+      }
+    },
+    "scoring_inheritance": {
+      "status": "PASS",
+      "new_opaque_id_reuses_exact_score": true,
+      "changed_tokens_rejected": true,
+      "unisolated_evidence_rejected": true
+    },
+    "completed_controller": {
+      "status": "PASS",
+      "reentry_launches_zero_workers": true
+    }
+  },
+  "protocol_idempotent": true
+}
