@@ -1,0 +1,16 @@
+{
+  "status": "REPAIR_VALIDATED",
+  "failure": "Controller exited on missing inherited STAGE_CAP.json",
+  "repair": "Install inherited unlimited GPU-time compatibility cap before starting controller; accurately label existing frozen wall and Judge limits",
+  "scientific_protocol_changed": false,
+  "deadline_reset": false,
+  "admission_restarted": false,
+  "original_failure_and_logs_retained": true,
+  "checks": {
+    "status": "PASS",
+    "missing_cap_installed": true,
+    "existing_cap_preserved": true
+  },
+  "controller_recovery_preflight": "Live owned GPU stage may be adopted without demanding another 60000MiB; fresh stages still require GPU admission",
+  "adoption_check": "PASS live own identity accepted; dead/foreign/completed rejected"
+}

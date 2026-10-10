@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-10",
+  "scope": "read-only paper and author-code audit; no model training, generation, scoring or method-code modification",
+  "executed_commit": "c5aa524",
+  "reviewed_commit": "058f90415ef6bcc79666410992dbe3075a233250",
+  "conclusion": "Declared direct-W prototype has consistent causal CE, Base-to-current KL, right-nullspace SGD and native weight deployment. It is not the core algorithms of all three papers combined.",
+  "sources": [
+    {
+      "method": "LOKI",
+      "paper": "https://arxiv.org/abs/2606.19679v1",
+      "repo": "neu-spiral/LOKI",
+      "commit": "bbb5819be8af00ff5ae9708bb02734cc70958c4c",
+      "checked": [
+        "easyeditor/models/loki/loki_main.py",
+        "easyeditor/models/loki/hsic.py",
+        "hparams/LOKI/zsre_llama3-8b.yaml"
+      ]
+    },
+    {
+      "method": "ScopeEdit",
+      "paper": "https://arxiv.org/abs/2607.01978v1",
+      "repo": "lab-klc/ScopeEdit",
+      "commit": "e90aa1326ab1e2200e9dd8b9d9e4ed98c2102a6f",
+      "checked": [
+        "easyeditor/trainer/algs/MORE.py",
+        "easyeditor/util/lora_layers.py",
+        "hparams/TRAINING/MORE/llava15_scopeedit.yaml"
+      ]
+    },
+    {
+      "method": "DOW-KE",
+      "paper": "https://arxiv.org/html/2608.16932v1",
+      "author_code_status": "NOT_LOCATED: no author code link in current paper; exact-title repository and web searches did not establish an official implementation. Paper formula audit only."
+    }
+  ],
+  "cpu_checks": {
+    "existing_selfcheck": "PASS",
+    "fixed_projection_plain_SGD_in_graph_gradient_parity": "PASS",
+    "fixed_boundary_cumulative_nullspace": "PASS",
+    "causal_target_mask_positions": "PASS",
+    "KL_Base_to_current_manual_parity": "PASS",
+    "controller_reentry_stub": "reproduces unconditional smoke/base launch despite completed Base"
+  },
+  "verified_runtime_receipts": {
+    "weight_shape": [
+      4096,
+      14336
+    ],
+    "trainable_existing_parameters": 58720256,
+    "parameters_before_after": 7566219264,
+    "added_parameters": 0,
+    "formal_updates": 2560,
+    "backwards": 10244,
+    "native_reload_both": true,
+    "noneditable_parameter_versions_verified": true,
+    "actual_generation": 1019
+  },
+  "findings": [
+    {
+      "id": "M1",
+      "type": "mechanism omission, not a violation of the frozen adaptation protocol",
+      "title": "ScopeEdit scope-control algorithm is absent",
+      "evidence": "Current run.py:275-288 uses fixed source/FIT/GFIT CE and global Base KL; no modality evidence gate, local/shared orthogonal spaces or branch-wise recursive preconditioners. Author lora_layers.py:1063-1128,1234-1269 implements gate and distinct updates.",
+      "consequence": "Trained anchors constrain sampled behavior, but do not implement evidence-dependent propagation boundaries.",
+      "minimum_action": "Describe this as scope-supervised direct-W editing. A faithful scope mechanism requires a separate frozen design and parity validation; do not modify this completed round."
+    },
+    {
+      "id": "M2",
+      "type": "deliberate optimizer/search-space adaptation",
+      "title": "LOKI author implementation differs from its algorithm sketch and from this prototype",
+      "evidence": "Author loki_main.py:396 uses Adam;525-538 projects cumulative displacement from edit-boundary weights;549-556 bounds cumulative Frobenius displacement by eps times boundary-weight norm. Current purew_math.py:25-27 uses projected SGD with per-step cap0.05; no cumulative radius. Author null_dim1000 versus this full right nullspace10240; dynamic HSIC selection and HSIC loss omitted.",
+      "consequence": "Cannot attribute the behavior to the original LOKI optimizer or trust constraint. Norm0.05 in this protocol is an absolute per-step bound, not a5percent cumulative weight-relative bound.",
+      "minimum_action": "State all differences explicitly; if comparing original LOKI later, preserve its parameterization/optimizer/constraint and use a separately registered comparison."
+    },
+    {
+      "id": "M3",
+      "type": "partial principle transfer and missing author-code verification",
+      "title": "DOW-KE final-forward principle retained; preservation parameterization absent",
+      "evidence": "Paper equations9-10 use multiple layers, Delta=P_out A B with fixed edit-key/preservation basis and subject-position backward routing. This prototype has one dense W, a weight-derived right projector and response-prefix KL. Author code not located.",
+      "consequence": "End-to-end CE alone does not implement DOW-KE input/output protection or cross-layer coupling. Post-backward projection itself is consistent with fixed-subspace plain SGD; it is not an observed closure bug.",
+      "minimum_action": "Label DOW-KE-inspired final-output objective only; do not claim author-code audit or full reproduction."
+    },
+    {
+      "id": "E1",
+      "type": "P2 future engineering recovery defect",
+      "title": "Top-level controller is not stage-aware on reentry",
+      "evidence": "run.py:361-370 launches smoke/Base/train/eval unconditionally; base:154 emits every output and emit:87 rejects existing outputs; train:219 rejects completed candidate. Controller assertions375-376 do not distinguish failed/replayed work from committed formal work.",
+      "consequence": "A restart after Base completion stops at existing output instead of resuming remaining stages; replayed partial steps can invalidate exact cost-count assertions. No such formal training interruption is documented in this completed run.",
+      "minimum_action": "Gate stages by binding-validated completion receipts, skip completed Base consumers, dispatch only unfinished arms and separate spent attempts from committed updates; preserve old failures/costs."
+    },
+    {
+      "id": "E2",
+      "type": "P2 historical diagnostic retention defect, future logging added after completion",
+      "title": "Per-step loss/gradient trace was retired with matrices",
+      "evidence": "Executed c5aa524 stored trace only in active/candidate matrices; controller later deleted all4 matrices. Latest run.py:319 adds a separate JSON write, the only algorithm-driver difference between c5aa524 and058f904.",
+      "consequence": "Cannot now reconstruct per-step KL, update magnitudes, accumulated displacement or actual FP32 projection residuals from full traces. Terminal receipts, periodic logs and generated outputs remain.",
+      "minimum_action": "Keep the new diagnostic logging for future runs; retain small summaries before cleanup. Do not rebuild weights or rerun the completed experiment to fill missing history."
+    }
+  ],
+  "limitations": [
+    "No GPU/model rerun; no reproduction on authors original datasets or checkpoints.",
+    "DOW-KE author code not located.",
+    "Deleted checkpoints and full training traces prevent retrospective tensor-level trajectory verification.",
+    "Two-arm design identifies only projection increment conditional on shared anchors/KL; not their independent effects.",
+    "DEV success is neither faithful three-paper reproduction nor independent clinical or SOTA evidence."
+  ],
+  "author_paper_code_differences": [
+    {
+      "method": "LOKI",
+      "evidence": "Paper Algorithm1 projects and clips gradients; author loki_main.py:396,525-556 uses Adam and projects/bounds cumulative displacement. Specify paper versus author-code reference before any faithful comparison."
+    },
+    {
+      "method": "ScopeEdit",
+      "evidence": "Paper Eq20 defines gamma=sigmoid(beta(cos-tau))*support and Eq23 weights keys by sqrt(gamma). Author lora_layers.py:1111-1118 additionally splits gamma by modality norm and normalizes mixed q;1234-1269 sends gamma_self as write scale, while1001-1023 updates P with q without an explicit sqrt(scale). Static implementation is not a literal transcription; not claiming an author-method bug without a runtime derivation/parity test."
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "GATED": {
+    "TRAIN": {
+      "status": "TRAINED_NOT_EVALUATED",
+      "ordered_edits": 8,
+      "trace_updates": 1280,
+      "committed_updates": 1280,
+      "diagnostic_events": 1280,
+      "trainable_parameters": 58720256,
+      "parameters_before": 7566219264,
+      "parameters_after": 7566219264,
+      "added_parameters": 0,
+      "noneditable_versions_verified": true,
+      "history_replay": false,
+      "deployment": "original W only",
+      "fixed_dual_geometry": true
+    },
+    "EVAL": {
+      "outputs": 267,
+      "native_fresh_reload_tokens_equal": true,
+      "added_parameters": 0,
+      "editor_math_imported": false,
+      "inference_structure_unchanged": true
+    }
+  },
+  "ALWAYS_ON": {
+    "TRAIN": {
+      "status": "TRAINED_NOT_EVALUATED",
+      "ordered_edits": 8,
+      "trace_updates": 1280,
+      "committed_updates": 1280,
+      "diagnostic_events": 1280,
+      "trainable_parameters": 58720256,
+      "parameters_before": 7566219264,
+      "parameters_after": 7566219264,
+      "added_parameters": 0,
+      "noneditable_versions_verified": true,
+      "history_replay": false,
+      "deployment": "original W only",
+      "fixed_dual_geometry": true
+    },
+    "EVAL": {
+      "outputs": 267,
+      "native_fresh_reload_tokens_equal": true,
+      "added_parameters": 0,
+      "editor_math_imported": false,
+      "inference_structure_unchanged": true
+    }
+  },
+  "new_valid": 109,
+  "failed_batch_sizes": [
+    50,
+    15
+  ],
+  "binding_audit": "PASS",
+  "failure_receipts": 4,
+  "base_identity": true,
+  "status": "AUDIT_PASS_WITH_MISSING_JUDGE",
+  "new_attempts": 174,
+  "old_exact_scores_reused": 352,
+  "missing_payloads": 65,
+  "missing_consumers": 145,
+  "formal_consumers": 1019,
+  "scored_consumers": 874,
+  "pending_or_reserved": 0,
+  "judge_model": "gpt-6-astra",
+  "reasoning_effort": "medium",
+  "judge_retry": false,
+  "failed_transport_batches": 2,
+  "failed_transport_message": "Connection failed: error sending request",
+  "mechanical": {
+    "status": "PASS",
+    "reports": [
+      {
+        "arm": "GATED",
+        "gamma": 0.36615972593426704,
+        "actual_step_norm": 0.022976240143179893,
+        "coordinate_gradient_norm": 2.2976233959198,
+        "proposed_step_norm": 0.022976236417889595
+      },
+      {
+        "arm": "ALWAYS_ON",
+        "gamma": 1.0,
+        "actual_step_norm": 0.024496784433722496,
+        "coordinate_gradient_norm": 2.4496781826019287,
+        "proposed_step_norm": 0.024496784433722496
+      }
+    ],
+    "geometry": {
+      "orthogonal_max_error": 5.364418029785156e-07,
+      "relative_null_error": 2.4720517899368133e-07,
+      "seed": 20261010,
+      "fixed_initial_weight_nullspace": true
+    },
+    "exact_native_Base_identity": true,
+    "feature_invariance_exact": true,
+    "parameters": 7566219264,
+    "added_parameters": 0,
+    "trainable_parameter_count": 58720256,
+    "counts": {
+      "forwards": 260,
+      "backwards": 4,
+      "updates": 0,
+      "generations": 2,
+      "generation_attempts": 2
+    }
+  },
+  "all_owned_GPU_sessions_ended": true,
+  "all_4_local_scorer_workers_ended": true,
+  "weights_peak_bytes": 1644945101,
+  "clinical_material_public": false,
+  "third_party_snapshot_public": false,
+  "scientific_changes_after_freeze": false,
+  "training_repeated": false,
+  "deadline_reset": false,
+  "engineering_commits": [
+    "559bb72",
+    "30a369a",
+    "3626c1a"
+  ],
+  "scientific_training_code_commit": "55e14bd",
+  "log_retention": "All failures, step events, geometry, generation and Judge evidence retained privately; anonymized aggregates public",
+  "failure_note": "4 remote GPU-chain engineering failure receipts retained; 2 failed evaluations before model loading produced 0 final outputs. Scoring transport failures are separate.",
+  "counter_note": "Forward counters include autoregressive decode forwards; they are not the non-generation-forward budget.",
+  "first_round_cost": {
+    "new_GPU_process_hours": 2.0967058531443277,
+    "cumulative_GPU_process_hours": 57.05930295785268,
+    "new_Judge": 465,
+    "cumulative_Judge": 13614,
+    "owned_weights_remaining": 0
+  },
+  "second_round_cost": {
+    "new_GPU_process_hours": 2.0715018160475624,
+    "cumulative_GPU_process_hours": 59.130804773900245,
+    "new_Judge": 174,
+    "cumulative_Judge": 13788,
+    "owned_weights_remaining": 0
+  },
+  "deletion": {
+    "files": 122,
+    "bytes": 713661672,
+    "retained_copy": false,
+    "reconstruction": "rerun frozen sequence; no deployed matrix retained",
+    "diagnostics_retained": true
+  }
+}
