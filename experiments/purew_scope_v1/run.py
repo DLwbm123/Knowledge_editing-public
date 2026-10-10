@@ -316,6 +316,7 @@ def train():
                 done=owner
             weight.requires_grad_(False)
             assert not any(p.requires_grad or p.grad is not None for p in runtime.model.parameters())
+            c.write(RUN/'private/training_diagnostics'/f'{arm}.json',trace)
             c.save(dest,dict(weight=weight.detach().cpu(),schema=schema,parameter_count=count_parameters,
                             trainable_parameter_count=weight.numel(),layer=LAYER,trace=trace,
                             lock=c.digest(c.read(RUN/'private/LOCK.json'))))
