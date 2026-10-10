@@ -1,21 +1,39 @@
 {
-  "status": "NOT_STARTED_GPU_DRIVER_UNAVAILABLE",
-  "recorded_at": "2026-10-10T03:17:26Z",
+  "status": "RUNNING_TRAINING",
+  "recorded_at": "2026-10-10T06:15:38.935695+00:00",
   "CPU_checks": "PASS",
-  "GPU_admission": "FAILED_DRIVER_UNAVAILABLE",
-  "GPU_updates": 0,
-  "reason": "SSH recovered after reboot. PCI sees 8 NVIDIA cards, but nvidia-smi exits9; current kernel has no nvidia module, nouveau is loaded, no /dev/nvidia devices. Administrator driver recovery is required.",
-  "old_results_preserved": true,
+  "GPU_admission": "PASS",
+  "mechanical_admission": "PASS",
+  "exact_native_Base_identity": true,
+  "feature_invariance_exact": true,
+  "added_parameters": 0,
+  "parameters": 7566219264,
+  "formal_committed_updates_at_start": 0,
   "host": "pro5000",
   "GPUs": [
     3,
     4
   ],
-  "automatic_next_round": false,
+  "arms": [
+    "GATED",
+    "ALWAYS_ON"
+  ],
   "SSH": "REACHABLE",
-  "kernel": "6.8.0-146-generic",
-  "new_run_root_exists": false,
-  "disk_mount": "/data",
-  "disk_free": "16T",
-  "experiment_deadline_started": false
+  "driver": "AVAILABLE",
+  "new_run_root_exists": true,
+  "old_results_preserved": true,
+  "experiment_deadline_started": true,
+  "started_at_beijing": "2026-10-10T14:11:55+08:00",
+  "deadline_at_beijing": "2026-10-11T14:11:55+08:00",
+  "installed_research_code_commit": "55e14bd",
+  "installer_recovery_commit": "30a369a",
+  "controller_initial_pid": 147747,
+  "controller_start_ticks": "373970",
+  "initial_training_pids": [
+    147748,
+    147749
+  ],
+  "engineering_failures_retained": true,
+  "automatic_next_round": false,
+  "not_final_results": true
 }
