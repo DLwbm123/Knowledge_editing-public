@@ -17,6 +17,12 @@ def remote(code):
         input=code,capture_output=True,text=True,check=True,timeout=60).stdout)
 
 
+def scorer_alive(worker, identity):
+    fields=identity.split()
+    # macOS Python execs its framework binary; birth time and neutral entry remain fixed.
+    return len(fields)==8 and fields[:5]==worker['process_identity'].split()[:5] and fields[-2:]==['-u',worker['entry']]
+
+
 def gpu():
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=WORK,text=True).strip()
     assert not subprocess.check_output(['git','status','--porcelain','--','experiments/purew_scope_v2','reports/purew_scope_v2_20261010'],cwd=WORK,text=True).strip(),'Publish frozen files before launch'
@@ -41,7 +47,7 @@ def score():
         old=next((w for w in prior.get('workers',[]) if w['worker']==worker),None)
         if old:
             found=subprocess.run(['ps','-ww','-p',str(old['pid']),'-o','lstart=,args='],capture_output=True,text=True).stdout.strip()
-            if found==old['process_identity']:
+            if scorer_alive(old,found):
                 workers.append(old);continue
         folder=root/str(worker);folder.mkdir(mode=0o700,exist_ok=True)
         if old:
