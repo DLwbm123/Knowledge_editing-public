@@ -8,7 +8,7 @@ import sqlite3
 import tempfile
 from types import SimpleNamespace
 import torch
-import scope_math as sm
+import propagation_math as sm
 import journal as j
 from protocol import specification
 

@@ -1,0 +1,13 @@
+{
+  "status": "CODE_REPAIR_SYNTAX_PASS_GPU_RESUME_PENDING",
+  "failure": "Two evaluation workers exited before native runtime load because inherited data helper imported scope_math, colliding with round2 module name",
+  "repair": "Rename own editing math to propagation_math; retain inherited helper scope_math under its original name; fresh evaluation must not import propagation_math",
+  "mathematics_changed": false,
+  "trained_weights_changed": false,
+  "scientific_protocol_changed": false,
+  "committed_training_repeated": false,
+  "completed_generation_repeated": false,
+  "failed_evaluation_generated_outputs": 0,
+  "original_failures_retained": true,
+  "deadline_reset": false
+}

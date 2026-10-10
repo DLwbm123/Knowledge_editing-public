@@ -26,7 +26,7 @@ def is_done(name): return j.completed(RUN/'private'/name,binding())
 
 
 def plan():
-    import scope_math as sm
+    import propagation_math as sm
     if (RUN/'private/LOCK.json').exists() and (RUN/'private/PLAN_COMPLETE.json').exists():
         assert c.read(RUN/'private/LOCK.json')['epoch']=='PUREW_SCOPE_V2_20261010'
         assert c.read(RUN/'private/LOCK.json')==c.read(RUN/'public/PROTOCOL.json')
@@ -89,7 +89,7 @@ def emit(runtime,item,stage,count,persist):
 
 def admission():
     from purew_math import target_logits,preservation_kl
-    import scope_math as sm
+    import propagation_math as sm
     if is_done('MECHANICAL_COMPLETE.json'):return
     c.available=v1.admission
     with c.lease(GPUS[0]):
@@ -198,7 +198,7 @@ def admission():
 
 def train():
     from purew_math import target_logits,preservation_kl
-    import scope_math as sm
+    import propagation_math as sm
     part=int(os.environ['PARTITION']);arm=ARMS[part];gpu=GPUS[part]
     if is_done(f'TRAIN_COMPLETE_{arm}.json'):return
     assert is_done('MECHANICAL_COMPLETE.json')
@@ -336,7 +336,7 @@ def train():
 def evaluate():
     part=int(os.environ['PARTITION']);arm=ARMS[part];gpu=GPUS[part]
     if is_done(f'EVAL_COMPLETE_{arm}.json'):return
-    assert is_done('CANDIDATES_FROZEN.json') and 'scope_math' not in __import__('sys').modules
+    assert is_done('CANDIDATES_FROZEN.json') and 'propagation_math' not in __import__('sys').modules
     c.available=v1.admission
     with j.exclusive(RUN/'private/locks'/f'{arm}.lock'),c.lease(gpu):
         runtime,bindings=c.load(gpu);count,h,persist=tracked(runtime,'eval_'+arm)
