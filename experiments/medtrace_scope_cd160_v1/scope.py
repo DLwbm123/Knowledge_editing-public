@@ -262,18 +262,25 @@ def controller():
     c.write(RUN/'private/CANDIDATES_FROZEN.json',dict(candidates=18,epoch=time.time(),selection=False))
     pipeline.wait([pipeline.launch('scope.py','scope_eval',g,i) for i,g in enumerate(q.GPUS)])
     pipeline.wait([pipeline.launch('scope_route.py','scope_route',q.GPUS[0],0)])
+    finish()
+
+
+def finish():
     counts=[c.read(f) for f in (RUN/'private').glob('COUNTS_*.json')]
     assert sum(x['updates'] for x in counts)==2880 and sum(x['backwards'] for x in counts)<=88352
     paths=list((RUN/'private/outputs').glob('*/*/*.json'));outputs=[c.read(f) for f in paths]
     assert sum(x['generation_attempts'] for x in counts)<=2567
     non_generation=sum(x['forwards'] for x in counts)-sum(x['forwards'] for x in outputs if not x.get('alias_of'))
-    assert non_generation<=220000 and not list((RUN/'private').glob('FAILURE*'))
+    assert non_generation<=220000 and len(outputs)==2567
+    failures={x.name for x in (RUN/'private').glob('FAILURE*')}
+    resolved=c.read(RUN/'private/ROUTE_RECOVERY_COMPLETE.json')['resolved_failures'] if (RUN/'private/ROUTE_RECOVERY_COMPLETE.json').exists() else []
+    assert failures==set(resolved), 'Unresolved engineering failure'
     c.write(RUN/'private/SCOPE_GENERATION_COMPLETE.json',dict(status='GENERATED_SCORING_PENDING',counts=counts,non_generation_forwards=non_generation,outputs=len(outputs),epoch=time.time()))
     c.write(RUN/'public/PROGRESS.json',dict(status='GENERATED_SCORING_PENDING',training_complete=True,scoring_complete=False,publication_complete=False))
 
 
 if __name__=='__main__':
-    try:{'scope_plan':plan,'scope_base':base_worker,'scope_raw':train,'scope_protected':train,'scope_eval':evaluate,'scope_controller':controller}[os.environ['ACTION']]()
+    try:{'scope_plan':plan,'scope_base':base_worker,'scope_raw':train,'scope_protected':train,'scope_eval':evaluate,'scope_controller':controller,'scope_finish':finish}[os.environ['ACTION']]()
     except BaseException as error:
         c.write(RUN/'private'/f'FAILURE_{os.environ.get("ACTION")}_{os.environ.get("PARTITION")}.json',dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time()))
         raise

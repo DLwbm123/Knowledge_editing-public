@@ -14,6 +14,7 @@ def main():
     assert len(rows)==219
     with s.p.lease(gpu):
         runtime,bindings=s.c.load(gpu);entries=[]
+        route_layer=runtime.target_lock['balancedit']['targets'][0]
         for old,new in zip(original,ts):
             state=s.p.load_state(s.p.initial(old).parent.parent/'ROUTER.pt')
             assert len(state['entries'])==1
@@ -25,7 +26,8 @@ def main():
         try:
             for t,row in rows:
                 batch=runtime.build_question_batch(s.record(t,row))
-                with torch.inference_mode():key=runtime.extract_layer_input_key(batch,module_path=s.c.LAYER,pooling='mean')
+                with torch.inference_mode():key=runtime.extract_layer_input_key(batch,module_path=route_layer,pooling='mean')
+                assert key.numel()==router.keys[0].numel()==4096
                 decision=decision_as_json(router.route(key));prepared.append((t,s.prepare(runtime,bindings,t,[row])[0],decision))
             s.c.write(s.RUN/'private/ROUTES.json',dict(rows=[dict(query_id=item[0]['query_id'],route=d) for _,item,d in prepared],
                 owner8_key='ORIGINAL_V0_KEY_AND_RADIUS_RETAINED; ONLY_LOGICAL_ID_RENAMED',new_anchor_calibration=False))
