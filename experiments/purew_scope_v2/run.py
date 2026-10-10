@@ -208,6 +208,9 @@ def train():
         try:
             v1.fp32_native(runtime);weight=runtime.get_module(v1.LAYER).weight
             base=weight.detach().clone();schema=v1.state_schema(runtime.model);identity=id(weight)
+            parameters_before=sum(p.numel() for p in runtime.model.parameters())
+            assert schema==c.read(RUN/'private/BASE_COMPLETE.json')['schema']
+            assert parameters_before==c.read(RUN/'private/BASE_COMPLETE.json')['parameters']==7566219264
             frozen={n:p._version for n,p in runtime.model.named_parameters() if p is not weight}
             buffers={n:b.detach().clone() for n,b in runtime.model.named_buffers()}
             geom=torch.load(RUN/'private/GEOMETRY.pt',map_location='cpu',weights_only=True);assert geom['lock']==binding()
@@ -323,7 +326,8 @@ def train():
                 assert torch.equal(saved['weight'],weight.detach().cpu())
             done(f'TRAIN_COMPLETE_{arm}.json',status='TRAINED_NOT_EVALUATED',ordered_edits=8,
                  trace_updates=1280,committed_updates=1280,diagnostic_events=1280,counts=count,
-                 trainable_parameters=weight.numel(),parameters_before=7566219264,parameters_after=7566219264,
+                 trainable_parameters=weight.numel(),parameters_before=parameters_before,
+                 parameters_after=sum(p.numel() for p in runtime.model.parameters()),
                  added_parameters=0,noneditable_versions_verified=True,history_replay=False,
                  deployment='original W only',fixed_dual_geometry=True)
         finally:h.remove();persist()
