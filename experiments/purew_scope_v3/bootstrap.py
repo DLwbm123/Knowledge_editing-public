@@ -56,7 +56,9 @@ with namespace['exclusive'](root/'private/locks/install.lock'):
         write(root/'private/INHERITED_COST.json',inherited)
         write(root/'private/INHERITED_RUN.json',dict(root=str(parent),read_only=True))
         write(root/'RESOURCE_LEDGER.json',inherited)
-        manifest=dict(read(parent/'RUN_MANIFEST.json'),stage='purew_scope_v3',started_epoch=time.time(),deadline_epoch=time.time()+24*3600,
+        installed=time.time()
+        manifest=dict(read(parent/'RUN_MANIFEST.json'),stage='purew_scope_v3',starting_epoch=installed,started_epoch=installed,deadline_epoch=installed+24*3600,
+            physical_GPUs=[5],max_training_GPUs=1,max_training_workers=1,hourly_monitor_authorized=False,
             wall_limit_enabled=True,Judge_limit_enabled=True,
             GPU_seconds_limit=10**18,GPU_time_limit_enabled=False,Judge_limit=inherited['Judge_attempts']+1880,
             owned_weight_limit_bytes=2*1024**3,min_free_bytes=8*1024**3)
