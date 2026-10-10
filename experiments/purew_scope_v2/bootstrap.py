@@ -80,8 +80,12 @@ with namespace['exclusive'](root/'private/locks/install.lock'):
         for gpu in (3,4):
             row=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=uuid,memory.free','--format=csv,noheader,nounits'],text=True).strip().split(', ')
             assert row[0]==read(root/'PLAN_CONFIG.json')['hardware']['UUIDs'][str(gpu)]
-            assert int(row[1])>=60000,'Wait for sufficient free memory; never stop other jobs'
-            observations[str(gpu)]=dict(uuid=row[0],free_MiB=int(row[1]))
+            owned=[s for s in read(root/'RESOURCE_LEDGER.json')['gpu_sessions']
+                   if not s.get('ended_epoch') and s['gpu_uuid']==row[0]
+                   and s['action'] in ('scope_admission','scope_train','scope_eval') and alive(s)]
+            # A recovered controller adopts the live stage that already passed GPU admission.
+            assert int(row[1])>=60000 or owned,'Wait for sufficient free memory; never stop other jobs'
+            observations[str(gpu)]=dict(uuid=row[0],free_MiB=int(row[1]),adopted_PIDs=[s['pid'] for s in owned])
         env['ACTION']='scope_controller'
         child=subprocess.Popen([env['TRAIN_PYTHON'],'-u',entry],env=env,stdout=(root/'logs/controller.log').open('ab'),stderr=subprocess.STDOUT,start_new_session=True)
         ticks=Path(f'/proc/{child.pid}/stat').read_text().rsplit(')',1)[1].split()[19]
