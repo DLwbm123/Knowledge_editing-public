@@ -105,6 +105,7 @@ def inherited_scores():
 def checks(parent):
     results=dict(math=sm.selfcheck(),journal=j.selfcheck(),recovery=recovery(),scoring_inheritance=inherited_scores())
     results['completed_controller']=completed_controller()
+    results['installer_budget']=installer_budget()
     protocol=specification(parent,results['math'],results['journal'])
     assert protocol==specification(protocol,results['math'],results['journal'])
     assert protocol['GPUS']==[3,4] and protocol['maximum_updates']==2560
@@ -112,6 +113,22 @@ def checks(parent):
     assert protocol['maximum_Judge']==752 and protocol['round_one_read_only']
     for path in Path(__file__).parent.glob('*.py'):compile(path.read_text(),str(path),'exec')
     return dict(status='PASS',checks=results,protocol_idempotent=True),protocol
+
+
+def installer_budget():
+    path=Path(__file__).with_name('bootstrap.py')
+    node=next(n for n in ast.walk(ast.parse(path.read_text())) if isinstance(n,ast.If)
+              and "root / 'STAGE_CAP.json'" in ast.unparse(n.test))
+    code=compile(ast.Module(body=[node],type_ignores=[]),str(path),'exec')
+    with tempfile.TemporaryDirectory() as tmp:
+        parent=Path(tmp)/'parent';root=Path(tmp)/'run';parent.mkdir();root.mkdir()
+        j.write(parent/'STAGE_CAP.json',{'GPU_seconds_limit':10**18})
+        namespace=dict(parent=parent,root=root,read=lambda p:json.loads(p.read_text()),write=j.write)
+        exec(code,namespace)
+        assert json.loads((root/'STAGE_CAP.json').read_text())=={'GPU_seconds_limit':10**18}
+        j.write(root/'STAGE_CAP.json',{'GPU_seconds_limit':123});exec(code,namespace)
+        assert json.loads((root/'STAGE_CAP.json').read_text())=={'GPU_seconds_limit':123}
+    return dict(status='PASS',missing_cap_installed=True,existing_cap_preserved=True)
 
 
 def completed_controller():

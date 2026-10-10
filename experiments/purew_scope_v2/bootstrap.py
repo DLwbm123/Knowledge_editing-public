@@ -47,12 +47,15 @@ with namespace['exclusive'](root/'private/locks/install.lock'):
     frozen=root/'private/FROZEN_PROTOCOL.json'
     if frozen.exists():assert read(frozen)==payload['protocol']
     else:write(frozen,payload['protocol'])
+    if not (root/'STAGE_CAP.json').exists():
+        write(root/'STAGE_CAP.json',read(parent/'STAGE_CAP.json'))
     inherited=read(parent/'RESOURCE_LEDGER.json')
     if not (root/'RESOURCE_LEDGER.json').exists():
         write(root/'private/INHERITED_COST.json',inherited)
         write(root/'private/INHERITED_RUN.json',dict(root=str(parent),read_only=True))
         write(root/'RESOURCE_LEDGER.json',inherited)
-        manifest=dict(read(parent/'RUN_MANIFEST.json'),started_epoch=time.time(),deadline_epoch=time.time()+24*3600,
+        manifest=dict(read(parent/'RUN_MANIFEST.json'),stage='purew_scope_v2',started_epoch=time.time(),deadline_epoch=time.time()+24*3600,
+            wall_limit_enabled=True,Judge_limit_enabled=True,
             GPU_seconds_limit=10**18,GPU_time_limit_enabled=False,Judge_limit=inherited['Judge_attempts']+752,
             owned_weight_limit_bytes=2*1024**3,min_free_bytes=8*1024**3)
         write(root/'RUN_MANIFEST.json',manifest)
