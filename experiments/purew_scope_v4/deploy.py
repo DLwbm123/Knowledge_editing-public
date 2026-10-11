@@ -23,6 +23,17 @@ def scorer_alive(worker, identity):
     return len(fields)==8 and fields[:5]==worker['process_identity'].split()[:5] and fields[-2:]==['-u',worker['entry']]
 
 
+def verify_scorer(worker, identity, completed=None):
+    if identity:
+        assert scorer_alive(worker,identity), 'Scorer process identity changed'
+        assert not any(x in identity for x in ('wangbomin','Knowledge_editing','scope'))
+        return
+    assert completed and completed['status']=='COMMON_SCORING_COMPLETE_WITH_MISSING'
+    assert completed['state']['worker']==worker['worker']
+    assert completed['state']['completion_scope']=='WORKER_ONLY'
+    assert completed['state']['status']=='GENERATION_COMPLETE'
+
+
 def gpu():
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=WORK,text=True).strip()
     assert not subprocess.check_output(['git','status','--porcelain','--','experiments/purew_scope_v4','reports/purew_scope_v4_20261011'],cwd=WORK,text=True).strip(),'Publish frozen files before launch'
@@ -39,8 +50,9 @@ def gpu():
 
 
 def score():
-    result=remote('import json,pathlib\np=pathlib.Path('+repr(RUN)+')\nassert (p/"private/GENERATION_COMPLETE.json").is_file()\nprint(json.dumps({"generated":True,"reported":(p/"private/REPORT_COMPLETE.json").is_file()}))\n')
+    result=remote('import json,pathlib\np=pathlib.Path('+repr(RUN)+')\nassert (p/"private/GENERATION_COMPLETE.json").is_file()\nprint(json.dumps({"generated":True,"reported":(p/"private/REPORT_COMPLETE.json").is_file(),"scored":(p/"private/judge_scope_v4_astra_medium/ALL_WORKERS_COMPLETE.json").is_file()}))\n')
     if result['reported']:print(json.dumps(dict(status='REPORT_ALREADY_COMPLETE')));return
+    if result['scored']:print(json.dumps(dict(status='SCORING_ALREADY_TERMINAL')));return
     state=WORK/'.local_run/scope_v4_scorer.json'
     remote('import os,runpy\nos.environ.update(RUN_ROOT='+repr(RUN)+',QUEUE_REQUEST=\'{"action":"ingest"}\')\nrunpy.run_path('+repr(RUN+'/private/tools/score.py')+',run_name="__main__")\n')
     prior=json.loads(state.read_text()) if state.exists() else {}
@@ -73,8 +85,12 @@ def score():
     remote('import json,pathlib\np=pathlib.Path('+repr(RUN+'/private/SCORER_ACTIVE_START.json')+')\np.write_text('+repr(json.dumps(value))+')\nprint(json.dumps({"saved":True}))\n')
     time.sleep(2)
     for w in workers:
-        command=subprocess.check_output(['ps','-ww','-p',str(w['pid']),'-o','args='],text=True).strip()
-        assert command and not any(x in command for x in ('wangbomin','Knowledge_editing','scope'))
+        identity=subprocess.run(['ps','-ww','-p',str(w['pid']),'-o','lstart=,args='],capture_output=True,text=True).stdout.strip()
+        completed=None
+        if not identity:
+            # Empty shards may finish before this startup check; require their own completion receipt.
+            completed=remote('import pathlib\np=pathlib.Path('+repr(RUN+'/private/judge_scope_v4_astra_medium/worker'+str(w['worker'])+'/SCORER_DONE.json')+')\nprint(p.read_text())\n')
+        verify_scorer(w,identity,completed)
     print(json.dumps(dict(status='SCORERS_STARTED',state=value)))
 
 

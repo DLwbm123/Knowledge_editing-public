@@ -29,6 +29,14 @@
       "issue": "Startup status retained superseded dataset-gate and zero-update fields beside actual running status",
       "repair": "Reconcile status metadata with live committed journals and frozen8-edit admission; no model/data/protocol/scoring changes",
       "historical_versions_retained_in_git": true
+    },
+    {
+      "epoch": 1791721847.318686,
+      "issue": "Empty Judge shards exited normally before ps startup check; report tail stopped while scoring succeeded",
+      "repair": "Require worker-specific SCORER_DONE for ended shards; skip restarting terminal queue; report/publication resume only",
+      "new_GPU_updates": 0,
+      "new_Judge_attempts": 0,
+      "original_failure_retained": true
     }
   ]
 }
