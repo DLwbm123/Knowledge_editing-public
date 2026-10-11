@@ -45,8 +45,25 @@ def value(m):
     return 'NA' if lo is None else f'[{lo:.3f}, {hi:.3f}]'
 
 
+def selfcheck():
+    task=dict(edit_id='q',order=1,native=dict(image_sha256='image',question='question',source_group='source'),
+              events=[dict(task='T0',all_probe_query_ids=['q'])])
+    ledger=dict(queries={'q':dict(query_id='q',image_sha256='image',question='question')},Base_correctness={'q':False})
+    consumers=[dict(method=m,mode='single_R0',prefix=1,edit_order=1,query_id='q',payload_key=m) for m in METHODS]
+    records=records_for(consumers,[task],ledger);original=r.read
+    try:
+        r.read=lambda _:ledger
+        for method,score in zip(METHODS,(1,0,None)):
+            result,coef,_=r.panel(records,{m:v for m,v in zip(METHODS,(1,0,None))},'RETRO146',method,0,'single_R0','T0',[task],1)
+            assert result['observations']==1 and result['edit_units']==1 and len(coef)==1
+            assert result['macro']==(score*100 if score is not None else None)
+            if score is None:assert result['macro_bounds']==[0,100] and result['missing']==1
+    finally:r.read=original
+    ar.selfcheck()
+
+
 def main():
-    started=time.time();ar.selfcheck()
+    started=time.time();selfcheck()
     root=RUN/'private/judge_common146_medium';db=connect(root/'queue.sqlite')
     assert (root/'ALL_WORKERS_COMPLETE.json').exists()
     payloads={x['key']:x for x in db.execute('SELECT * FROM payload')}
@@ -149,4 +166,7 @@ def main():
     print(json.dumps({k:v for k,v in result.items() if k not in ('panels','contrasts','historical_scores_same_aggregation')}))
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    if os.environ.get('SELF_CHECK')=='1':
+        selfcheck();print('SELF_CHECK_PASS')
+    else:main()
