@@ -237,9 +237,19 @@ def controller():
         if complete('GENERATION_COMPLETE.json'):return
         def stage(action,part,receipt):
             if complete(receipt):return
-            child=pipeline.launch('run.py',action,5,part)
-            while child.poll() is None:c.budget();time.sleep(5)
-            assert child.returncode==0 and complete(receipt),'Owned stage failed; preserve state, no blind retry'
+            start=RUN/'private'/f'START_CHAIN_{action}_{part}.json'
+            if start.exists() and j.alive(c.read(start)):child=None
+            else:
+                with c.resources() as ledger:
+                    for session in ledger['gpu_sessions']:
+                        if not session.get('ended_epoch') and session['action'].startswith('source_') and not j.alive(session):
+                            stop=time.time();session.update(ended_epoch=stop,resident_seconds=stop-session['started_epoch'],abnormal_exit=True);ledger['gpu_seconds_used']+=session['resident_seconds']
+                child=pipeline.launch('run.py',action,5,part)
+            while not complete(receipt):
+                c.budget();assert j.alive(c.read(start)),'Owned stage failed; preserve state, no blind retry';time.sleep(5)
+            if child is not None:assert child.wait()==0
+            else:
+                while j.alive(c.read(start)):c.budget();time.sleep(1)
         stage('source_base',0,'BASE_COMPLETE.json');stage('source_admission',0,'MECHANICAL_COMPLETE.json')
         for i,a in enumerate(v.ARMS):stage('source_train',i,f'TRAIN_COMPLETE_{a}.json')
         if not complete('CANDIDATES_FROZEN.json'):done('CANDIDATES_FROZEN.json',candidates=2,selection=False)
@@ -249,8 +259,9 @@ def controller():
         counts=[c.read(p) for p in (RUN/'private/attempts').glob('*.json')]
         generated=[c.read(p) for p in (RUN/'private/outputs').glob('*/*/*.json') if not c.read(p).get('reused_generation')]
         non_generation=sum(x['forwards'] for x in counts)-sum(x['forwards'] for x in generated)
-        assert 0<=non_generation<=32000 and sum(x['updates'] for x in counts)==7680
-        done('GENERATION_COMPLETE.json',outputs=len(paths),committed_updates=7680)
+        committed=sum(len(list((RUN/'private/training_diagnostics'/a).glob('*.json'))) for a in v.ARMS)
+        assert 0<=non_generation<=32000 and committed==7680
+        done('GENERATION_COMPLETE.json',outputs=len(paths),committed_updates=committed,attempt_record_updates=sum(x['updates'] for x in counts),non_generation_forwards=non_generation)
         owned=[RUN/'private'/folder/f'{a}.pt' for folder in ('active','candidates') for a in v.ARMS]+list((RUN/'private/cache/protection').glob('*.pt'))
         assert all(p.is_file() and not p.is_symlink() and p.resolve().is_relative_to(RUN.resolve()) for p in owned)
         done('DELETION_REQUEST.json',paths=list(map(str,owned)),files=len(owned),bytes=sum(p.stat().st_size for p in owned),consumers=['allprefix','final','fresh_native_reload','durable_judge_inputs'],retained_copy=False)

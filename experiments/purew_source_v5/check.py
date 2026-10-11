@@ -1,5 +1,6 @@
 """Small checks for the new role contract and exact shared-norm recovery."""
-import json,tempfile
+import ast,json,tempfile
+from types import SimpleNamespace
 from pathlib import Path
 import torch
 import cohort,journal,shared_math
@@ -35,7 +36,17 @@ def run():
                     p=Path(folder)/'resume.pt';torch.save(w,p);w=torch.load(p,weights_only=True)
         return w
     assert torch.equal(trial(False),trial(True))
+    stage=next(n for n in ast.walk(ast.parse((Path(__file__).parent/'run.py').read_text())) if isinstance(n,ast.FunctionDef) and n.name=='stage')
+    with tempfile.TemporaryDirectory() as folder:
+        root=Path(folder);(root/'private').mkdir();(root/'private/START_CHAIN_source_base_0.json').write_text('{}')
+        checks=iter((False,True));alive=iter((True,False))
+        def forbidden(*args):raise AssertionError('Completed or live stage relaunched')
+        namespace=dict(RUN=root,complete=lambda _:next(checks),j=SimpleNamespace(alive=lambda _:next(alive)),c=SimpleNamespace(read=lambda _:dict(owned=True),budget=forbidden),pipeline=SimpleNamespace(launch=forbidden),time=SimpleNamespace(sleep=forbidden))
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[stage],type_ignores=[])),'controller_stage','exec'),namespace)
+        namespace['stage']('source_base',0,'BASE_COMPLETE.json')
+        namespace['complete']=lambda _:True
+        namespace['stage']('source_base',0,'BASE_COMPLETE.json')
     for p in Path(__file__).parent.glob('*.py'):compile(p.read_text(),str(p),'exec')
-    return dict(status='PASS',test_scope='CPU_SYNTHETIC_ONLY',roles=role,journal=recovery,math=math,first_edit_W_bit_exact=True,H_resume_bit_exact=True,missing_or_insufficient_source_stops=True,real_VLM_admission='NOT_RUN')
+    return dict(status='PASS',test_scope='CPU_SYNTHETIC_ONLY',roles=role,journal=recovery,math=math,first_edit_W_bit_exact=True,H_resume_bit_exact=True,missing_or_insufficient_source_stops=True,real_VLM_admission='NOT_RUN',controller_adopts_live_and_skips_completed=True)
 
 if __name__=='__main__':print(json.dumps(run()))
