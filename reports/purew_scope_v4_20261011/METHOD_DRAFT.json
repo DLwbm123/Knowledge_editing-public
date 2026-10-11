@@ -1,9 +1,15 @@
 {
   "status": "DRAFT_DATA_QUALIFICATION_PENDING",
   "formal_protocol_frozen": false,
-  "arms": ["C", "U", "H"],
+  "arms": [
+    "C",
+    "U",
+    "H"
+  ],
   "host": "pro5000",
-  "GPUS": [5],
+  "GPUS": [
+    5
+  ],
   "layer": "model.layers.21.mlp.down_proj.weight",
   "precision": "NATIVE_FULL_FP32",
   "new_inference_parameters": 0,
@@ -23,14 +29,29 @@
   "norm_schedule": "C first, without final/held evaluation or Judge feedback; store actual FP32 norm per committed step; U/H consume exactly those targets bound to C owner/step/version",
   "C_proposal_norm": "min(.05, .01 * norm(full projected weighted gradient))",
   "actual_norm_relative_tolerance": 0.0005,
-  "actual_norm_absolute_tolerance": 0.000001,
+  "actual_norm_absolute_tolerance": 1e-06,
   "positive_target_zero_direction": "terminal failure, not silent skip or retune",
-  "contrasts": {"geometry": "U minus C at shared norms", "history_supervision": "H minus U at shared norms"},
-  "data_gate": "complete 24 source units, original provenance, scope-reviewed distinct-image GFIT, train/eval image and known-case role separation, lawful use and source-label conflict review; no old error-derived training labels",
+  "contrasts": {
+    "geometry": "U minus C at shared norms",
+    "history_supervision": "H minus U at shared norms"
+  },
+  "data_gate": "source-bound legitimate edit requests and explicit train/evaluation role separation; no old error-derived labels. New cross-case clinical claims require new qualified evidence, but that evidence is not a prerequisite for a benchmark mechanism pilot.",
   "evaluation": "per-edit source/FIT/GFIT insertion and later-prefix retention; separately same-image unseen questions and cross-image unseen questions; old96 protection and original Base-correct subset; independent new protection when admitted; full denominators and missing-aware bounds",
   "success": "no compensation across owners; source/anchors correct at insertion and all later prefixes, no loss of Base-correct unseen or protected answers; same native parameter keys/shapes/count, fresh native reload, no inference editing branch; missing required scores prevents success",
-  "pending_before_formal_freeze": ["complete data admission packet", "source/anchor/evaluation bindings and frozen order", "exact generation/Judge/forwards budget", "first-install finite deadline and storage lifecycle", "controller and scorer adaptation", "real-VLM mechanical admission"],
+  "pending_before_formal_freeze": [
+    "map chosen existing-source edit requests, training supervision and evaluation roles; distinguish mechanism pilot from an independently qualified new cohort",
+    "source/anchor/evaluation bindings and frozen order",
+    "exact generation/Judge/forwards budget",
+    "first-install finite deadline and storage lifecycle",
+    "controller and scorer adaptation",
+    "real-VLM mechanical admission"
+  ],
   "retain_history": "rounds1/2/3 immutable, accepted exact scores reused only by full binding; old missing scores retained",
   "no_automatic_next_round": true,
-  "scientific_claim": "DEV mechanism adaptation, not clinical/SOTA confirmation or complete author reproduction"
+  "scientific_claim": "DEV mechanism adaptation, not clinical/SOTA confirmation or complete author reproduction",
+  "mandatory_new_data_before_mechanism_pilot": false,
+  "target_ordered_new_edits_is_hard_gate": false,
+  "scope_review_correction": "24 new units and two additional cross-image anchors per new unit are proposed stronger-evidence design choices, not requirements imposed by M3Bench or pure-W C/U/H. Extra clinical-transfer claims still require corresponding evidence.",
+  "H_requires_independent_external_dataset": false,
+  "H_supervision_boundary": "past already-admitted edit requests and previously declared training anchors only; never official generalization/locality probes or evaluation failures"
 }
