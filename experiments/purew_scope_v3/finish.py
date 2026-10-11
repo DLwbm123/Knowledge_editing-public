@@ -14,6 +14,8 @@ def snapshot():
 
 def publication():
     result=deploy.remote('import json,pathlib\np=pathlib.Path('+repr(RUN)+')\nprint((p/"public/RESULTS.json").read_text())\n')
+    execution=deploy.remote('import json,pathlib,time\np=pathlib.Path('+repr(RUN)+')\nr=lambda n:json.loads((p/"private"/n).read_text())\nprint(json.dumps(dict(mechanical=r("MECHANICAL_COMPLETE.json"),generation=r("GENERATION_COMPLETE.json"),updates={a:r("TRAIN_COMPLETE_"+a+".json")["committed_updates"] for a in ("A_LOW","B_NORM","C_FULL_FIXED","D_FULL_REFRESH","E_RLS")},checked_epoch=time.time())))\n')
+    assert execution['mechanical']['status']=='PASS' and sum(execution['updates'].values())==execution['generation']['committed_updates']==6400
     def privacy(x):
         if isinstance(x,dict):
             assert not set(x)&{'question','reference','R0','image_path','query_id','opaque_query_id','record','paths'}
@@ -24,7 +26,7 @@ def publication():
     os.environ['WORKSPACE']=str(WORK);runpy.run_path(str(WORK/'experiments/purew_scope_v3/render_report.py'),run_name='__main__')
     audit=dict(status='COMPLETED_WITH_MISSING' if result['missing_consumers'] else 'COMPLETE',structural_checks_passed=result['structural_checks_passed'],scoring_status=result['status'],resource=result['resource'],payload_status=result['payload_status'],old_failures_not_retried=True,results_not_clinical_confirmation=True)
     (OUT/'COMPLETION_AUDIT.json').write_text(json.dumps(audit,indent=2)+'\n')
-    st=json.loads((OUT/'EXECUTION_STATUS.json').read_text());st.update(status='EXPERIMENT_TERMINAL_PUBLICATION_PENDING',training_complete=True,generation_complete=True,scoring_terminal=True,scoring_complete=result['status']=='COMPLETE',DEV_success_by_arm=result['DEV_success_by_arm'],missing_consumers=result['missing_consumers']);(OUT/'EXECUTION_STATUS.json').write_text(json.dumps(st,indent=2)+'\n')
+    st=json.loads((OUT/'EXECUTION_STATUS.json').read_text());st.update(status='EXPERIMENT_TERMINAL_PUBLICATION_PENDING',mechanical_status='PASS',formal_committed_updates=execution['generation']['committed_updates'],updates_by_arm=execution['updates'],checked_epoch=execution['checked_epoch'],added_parameters=execution['mechanical']['added_parameters'],exact_native_Base_identity=execution['mechanical']['exact_native_Base_identity'],feature_invariance_exact=execution['mechanical']['feature_invariance_exact'],training_complete=True,generation_complete=True,scoring_terminal=True,scoring_complete=result['status']=='COMPLETE',DEV_success_by_arm=result['DEV_success_by_arm'],missing_consumers=result['missing_consumers']);(OUT/'EXECUTION_STATUS.json').write_text(json.dumps(st,indent=2)+'\n')
     branch='experiment/purew-scope-v3-20261010'
     assert subprocess.check_output(['git','branch','--show-current'],cwd=WORK,text=True).strip()==branch,'Publication checkout changed; retain result and request review'
     assert subprocess.run(['git','diff','--cached','--quiet'],cwd=WORK).returncode==0,'Other staged work; do not commit it'
