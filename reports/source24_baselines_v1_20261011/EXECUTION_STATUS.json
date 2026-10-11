@@ -1,1 +1,31 @@
-{"status":"CPU_VALIDATED_PROTOCOL_FREEZE_PUBLICATION_PENDING","formal_updates":0,"GPU_training_started":false,"real_VLM_admission":"PENDING_PARENT_GPU_COMPLETION"}
+{
+  "status": "DEPENDENCY_QUEUED_PARENT_GPU_RUNNING",
+  "protocol_frozen_and_public": true,
+  "baseline_formal_updates": 0,
+  "TT_real_VLM_admission": "PENDING",
+  "BalancEdit_real_VLM_admission": "PENDING",
+  "parent_at_check": {
+    "U_committed": 2660,
+    "H_SOURCE_committed": 0,
+    "U_total": 3840,
+    "H_SOURCE_total": 3840
+  },
+  "CPU_pass": true,
+  "caller_imports_pass": true,
+  "neutral_dependency_argv": true,
+  "checked_at_Beijing": "2026-10-11T23:15:46.941275+08:00",
+  "baseline_deadline_Beijing": "2026-10-12T23:01:02.693276+08:00",
+  "parent_deadline_unchanged": true,
+  "scoring_and_publication_finite_tail_alive": true,
+  "engineering_repairs": [
+    {
+      "commit": "7514cfb66144c0cbd40e46994ddbd3bf78d44dd0",
+      "problem": "auxiliary source helper module suffix omitted",
+      "fix": "installed source_run.py; preserved initial CPU import error",
+      "scientific_changes": false,
+      "formal_updates_before": 0,
+      "validation": "all261 record constructors plus GPU/scorer callers resolved"
+    }
+  ],
+  "publication_complete": false
+}
