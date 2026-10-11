@@ -16,7 +16,7 @@ for arm in arms:
     for p in r['panels'][arm].values():assert p['candidate_correct']+p['new_damage']+p['still_wrong']+p['missing']==p['queries']
 parts.append('<p>终态：'+html.escape(r['status'])+'；各臂冻结DEV成功：'+html.escape(str(r['DEV_success_by_arm']))+'。</p>')
 table(['角色','Base']+arms,[[role,str(r['panels'][arms[0]][role]['Base_correct'])+'/'+str(r['panels'][arms[0]][role]['queries'])]+[cell(r['panels'][a][role]) for a in arms] for role in roles])
-parts.append('<h2>机制结论</h2><p>逐步实际范数一致时，U−C 的T2G为3胜0负（25→28/32，+9.375个百分点），改善发生在编辑4、5、7，各增加一道正确答案。但U的历史编辑1有一个已训练GFIT在前缀3–7遗忘，最后恢复；连续观察103/108，C为108/108。</p><p>H−U的T2G为0胜0负（均28/32），没有进一步泛化改善；H消除了上述5次遗忘观察，恢复108/108。三臂Base正确保护题均保留62/62，无新增损伤；全部保护题均63/96，配对正确性完全相同。历史监督的证据是改善已训练锚点的连续保持。</p><p>唯一缺评分是U的一道T2L，正确数界[0,1]/2；C、H均0/2。T2G、源题、GFIT、前缀及保护题均无缺评分，其核心配对差异界退化为精确值。冻结的全队列评分完整性门未通过，因此三臂DEV_success仍为false；不放宽判据。一次已暴露8编辑DEV顺序，不代表独立临床或SOTA验证。</p>')
+parts.append('<h2>机制结论</h2><p>逐步实际范数一致时，U−C 的T2G为3胜0负（25→28/32，+9.375个百分点），改善发生在编辑4、5、7，各增加一道正确答案。但U的历史编辑1有一个已训练GFIT在前缀3–7遗忘，最后恢复；连续观察103/108，C为108/108。</p><p>H−U的T2G为0胜0负（均28/32），没有进一步泛化改善；H消除了上述5次遗忘观察，恢复108/108。三臂Base正确保护题均保留62/62，无新增损伤；全部保护题均63/96，配对正确性完全相同。历史监督的证据是改善已训练锚点的连续保持。</p><p>唯一缺评分是U的一道T2L，正确数界[0,1]/2；C、H均1/2。T2G、源题、GFIT、前缀及保护题均无缺评分，其核心配对差异界退化为精确值。冻结的全队列评分完整性门未通过，因此三臂DEV_success仍为false；不放宽判据。一次已暴露8编辑DEV顺序，不代表独立临床或SOTA验证。</p>')
 parts.append('<h2>预登记配对对照</h2><p>U−C检验移除固定零空间限制，H−U检验合法历史监督；二者使用C的相同步次实际范数。无448/64空间、RLS、门控和刷新。差值界包含所有缺评分可能性，不是置信区间。</p>')
 for name,p in r['registered_contrasts'].items():
     parts.append('<h3>'+html.escape(name+' : '+p['first']+' − '+p['second'])+'</h3>')
