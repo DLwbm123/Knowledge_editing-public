@@ -11,7 +11,7 @@ for folder in ('private/tools','logs','public'):(R/folder).mkdir(parents=True,ex
 for path in (P/'private/tools').glob('*.py'):
     dest=R/'private/tools'/path.name
     if not dest.exists():shutil.copy2(path,dest)
-files=dict(payload['files'],source_run=(P/'private/tools/run.py').read_text())
+files=dict(payload['files']);files['source_run.py']=(P/'private/tools/run.py').read_text()
 for name,source in files.items():
     path=R/'private/tools'/name
     if path.exists():assert path.read_text()==source
