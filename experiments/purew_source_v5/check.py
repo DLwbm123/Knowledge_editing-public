@@ -36,6 +36,12 @@ def run():
                     p=Path(folder)/'resume.pt';torch.save(w,p);w=torch.load(p,weights_only=True)
         return w
     assert torch.equal(trial(False),trial(True))
+    summary_file=Path(__file__).parent/'damage_queue.py'
+    if not summary_file.exists():summary_file=Path(__file__).parents[1]/'medtrace_fp32_damage_audit_v1/damage_queue.py'
+    nodes=[next(n for n in ast.walk(ast.parse(summary_file.read_text())) if isinstance(n,ast.FunctionDef) and n.name=='summary'),next(n for n in ast.walk(ast.parse((Path(__file__).parent/'score.py').read_text())) if isinstance(n,ast.FunctionDef) and n.name=='bounded_summary')]
+    namespace={};exec(compile(ast.fix_missing_locations(ast.Module(body=nodes,type_ignores=[])),'missing_bounds','exec'),namespace)
+    bounds=namespace['bounded_summary']([(1,None,False),(None,None,True),(0,1,False)])['bounds']
+    assert bounds['new_damage']==[0,1] and bounds['repaired']==[1,1] and bounds['candidate_correct']==[1,3]
     stage=next(n for n in ast.walk(ast.parse((Path(__file__).parent/'run.py').read_text())) if isinstance(n,ast.FunctionDef) and n.name=='stage')
     with tempfile.TemporaryDirectory() as folder:
         root=Path(folder);(root/'private').mkdir();(root/'private/START_CHAIN_source_base_0.json').write_text('{}')
@@ -47,6 +53,6 @@ def run():
         namespace['complete']=lambda _:True
         namespace['stage']('source_base',0,'BASE_COMPLETE.json')
     for p in Path(__file__).parent.glob('*.py'):compile(p.read_text(),str(p),'exec')
-    return dict(status='PASS',test_scope='CPU_SYNTHETIC_ONLY',roles=role,journal=recovery,math=math,first_edit_W_bit_exact=True,H_resume_bit_exact=True,missing_or_insufficient_source_stops=True,real_VLM_admission='NOT_RUN',controller_adopts_live_and_skips_completed=True)
+    return dict(status='PASS',test_scope='CPU_SYNTHETIC_ONLY',roles=role,journal=recovery,math=math,first_edit_W_bit_exact=True,H_resume_bit_exact=True,missing_or_insufficient_source_stops=True,real_VLM_admission='NOT_RUN',controller_adopts_live_and_skips_completed=True,missing_bounds_preserve_shared_payload_coupling=True)
 
 if __name__=='__main__':print(json.dumps(run()))

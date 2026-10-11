@@ -11,6 +11,18 @@ q.ROOT=RUN/'private'/('judge_source_v5_'+PHASE)
 q.EFFORT='medium';q.BATCH_LEDGER='Astra_source_v5_'+PHASE
 EPOCH='PUREW_SOURCE_V5_20261011_'+PHASE.upper()
 
+def bounded_summary(pairs):
+    result=summary(pairs)
+    metrics=dict(Base_correct=lambda b,c:b==1,candidate_correct=lambda b,c:c==1,retained=lambda b,c:b==c==1,new_damage=lambda b,c:b==1 and c==0,repaired=lambda b,c:b==0 and c==1,still_wrong=lambda b,c:b==c==0)
+    bounds={k:[0,0] for k in metrics}
+    for before,after,shared in pairs:
+        options=[(b,c) for b in ((0,1) if before is None else (before,)) for c in ((0,1) if after is None else (after,)) if not shared or b==c]
+        assert options
+        for key,metric in metrics.items():
+            values=[int(metric(b,c)) for b,c in options];bounds[key][0]+=min(values);bounds[key][1]+=max(values)
+    result['bounds']=bounds
+    return result
+
 def ingest(db):
     if db.execute("SELECT 1 FROM done WHERE name='generation'").fetchone():return
     marker='QUAL_GENERATION_COMPLETE.json' if PHASE=='qualification' else 'GENERATION_COMPLETE.json'
@@ -53,11 +65,12 @@ def report(db):
         stages.setdefault(d['stage'],{})[d['owner'],d['query_id']]=item;scored.append(item)
     base=stages['BASE'];assert len(base)==261
     def panel(items):
-        return summary([(base[(x['output']['owner'],x['output']['query_id'])]['correct'],x['correct'],False) for x in items])
+        return bounded_summary([(base[(x['output']['owner'],x['output']['query_id'])]['correct'],x['correct'],base[(x['output']['owner'],x['output']['query_id'])]['payload_key']==x['payload_key']) for x in items])
     panels={};history={};gates={};allscored=all(x['correct'] is not None for x in scored)
     for arm in ('U','H_SOURCE'):
         assert len(stages[arm])==261
         panels[arm]={role:panel([x for x in stages[arm].values() if x['output']['role']==role]) for role in ('NATIVE','T2G','HELDOUT','NEW_HELDOUT')}
+        panels[arm]['T2G_by_formulation']={kind:panel([x for x in stages[arm].values() if x['output']['role']=='T2G' and x['output']['binding']['input']['variant_kind']==kind]) for kind in q.read(RUN/'private/DATA_ADMISSION.json')['variant_types']}
         prefixes=[];seen=set();losses=[]
         for prefix in range(1,25):
             xs=stages[f'{arm}_PREFIX_{prefix}'];assert len(xs)==5*prefix
@@ -68,7 +81,7 @@ def report(db):
         history[arm]=dict(prefixes=prefixes,lost_correct_observations=losses)
         insertion=all(stages[f'{arm}_PREFIX_{owner}'][owner,row['query_id']]['correct']==1 for owner in range(1,25) for row in q.read(RUN/'private/ROWS.json') if row['owner']==owner and row['audit_role']=='NATIVE')
         structural=q.read(RUN/'private'/f'EVAL_COMPLETE_{arm}.json')
-        gates[arm]=dict(full_scoring=allscored,source_insertion=insertion,source_continual=not any(x['role']=='NATIVE' for x in losses),untrained_Base_correct_T2G_preserved=panels[arm]['T2G']['new_damage']==0,old_protection=panels[arm]['HELDOUT']['new_damage']==0,new_protection=panels[arm]['NEW_HELDOUT']['new_damage']==0 and panels[arm]['NEW_HELDOUT']['Base_correct']>0,structural=structural['native_fresh_reload_tokens_equal'] and structural['added_parameters']==0 and structural['inference_structure_unchanged'])
+        gates[arm]=dict(full_scoring=allscored,source_insertion=insertion,source_continual=not any(x['role']=='NATIVE' for x in losses),untrained_Base_correct_T2G_preserved=all(x['by_role']['T2G']['bounds']['new_damage'][1]==0 for x in prefixes),old_protection=panels[arm]['HELDOUT']['new_damage']==0,new_protection=panels[arm]['NEW_HELDOUT']['new_damage']==0 and panels[arm]['NEW_HELDOUT']['Base_correct']>0,structural=structural['native_fresh_reload_tokens_equal'] and structural['added_parameters']==0 and structural['inference_structure_unchanged'])
     pairs={}
     for role in ('NATIVE','T2G','HELDOUT','NEW_HELDOUT'):
         win=loss=tie=missing=lo=hi=0
