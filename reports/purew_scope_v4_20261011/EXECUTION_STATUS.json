@@ -1,36 +1,55 @@
 {
-  "stage": "DATASET_AND_SUPERVISION_MAPPING",
+  "stage": "TRAINING",
   "formal_protocol_frozen": true,
   "source_role_screen": "PASS",
-  "complete_scope_bundle_admission": "NOT_MET",
+  "complete_scope_bundle_admission": "EXISTING_8_EDIT_ADMITTED",
   "CPU_shared_math": "PASS",
-  "real_VLM_admission": "NOT_RUN",
-  "GPU5_formal_process_started": false,
+  "real_VLM_admission": "PASS",
+  "GPU5_formal_process_started": true,
   "formal_updates": {
     "C": 0,
-    "U": 0,
-    "H": 0
+    "U": 1280,
+    "H": 168
   },
-  "blocker": "complete role mapping and formal protocol for selected benchmark design; external new data is not intrinsically required",
+  "blocker": null,
   "original_three_rounds": "PRESERVED_READ_ONLY",
   "new_training_labels_from_old_evaluation": 0,
-  "formal_first_install_deadline_started": false,
+  "formal_first_install_deadline_started": true,
   "requires_user_to_provide_new_dataset": false,
-  "status": "U_H_TRAINING_RUNNING",
+  "status": "U_COMPLETE_H_TRAINING_RUNNING",
   "selected_design": "8 admitted edits; reuse C, new U/H",
   "new_arms": [
     "U",
     "H"
   ],
-  "formal_committed_updates": 15,
+  "formal_committed_updates": 1448,
   "mechanical_status": "PASS",
   "first_install_deadline_started": true,
   "updated_epoch": 1791706100.783147,
   "updates_by_new_arm": {
-    "U": 15,
-    "H": 0
+    "U": 1280,
+    "H": 168
   },
   "deadline_epoch": 1791792615.5934463,
-  "checked_epoch": 1791706383.7661853,
-  "added_parameters": 0
+  "checked_epoch": 1791711668.7578356,
+  "added_parameters": 0,
+  "inherited_C_updates": 1280,
+  "norm_matching": {
+    "U": {
+      "updates": 1280,
+      "within_frozen_norm_tolerance": true,
+      "maximum_relative_norm_error": 3.3339516298174088e-06
+    },
+    "H": {
+      "updates": 168,
+      "within_frozen_norm_tolerance": true,
+      "maximum_relative_norm_error": 1.3506189250948334e-06
+    }
+  },
+  "training_complete_by_arm": {
+    "U": true,
+    "H": false
+  },
+  "generation_complete": false,
+  "scoring_started": false
 }
