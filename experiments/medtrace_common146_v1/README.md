@@ -55,3 +55,20 @@ reproduces the historical TT25 panels separately before producing 75 new panels,
 the four scorers have exited before publication. Only anonymous public artifacts
 are published; raw medical inputs, tokens, bindings, scores, and evidence stay
 private. Historical failures and results are never overwritten.
+
+## Authorized missing-only recovery
+
+The subsequent user request authorizes one additional attempt for the original
+200 missing payloads. Deploy `recovery_queue.py` as `common146_recovery_queue.py`.
+It uses a separate `judge_common146_medium_recovery1` queue and
+`Astra_common146_recovery_batches` ledger, copies only the exact missing inputs,
+and retains the first-pass queue unchanged. Preserve the old manifest before
+raising its cumulative Judge cap from3146 to3346. Use new isolated scorer state
+and epoch `MEDTRACE_COMMON146_MEDIUM_RECOVERY1_20261011`.
+
+After global recovery completion, run the same report with
+`COMMON146_RECOVERY=1`. It verifies the exact200-key authorization, one additional
+attempt each, unchanged records/bindings, and both passes' saved evidence before
+merging accepted recovery scores. Outputs use the `RECOVERED_` prefix; original
+reports stay immutable. No second recovery or successful-score rejudging is
+implicit in this amendment.
