@@ -71,22 +71,42 @@ def main():
     scores={k:x['correct'] for k,x in payloads.items()};consumers=list(db.execute('SELECT * FROM consumer'))
     assert len(consumers)==17166
     resource=c.read(RUN/'RESOURCE_LEDGER.json');attempted=[k for b in resource['Astra_common146_batches'] for k in b['keys']]
-    assert len(attempted)==len(set(attempted))==resource['Judge_attempts']==3146
+    assert len(attempted)==len(set(attempted))==3146
     assert resource['gpu_seconds_used']==0 and resource['gpu_sessions']==[]
-    # Saved evidence, input binding, isolation, model, and decisions must agree.
+    recovery=os.environ.get('COMMON146_RECOVERY')=='1'
+    pools=[(root,payloads,resource['Astra_common146_batches'])]
+    suffix=''
+    if recovery:
+        rr=RUN/'private/judge_common146_medium_recovery1'
+        assert (rr/'ALL_WORKERS_COMPLETE.json').exists()
+        rows={x['key']:x for x in connect(rr/'queue.sqlite').execute('SELECT * FROM payload')}
+        expected={k for k,v in payloads.items() if v['status']=='MISSING'}
+        assert set(rows)==expected==set(c.read(rr/'AUTHORIZATION.json')['keys']) and len(rows)==200
+        for k,v in rows.items():
+            assert v['status'] in ('FORMAT_VALID','MISSING')
+            assert (v['record'],v['binding'])==(payloads[k]['record'],payloads[k]['binding'])
+        batches=resource['Astra_common146_recovery_batches']
+        attempts=[k for b in batches for k in b['keys']]
+        assert len(attempts)==len(set(attempts))==200 and set(attempts)==expected
+        assert resource['Judge_attempts']==3346
+        pools.append((rr,rows,batches));suffix='RECOVERED_'
+    # Each pass is audited against its own immutable outcomes before merging.
     from scripts.medtrace.astra_judge_bundle import validate
-    for batch in resource['Astra_common146_batches']:
-        evidence=c.read(root/'evidence'/(batch['id']+'.json'))
-        assert evidence['batch']['records']==[json.loads(payloads[k]['record']) for k in batch['keys']]
-        if batch['status']=='FORMAT_VALID':
-            ev=evidence['evidence']
-            assert ev['actual_model']=='gpt-6-astra' and ev['reasoning_effort']=='medium'
-            assert ev['input_binding']==c.digest(evidence['batch']) and ev['exit_code']==0
-            assert not ev.get('errors') and not ev['tool_event_types'] and all(ev['isolation_checks'].values())
-            decisions=validate(evidence['batch'],evidence['response'])
-            assert [int(x['is_correct']) for x in decisions]==[scores[k] for k in batch['keys']]
-        else:
-            assert batch['status']=='FAILED_NO_RETRY' and all(scores[k] is None for k in batch['keys'])
+    for evidence_root,rows,batches in pools:
+        for batch in batches:
+            evidence=c.read(evidence_root/'evidence'/(batch['id']+'.json'))
+            assert evidence['batch']['records']==[json.loads(rows[k]['record']) for k in batch['keys']]
+            if batch['status']=='FORMAT_VALID':
+                ev=evidence['evidence']
+                assert ev['actual_model']=='gpt-6-astra' and ev['reasoning_effort']=='medium'
+                assert ev['input_binding']==c.digest(evidence['batch']) and ev['exit_code']==0
+                assert not ev.get('errors') and not ev['tool_event_types'] and all(ev['isolation_checks'].values())
+                decisions=validate(evidence['batch'],evidence['response'])
+                assert [int(x['is_correct']) for x in decisions]==[rows[k]['correct'] for k in batch['keys']]
+            else:
+                assert batch['status']=='FAILED_NO_RETRY' and all(rows[k]['correct'] is None for k in batch['keys'])
+    if recovery:
+        scores.update({k:v['correct'] for k,v in pools[1][1].items() if v['status']=='FORMAT_VALID'})
     tasks=c.read(RUN/'private/BENCHMARK146_QUEUE.json')['tasks'];ledger=c.read(RUN/'private/EVAL_LEDGER.json')
     records=records_for(consumers,tasks,ledger)
     panels,coeffs,groups=summarize(records,scores,tasks)
@@ -142,13 +162,13 @@ def main():
         model='gpt-6-astra',reasoning_effort='medium',payloads=3146,valid_payloads=3146-missing,missing_payloads=missing,
         consumers=17166,missing_consumers=sum(scores[x['payload_key']] is None for x in consumers),
         panels=panels,contrasts=contrasts,insertion=insertion,historical_scores_same_aggregation=history,
-        prior_TT25_reproduced=True,Judge_attempts=3146,new_GPU_hours=0,new_training=0,new_generation=0,
+        prior_TT25_reproduced=True,Judge_attempts=3346 if recovery else 3146,recovery_attempts=200 if recovery else 0,original_missing_preserved=200 if recovery else missing,new_GPU_hours=0,new_training=0,new_generation=0,
         primary='bank146 T2G: TT88 minus each baseline',original_Base_masks=True,Base_rejudged=False,
         bootstrap_draws=10000,bootstrap_seed=20260912,independent_confirmation=False,
         locality='HISTORICAL_DIAGNOSTIC_NOT_QUALIFIED_PROTECTION',one_order=True,patient_independence='UNKNOWN',
-        seconds=time.time()-started,Judge_batch_seconds=sum(b['ended_epoch']-b['started_epoch'] for b in resource['Astra_common146_batches']))
-    c.write(RUN/'public/RESULTS.json',result)
-    with (RUN/'public/PANELS.csv').open('w') as f:
+        seconds=time.time()-started,Judge_batch_seconds=sum(b['ended_epoch']-b['started_epoch'] for _,_,bs in pools for b in bs))
+    c.write(RUN/'public'/(suffix+'RESULTS.json'),result)
+    with (RUN/'public'/(suffix+'PANELS.csv')).open('w') as f:
         writer=csv.writer(f);writer.writerow(['method','mode','prefix','task','macro','macro_lower','macro_upper','micro','correct','observations','missing','edits'])
         for p in panels:writer.writerow([p['arm'],p['mode'],p['prefix'],p['task'],p['macro'],*p['macro_bounds'],p['micro'],p['known_correct'],p['observations'],p['missing'],p['edit_units']])
     text='# 原146三方法共同Astra medium重评\n\n固定原顺序、原Base掩码与五任务。所有数字为编辑宏平均百分比；方括号是缺失识别界，不是置信区间。全方法复用原输出，共同新epoch，没有训练或生成。\n\n'
@@ -159,10 +179,10 @@ def main():
             text+='|'+'|'.join([mode,str(prefix),LABELS[method]]+[value(m) for m in ms])+'|\n'
     text+='\n## 完整配对对比\n\n差值及区间单位为百分点。所有比较保留，不选择有利前缀。\n\n|模式|前缀|TT88减基线|任务|差值界|编辑95%区间|来源95%区间|\n|---|---:|---|---|---|---|---|\n'
     for p in contrasts:text+='|'+'|'.join(map(str,[p['mode'],p['prefix'],LABELS[p['baseline']],p['task'],p['delta_bounds_pp'],p['edit_ci'],p['source_ci']]))+'|\n'
-    text+=f'\n新增Judge尝试3146，有效{3146-missing}、缺失{missing}；新增GPU/训练/生成全部为0。旧结果保留，旧分数仅用于独立敏感性表，不混入主表。完整微平均、分母、插入保持及历史同口径重算见RESULTS.json和PANELS.csv。\n'
+    text+=f'\n累计Judge尝试{3346 if recovery else 3146}，本次补评{200 if recovery else 0}，有效{3146-missing}、缺失{missing}；新增GPU/训练/生成全部为0。旧结果保留，旧分数仅用于独立敏感性表，不混入主表。完整微平均、分母、插入保持及历史同口径重算见RESULTS.json和PANELS.csv。\n'
     text+='\nBalancEdit为锁定适配版，BELoRA为effect-repaired版，不能称论文原版或等参数/等优化预算实验。TT为TT88 W0+R0，不是在线N/T/NT保护臂。原146是已触达开发队列，只有一个顺序，患者独立性未知；T1L/T2L仅历史局部性诊断，无独立合格医学保护证据。本轮无新Base评分和掩码敏感性，不宣称独立SOTA确认。\n'
-    (RUN/'public/REPORT_ZH.md').write_text(text)
-    c.write(root/'REPORT_COMPLETE.json',dict(status=result['status'],epoch=time.time(),panels=75,contrasts=50,publication_pending=True))
+    (RUN/'public'/(suffix+'REPORT_ZH.md')).write_text(text)
+    c.write(pools[-1][0]/'REPORT_COMPLETE.json',dict(status=result['status'],epoch=time.time(),panels=75,contrasts=50,publication_pending=True))
     print(json.dumps({k:v for k,v in result.items() if k not in ('panels','contrasts','historical_scores_same_aggregation')}))
 
 
