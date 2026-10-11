@@ -2,7 +2,7 @@
 import html,json,os
 from pathlib import Path
 
-out=Path(os.environ['WORKSPACE'])/'reports/purew_scope_v4_20261010';r=json.loads((out/'RESULTS.json').read_text())
+out=Path(os.environ['WORKSPACE'])/'reports/purew_scope_v4_20261011';r=json.loads((out/'RESULTS.json').read_text())
 parts=['<h1>八编辑 C/U/H 共享范数对照</h1><p>固定三臂，第三轮C复用，新增U/H、同一已暴露DEV顺序；缺评分不记为错误。无独立临床或SOTA确认，不选择赢家、不自动调参。</p>']
 def table(head,rows):
     parts.append('<div style="overflow:auto"><table><tr>'+''.join('<th>'+html.escape(str(x))+'</th>' for x in head)+'</tr>')

@@ -25,12 +25,12 @@ def scorer_alive(worker, identity):
 
 def gpu():
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=WORK,text=True).strip()
-    assert not subprocess.check_output(['git','status','--porcelain','--','experiments/purew_scope_v4','reports/purew_scope_v4_20261010'],cwd=WORK,text=True).strip(),'Publish frozen files before launch'
+    assert not subprocess.check_output(['git','status','--porcelain','--','experiments/purew_scope_v4','reports/purew_scope_v4_20261011'],cwd=WORK,text=True).strip(),'Publish frozen files before launch'
     files={p.name:p.read_text() for p in HERE.glob('*.py') if p.name not in ('bootstrap.py','deploy.py','check.py','finish.py','audit.py')}
     files['native_eval.py']=(WORK/'experiments/purew_scope_v2/run.py').read_text()
     files['propagation_math.py']=(WORK/'experiments/purew_scope_v2/propagation_math.py').read_text()
     files['journal.py']=(WORK/'experiments/purew_scope_v2/journal.py').read_text()
-    payload=dict(files=files,protocol=json.loads((WORK/'reports/purew_scope_v4_20261010/PROTOCOL.json').read_text()),commit=commit)
+    payload=dict(files=files,protocol=json.loads((WORK/'reports/purew_scope_v4_20261011/PROTOCOL.json').read_text()),commit=commit)
     code=json.dumps((HERE/'bootstrap.py').read_text())+'\n'+json.dumps(payload)+'\n'
     p=subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=10','pro5000',
         "python3 -c 'import sys,json;exec(json.loads(sys.stdin.readline()))'"],input=code,capture_output=True,text=True,timeout=300)

@@ -2,7 +2,7 @@
 import json,os,runpy,subprocess,sys,time,traceback,urllib.request
 from pathlib import Path
 
-WORK=Path(os.environ['WORKSPACE']);OUT=WORK/'reports/purew_scope_v4_20261010';RUN='/data/bmw/Knowledge_editing/outputs/purew-scope-v4-20261011/run'
+WORK=Path(os.environ['WORKSPACE']);OUT=WORK/'reports/purew_scope_v4_20261011';RUN='/data/bmw/Knowledge_editing/outputs/purew-scope-v4-20261011/run'
 sys.path.insert(0,str(WORK/'experiments/purew_scope_v4'));import deploy
 STATE=WORK/'.local_run/scope_v4_finish.json'
 
@@ -31,18 +31,18 @@ def publication():
     assert subprocess.check_output(['git','branch','--show-current'],cwd=WORK,text=True).strip()==branch,'Publication checkout changed; retain result and request review'
     assert subprocess.run(['git','diff','--cached','--quiet'],cwd=WORK).returncode==0,'Other staged work; do not commit it'
     names=['RESULTS.json','REPORT.html','COMPLETION_AUDIT.json','EXECUTION_STATUS.json']
-    subprocess.run(['git','add','--pathspec-from-file=-'],input=''.join('reports/purew_scope_v4_20261010/'+n+'\n' for n in names),cwd=WORK,text=True,check=True)
+    subprocess.run(['git','add','--pathspec-from-file=-'],input=''.join('reports/purew_scope_v4_20261011/'+n+'\n' for n in names),cwd=WORK,text=True,check=True)
     subprocess.run(['git','commit','-m','Publish anonymous experiment results and completion audit'],cwd=WORK,check=True)
     proxy='http://127.0.0.1:7897';env=dict(os.environ,HTTPS_PROXY=proxy,HTTP_PROXY=proxy,ALL_PROXY=proxy,NO_PROXY='',no_proxy='')
     subprocess.run(['git','-c','http.proxy='+proxy,'push','origin','HEAD'],cwd=WORK,env=env,check=True)
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=WORK,text=True).strip();refs=subprocess.check_output(['git','-c','http.proxy='+proxy,'ls-remote','origin'],cwd=WORK,text=True,env=env)
     assert head+'\trefs/heads/'+branch in refs
     op=urllib.request.build_opener(urllib.request.ProxyHandler({'http':proxy,'https':proxy}))
-    url='https://raw.githubusercontent.com/DLwbm123/Knowledge_editing-public/'+head+'/reports/purew_scope_v4_20261010/RESULTS.json'
+    url='https://raw.githubusercontent.com/DLwbm123/Knowledge_editing-public/'+head+'/reports/purew_scope_v4_20261011/RESULTS.json'
     with op.open(url,timeout=60) as resp:assert resp.status==200 and json.load(resp)['payload_status']==result['payload_status']
     receipt=dict(status='PUBLICATION_VERIFIED',commit=head,anonymous_access=True,proxy=proxy,finite_delivery_complete=True)
     (OUT/'PUBLICATION_RECEIPT.json').write_text(json.dumps(receipt,indent=2)+'\n');st.update(status='FINITE_DELIVERY_COMPLETE',publication_complete=True);(OUT/'EXECUTION_STATUS.json').write_text(json.dumps(st,indent=2)+'\n')
-    subprocess.run(['git','add','--pathspec-from-file=-'],input='reports/purew_scope_v4_20261010/PUBLICATION_RECEIPT.json\nreports/purew_scope_v4_20261010/EXECUTION_STATUS.json\n',cwd=WORK,text=True,check=True)
+    subprocess.run(['git','add','--pathspec-from-file=-'],input='reports/purew_scope_v4_20261011/PUBLICATION_RECEIPT.json\nreports/purew_scope_v4_20261011/EXECUTION_STATUS.json\n',cwd=WORK,text=True,check=True)
     subprocess.run(['git','commit','-m','Record verified public delivery'],cwd=WORK,check=True);subprocess.run(['git','-c','http.proxy='+proxy,'push','origin','HEAD'],cwd=WORK,env=env,check=True)
     deploy.remote('import json,pathlib\np=pathlib.Path('+repr(RUN+'/private/PUBLICATION_RECEIPT.json')+')\np.write_text('+repr(json.dumps(receipt))+')\nprint(json.dumps({"saved":True}))\n')
     write('FINITE_DELIVERY_COMPLETE',publication=receipt)
