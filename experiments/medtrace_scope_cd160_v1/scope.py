@@ -12,6 +12,9 @@ fit=previous.fit
 q.GPUS=(5,6,7)
 SUP=Path(os.environ['SUPPLEMENT_PARENT'])
 PARENT=Path(os.environ['PROTECTION_PARENT'])
+PROTECTED_ACTIONS={'scope_protected'}
+REFERENCE_ARMS={'D':'C','B8':'A8'}
+PRE_ENDPOINT=None
 
 
 def tasks():return c.read(SUP/'private/FROZEN_TASKS.json')
@@ -115,7 +118,7 @@ def restore(before,proposed,initial,scale,radius,linear_g,required_linear,curren
 
 def train():
     from m3bench_repro.editors.llava_runtime import seed_everything
-    protected=os.environ['ACTION']=='scope_protected';part=int(os.environ['PARTITION']);gpu=q.GPUS[part]
+    protected=os.environ['ACTION'] in PROTECTED_ACTIONS;part=int(os.environ['PARTITION']);gpu=q.GPUS[part]
     assigned=jobs(protected)[part::len(q.GPUS)];old.calibration.require_memory(gpu)
     counts=dict(forwards=0,backwards=0,updates=0,generation_attempts=0)
     with p.lease(gpu):
@@ -170,8 +173,9 @@ def train():
                             c.save(resume,dict(completed_step=step,state=previous.weights(chosen),optimizer=opt.state_dict(),curve=curve,counts=dict(counts),rng=c.rng()))
                             c.write(RUN/'private/progress'/arm/f'{t["order"]}.json',dict(step=step,mode=mode,counts=counts));print('TRAIN',arm,t['order'],step,mode,flush=True)
                     final=old.snapshot(expert);endpoint=dict(qualified=True)
+                    if protected and PRE_ENDPOINT is not None:PRE_ENDPOINT(runtime,hook,expert,final,batches,refs,counts,t,arm)
                     if protected:
-                        refarm='C' if arm=='D' else 'A8';saved=torch.load(point(t,refarm),map_location='cpu',weights_only=True)
+                        refarm=REFERENCE_ARMS[arm];saved=torch.load(point(t,refarm),map_location='cpu',weights_only=True)
                         reference={k:v.to(runtime.device) for k,v in saved['states']['FINAL'].items()}
                         rg=measure(runtime,hook,expert,reference,batches,refs,counts)[0];radius=float(((q.flatten(reference)-q.flatten(base))/scale).norm())
                         n=float(((q.flatten(final)-q.flatten(base))/scale).norm());radial=min(1.,radius/n) if n else 1.
