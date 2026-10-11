@@ -1,12 +1,40 @@
 {
   "status": "PASS",
-  "test_scope": "CPU_SYNTHETIC_ONLY",
-  "common_reference_norm": true,
-  "actual_write_norm_checked": true,
-  "fixed_full_projection": true,
-  "history_complete_deterministic": true,
-  "evaluation_roles_excluded": true,
-  "unadmitted_history_rejected": true,
-  "zero_direction_stops": true,
-  "real_VLM_admission": "NOT_RUN"
+  "checks": {
+    "math": {
+      "status": "PASS",
+      "test_scope": "CPU_SYNTHETIC_ONLY",
+      "common_reference_norm": true,
+      "actual_write_norm_checked": true,
+      "fixed_full_projection": true,
+      "history_complete_deterministic": true,
+      "evaluation_roles_excluded": true,
+      "unadmitted_history_rejected": true,
+      "zero_direction_stops": true,
+      "real_VLM_admission": "NOT_RUN"
+    },
+    "journal": {
+      "status": "PASS",
+      "binding_rejection": true,
+      "checkpoint_log_gap_repaired": true,
+      "completed_receipt_skipped": true,
+      "dead_process_rejected": true
+    },
+    "recovery": {
+      "status": "PASS",
+      "both_resume_bit_exact": true,
+      "native_reload": true,
+      "first_edit_H_equals_U": true,
+      "history_changes_direction": true,
+      "shared_targets": true,
+      "checkpoint_log_gap_repaired": true
+    },
+    "score_inheritance": {
+      "status": "PASS",
+      "exact_valid_reused": true,
+      "old_failure_not_retried": true,
+      "changed_binding_rejected": true
+    }
+  },
+  "protocol_idempotent": true
 }
