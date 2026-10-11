@@ -426,6 +426,7 @@ def controller():
 
 
 def finish():
+    import pipeline
     from module_recovery import admitted_stage
     paths = [s.point(t, arm) for t in s.tasks() for arm in mm.ARMS]
     assert len(paths) == 48 and all(path.exists() for path in paths)

@@ -20,6 +20,11 @@ def zero_work(failure):
             and bool(failure['counts']) and all(value == 0 for value in failure['counts'].values()))
 
 
+def expected_parent_failure(failure):
+    return (failure['error'] == "RuntimeError('Own finite stage failed; do not automatically retry')"
+            and bool(failure['counts']) and all(value == 0 for value in failure['counts'].values()))
+
+
 def selfcheck():
     failure = dict(error="AssertionError('45 GiB admission reserve unavailable')", counts=dict(updates=0, forwards=0))
     assert zero_work(failure)
@@ -118,8 +123,7 @@ def main():
         time.sleep(5)
     failure = run / 'private/FAILURE_module_controller_None.json'
     value = c.read(failure)
-    assert value['error'] == "RuntimeError('Own finite stage failed; do not automatically retry')"
-    assert all(count == 0 for count in value['counts'].values())
+    assert expected_parent_failure(value)
     failure.rename(archive / failure.name)
     exit_path = run / 'EXIT.json'
     if exit_path.exists():
