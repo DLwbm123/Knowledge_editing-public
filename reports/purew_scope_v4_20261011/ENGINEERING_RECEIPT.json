@@ -1,0 +1,42 @@
+{
+  "status": "AUDIT_RECOVERED",
+  "audit_attempts": 3,
+  "audit_prewrite_failures": [
+    "MISSING_LEGACY_IMAGE_HASH_FIELD",
+    "INACCESSIBLE_HISTORICAL_IMAGE_PATH"
+  ],
+  "repair": "reuse existing image bindings; resolve missing legacy paths to current authorized source files for file identity checks",
+  "historical_score_changes": 0,
+  "historical_reruns": 0,
+  "new_GPU_updates": 0,
+  "new_model_calls": 0,
+  "new_Judge": 0,
+  "last_known_inherited_GPU_process_hours": 69.4465,
+  "last_known_inherited_Judge_attempts": 13850,
+  "lifecycle": "separate audit root; formal round4 first-install deadline not started; no historical assets deleted",
+  "execution_repairs": [
+    {
+      "epoch": 1791706203.743169,
+      "error": "Local deployment report-path date retained 20261010 instead of 20261011",
+      "before_SSH": true,
+      "GPU_updates": 0,
+      "Judge": 0,
+      "formal_install_not_started": true,
+      "repair": "Correct shared report paths in deploy, finish, render; frozen protocol unchanged"
+    },
+    {
+      "epoch": 1791711668.36042,
+      "issue": "Startup status retained superseded dataset-gate and zero-update fields beside actual running status",
+      "repair": "Reconcile status metadata with live committed journals and frozen8-edit admission; no model/data/protocol/scoring changes",
+      "historical_versions_retained_in_git": true
+    },
+    {
+      "epoch": 1791721847.318686,
+      "issue": "Empty Judge shards exited normally before ps startup check; report tail stopped while scoring succeeded",
+      "repair": "Require worker-specific SCORER_DONE for ended shards; skip restarting terminal queue; report/publication resume only",
+      "new_GPU_updates": 0,
+      "new_Judge_attempts": 0,
+      "original_failure_retained": true
+    }
+  ]
+}
