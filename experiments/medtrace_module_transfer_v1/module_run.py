@@ -49,6 +49,7 @@ def count(*_):
 
 
 def load(gpu):
+    assert gpu in c.read(RUN / 'RUN_MANIFEST.json')['physical_GPUs']
     free = int(subprocess.check_output(['nvidia-smi', '-i', str(gpu), '--query-gpu=memory.free',
                 '--format=csv,noheader,nounits'], text=True).strip())
     assert free >= 45 * 1024, '45 GiB admission reserve unavailable'
@@ -155,7 +156,7 @@ def finish_candidate(runtime, hook, expert, task, arm, base, batches, refs, curv
 
 def reference():
     from m3bench_repro.editors.llava_runtime import seed_everything
-    part = int(os.environ['PARTITION']); gpu = GPUS[part]
+    part = int(os.environ['PARTITION']); gpu = int(os.environ.get('GPU', GPUS[part]))
     assigned = s.tasks()[part::len(GPUS)]
     with p.lease(gpu):
         runtime, bindings, handle = load(gpu)
@@ -282,7 +283,7 @@ def fisher():
 def train():
     from m3bench_repro.editors.llava_runtime import seed_everything
     assert (RUN / 'private/REFERENCE_EXACT.json').exists() and (RUN / 'public/FISHER_ADMISSION.json').exists()
-    part = int(os.environ['PARTITION']); gpu = GPUS[part]
+    part = int(os.environ['PARTITION']); gpu = int(os.environ.get('GPU', GPUS[part]))
     assigned = s.tasks()[part::len(GPUS)]
     with p.lease(gpu):
         runtime, bindings, handle = load(gpu)
@@ -372,7 +373,7 @@ def train():
 
 def evaluate():
     assert c.read(RUN / 'private/CANDIDATES_FROZEN.json')['candidates'] == 48
-    part = int(os.environ['PARTITION']); gpu = GPUS[part]
+    part = int(os.environ['PARTITION']); gpu = int(os.environ.get('GPU', GPUS[part]))
     tasks = s.tasks()[part::len(GPUS)]
     with p.lease(gpu):
         runtime, bindings, handle = load(gpu)
@@ -421,6 +422,11 @@ def controller():
     pipeline.wait([pipeline.launch('module_run.py', 'module_fisher', GPUS[0], 0)])
     c.write(RUN / 'public/PROGRESS.json', dict(status='MODULE_TRAINING_RUNNING', complete=False))
     pipeline.wait([pipeline.launch('module_run.py', 'module_train', gpu, part) for part, gpu in enumerate(GPUS)])
+    finish()
+
+
+def finish():
+    from module_recovery import admitted_stage
     paths = [s.point(t, arm) for t in s.tasks() for arm in mm.ARMS]
     assert len(paths) == 48 and all(path.exists() for path in paths)
     c.write(RUN / 'private/CANDIDATES_FROZEN.json', dict(candidates=48, epoch=time.time(), selection=False))
@@ -430,8 +436,8 @@ def controller():
     c.write(RUN / 'private/FISHER_CONSUMED.json', dict(bytes=cache.stat().st_size(),
         reason='All M3 and M123 trajectories complete; factorized Fisher has no remaining consumer'))
     cache.unlink()
-    pipeline.wait([pipeline.launch('module_run.py', 'module_evaluate', gpu, part) for part, gpu in enumerate(GPUS)])
-    pipeline.wait([pipeline.launch('module_route.py', 'module_route', GPUS[0], 0)])
+    admitted_stage('module_run.py', 'module_evaluate', range(len(GPUS)))
+    admitted_stage('module_route.py', 'module_route', [0])
     outputs = list((RUN / 'private/outputs').glob('*/*/*.json'))
     counts = [c.read(path) for path in (RUN / 'private').glob('COUNTS_*.json')]
     assert len(outputs) == 6948

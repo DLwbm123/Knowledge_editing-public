@@ -133,7 +133,10 @@ def main():
                 maximum_operator_step_ratio=max(ratios), operator_Fisher=data.get('mechanism'),
                 scalar_optimizer_state=data.get('scalar_optimizer_state')))
     ledger = q.read(RUN / 'RESOURCE_LEDGER.json'); inherited = q.read(RUN / 'private/INHERITED_COST.json')
-    assert len(ledger['gpu_sessions']) == 11 and all(row.get('ended_epoch') for row in ledger['gpu_sessions'])
+    recovered = list((RUN / 'private/engineering_admission_recovery1').glob('FAILURE_module_train_*.json'))
+    from module_recovery import zero_work
+    assert all(zero_work(q.read(path)) for path in recovered)
+    assert len(ledger['gpu_sessions']) == 11 + len(recovered) and all(row.get('ended_epoch') for row in ledger['gpu_sessions'])
     resource = dict(new_GPU_process_hours=(ledger['gpu_seconds_used'] - inherited['gpu_seconds_used']) / 3600,
         cumulative_GPU_process_hours=ledger['gpu_seconds_used'] / 3600,
         new_Judge=ledger['Judge_attempts'] - inherited['Judge_attempts'], cumulative_Judge=ledger['Judge_attempts'])

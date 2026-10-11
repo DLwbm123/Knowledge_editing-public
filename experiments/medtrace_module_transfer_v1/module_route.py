@@ -1,4 +1,5 @@
 """Original R0 routing, identical for all five new frozen expert banks."""
+import os
 import time
 import traceback
 import torch
@@ -15,8 +16,9 @@ def main():
     rows = [(t, s.source(t)[0]) for t in tasks] + [(t, row) for t in tasks for row in s.events(t)]
     rows += [(tasks[0], row) for row in s.previous.data.held()]
     assert len(rows) == 219
-    with r.p.lease(r.GPUS[0]):
-        runtime, bindings, handle = r.load(r.GPUS[0])
+    gpu = int(os.environ.get('GPU', r.GPUS[0]))
+    with r.p.lease(gpu):
+        runtime, bindings, handle = r.load(gpu)
         entries = []
         route_layer = runtime.target_lock['balancedit']['targets'][0]
         for before, after in zip(original, tasks):
