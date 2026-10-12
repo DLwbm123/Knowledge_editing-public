@@ -143,6 +143,9 @@ def probe():
                 protection=[r.old.batch_on(runtime,v) for v in frozen_basis]
                 reference=c.read(RUN/'private/results/C'/f"{task['order']}.json")
                 calibration=c.read(PARENT/'private/calibration'/f"{task['order']}.json")
+                penalty=float(r.mm.operator_penalty({k:v.to(runtime.device) for k,v in saved['FINAL'].items()},cache))
+                assert abs(penalty-calibration['C_operator_penalty']) <= 1e-12+1e-4*abs(calibration['C_operator_penalty']), 'Frozen C Fisher calibration drift'
+                c.write(RUN/'private/C_FISHER_PARITY'/f"{task['order']}.json",dict(status='PASS',actual=penalty,expected=calibration['C_operator_penalty']))
                 budget=.1*calibration['C_operator_penalty'];coefficient=calibration['coefficient']
                 try:
                     refs=[r.q.logits(runtime,hook,b,verify_base=i==0) for i,b in enumerate(sources+protection)]
@@ -184,9 +187,15 @@ def probe():
 
 
 def controller():
-    import pipeline
+    from guard_admission import require_reference
+    require_reference()
     assert not (RUN/'private/GUARD_START.json').exists()
     c.write(RUN/'private/GUARD_START.json',dict(epoch=time.time(),pid=os.getpid()))
+    run_stages()
+
+
+def run_stages():
+    import pipeline
     c.write(RUN/'public/PROGRESS.json',dict(status='PHASE_A_FISHER_REBUILD',complete=False))
     admitted_stage('guard_probe.py','module_fisher',[0])
     c.write(RUN/'public/PROGRESS.json',dict(status='PHASE_A_FIXED_PREFIX_VALIDATION',complete=False))
@@ -198,6 +207,8 @@ if __name__=='__main__':
     try:
         action=os.environ['ACTION']
         if action=='guard_cpu':
+            from guard_admission import require_reference
+            require_reference()
             print(gm.selfcheck())
         elif action=='module_fisher':
             r.GPUS=(int(os.environ['GPU']),4,7);r.fisher()
