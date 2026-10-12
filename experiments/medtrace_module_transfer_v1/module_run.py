@@ -430,6 +430,15 @@ def finish():
     from module_recovery import admitted_stage
     paths = [s.point(t, arm) for t in s.tasks() for arm in mm.ARMS]
     assert len(paths) == 48 and all(path.exists() for path in paths)
+    assert not (RUN / 'private/CANDIDATES_FROZEN.json').exists(), 'Do not repeat evaluation'
+    for task in s.tasks():
+        for arm in mm.ARMS:
+            result = c.read(RUN / 'private/results' / arm / f"{task['order']}.json")
+            assert result['status'] == 'COMPLETE' and len(result['curve']) == 160 and result['save_load_exact']
+    training_counts = [c.read(path) for path in (RUN / 'private').glob('COUNTS_*.json')]
+    assert sum(row['updates'] for row in training_counts) == 7680
+    assert sum(row['backwards'] for row in training_counts) == 40352
+    assert sum(row['operator_backwards'] for row in training_counts) == 2560
     c.write(RUN / 'private/CANDIDATES_FROZEN.json', dict(candidates=48, epoch=time.time(), selection=False))
     c.write(RUN / 'public/PROGRESS.json', dict(status='ALL_CANDIDATES_FROZEN_EVALUATION_RUNNING', complete=False))
     cache = RUN / 'private/OPERATOR_FISHER.pt'
@@ -470,7 +479,8 @@ def finish():
 if __name__ == '__main__':
     try:
         {'module_reference': reference, 'module_fisher': fisher, 'module_train': train,
-         'module_evaluate': evaluate, 'module_controller': controller}[os.environ['ACTION']]()
+         'module_evaluate': evaluate, 'module_controller': controller,
+         'module_finish': finish}[os.environ['ACTION']]()
     except BaseException as error:
         c.write(RUN / 'private' / f"FAILURE_{os.environ.get('ACTION')}_{os.environ.get('PARTITION')}.json",
             dict(error=repr(error), traceback=traceback.format_exc(), counts=COUNTS, epoch=time.time()))

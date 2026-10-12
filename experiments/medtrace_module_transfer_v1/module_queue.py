@@ -86,7 +86,7 @@ def request(db, operation):
         from module_recovery import expected_parent_failure
         admitted = (RUN / 'private/engineering_admission_recovery1/ADMISSION.json').exists()
         failures = [path for path in (RUN / 'private').glob('FAILURE_module*.json')
-                    if not (admitted and path.name == 'FAILURE_module_controller_None.json'
+                    if not (admitted and path.name.startswith('FAILURE_module_controller_')
                             and expected_parent_failure(q.read(path)))]
         if failures:
             return dict(state=dict(status='STOPPED', reason='OWN_STAGE_FAILED'), rows=[])

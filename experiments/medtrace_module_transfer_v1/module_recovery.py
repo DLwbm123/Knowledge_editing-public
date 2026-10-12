@@ -25,6 +25,13 @@ def expected_parent_failure(failure):
             and bool(failure['counts']) and all(value == 0 for value in failure['counts'].values()))
 
 
+def parent_failure(run):
+    paths = list((run / 'private').glob('FAILURE_module_controller_*.json'))
+    assert len(paths) == 1, 'Expected exactly one recorded original controller failure'
+    assert expected_parent_failure(json.loads(paths[0].read_text()))
+    return paths[0]
+
+
 def selfcheck():
     failure = dict(error="AssertionError('45 GiB admission reserve unavailable')", counts=dict(updates=0, forwards=0))
     assert zero_work(failure)
@@ -121,7 +128,7 @@ def main():
     while live(controller):
         c.budget()
         time.sleep(5)
-    failure = run / 'private/FAILURE_module_controller_None.json'
+    failure = parent_failure(run)
     value = c.read(failure)
     assert expected_parent_failure(value)
     failure.rename(archive / failure.name)
