@@ -21,9 +21,30 @@ def main():
     payloads={x['key']:x for x in db.execute('SELECT * FROM payload')}
     assert all(x['status'] in ('FORMAT_VALID','MISSING') for x in payloads.values())
     scores={k:x['correct'] for k,x in payloads.items()}
+    from scripts.medtrace.astra_judge_bundle import validate
+    cost=c.read(R/'RESOURCE_LEDGER.json')
+    attempted=[]
+    for batch in cost['Astra_purew146_batches']:
+        attempted.extend(batch['keys'])
+        evidence=c.read(root/'evidence'/(batch['id']+'.json'))
+        assert evidence['batch']['records']==[json.loads(payloads[k]['record']) for k in batch['keys']]
+        if batch['status']=='FORMAT_VALID':
+            ev=evidence['evidence']
+            assert ev['actual_model']=='gpt-6-astra' and ev['reasoning_effort']=='medium'
+            assert ev['input_binding']==c.digest(evidence['batch']) and not ev['tool_event_types'] and all(ev['isolation_checks'].values())
+            decisions=validate(evidence['batch'],evidence['response'])
+            assert [int(x['is_correct']) for x in decisions]==[scores[k] for k in batch['keys']]
+        else:
+            assert batch['status']=='FAILED_NO_RETRY' and all(scores[k] is None for k in batch['keys'])
+    assert len(attempted)==len(set(attempted))==cost['Judge_attempts']
     tasks=c.read(R/'private/BENCHMARK146_QUEUE.json')['tasks'];ledger=c.read(R/'private/EVAL_LEDGER.json')
     records=[]
     for row in rows:
+        if row['method']==ARM:
+            d=c.read(row['path'])
+            assert c.digest(d)==row['output_binding']
+            assert d['binding']['phase']['protocol']==c.digest(c.read(R/'private/FROZEN_PROTOCOL.json'))
+            assert json.loads(payloads[row['payload_key']]['binding'])['output']==d['R0']
         query=ledger['queries'][row['query_id']]
         active={(t['native']['image_sha256'],t['native']['question']) for t in tasks[:row['prefix']]} if row['mode']=='bank_R0' else set()
         records.append((dict(binding=dict(phase=dict(arm=row['method'],node=0,prefix=row['prefix']),
@@ -71,7 +92,7 @@ def main():
         events=[c.read(p) for p in (R/'private/steps'/mode).glob('*/*.json')];assert len(events)==23360
         diagnostics.append(dict(mode=mode,steps=len(events),mean_proposal_norm=sum(x['proposal_norm'] for x in events)/len(events),
             mean_actual_native_norm=sum(x['actual_native_norm'] for x in events)/len(events),zero_native_writes=sum(x['changed_elements']==0 for x in events)))
-    cost=c.read(R/'RESOURCE_LEDGER.json');assert all(x.get('ended_epoch') for x in cost['gpu_sessions'])
+    assert all(x.get('ended_epoch') for x in cost['gpu_sessions'])
     timing=c.read(R/'public/NATIVE_RELOAD_PERFORMANCE.json')
     primary=[x for x in contrasts if x['mode']=='bank_R0' and x['prefix']==146]
     source=next(x for x in panels if x['arm']==ARM and x['mode']=='bank_R0' and x['prefix']==146 and x['task']=='T0')
