@@ -301,6 +301,10 @@ def train():
                 source_gain = -.25 * reference['values'][0]['NLL_change'] - .0625 * sum(v['NLL_change'] for v in reference['values'][1:5]) - .25 * sum(v['NLL_change'] for v in reference['values'][5:])
                 assert math.isfinite(denominator) and denominator > 0 and source_gain > 0
                 coefficient = .1 * source_gain / denominator
+                if mm.ARMS == ('C', 'M13'):
+                    prior = c.read(Path(os.environ['MODULE_PARENT']) / 'private/calibration' / f"{task['order']}.json")
+                    assert abs(coefficient - prior['coefficient']) <= 1e-12 + 1e-4 * abs(prior['coefficient']), 'Frozen M3 calibration drift'
+                    coefficient = prior['coefficient']
                 c.write(RUN / 'private/calibration' / f"{task['order']}.json", dict(C_operator_penalty=denominator,
                     C_source_gain=source_gain, coefficient=coefficient, fraction=.1, heldout_used=False))
                 # Rotate only execution order; every registered arm is run for every owner.
@@ -371,8 +375,8 @@ def train():
             handle.remove(); save_counts()
 
 
-def evaluate():
-    assert c.read(RUN / 'private/CANDIDATES_FROZEN.json')['candidates'] == 48
+def evaluate(expected_candidates=48):
+    assert c.read(RUN / 'private/CANDIDATES_FROZEN.json')['candidates'] == expected_candidates
     part = int(os.environ['PARTITION']); gpu = int(os.environ.get('GPU', GPUS[part]))
     tasks = s.tasks()[part::len(GPUS)]
     with p.lease(gpu):

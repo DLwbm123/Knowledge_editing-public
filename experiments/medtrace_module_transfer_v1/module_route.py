@@ -9,8 +9,8 @@ from m3bench_repro.editors.routing import MemoryRouter, decision_as_json
 s, c, RUN = r.s, r.c, r.RUN
 
 
-def main():
-    assert c.read(RUN / 'private/CANDIDATES_FROZEN.json')['candidates'] == 48
+def main(expected_candidates=48):
+    assert c.read(RUN / 'private/CANDIDATES_FROZEN.json')['candidates'] == expected_candidates
     tasks = s.tasks()
     original = c.read(s.PARENT / 'private/BENCHMARK146_QUEUE.json')['tasks'][:8]
     rows = [(t, s.source(t)[0]) for t in tasks] + [(t, row) for t in tasks for row in s.events(t)]
