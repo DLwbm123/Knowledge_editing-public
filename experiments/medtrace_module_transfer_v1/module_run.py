@@ -443,7 +443,7 @@ def finish():
     c.write(RUN / 'public/PROGRESS.json', dict(status='ALL_CANDIDATES_FROZEN_EVALUATION_RUNNING', complete=False))
     cache = RUN / 'private/OPERATOR_FISHER.pt'
     assert cache.is_file() and not cache.is_symlink()
-    c.write(RUN / 'private/FISHER_CONSUMED.json', dict(bytes=cache.stat().st_size(),
+    c.write(RUN / 'private/FISHER_CONSUMED.json', dict(bytes=cache.stat().st_size,
         reason='All M3 and M123 trajectories complete; factorized Fisher has no remaining consumer'))
     cache.unlink()
     admitted_stage('module_run.py', 'module_evaluate', range(len(GPUS)))
@@ -463,7 +463,7 @@ def finish():
     deletion = []
     for path in paths:
         assert not path.is_symlink()
-        deletion.append(dict(arm=path.parent.name, owner=int(path.stem), bytes=path.stat().st_size()))
+        deletion.append(dict(arm=path.parent.name, owner=int(path.stem), bytes=path.stat().st_size))
     c.write(RUN / 'private/CANDIDATES_CONSUMED.json', dict(candidates=deletion,
         reason='All forced/natural generations, save/load checks and durable scoring bindings complete; rebuilding requires retraining'))
     for path in paths:
