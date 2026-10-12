@@ -1,0 +1,63 @@
+{
+  "status": "PHASE_A_COMPLETE",
+  "decision": "STOP_MECHANISM_GATE_NOT_MET",
+  "complete": true,
+  "full_validation_complete": false,
+  "independent_confirmation": false,
+  "gates": {
+    "positive_M1_source_gain": true,
+    "source_progress_90percent": false,
+    "no_cell_token_loss_worse": true,
+    "lower_BASIS_KL_both_intervals": true,
+    "no_cell_KL_worse": true,
+    "mean_step_norm_90percent": false,
+    "each_owner_step_norm_90percent": false
+  },
+  "BASIS_KL_difference_intervals": {
+    "expert": [
+      -0.01101926773411498,
+      -0.004669439469998251
+    ],
+    "source": [
+      -0.008891282021400727,
+      -0.006444330084303743
+    ]
+  },
+  "mean_operator_step_ratio": 0.523764039384042,
+  "skipped_proposals": 304,
+  "counts": {
+    "forwards": 16789,
+    "non_generation_forwards": 16789,
+    "backwards": 5840,
+    "operator_backwards": 16,
+    "updates": 1280,
+    "generation_attempts": 0
+  },
+  "resource": {
+    "new_GPU_process_hours": 3.801096778180864,
+    "cumulative_GPU_process_hours": 136.1796830520365,
+    "new_Judge": 0,
+    "cumulative_Judge": 17177
+  },
+  "next_consumer": "NONE",
+  "boundary": "Source/BASIS teacher forcing only; no generation, heldout measurement or Judge",
+  "aggregate": {
+    "paired_cells": 16,
+    "measurement_nodes": 32,
+    "completed_owners": 8,
+    "source_progress_pass_cells": 8,
+    "source_gain_ratio_min": 0.4019879447101463,
+    "source_gain_ratio_mean": 0.7843640403142818,
+    "M1_source_gain_mean": 1.6093068153933434,
+    "GUARD_source_gain_mean": 1.0165747302727897,
+    "M1_BASIS_KL_mean": 0.00890905110911355,
+    "GUARD_BASIS_KL_mean": 0.0011262257984166277,
+    "M1_lost_correct_tokens_across_cells": 407,
+    "GUARD_lost_correct_tokens_across_cells": 165,
+    "GUARD_proposals": 640,
+    "accepted_proposals": 336,
+    "skipped_proposals": 304,
+    "accepted_mean_step_ratio": 0.9976457893029371,
+    "owner_step_norm_pass_count": 0
+  }
+}
