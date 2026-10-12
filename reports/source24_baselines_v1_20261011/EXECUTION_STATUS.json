@@ -1,9 +1,9 @@
 {
   "status": "BASELINE_REAL_VLM_ADMISSION_PASSED_TT_RUNNING",
-  "checked_at_Beijing": "2026-10-12T10:30:44.562709+08:00",
+  "checked_at_Beijing": "2026-10-12T10:42:18+08:00",
   "TT_real_VLM_admission": "PASS",
   "BalancEdit_real_VLM_admission": "PASS",
-  "TT_committed": 44,
+  "TT_committed": 540,
   "TT_total": 12960,
   "BalancEdit_committed": 0,
   "BalancEdit_total": 1200,
@@ -11,11 +11,15 @@
     "U": 3840,
     "H_SOURCE": 3840,
     "GPU_generation_complete": true,
-    "scoring": "STOPPED_THREE_TRANSPORT_FAILURES",
-    "valid_payloads": 124,
+    "scoring": "AUTHORIZED128_CONTINUATION_RUNNING",
+    "valid_payloads": 164,
     "missing_payloads": 198,
-    "unattempted_payloads": 128,
-    "continuation_needs_user_decision": true
+    "unattempted_payloads": 0,
+    "continuation_needs_user_decision": false,
+    "reserved_payloads": 88,
+    "original198_failures_preserved": true,
+    "health_probe": "PASS gpt-6-astra medium; exact original isolated client",
+    "continuation_source_commit": "93559172565e5978dc6dd28366629dcb54e22a90"
   },
   "engineering_repairs_preserve_failures_and_original_deadline": true,
   "publication_complete": false
