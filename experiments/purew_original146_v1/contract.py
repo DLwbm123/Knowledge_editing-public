@@ -7,6 +7,13 @@ METHODS = (ARM, 'TT88_W0_RETRO146', 'balancedit')
 PREFIXES = (1, 50, 100, 146)
 
 
+def base_completion(output):
+    assert output['error'] is None
+    assert isinstance(output['model_answer_raw'], str)
+    assert all(type(x) is int for x in output['raw_generated_token_ids'])
+    return dict(raw_answer=output['model_answer_raw'], raw_token_ids=output['raw_generated_token_ids'])
+
+
 def source_audit(tasks, ledger):
     assert len(tasks) == 146 and [t['order'] for t in tasks] == list(range(1, 147))
     assert len({t['edit_id'] for t in tasks}) == 146

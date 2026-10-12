@@ -11,7 +11,7 @@ import time
 import traceback
 sys.path.insert(0, os.environ['RUN_ROOT'] + '/private/tools')
 import common as c
-from contract import ARM, PREFIXES, proposals, selfcheck
+from contract import ARM, PREFIXES, proposals, selfcheck, base_completion
 
 R = c.RUN
 COUNTS = dict(forwards=0, backwards=0, committed_updates=0, generation_attempts=0)
@@ -142,7 +142,7 @@ def admission(runtime, bindings, tasks, weight, original_schema, frozen):
     assert weight.dtype == torch.float16
     for t in (tasks[0], tasks[49], tasks[145]):
         d = generate(runtime, bindings, t['native'], R/'private/mechanical'/(str(t['order'])+'.json'), dict(stage='BASE_IDENTITY'))
-        assert d['R0'] == bindings[t['native']['opaque_Base_id']]['output'], 'Native Base identity differs; do not reuse baselines'
+        assert d['R0'] == base_completion(bindings[t['native']['opaque_Base_id']]['output']), 'Native Base identity differs; do not reuse baselines'
     batch = batch_cpu(runtime, tasks[0])
     features = {}
     h = runtime.get_module(c.LAYER).register_forward_pre_hook(lambda m,a:features.update(value=a[0].detach().clone()))
