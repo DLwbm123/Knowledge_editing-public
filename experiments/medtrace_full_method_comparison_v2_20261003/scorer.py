@@ -36,8 +36,16 @@ def remote(operation):
     if 'JUDGE_WORKER' in os.environ:
         operation = dict(operation, worker=int(os.environ['JUDGE_WORKER']))
     code = 'import os,runpy\nos.environ.update(RUN_ROOT=' + repr(RUN) + ',QUEUE_REQUEST=' + repr(json.dumps(operation)) + ')\nrunpy.run_path(os.environ["RUN_ROOT"]+"/private/tools/' + QUEUE_FILE + '",run_name="__main__")\n'
-    p = subprocess.run(['ssh', 'pro5000', 'python3 -'], input=code, capture_output=True, text=True, timeout=300, check=True)
-    return json.loads(p.stdout)
+    attempts = 3 if operation['action'] in ('next', 'status', 'reserved') else 1
+    for attempt in range(attempts):
+        try:
+            p = subprocess.run(['ssh', 'pro5000', 'python3 -'], input=code, capture_output=True, text=True, timeout=300, check=True)
+            return json.loads(p.stdout)
+        except subprocess.CalledProcessError as error:
+            if error.returncode != 255 or attempt + 1 == attempts:
+                raise
+            print('SSH_READ_INTERRUPTED', operation['action'], attempt + 1, flush=True)
+            time.sleep(2 * (attempt + 1))
 
 
 def publish_file(name, data):
