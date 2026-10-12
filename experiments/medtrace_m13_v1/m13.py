@@ -33,7 +33,6 @@ def admission():
 
 
 def controller():
-    import pipeline
     assert not (RUN / 'private/M13_START.json').exists(), 'No implicit controller restart'
     c.write(RUN / 'private/M13_START.json', dict(epoch=time.time(), pid=os.getpid()))
     admission()
@@ -70,6 +69,12 @@ def finish():
     assert len(outputs) == 1158 and sum(x['generation_attempts'] for x in counts) <= 1158
     assert sum(x['non_generation_forwards'] for x in counts) <= 10000
     c.write(RUN / 'private/MODULE_GENERATION_COMPLETE.json', dict(outputs=1158, counts=counts, epoch=time.time()))
+    finish_generated()
+
+
+def finish_generated():
+    import pipeline
+    paths = [r.s.point(task, 'M13') for task in r.s.tasks()]
     pipeline.wait([pipeline.launch('m13_queue.py', 'module_ingest')])
     c.write(RUN / 'private/CANDIDATES_CONSUMED.json', dict(candidates=8,
         bytes=sum(p.stat().st_size for p in paths), reason='Forced/natural outputs, save/load and durable scoring bindings complete'))
@@ -83,6 +88,42 @@ def finish():
     pipeline.wait([pipeline.launch('m13_report.py', 'm13_report')])
 
 
+def generated_admission():
+    from module_recovery import live
+    failure = c.read(RUN / 'private/FAILURE_m13_m13_recover_unstarted_0.json')
+    assert failure['error'] == 'NameError("name \'pipeline\' is not defined")'
+    assert bool(failure['counts']) and all(v == 0 for v in failure['counts'].values())
+    assert c.read(RUN / 'EXIT.json')['exit_code'] == 1 and not live(c.read(RUN / 'START.json'))
+    ledger = c.read(RUN / 'RESOURCE_LEDGER.json')
+    assert len(ledger['gpu_sessions']) == 11 and all(v.get('ended_epoch') for v in ledger['gpu_sessions'])
+    assert c.read(RUN / 'private/CANDIDATES_FROZEN.json')['candidates'] == 8
+    generation = c.read(RUN / 'private/MODULE_GENERATION_COMPLETE.json')
+    assert generation['outputs'] == 1158 and len(list((RUN / 'private/outputs').glob('*/*/*.json'))) == 1158
+    totals = {k: sum(x[k] for x in generation['counts']) for k in r.COUNTS}
+    assert totals['updates'] == 1280 and totals['backwards'] == 5792 and totals['operator_backwards'] == 1280
+    assert totals['generation_attempts'] <= 1158 and totals['non_generation_forwards'] <= 10000
+    assert ledger['Judge_attempts'] == c.read(RUN / 'private/INHERITED_COST.json')['Judge_attempts']
+    assert not (RUN / 'private/CANDIDATES_CONSUMED.json').exists()
+    for task in r.s.tasks():
+        result = c.read(RUN / 'private/results/M13' / f"{task['order']}.json")
+        assert len(result['curve']) == 160 and result['save_load_exact']
+        assert r.s.point(task, 'M13').is_file() and not r.s.point(task, 'M13').is_symlink()
+    return dict(status='PASS', complete_training_and_generation=True, new_GPU_work=0,
+                new_Judge_before_takeover=0, epoch=time.time())
+
+
+def recover_generated():
+    evidence = generated_admission()
+    archive = RUN / 'private/generated_handoff_recovery1'; archive.mkdir(exist_ok=False)
+    c.write(archive / 'ADMISSION.json', evidence)
+    for path in (RUN / 'START.json', RUN / 'EXIT.json', RUN / 'private/FAILURE_m13_m13_recover_unstarted_0.json'):
+        path.rename(archive / path.name)
+    import shutil
+    shutil.copy2(RUN / 'logs/import_recovery_controller.log', archive / 'controller.log')
+    c.write(RUN / 'START.json', c.read(RUN / 'private/GENERATED_HANDOFF_START.json'))
+    finish_generated()
+
+
 if __name__ == '__main__':
     try:
         action = os.environ['ACTION']
@@ -94,6 +135,10 @@ if __name__ == '__main__':
         elif action == 'm13_recover_unstarted':
             import m13_recovery
             m13_recovery.main()
+        elif action == 'm13_generated_preflight':
+            print(generated_admission())
+        elif action == 'm13_recover_generated':
+            recover_generated()
         else:
             {'m13_controller': controller, 'module_train': r.train, 'module_fisher': r.fisher}[action]()
     except BaseException as error:
