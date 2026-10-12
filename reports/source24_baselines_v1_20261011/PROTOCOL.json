@@ -1,0 +1,163 @@
+{
+  "epoch": "SOURCE24_BASELINES_V1_20261011",
+  "status": "FROZEN_BEFORE_BASELINE_EXECUTION",
+  "host": "pro5000",
+  "GPUS": [
+    5
+  ],
+  "GPU_UUID": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+  "source_parent": "/data/bmw/Knowledge_editing/outputs/purew-source-v5-20261011/run",
+  "parent_source_commit": "f2f2208d3cda1dc45e92af0c8bbea31d56410a33",
+  "ordered_edits": 24,
+  "source_lock": "5f9860d8dc0433cb7ba74579e160777867a2efa70742e97f2f4394f8cdbc9ab3",
+  "arms": [
+    "U",
+    "H_SOURCE",
+    "TT88_SOURCE",
+    "BALANCEDIT_SOURCE"
+  ],
+  "new_arms": [
+    "TT88_SOURCE",
+    "BALANCEDIT_SOURCE"
+  ],
+  "precision": "NATIVE_FULL_FP32",
+  "model": "same original LLaVA-Med Mistral7B native runtime",
+  "generation": {
+    "batch": 1,
+    "greedy": true,
+    "beam": 1,
+    "max_new_tokens": 1024,
+    "use_cache": true
+  },
+  "training": "Only the same24 admitted T0 references; source question reused as native-only positive/FIT; original61 BASIS may train KL; no evaluation variants/old failures/new-held/held labels in optimization or radius fitting",
+  "TT": {
+    "cores": [
+      1,
+      8,
+      4,
+      8,
+      1
+    ],
+    "parameters_per_expert": 7168,
+    "layer": "model.layers.21.mlp.down_proj",
+    "seed_rule": "20261011+owner; one fixed seed",
+    "native_steps": 140,
+    "native_only_FIT_steps": 80,
+    "W0_steps": 320,
+    "warm_optimizer": "AdamW lr1e-3,weight_decay0,clip1",
+    "W0_optimizer": "Adam inputG3/G4 lr1e-4,outputG1/G2 lr1e-3,betas(.9,.999),eps1e-8,clip1",
+    "W0_loss": "source CE1 + cyclic original61 BASIS KL(Base||student)0.01",
+    "routing": "existing R0: global nearest pooled Base layer31 up_proj key then own radius, no second-nearest fallback; native-only positive and same-size black negative alpha0.2",
+    "deployment": "all24 four-core TT experts retained; RMS inputs and assistant-predictor-only residual; no denseW/AB expert storage"
+  },
+  "BalancEdit": {
+    "source_commit": "83749e52a1d27331d21cfec845b6089294730c2f",
+    "classification": "existing locked LLaVA-Med paper-spec adaptation, not full author reproduction",
+    "layer": "model.layers.31.mlp.up_proj",
+    "steps": 50,
+    "optimizer": "Adam lr0.01 betas(.9,.999) eps1e-8 clip1",
+    "loss": "source T0 CE only",
+    "positive": "same admitted source question; evaluation formulations excluded",
+    "negative": "same-size black image, no negative answer supervision",
+    "alpha": 0.2,
+    "routing": "mean Base up_proj input, Euclidean global nearest then own radius",
+    "deployment": "one full FP32 up_proj copy per inserted edit; no pruning, offload or changing bank semantics"
+  },
+  "additional_supervision": {
+    "U": "T0+61BASIS KL1",
+    "H_SOURCE": "U plus0.5 previous admitted T0",
+    "TT88_SOURCE": "T0-only repeated FIT and61BASIS KL0.01",
+    "BALANCEDIT_SOURCE": "T0,source-only positive and black anchor; no historical CE/KL"
+  },
+  "attribution": "paired benchmark methods, not coordinate-only causal attribution; supervision/step count/optimizer differences disclosed",
+  "evaluation": {
+    "prefixes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "prefix_T0": 300,
+    "prefix_T2G": 1200,
+    "final_T0": 24,
+    "final_T2G": 96,
+    "old_protection": 96,
+    "new_protection": 45,
+    "final_source_and_T2G": "reuse prefix24 without generating again",
+    "T1G": "NA; not added",
+    "types": {
+      "VERBATIM_REFRAME": 72,
+      "LOCATION_REWRITE": 20,
+      "TYPE_REWRITE": 4
+    }
+  },
+  "protection_prefixes": [
+    1,
+    8,
+    16,
+    24
+  ],
+  "protection_prefix_policy": "new baselines old96/new45 evaluated at1,8,16,24; pureW protection available at24 only, NA earlier; no pureW retraining",
+  "common_scoring": "existing isolated gpt-6-astra medium4workers, same prompt/protocol, whole-binding exact accepted and missing reuse; at most one attempt; no retries/model substitution",
+  "maximum_new_Judge": 4500,
+  "maximum_generations": 4400,
+  "maximum_formal_updates": 14160,
+  "maximum_backwards": 24000,
+  "maximum_non_generation_forwards": 42000,
+  "deadline_hours_from_first_install": 24,
+  "minimum_free_bytes": 8589934592,
+  "owned_weight_limit_bytes": 8589934592,
+  "storage_cap_rationale": "24 full up_proj copies require5.25GiB; retain bank without modifying BalancEdit; active optimizer/atomic temporary/pureW copies fit8GiB; old parent2GiB cap unchanged",
+  "performance": {
+    "methods": [
+      "BASE",
+      "U",
+      "H_SOURCE",
+      "TT88_SOURCE",
+      "BALANCEDIT_SOURCE"
+    ],
+    "query_rule": "owner1/8/16/24 T0,T2G variant0; newheld indices0/10/20/30; fixed12queries, no correctness selection",
+    "prefixes": [
+      24
+    ],
+    "repeats": 3,
+    "warmup_queries": 1,
+    "end_to_end": "actual image preparation + route-key forward + greedy generation; CUDA synchronize around timing, shared stdout counters suspended only during timing",
+    "route_time": true,
+    "prefill_time": true,
+    "decode_time": true,
+    "generated_tokens": true,
+    "summary": "paired perquery median/p90,total seconds,tokens/s; length differences disclosed; no latency superiority from unequal lengths",
+    "role": "timing-only repeats never enter Judge or replace efficacy outputs",
+    "additional_generation_attempts": 185
+  },
+  "source_retention": "CPU dependency copies exactly one completed bound U/H candidate into new owned root before original last consumer deletion; no parent edit/retraining; copies deleted after timing and native reload",
+  "success": "full denominators and missing-aware bounds; each T0 insertion/all later prefixes; each owner Base-correct T2G preservation; zero new damage old/new Base-correct protections; no average compensation; compare method tradeoffs even if all gates fail",
+  "negative_policy": "preserve earlier findings, no seed/LR/threshold/owner selection, no evaluation labels to training, no automatic next experiment",
+  "recurring_monitor": false,
+  "checkpoint_lifecycle": "perstep resume until expert committed; each complete bank retained through allprefix/final/freshreload/timing and durableJudge materials; delete owned matrices/cores/teacher only with specific last-consumer receipt",
+  "clinical_confirmation": false,
+  "patient_independence": "UNKNOWN",
+  "inherited_GPU_install_commit": "67b5c136171061f00b36efa4503c0682357ed9b1",
+  "parent_source_commit_role": "published branch head including recorded engineering/report repairs; installation version and repair receipts remain separate"
+}
