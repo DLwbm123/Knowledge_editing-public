@@ -2,6 +2,7 @@
 import os, sys, time, json, traceback
 from pathlib import Path
 from contextlib import contextmanager
+sys.path.insert(0, str(Path(os.environ['RUN_ROOT']) / 'private/official_llava'))
 import torch
 import torch.nn.functional as F
 import source_run as b

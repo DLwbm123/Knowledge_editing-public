@@ -1,0 +1,11 @@
+{
+  "problem": "Missing official LLaVA source search path in new baseline entry",
+  "failure": "ModuleNotFoundError: llava before model load",
+  "fix": "Prepend the existing frozen official_llava source directory in bench.py",
+  "scientific_changes": false,
+  "formal_updates_before_repair": 0,
+  "original_deadline_preserved": true,
+  "parent_training_and_outputs_unchanged": true,
+  "CPU_validation": "PASS including actual llava origin and existing bench_check",
+  "original_failures_retained": true
+}
