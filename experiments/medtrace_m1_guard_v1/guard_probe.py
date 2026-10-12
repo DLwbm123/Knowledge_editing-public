@@ -147,7 +147,16 @@ def probe():
     assert not any((RUN/'private/PREFIX_COMPLETE'/f"{t['order']}.json").exists() for t in tasks)
     from m3bench_repro.editors.llava_runtime import seed_everything
     with r.p.lease(gpu):
-        runtime,_,handle=r.load(gpu)
+        policy=RUN/'private/MEMORY_ADMISSION.json'
+        if policy.exists():
+            admission=c.read(policy)
+            assert admission['status']=='PASS' and admission['required_free_MiB']==39*1024
+            assert gpu in c.read(RUN/'RUN_MANIFEST.json')['physical_GPUs']
+            free=int(subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True).strip())
+            assert free>=admission['required_free_MiB'], 'Measured memory admission reserve unavailable'
+            runtime,_=c.load(gpu);handle=runtime.model.register_forward_pre_hook(count)
+        else:
+            runtime,_,handle=r.load(gpu)
         memory_record(gpu,'LOADED')
         basis,_=r.q.split();assert len(basis)==61
         frozen_sources={t['order']:[r.old.cpu(runtime.build_edit_batch(r.s.record(t,row))) for row in r.s.source(t)] for t in tasks}
