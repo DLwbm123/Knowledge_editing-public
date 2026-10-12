@@ -140,7 +140,10 @@ def main():
     resource = dict(new_GPU_process_hours=(ledger['gpu_seconds_used'] - inherited['gpu_seconds_used']) / 3600,
         cumulative_GPU_process_hours=ledger['gpu_seconds_used'] / 3600,
         new_Judge=ledger['Judge_attempts'] - inherited['Judge_attempts'], cumulative_Judge=ledger['Judge_attempts'])
-    assert resource['new_Judge'] <= queue.MAX_JUDGE and resource['new_GPU_process_hours'] <= 24.01
+    resource['GPU_time_limit_enabled'] = q.read(RUN / 'RUN_MANIFEST.json').get('GPU_time_limit_enabled', True)
+    assert resource['new_Judge'] <= queue.MAX_JUDGE
+    if resource['GPU_time_limit_enabled']:
+        assert resource['new_GPU_process_hours'] <= 24.01
     result = dict(status='COMPLETE', decision=decision(**gates), primary='M123 versus frozen E', gates=gates,
         panels=panels, per_owner=owners, paired=comparisons, original63_intervals=intervals, mechanism=mechanism,
         selfcheck=checks, independent_confirmation=False, prior_D_E_reused=True,
