@@ -1,0 +1,4613 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>U/H-source</title><style>body{max-width:1100px;margin:30px auto;font:16px/1.7 system-ui}pre{white-space:pre-wrap}</style><h1>新源题 U/H-source 有限验证</h1><p>零新增推理参数。不同于历史源题＋GFIT合同；T2G-style同图问法分为结构改写与原命题完整保留的输入重述，不声称完整M3Bench复现或临床独立验证。</p><pre>{
+  &quot;status&quot;: &quot;INCOMPLETE_SCORING&quot;,
+  &quot;panels&quot;: {
+    &quot;U&quot;: {
+      &quot;NATIVE&quot;: {
+        &quot;queries&quot;: 24,
+        &quot;Base_correct&quot;: 0,
+        &quot;candidate_correct&quot;: 17,
+        &quot;retained&quot;: 0,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 17,
+        &quot;still_wrong&quot;: 3,
+        &quot;missing&quot;: 4,
+        &quot;same_text&quot;: 0,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            0,
+            0
+          ],
+          &quot;candidate_correct&quot;: [
+            17,
+            21
+          ],
+          &quot;retained&quot;: [
+            0,
+            0
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            0
+          ],
+          &quot;repaired&quot;: [
+            17,
+            21
+          ],
+          &quot;still_wrong&quot;: [
+            3,
+            7
+          ]
+        }
+      },
+      &quot;T2G&quot;: {
+        &quot;queries&quot;: 96,
+        &quot;Base_correct&quot;: 0,
+        &quot;candidate_correct&quot;: 66,
+        &quot;retained&quot;: 0,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 0,
+        &quot;still_wrong&quot;: 0,
+        &quot;missing&quot;: 96,
+        &quot;same_text&quot;: 0,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            0,
+            96
+          ],
+          &quot;candidate_correct&quot;: [
+            66,
+            82
+          ],
+          &quot;retained&quot;: [
+            0,
+            82
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            30
+          ],
+          &quot;repaired&quot;: [
+            0,
+            82
+          ],
+          &quot;still_wrong&quot;: [
+            0,
+            30
+          ]
+        }
+      },
+      &quot;HELDOUT&quot;: {
+        &quot;queries&quot;: 96,
+        &quot;Base_correct&quot;: 62,
+        &quot;candidate_correct&quot;: 60,
+        &quot;retained&quot;: 59,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 1,
+        &quot;still_wrong&quot;: 26,
+        &quot;missing&quot;: 10,
+        &quot;same_text&quot;: 81,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            62,
+            62
+          ],
+          &quot;candidate_correct&quot;: [
+            60,
+            70
+          ],
+          &quot;retained&quot;: [
+            59,
+            62
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            3
+          ],
+          &quot;repaired&quot;: [
+            1,
+            8
+          ],
+          &quot;still_wrong&quot;: [
+            26,
+            33
+          ]
+        }
+      },
+      &quot;NEW_HELDOUT&quot;: {
+        &quot;queries&quot;: 45,
+        &quot;Base_correct&quot;: 0,
+        &quot;candidate_correct&quot;: 0,
+        &quot;retained&quot;: 0,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 0,
+        &quot;still_wrong&quot;: 0,
+        &quot;missing&quot;: 45,
+        &quot;same_text&quot;: 23,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            0,
+            45
+          ],
+          &quot;candidate_correct&quot;: [
+            0,
+            40
+          ],
+          &quot;retained&quot;: [
+            0,
+            40
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            22
+          ],
+          &quot;repaired&quot;: [
+            0,
+            17
+          ],
+          &quot;still_wrong&quot;: [
+            0,
+            45
+          ]
+        }
+      },
+      &quot;T2G_by_formulation&quot;: {
+        &quot;VERBATIM_REFRAME&quot;: {
+          &quot;queries&quot;: 72,
+          &quot;Base_correct&quot;: 0,
+          &quot;candidate_correct&quot;: 51,
+          &quot;retained&quot;: 0,
+          &quot;new_damage&quot;: 0,
+          &quot;repaired&quot;: 0,
+          &quot;still_wrong&quot;: 0,
+          &quot;missing&quot;: 72,
+          &quot;same_text&quot;: 0,
+          &quot;bounds&quot;: {
+            &quot;Base_correct&quot;: [
+              0,
+              72
+            ],
+            &quot;candidate_correct&quot;: [
+              51,
+              61
+            ],
+            &quot;retained&quot;: [
+              0,
+              61
+            ],
+            &quot;new_damage&quot;: [
+              0,
+              21
+            ],
+            &quot;repaired&quot;: [
+              0,
+              61
+            ],
+            &quot;still_wrong&quot;: [
+              0,
+              21
+            ]
+          }
+        },
+        &quot;LOCATION_REWRITE&quot;: {
+          &quot;queries&quot;: 20,
+          &quot;Base_correct&quot;: 0,
+          &quot;candidate_correct&quot;: 11,
+          &quot;retained&quot;: 0,
+          &quot;new_damage&quot;: 0,
+          &quot;repaired&quot;: 0,
+          &quot;still_wrong&quot;: 0,
+          &quot;missing&quot;: 20,
+          &quot;same_text&quot;: 0,
+          &quot;bounds&quot;: {
+            &quot;Base_correct&quot;: [
+              0,
+              20
+            ],
+            &quot;candidate_correct&quot;: [
+              11,
+              17
+            ],
+            &quot;retained&quot;: [
+              0,
+              17
+            ],
+            &quot;new_damage&quot;: [
+              0,
+              9
+            ],
+            &quot;repaired&quot;: [
+              0,
+              17
+            ],
+            &quot;still_wrong&quot;: [
+              0,
+              9
+            ]
+          }
+        },
+        &quot;TYPE_REWRITE&quot;: {
+          &quot;queries&quot;: 4,
+          &quot;Base_correct&quot;: 0,
+          &quot;candidate_correct&quot;: 4,
+          &quot;retained&quot;: 0,
+          &quot;new_damage&quot;: 0,
+          &quot;repaired&quot;: 0,
+          &quot;still_wrong&quot;: 0,
+          &quot;missing&quot;: 4,
+          &quot;same_text&quot;: 0,
+          &quot;bounds&quot;: {
+            &quot;Base_correct&quot;: [
+              0,
+              4
+            ],
+            &quot;candidate_correct&quot;: [
+              4,
+              4
+            ],
+            &quot;retained&quot;: [
+              0,
+              4
+            ],
+            &quot;new_damage&quot;: [
+              0,
+              0
+            ],
+            &quot;repaired&quot;: [
+              0,
+              4
+            ],
+            &quot;still_wrong&quot;: [
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    &quot;H_SOURCE&quot;: {
+      &quot;NATIVE&quot;: {
+        &quot;queries&quot;: 24,
+        &quot;Base_correct&quot;: 0,
+        &quot;candidate_correct&quot;: 18,
+        &quot;retained&quot;: 0,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 18,
+        &quot;still_wrong&quot;: 1,
+        &quot;missing&quot;: 5,
+        &quot;same_text&quot;: 0,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            0,
+            0
+          ],
+          &quot;candidate_correct&quot;: [
+            18,
+            23
+          ],
+          &quot;retained&quot;: [
+            0,
+            0
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            0
+          ],
+          &quot;repaired&quot;: [
+            18,
+            23
+          ],
+          &quot;still_wrong&quot;: [
+            1,
+            6
+          ]
+        }
+      },
+      &quot;T2G&quot;: {
+        &quot;queries&quot;: 96,
+        &quot;Base_correct&quot;: 0,
+        &quot;candidate_correct&quot;: 72,
+        &quot;retained&quot;: 0,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 0,
+        &quot;still_wrong&quot;: 0,
+        &quot;missing&quot;: 96,
+        &quot;same_text&quot;: 0,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            0,
+            96
+          ],
+          &quot;candidate_correct&quot;: [
+            72,
+            92
+          ],
+          &quot;retained&quot;: [
+            0,
+            92
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            24
+          ],
+          &quot;repaired&quot;: [
+            0,
+            92
+          ],
+          &quot;still_wrong&quot;: [
+            0,
+            24
+          ]
+        }
+      },
+      &quot;HELDOUT&quot;: {
+        &quot;queries&quot;: 96,
+        &quot;Base_correct&quot;: 62,
+        &quot;candidate_correct&quot;: 59,
+        &quot;retained&quot;: 59,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 0,
+        &quot;still_wrong&quot;: 26,
+        &quot;missing&quot;: 11,
+        &quot;same_text&quot;: 81,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            62,
+            62
+          ],
+          &quot;candidate_correct&quot;: [
+            59,
+            70
+          ],
+          &quot;retained&quot;: [
+            59,
+            62
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            3
+          ],
+          &quot;repaired&quot;: [
+            0,
+            8
+          ],
+          &quot;still_wrong&quot;: [
+            26,
+            34
+          ]
+        }
+      },
+      &quot;NEW_HELDOUT&quot;: {
+        &quot;queries&quot;: 45,
+        &quot;Base_correct&quot;: 0,
+        &quot;candidate_correct&quot;: 0,
+        &quot;retained&quot;: 0,
+        &quot;new_damage&quot;: 0,
+        &quot;repaired&quot;: 0,
+        &quot;still_wrong&quot;: 0,
+        &quot;missing&quot;: 45,
+        &quot;same_text&quot;: 24,
+        &quot;bounds&quot;: {
+          &quot;Base_correct&quot;: [
+            0,
+            45
+          ],
+          &quot;candidate_correct&quot;: [
+            0,
+            45
+          ],
+          &quot;retained&quot;: [
+            0,
+            45
+          ],
+          &quot;new_damage&quot;: [
+            0,
+            21
+          ],
+          &quot;repaired&quot;: [
+            0,
+            21
+          ],
+          &quot;still_wrong&quot;: [
+            0,
+            45
+          ]
+        }
+      },
+      &quot;T2G_by_formulation&quot;: {
+        &quot;VERBATIM_REFRAME&quot;: {
+          &quot;queries&quot;: 72,
+          &quot;Base_correct&quot;: 0,
+          &quot;candidate_correct&quot;: 54,
+          &quot;retained&quot;: 0,
+          &quot;new_damage&quot;: 0,
+          &quot;repaired&quot;: 0,
+          &quot;still_wrong&quot;: 0,
+          &quot;missing&quot;: 72,
+          &quot;same_text&quot;: 0,
+          &quot;bounds&quot;: {
+            &quot;Base_correct&quot;: [
+              0,
+              72
+            ],
+            &quot;candidate_correct&quot;: [
+              54,
+              68
+            ],
+            &quot;retained&quot;: [
+              0,
+              68
+            ],
+            &quot;new_damage&quot;: [
+              0,
+              18
+            ],
+            &quot;repaired&quot;: [
+              0,
+              68
+            ],
+            &quot;still_wrong&quot;: [
+              0,
+              18
+            ]
+          }
+        },
+        &quot;LOCATION_REWRITE&quot;: {
+          &quot;queries&quot;: 20,
+          &quot;Base_correct&quot;: 0,
+          &quot;candidate_correct&quot;: 14,
+          &quot;retained&quot;: 0,
+          &quot;new_damage&quot;: 0,
+          &quot;repaired&quot;: 0,
+          &quot;still_wrong&quot;: 0,
+          &quot;missing&quot;: 20,
+          &quot;same_text&quot;: 0,
+          &quot;bounds&quot;: {
+            &quot;Base_correct&quot;: [
+              0,
+              20
+            ],
+            &quot;candidate_correct&quot;: [
+              14,
+              20
+            ],
+            &quot;retained&quot;: [
+              0,
+              20
+            ],
+            &quot;new_damage&quot;: [
+              0,
+              6
+            ],
+            &quot;repaired&quot;: [
+              0,
+              20
+            ],
+            &quot;still_wrong&quot;: [
+              0,
+              6
+            ]
+          }
+        },
+        &quot;TYPE_REWRITE&quot;: {
+          &quot;queries&quot;: 4,
+          &quot;Base_correct&quot;: 0,
+          &quot;candidate_correct&quot;: 4,
+          &quot;retained&quot;: 0,
+          &quot;new_damage&quot;: 0,
+          &quot;repaired&quot;: 0,
+          &quot;still_wrong&quot;: 0,
+          &quot;missing&quot;: 4,
+          &quot;same_text&quot;: 0,
+          &quot;bounds&quot;: {
+            &quot;Base_correct&quot;: [
+              0,
+              4
+            ],
+            &quot;candidate_correct&quot;: [
+              4,
+              4
+            ],
+            &quot;retained&quot;: [
+              0,
+              4
+            ],
+            &quot;new_damage&quot;: [
+              0,
+              0
+            ],
+            &quot;repaired&quot;: [
+              0,
+              4
+            ],
+            &quot;still_wrong&quot;: [
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  },
+  &quot;continual_history&quot;: {
+    &quot;U&quot;: {
+      &quot;prefixes&quot;: [
+        {
+          &quot;prefix&quot;: 1,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 1,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 1,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  1
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  1
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  1
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 4,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  4
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  4
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  4
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  4
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  4
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 2,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 2,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  2
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  2
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 8,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 8,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  8
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  8
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  8
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  8
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 3,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 3,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 1,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 1,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  1,
+                  3
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  1,
+                  3
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 12,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 12,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  12
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  12
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  12
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  12
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 4,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 4,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 2,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 2,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  2,
+                  4
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  2,
+                  4
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 16,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 8,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 16,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  16
+                ],
+                &quot;candidate_correct&quot;: [
+                  8,
+                  16
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  16
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  16
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 5,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 5,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 3,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 3,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  3,
+                  5
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  3,
+                  5
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 20,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 12,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 20,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  20
+                ],
+                &quot;candidate_correct&quot;: [
+                  12,
+                  20
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  20
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  20
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 6,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 6,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 4,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  6
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  4,
+                  6
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 24,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 14,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 24,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  24
+                ],
+                &quot;candidate_correct&quot;: [
+                  14,
+                  24
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  24
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  10
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  24
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  10
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 7,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 7,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 4,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 3,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  7
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  4,
+                  7
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  3
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 28,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 14,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 28,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  28
+                ],
+                &quot;candidate_correct&quot;: [
+                  14,
+                  28
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  28
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  14
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  28
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  14
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 8,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 8,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 4,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  8
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  4,
+                  8
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 32,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 16,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 32,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  32
+                ],
+                &quot;candidate_correct&quot;: [
+                  16,
+                  32
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  32
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  32
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 9,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 9,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 5,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 5,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  5,
+                  9
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  5,
+                  9
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 36,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 20,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 36,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  36
+                ],
+                &quot;candidate_correct&quot;: [
+                  20,
+                  36
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  36
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  36
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 10,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 10,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 6,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 6,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  6,
+                  10
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  6,
+                  10
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 40,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 24,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 40,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  40
+                ],
+                &quot;candidate_correct&quot;: [
+                  24,
+                  40
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  40
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  40
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 11,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 11,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 7,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 7,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  7,
+                  11
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  7,
+                  11
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 44,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 28,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 44,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  44
+                ],
+                &quot;candidate_correct&quot;: [
+                  28,
+                  44
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  44
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  44
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 12,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 12,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 8,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 8,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  8,
+                  12
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  8,
+                  12
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 48,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 32,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 48,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  48
+                ],
+                &quot;candidate_correct&quot;: [
+                  32,
+                  48
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  48
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  48
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 13,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 13,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 9,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 9,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  9,
+                  13
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  9,
+                  13
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 52,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 36,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 52,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  52
+                ],
+                &quot;candidate_correct&quot;: [
+                  36,
+                  52
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  52
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  52
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 14,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 14,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 10,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 10,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  10,
+                  14
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  10,
+                  14
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 56,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 40,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 56,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  56
+                ],
+                &quot;candidate_correct&quot;: [
+                  40,
+                  56
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  56
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  56
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 15,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 15,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 11,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 11,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  11,
+                  15
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  11,
+                  15
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 60,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 44,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 60,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  60
+                ],
+                &quot;candidate_correct&quot;: [
+                  44,
+                  60
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  60
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  60
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 16,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 16,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 12,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 12,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  12,
+                  16
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  12,
+                  16
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 64,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 48,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 64,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  64
+                ],
+                &quot;candidate_correct&quot;: [
+                  48,
+                  64
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  64
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  64
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 17,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 17,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 13,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 13,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  13,
+                  17
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  13,
+                  17
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 68,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 52,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 68,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  68
+                ],
+                &quot;candidate_correct&quot;: [
+                  52,
+                  67
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  67
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  67
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 18,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 18,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 14,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 14,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  14,
+                  18
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  14,
+                  18
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 72,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 56,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 72,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  72
+                ],
+                &quot;candidate_correct&quot;: [
+                  56,
+                  72
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  72
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  72
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 19,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 19,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 15,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 15,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  15,
+                  19
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  15,
+                  19
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 76,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 58,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 76,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  76
+                ],
+                &quot;candidate_correct&quot;: [
+                  58,
+                  76
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  76
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  18
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  76
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  18
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 20,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 20,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 15,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 15,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  15,
+                  20
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  15,
+                  20
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  5
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 80,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 60,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 80,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  80
+                ],
+                &quot;candidate_correct&quot;: [
+                  60,
+                  78
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  78
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  20
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  78
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  20
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 21,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 21,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 16,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 16,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  16,
+                  21
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  16,
+                  21
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  5
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 84,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 63,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 84,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  84
+                ],
+                &quot;candidate_correct&quot;: [
+                  63,
+                  81
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  81
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  21
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  81
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  21
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 22,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 22,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 16,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 16,
+              &quot;still_wrong&quot;: 1,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  16,
+                  21
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  16,
+                  21
+                ],
+                &quot;still_wrong&quot;: [
+                  1,
+                  6
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 88,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 66,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 88,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  88
+                ],
+                &quot;candidate_correct&quot;: [
+                  66,
+                  84
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  84
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  22
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  84
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  22
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 23,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 23,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 17,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 17,
+              &quot;still_wrong&quot;: 1,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  17,
+                  22
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  17,
+                  22
+                ],
+                &quot;still_wrong&quot;: [
+                  1,
+                  6
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 92,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 69,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 92,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  92
+                ],
+                &quot;candidate_correct&quot;: [
+                  69,
+                  87
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  87
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  23
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  87
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  23
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 24,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 24,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 17,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 17,
+              &quot;still_wrong&quot;: 3,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  17,
+                  21
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  17,
+                  21
+                ],
+                &quot;still_wrong&quot;: [
+                  3,
+                  7
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 96,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 66,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 96,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  96
+                ],
+                &quot;candidate_correct&quot;: [
+                  66,
+                  82
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  82
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  30
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  82
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  30
+                ]
+              }
+            }
+          }
+        }
+      ],
+      &quot;lost_correct_observations&quot;: [
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 17,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 20,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 4,
+          &quot;prefix&quot;: 21,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 21,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;NATIVE&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 23,
+          &quot;role&quot;: &quot;NATIVE&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 23,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 23,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 23,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 23,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 23,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;NATIVE&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 20,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 20,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;NATIVE&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 8,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        }
+      ]
+    },
+    &quot;H_SOURCE&quot;: {
+      &quot;prefixes&quot;: [
+        {
+          &quot;prefix&quot;: 1,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 1,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 1,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  1
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  1
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  1
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 4,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  4
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  4
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  4
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  4
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  4
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 2,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 2,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  2
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  2
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 8,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 0,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 8,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  8
+                ],
+                &quot;candidate_correct&quot;: [
+                  0,
+                  8
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  8
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  8
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 3,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 3,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 1,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 1,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  1,
+                  3
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  1,
+                  3
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 12,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 12,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  12
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  12
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  12
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  12
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 4,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 4,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 2,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 2,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  2,
+                  4
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  2,
+                  4
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 16,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 8,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 16,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  16
+                ],
+                &quot;candidate_correct&quot;: [
+                  8,
+                  16
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  16
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  16
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 5,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 5,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 3,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 3,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  3,
+                  5
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  3,
+                  5
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 20,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 12,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 20,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  20
+                ],
+                &quot;candidate_correct&quot;: [
+                  12,
+                  20
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  20
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  8
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  20
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  8
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 6,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 6,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 4,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 2,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  6
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  4,
+                  6
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  2
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 24,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 14,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 24,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  24
+                ],
+                &quot;candidate_correct&quot;: [
+                  14,
+                  24
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  24
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  10
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  24
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  10
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 7,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 7,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 4,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 3,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  7
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  4,
+                  7
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  3
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 28,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 14,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 28,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  28
+                ],
+                &quot;candidate_correct&quot;: [
+                  14,
+                  28
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  28
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  14
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  28
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  14
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 8,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 8,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 4,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 4,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  4,
+                  8
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  4,
+                  8
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 32,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 16,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 32,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  32
+                ],
+                &quot;candidate_correct&quot;: [
+                  16,
+                  32
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  32
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  32
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 9,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 9,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 5,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 5,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  5,
+                  9
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  5,
+                  9
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 36,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 20,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 36,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  36
+                ],
+                &quot;candidate_correct&quot;: [
+                  20,
+                  36
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  36
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  36
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 10,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 10,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 6,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 6,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  6,
+                  10
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  6,
+                  10
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 40,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 24,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 40,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  40
+                ],
+                &quot;candidate_correct&quot;: [
+                  24,
+                  40
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  40
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  40
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 11,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 11,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 7,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 7,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  7,
+                  11
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  7,
+                  11
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 44,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 28,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 44,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  44
+                ],
+                &quot;candidate_correct&quot;: [
+                  28,
+                  44
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  44
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  44
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 12,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 12,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 8,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 8,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  8,
+                  12
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  8,
+                  12
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 48,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 32,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 48,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  48
+                ],
+                &quot;candidate_correct&quot;: [
+                  32,
+                  48
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  48
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  48
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 13,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 13,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 9,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 9,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  9,
+                  13
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  9,
+                  13
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 52,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 36,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 52,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  52
+                ],
+                &quot;candidate_correct&quot;: [
+                  36,
+                  52
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  52
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  52
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 14,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 14,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 10,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 10,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  10,
+                  14
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  10,
+                  14
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 56,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 40,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 56,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  56
+                ],
+                &quot;candidate_correct&quot;: [
+                  40,
+                  56
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  56
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  56
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 15,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 15,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 11,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 11,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  11,
+                  15
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  11,
+                  15
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 60,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 44,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 60,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  60
+                ],
+                &quot;candidate_correct&quot;: [
+                  44,
+                  60
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  60
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  60
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 16,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 16,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 12,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 12,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  12,
+                  16
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  12,
+                  16
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 64,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 48,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 64,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  64
+                ],
+                &quot;candidate_correct&quot;: [
+                  48,
+                  64
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  64
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  64
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 17,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 17,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 13,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 13,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  13,
+                  17
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  13,
+                  17
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 68,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 52,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 68,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  68
+                ],
+                &quot;candidate_correct&quot;: [
+                  52,
+                  68
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  68
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  68
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 18,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 18,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 14,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 14,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  14,
+                  18
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  14,
+                  18
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 72,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 56,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 72,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  72
+                ],
+                &quot;candidate_correct&quot;: [
+                  56,
+                  72
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  72
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  16
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  72
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  16
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 19,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 19,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 15,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 15,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 4,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  15,
+                  19
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  15,
+                  19
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  4
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 76,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 58,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 76,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  76
+                ],
+                &quot;candidate_correct&quot;: [
+                  58,
+                  76
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  76
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  18
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  76
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  18
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 20,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 20,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 15,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 15,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  15,
+                  20
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  15,
+                  20
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  5
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 80,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 60,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 80,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  80
+                ],
+                &quot;candidate_correct&quot;: [
+                  60,
+                  80
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  80
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  20
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  80
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  20
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 21,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 21,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 16,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 16,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  16,
+                  21
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  16,
+                  21
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  5
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 84,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 64,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 84,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  84
+                ],
+                &quot;candidate_correct&quot;: [
+                  64,
+                  84
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  84
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  20
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  84
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  20
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 22,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 22,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 16,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 16,
+              &quot;still_wrong&quot;: 1,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  16,
+                  21
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  16,
+                  21
+                ],
+                &quot;still_wrong&quot;: [
+                  1,
+                  6
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 88,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 65,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 88,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  88
+                ],
+                &quot;candidate_correct&quot;: [
+                  65,
+                  85
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  85
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  23
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  85
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  23
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 23,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 23,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 18,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 18,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  18,
+                  23
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  18,
+                  23
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  5
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 92,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 72,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 92,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  92
+                ],
+                &quot;candidate_correct&quot;: [
+                  72,
+                  92
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  92
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  20
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  92
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  20
+                ]
+              }
+            }
+          }
+        },
+        {
+          &quot;prefix&quot;: 24,
+          &quot;by_role&quot;: {
+            &quot;NATIVE&quot;: {
+              &quot;queries&quot;: 24,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 18,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 18,
+              &quot;still_wrong&quot;: 1,
+              &quot;missing&quot;: 5,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  0
+                ],
+                &quot;candidate_correct&quot;: [
+                  18,
+                  23
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  0
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  0
+                ],
+                &quot;repaired&quot;: [
+                  18,
+                  23
+                ],
+                &quot;still_wrong&quot;: [
+                  1,
+                  6
+                ]
+              }
+            },
+            &quot;T2G&quot;: {
+              &quot;queries&quot;: 96,
+              &quot;Base_correct&quot;: 0,
+              &quot;candidate_correct&quot;: 72,
+              &quot;retained&quot;: 0,
+              &quot;new_damage&quot;: 0,
+              &quot;repaired&quot;: 0,
+              &quot;still_wrong&quot;: 0,
+              &quot;missing&quot;: 96,
+              &quot;same_text&quot;: 0,
+              &quot;bounds&quot;: {
+                &quot;Base_correct&quot;: [
+                  0,
+                  96
+                ],
+                &quot;candidate_correct&quot;: [
+                  72,
+                  92
+                ],
+                &quot;retained&quot;: [
+                  0,
+                  92
+                ],
+                &quot;new_damage&quot;: [
+                  0,
+                  24
+                ],
+                &quot;repaired&quot;: [
+                  0,
+                  92
+                ],
+                &quot;still_wrong&quot;: [
+                  0,
+                  24
+                ]
+              }
+            }
+          }
+        }
+      ],
+      &quot;lost_correct_observations&quot;: [
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;NATIVE&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 18,
+          &quot;prefix&quot;: 22,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;NATIVE&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        },
+        {
+          &quot;owner&quot;: 21,
+          &quot;prefix&quot;: 24,
+          &quot;role&quot;: &quot;T2G&quot;
+        }
+      ]
+    }
+  },
+  &quot;gates&quot;: {
+    &quot;U&quot;: {
+      &quot;full_scoring&quot;: false,
+      &quot;source_insertion&quot;: false,
+      &quot;source_continual&quot;: false,
+      &quot;untrained_Base_correct_T2G_preserved&quot;: false,
+      &quot;old_protection&quot;: true,
+      &quot;new_protection&quot;: false,
+      &quot;structural&quot;: true
+    },
+    &quot;H_SOURCE&quot;: {
+      &quot;full_scoring&quot;: false,
+      &quot;source_insertion&quot;: false,
+      &quot;source_continual&quot;: false,
+      &quot;untrained_Base_correct_T2G_preserved&quot;: false,
+      &quot;old_protection&quot;: true,
+      &quot;new_protection&quot;: false,
+      &quot;structural&quot;: true
+    }
+  },
+  &quot;DEV_success&quot;: {
+    &quot;U&quot;: false,
+    &quot;H_SOURCE&quot;: false
+  },
+  &quot;H_minus_U&quot;: {
+    &quot;NATIVE&quot;: {
+      &quot;win&quot;: 1,
+      &quot;loss&quot;: 0,
+      &quot;tie&quot;: 18,
+      &quot;missing&quot;: 5,
+      &quot;correct_count_difference_bounds&quot;: [
+        1,
+        2
+      ]
+    },
+    &quot;T2G&quot;: {
+      &quot;win&quot;: 6,
+      &quot;loss&quot;: 0,
+      &quot;tie&quot;: 70,
+      &quot;missing&quot;: 20,
+      &quot;correct_count_difference_bounds&quot;: [
+        6,
+        10
+      ]
+    },
+    &quot;HELDOUT&quot;: {
+      &quot;win&quot;: 0,
+      &quot;loss&quot;: 0,
+      &quot;tie&quot;: 85,
+      &quot;missing&quot;: 11,
+      &quot;correct_count_difference_bounds&quot;: [
+        -1,
+        0
+      ]
+    },
+    &quot;NEW_HELDOUT&quot;: {
+      &quot;win&quot;: 0,
+      &quot;loss&quot;: 0,
+      &quot;tie&quot;: 0,
+      &quot;missing&quot;: 45,
+      &quot;correct_count_difference_bounds&quot;: [
+        0,
+        5
+      ]
+    }
+  },
+  &quot;missing_consumers&quot;: 1160,
+  &quot;source_only_variant&quot;: true,
+  &quot;added_inference_parameters&quot;: 0,
+  &quot;independent_clinical_confirmation&quot;: false,
+  &quot;untrained_question_formulation_types&quot;: {
+    &quot;VERBATIM_REFRAME&quot;: 72,
+    &quot;LOCATION_REWRITE&quot;: 20,
+    &quot;TYPE_REWRITE&quot;: 4
+  },
+  &quot;resource&quot;: {
+    &quot;new_GPU_process_hours&quot;: 6.610986860129568,
+    &quot;cumulative_GPU_process_hours&quot;: 79.22906170341703,
+    &quot;new_Judge&quot;: 410,
+    &quot;cumulative_Judge&quot;: 14265
+  },
+  &quot;deletion&quot;: {
+    &quot;files&quot;: 65,
+    &quot;bytes&quot;: 1133586942,
+    &quot;retained_copy&quot;: false
+  }
+}</pre></html>
