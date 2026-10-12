@@ -17,6 +17,10 @@ q.BATCH_LEDGER='Astra_purew146_batches'
 P=Path(q.read(R/'private/FROZEN_PROTOCOL.json')['common_parent'])
 
 
+def terminal_write_allowed(path, generation_done):
+    return Path(path)!=q.ROOT/'ALL_WORKERS_COMPLETE.json' or generation_done
+
+
 def ro(path):
     db=sqlite3.connect('file:'+str(path)+'?mode=ro',uri=True)
     db.row_factory=sqlite3.Row
@@ -80,7 +84,14 @@ if __name__=='__main__':
         if failures and op['action']=='next':
             answer=dict(state=dict(status='STOPPED',failure='Retained GPU/CPU failure requires review'),rows=[])
         else:
-            answer=a.request(db,op)
+            write=q.write
+            generation_done=bool(db.execute("SELECT 1 FROM done WHERE name='generation'").fetchone())
+            # The inherited batch publisher assumes generation has already ended.
+            q.write=lambda path,data:write(path,data) if terminal_write_allowed(path,generation_done) else None
+            try:
+                answer=a.request(db,op)
+            finally:
+                q.write=write
         if db.execute("SELECT 1 FROM done WHERE name='generation'").fetchone() and not db.execute("SELECT 1 FROM payload WHERE status IN ('PENDING','RESERVED')").fetchone():
             q.write(q.ROOT/'ALL_WORKERS_COMPLETE.json',dict(status='SCORING_TERMINAL',epoch=time.time(),statuses=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status'))))
     print(json.dumps(answer,ensure_ascii=False))
