@@ -77,9 +77,15 @@ def main():
     source=next(x for x in panels if x['arm']==ARM and x['mode']=='bank_R0' and x['prefix']==146 and x['task']=='T0')
     full=all(scores[x['payload_key']] is not None for x in rows if x['method']==ARM)
     no_forgetting=next(x for x in insertion if x['method']==ARM)['both_correct_bounds'][0]==146
-    gate=full and no_forgetting and source['known_correct']==146 and all(x['delta_bounds_pp'][0]>=0 for x in primary)
+    per_edit_failures={}
+    for baseline in METHODS[1:]:
+        per_edit_failures[baseline]={}
+        for task in ('T0','T1G','T2G','T1L','T2L'):
+            a,b=coeffs[ARM,'bank_R0',146,task],coeffs[baseline,'bank_R0',146,task]
+            per_edit_failures[baseline][task]=sum(r.score_bounds(r.combine([a[e],{k:-v for k,v in b[e].items()}]),scores)[0]<0 for e in a)
+    gate=full and no_forgetting and source['known_correct']==146 and all(x['delta_bounds_pp'][0]>=0 for x in primary) and not any(n for counts in per_edit_failures.values() for n in counts.values())
     result=dict(status='COMPLETE' if full else 'COMPLETE_WITH_MISSING',panels=panels,contrasts=contrasts,insertion=insertion,
-        primary='bank146 edit-macro T2G',DEV_gate=gate,diagnostics=diagnostics,scoring_statuses=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),
+        primary='bank146 edit-macro T2G',DEV_gate=gate,per_edit_negative_bound_counts=per_edit_failures,diagnostics=diagnostics,scoring_statuses=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),
         added_parameters=0,inference=timing,new_GPU_process_hours=cost['gpu_seconds_used']/3600,new_Judge=cost['Judge_attempts'],
         prior_common_Judge_attempts=3346,old_results_unchanged=True,baseline_scores_reproduced=True,
         failures=len(list((R/'private/failures').glob('*.json'))),owned_weight_peak_bytes=cost['weights_observed_peak_bytes'],
