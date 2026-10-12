@@ -134,10 +134,13 @@ def main():
                 maximum_operator_step_ratio=max(ratios), operator_Fisher=data.get('mechanism'),
                 scalar_optimizer_state=data.get('scalar_optimizer_state')))
     ledger = q.read(RUN / 'RESOURCE_LEDGER.json'); inherited = q.read(RUN / 'private/INHERITED_COST.json')
-    assert len(ledger['gpu_sessions']) == 8 and all(row.get('ended_epoch') for row in ledger['gpu_sessions'])
+    recovery = RUN / 'private/import_recovery1/ADMISSION.json'
+    failed_leases = q.read(recovery)['extra_failed_GPU_leases'] if recovery.exists() else 0
+    assert len(ledger['gpu_sessions']) == 8 + failed_leases and all(row.get('ended_epoch') for row in ledger['gpu_sessions'])
     resource = dict(new_GPU_process_hours=(ledger['gpu_seconds_used'] - inherited['gpu_seconds_used']) / 3600,
         cumulative_GPU_process_hours=ledger['gpu_seconds_used'] / 3600,
         new_Judge=ledger['Judge_attempts'] - inherited['Judge_attempts'], cumulative_Judge=ledger['Judge_attempts'])
+    resource['zero_work_failed_GPU_leases'] = failed_leases
     resource['GPU_time_limit_enabled'] = q.read(RUN / 'RUN_MANIFEST.json').get('GPU_time_limit_enabled', True)
     assert resource['new_Judge'] <= queue.MAX_JUDGE
     assert not resource['GPU_time_limit_enabled']

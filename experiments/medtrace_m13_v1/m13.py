@@ -3,6 +3,8 @@ import os
 from pathlib import Path
 import time
 import traceback
+# The runtime captures this path at import, before train() calls load().
+os.environ['M3BENCH_LLAVA_SOURCE'] = str(Path(os.environ['RUN_ROOT']) / 'private/official_llava')
 import module_run as r
 from module_recovery import admitted_stage
 
@@ -39,6 +41,10 @@ def controller():
     admitted_stage('m13.py', 'module_fisher', [0])
     c.write(RUN / 'public/PROGRESS.json', dict(status='M13_TRAINING_RUNNING', complete=False))
     admitted_stage('m13.py', 'module_train', range(3))
+    finish()
+
+
+def finish():
     paths = [r.s.point(task, 'M13') for task in r.s.tasks()]
     assert len(paths) == 8 and all(p.is_file() and not p.is_symlink() for p in paths)
     for task in r.s.tasks():
@@ -85,6 +91,9 @@ if __name__ == '__main__':
         elif action == 'module_route':
             import module_route
             module_route.main(expected_candidates=8)
+        elif action == 'm13_recover_unstarted':
+            import m13_recovery
+            m13_recovery.main()
         else:
             {'m13_controller': controller, 'module_train': r.train, 'module_fisher': r.fisher}[action]()
     except BaseException as error:
