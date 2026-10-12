@@ -21,7 +21,7 @@ def main():
         live=[]
         for row in state['workers']:
             current=subprocess.run(['ps','-ww','-p',str(row['pid']),'-o','lstart=,args='],capture_output=True,text=True).stdout.strip()
-            live.append(current==row['identity'])
+            live.append(current.split()[:5]==row['identity'].split()[:5] and current.split()[-2:]==['-u',row['entry']])
         if not any(live):break
         time.sleep(30)
     code="import os,runpy\nos.environ['RUN_ROOT']="+repr(R)+"\nrunpy.run_path("+repr(R+'/private/tools/report146.py')+",run_name='__main__')\n"
@@ -36,7 +36,7 @@ def main():
     paths=[str(p.relative_to(W)) for p in report.iterdir() if p.is_file()]
     subprocess.run(['git','add','--',*paths],cwd=W,check=True)
     subprocess.run(['git','commit','-m','Report frozen original146 pure W comparison with retained TT and BalancEdit'],cwd=W,check=True)
-    subprocess.run(['git','-c','http.proxy=http://127.0.0.1:7897','push','origin','HEAD:'+os.environ['BRANCH']],cwd=W,check=True,timeout=180)
+    subprocess.run(['git','-c','http.proxy=http://127.0.0.1:7897','-c','push.default=current','push','origin'],cwd=W,check=True,timeout=180)
     sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip()
     actual=subprocess.check_output(['git','-c','http.proxy=http://127.0.0.1:7897','ls-remote','origin','refs/heads/'+os.environ['BRANCH']],cwd=W,text=True).split()[0]
     assert actual==sha
