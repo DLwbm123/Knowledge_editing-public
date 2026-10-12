@@ -354,7 +354,7 @@ def reload_main():
 
 def controller():
     selfcheck()
-    write_progress(status='BASELINE_REUSE_AUDIT_RUNNING')
+    write_progress(status='GPU_MECHANICAL_PENDING' if (R/'private/BASELINE_REUSE_ADMISSION.json').exists() else 'BASELINE_REUSE_AUDIT_RUNNING')
     if not (R/'private/BASELINE_REUSE_ADMISSION.json').exists():
         import admit146
         admit146.main()

@@ -109,7 +109,7 @@ def main():
         primary='bank146 edit-macro T2G',DEV_gate=gate,per_edit_negative_bound_counts=per_edit_failures,diagnostics=diagnostics,scoring_statuses=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),
         added_parameters=0,inference=timing,new_GPU_process_hours=cost['gpu_seconds_used']/3600,new_Judge=cost['Judge_attempts'],
         prior_common_Judge_attempts=3346,old_results_unchanged=True,baseline_scores_reproduced=True,
-        failures=len(list((R/'private/failures').glob('*.json'))),owned_weight_peak_bytes=cost['weights_observed_peak_bytes'],
+        failures=len(list((R/'private/failures').glob('*.json')))+len(list((R/'private').glob('engineering_*/failures/*.json'))),owned_weight_peak_bytes=cost['weights_observed_peak_bytes'],
         owned_pt_remaining=len(list((R/'private').rglob('*.pt'))),data_admission=c.read(R/'public/BASELINE_REUSE_ADMISSION.json'),
         limitations=['NativeFP16 and quantization disclosed','Original146 development single-order','T1L/T2L historical diagnostic only','Patient independence UNKNOWN',
                      'Source-only supervision adaptation removes external61 BASIS KL','Method steps/parameters/optimizer differ','Historical baseline matched latency NA','No clinical/SOTA/independent confirmation'])

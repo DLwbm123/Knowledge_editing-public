@@ -21,6 +21,10 @@ def launch():
     code=json.dumps((HERE/'bootstrap.py').read_text())+'\n'+json.dumps(payload)+'\n'
     remote=subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=12','pro5000',"/data/bmw/envs/v0/bin/python -c 'import sys,json;exec(json.loads(sys.stdin.readline()))'"],input=code,text=True,capture_output=True,timeout=180,check=True)
     startup=json.loads(remote.stdout)
+    start_consumers(startup)
+
+
+def start_consumers(startup):
     state=W/'.local_run';state.mkdir(exist_ok=True)
     (state/'STARTUP.json').write_text(json.dumps(startup,indent=2))
     folder=Path(tempfile.mkdtemp(prefix='e.',dir='/private/tmp'));workers=[]
