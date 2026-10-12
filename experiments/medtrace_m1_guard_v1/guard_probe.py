@@ -2,6 +2,7 @@
 import copy
 import math
 import os
+import subprocess
 from pathlib import Path
 import time
 import traceback
@@ -24,6 +25,24 @@ def count(*_):
     total = r.COUNTS['non_generation_forwards'] + sum(c.read(p)['non_generation_forwards'] for p in (RUN/'private').glob('COUNTS_*.json') if p.name != own)
     assert total <= 24000, 'Frozen phase-A forward ceiling'
 r.count = count
+
+
+def memory_record(gpu, stage, complete=False):
+    path=RUN/'private'/f"MEMORY_guard_probe_{os.environ['PARTITION']}.json"
+    previous=c.read(path) if path.exists() else {}
+    reserved=torch.cuda.memory_reserved()
+    try:
+        rows=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,used_memory',
+                                     '--format=csv,noheader,nounits'],text=True).splitlines()
+        own=[int(row.split(',')[1].strip())*1024**2 for row in rows if row.split(',')[0].strip()==str(os.getpid())]
+    except (subprocess.SubprocessError,OSError,ValueError):
+        own=[]
+    c.write(path,dict(pid=os.getpid(),gpu=gpu,stage=stage,epoch=time.time(),complete=complete,
+        peak_allocated_bytes=torch.cuda.max_memory_allocated(),peak_reserved_bytes=torch.cuda.max_memory_reserved(),
+        sampled_process_peak_bytes=max([previous.get('sampled_process_peak_bytes',0)]+own),
+        sampled_nonallocator_max_bytes=max([previous.get('sampled_nonallocator_max_bytes',0),0]+[v-reserved for v in own]),
+        process_sample_valid=len(own)==1,
+        peak_counters_reset=False,includes_loading=True,process_peak_continuous=False))
 
 
 def canonical_match(before, proposed, target):
@@ -129,11 +148,13 @@ def probe():
     from m3bench_repro.editors.llava_runtime import seed_everything
     with r.p.lease(gpu):
         runtime,_,handle=r.load(gpu)
+        memory_record(gpu,'LOADED')
         basis,_=r.q.split();assert len(basis)==61
         frozen_sources={t['order']:[r.old.cpu(runtime.build_edit_batch(r.s.record(t,row))) for row in r.s.source(t)] for t in tasks}
         frozen_basis=[r.old.cpu(r.q.protection_batch(runtime,row,tasks[0])) for row in basis]
         r.old.fp32(runtime)
         cache={k:v.to(runtime.device) if isinstance(v,torch.Tensor) else v for k,v in r.p.load_state(RUN/'private/OPERATOR_FISHER.pt').items()}
+        memory_record(gpu,'FP32_AND_FISHER_READY')
         try:
             for task in tasks:
                 saved=r.p.load_state(r.s.point(task,'C'))['states'];initial=r.mm.canonicalize({k:v.to(runtime.device) for k,v in saved['BASE'].items()})[0]
@@ -175,6 +196,7 @@ def probe():
                                 expert.load_state_dict(chosen);expert.zero_grad(set_to_none=True)
                             if step%20==0:
                                 r.save_resume(task,arm,expert,None,scalar,step,curve);r.save_counts()
+                                memory_record(gpu,'TRAIN_AND_NODE_CHECKPOINT')
                         if arm=='GUARD':
                             c.write(RUN/'private/prefix_curve'/f"{task['order']}.json",curve)
                             c.save(RUN/'private/prefix/GUARD'/f"{task['order']}.pt",dict(completed_step=80,states=dict(BASE=r.s.previous.weights(initial),FINAL=r.s.previous.weights(expert.state_dict())),
@@ -183,6 +205,7 @@ def probe():
                         r.retire_resume(task,arm)
                     c.write(RUN/'private/PREFIX_COMPLETE'/f"{task['order']}.json",dict(status='COMPLETE',owner=task['order'],steps_each=80,arms=['M1REF','GUARD']))
                 finally:hook.detach()
+            memory_record(gpu,'ALL_ASSIGNED_PREFIXES_COMPLETE',complete=True)
         finally:handle.remove();r.save_counts()
 
 
