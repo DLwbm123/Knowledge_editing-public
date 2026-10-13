@@ -1,0 +1,26 @@
+{
+  "status": "USER_AUTHORIZED_OPERATIONAL_AMENDMENT",
+  "epoch": 1791868654.9934466,
+  "checkpoint_interval_steps": 20,
+  "forced_save": "step160 before evaluation; SIGTERM/SIGINT after current update",
+  "hard_crash_recovery": "at most 19 completed unsaved updates plus an in-flight update; all actual computations counted",
+  "original_compute_budgets": {
+    "maximum_backwards": 116642,
+    "maximum_committed_updates": 46720
+  },
+  "effective_compute_budgets": {
+    "maximum_backwards": 116706,
+    "maximum_committed_updates": 46740
+  },
+  "reason": "User authorized checkpoint20 and relaxed compute budget for interrupted/replayed work",
+  "scientific_protocol_unchanged": true,
+  "time_and_generation_and_judge_caps_unchanged": true,
+  "original_protocol_retained": true,
+  "resume_checkpoint": {
+    "mode": "bank_R0",
+    "owner": 40,
+    "step": 95,
+    "committed": 6335
+  },
+  "synthetic_checks": "PASS: save cadence, resume, evaluation boundary, cooperative stop, compute accounting"
+}

@@ -23,6 +23,9 @@ def main():
     scores={k:x['correct'] for k,x in payloads.items()}
     from scripts.medtrace.astra_judge_bundle import validate
     cost=c.read(R/'RESOURCE_LEDGER.json')
+    attempts=[c.read(p) for p in (R/'private/attempts').glob('*.json')]
+    compute_counts={k:sum(x.get(k,0) for x in attempts) for k in ('forwards','backwards','committed_updates','generation_attempts')}
+    amendment=R/'public/CHECKPOINT_AMENDMENT.json'
     attempted=[]
     for batch in cost['Astra_purew146_batches']:
         attempted.extend(batch['keys'])
@@ -108,6 +111,7 @@ def main():
     result=dict(status='COMPLETE' if full else 'COMPLETE_WITH_MISSING',panels=panels,contrasts=contrasts,insertion=insertion,
         primary='bank146 edit-macro T2G',DEV_gate=gate,per_edit_negative_bound_counts=per_edit_failures,diagnostics=diagnostics,scoring_statuses=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),
         added_parameters=0,inference=timing,new_GPU_process_hours=cost['gpu_seconds_used']/3600,new_Judge=cost['Judge_attempts'],
+        actual_compute_counts=compute_counts,checkpoint_amendment=c.read(amendment) if amendment.exists() else None,
         prior_common_Judge_attempts=3346,old_results_unchanged=True,baseline_scores_reproduced=True,
         failures=len(list((R/'private/failures').glob('*.json')))+len(list((R/'private').glob('engineering_*/failures/*.json'))),owned_weight_peak_bytes=cost['weights_observed_peak_bytes'],
         owned_pt_remaining=len(list((R/'private').rglob('*.pt'))),data_admission=c.read(R/'public/BASELINE_REUSE_ADMISSION.json'),
@@ -128,6 +132,8 @@ def main():
             '纯W新增参数0，无路由；旧基线权重已消费，没有重训，配对同硬件时延记NA。原生新进程重载和本轮计时已完成。',
             'T1L仅1编辑2probe、T2L31编辑54probe，是历史局部性诊断，不是临床保护确认。单顺序开发数据，患者独立未知。',
             f'新增GPU进程小时{result["new_GPU_process_hours"]:.4f}；新Judge{result["new_Judge"]}。完整失败成本保留。']
+    if result['checkpoint_amendment']:
+        lines+=['用户授权运行修订：连续阶段改为每20步保存大矩阵，逐步事件继续保存；正式科学更新仍为46720。计算计数上限46740、反传上限116706仅含中断/恢复余量，原时间、生成和评分预算不变。实际累计计算及修订回执见RESULTS.json；硬中断可能需重算最多19个未保存步骤和在途步骤，成本不重置。']
     (R/'public/REPORT_ZH.md').write_text('\n'.join(lines)+'\n')
     c.write(R/'private/REPORT_COMPLETE.json',dict(status=result['status'],epoch=time.time()))
     print(json.dumps(dict(status=result['status'],DEV_gate=gate)))

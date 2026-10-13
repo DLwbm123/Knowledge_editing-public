@@ -3,6 +3,7 @@ from dataclasses import replace
 import gc
 import json
 import os
+import signal
 from pathlib import Path
 import subprocess
 import sys
@@ -14,6 +15,14 @@ import common as c
 from contract import ARM, PREFIXES, proposals, selfcheck, base_completion
 
 R = c.RUN
+STOP_REQUESTED = False
+
+
+def request_stop(signum, frame):
+    global STOP_REQUESTED
+    STOP_REQUESTED = True
+
+
 COUNTS = dict(forwards=0, backwards=0, committed_updates=0, generation_attempts=0)
 ATTEMPT = R/'private/attempts'/f'{os.environ["ACTION"]}_{os.getpid()}.json'
 CALL_LOG = R/'private/calls'/f'{os.environ["ACTION"]}_{os.getpid()}.log'
@@ -28,7 +37,11 @@ def call(kind):
 def counts():
     c.write(ATTEMPT, dict(COUNTS, pid=os.getpid(), action=os.environ['ACTION']))
     rows = [c.read(p) for p in ATTEMPT.parent.glob('*.json')]
-    p = c.read(R/'private/FROZEN_PROTOCOL.json')['budgets']
+    p = dict(c.read(R/'private/FROZEN_PROTOCOL.json')['budgets'])
+    amendment = R/'public/CHECKPOINT_AMENDMENT.json'
+    if amendment.exists():
+        p.update(c.read(amendment)['effective_compute_budgets'])
+    assert sum(x['committed_updates'] for x in rows) <= p['maximum_committed_updates']
     assert sum(x['backwards'] for x in rows) <= p['maximum_backwards']
     assert sum(x['generation_attempts'] for x in rows) <= p['maximum_generations']
     assert sum(x['forwards'] for x in rows) <= p['maximum_forward_calls']
@@ -242,17 +255,21 @@ def trajectory(runtime, bindings, tasks, weight, original, original_schema, froz
                 weight.copy_(native)
             weight.grad = None
             completed += 1
-            state = dict(lock=c.digest(c.read(R/'private/FROZEN_PROTOCOL.json')),mode=mode,
-                         owner=i,step=step,committed=completed,master=master.detach().cpu(),
-                         native=native.detach().cpu(),rng=c.rng(),event=event)
-            import numpy as np
-            nr=np.random.get_state()
-            state['numpy_rng']=(nr[0],torch.from_numpy(nr[1].astype('int64')),nr[2],nr[3],nr[4])
-            save(active,state)
+            # Save at reporting boundaries; SIGTERM/SIGINT finish and persist the current update.
+            if step % 20 == 0 or STOP_REQUESTED:
+                state = dict(lock=c.digest(c.read(R/'private/FROZEN_PROTOCOL.json')),mode=mode,
+                             owner=i,step=step,committed=completed,master=master.detach().cpu(),
+                             native=native.detach().cpu(),rng=c.rng(),event=event)
+                import numpy as np
+                nr=np.random.get_state()
+                state['numpy_rng']=(nr[0],torch.from_numpy(nr[1].astype('int64')),nr[2],nr[3],nr[4])
+                save(active,state)
             COUNTS['committed_updates'] += 1
             call('C')
             c.write(R/'private/steps'/mode/str(i)/(str(step)+'.json'),event)
             counts()
+            if STOP_REQUESTED:
+                raise SystemExit('Cooperative stop: current update and RNG saved')
             if step%20==0:
                 guard(runtime,weight,original_schema,frozen)
                 write_progress(status='TRAINING',mode=mode,owner=i,step=step,committed=completed)
@@ -277,6 +294,8 @@ def trajectory(runtime, bindings, tasks, weight, original, original_schema, froz
 
 
 def gpu_main():
+    signal.signal(signal.SIGTERM, request_stop)
+    signal.signal(signal.SIGINT, request_stop)
     import torch
     tasks = c.read(R/'private/BENCHMARK146_QUEUE.json')['tasks']
     with c.lease(5):
