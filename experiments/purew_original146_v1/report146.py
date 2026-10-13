@@ -121,7 +121,8 @@ def main():
     for method in METHODS:
         xs=[next(x for x in panels if x['arm']==method and x['mode']=='bank_R0' and x['prefix']==146 and x['task']==task) for task in ('T0','T1G','T2G','T1L','T2L')]
         lines.append('|'+method+'|'+'|'.join(cell(x) for x in xs)+'|')
-    lines+=['','完整single/全部前缀、配对共享缺失界、编辑/来源区间、插入保持和实际FP16量化更新见RESULTS.json。',
+    lines+=['','完整single/固定前缀、配对共享缺失界、编辑/来源区间、T0插入与最终端点转移和实际FP16量化更新见RESULTS.json。',
+            '插入仅采集T0；both_correct与代码no_forgetting只表示插入和最终两端都正确，不能证明中间从未遗忘。T2G只有prefix1/50/100/146面板，完整插入至最终T2G保持不可识别，单例T2G不能替代插入测量。原数值与门槛不变。',
             '既有TT/BalancEdit恢复版全部面板原值复现，历史raw/评分/失败不修改。所有新Judge一次尝试，缺分保持分母。',
             '本轮只用原146 Native/FIT和历史Native，未用评价标签；移除旧24编辑额外61 BASIS KL，是明确监督适配。',
             '纯W新增参数0，无路由；旧基线权重已消费，没有重训，配对同硬件时延记NA。原生新进程重载和本轮计时已完成。',
