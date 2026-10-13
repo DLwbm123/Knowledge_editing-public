@@ -1,0 +1,151 @@
+{
+  "status": "POSTHOC_TRAJECTORY_AND_SOURCE_AUDIT",
+  "new_model_calls": 0,
+  "new_Judge": 0,
+  "changes_to_old_results": false,
+  "training_launched": false,
+  "mechanism": {
+    "total_proposals": 1280,
+    "nonzero": 430,
+    "zero": 850,
+    "inherited_nonzero_prefix": 333,
+    "first_reused_decisions": 8,
+    "first_witness_accepted": 5,
+    "new_proposals": 939,
+    "new_accepted": 92,
+    "new_zero": 847,
+    "first_rejection_step_min": 33,
+    "first_rejection_step_max": 59,
+    "last20_nonzero": 7,
+    "last20_total": 160,
+    "rejected_positive_projected_gain": 847,
+    "projected_to_full_pure_gain_ratio": {
+      "min": 0.7860211973646519,
+      "median": 0.8344977323580008,
+      "max": 0.8790298651717973
+    },
+    "all_fraction_trials_certified_local_infeasible_proposals": 696
+  },
+  "solver": {
+    "total_attempts": 3898,
+    "CERTIFIED_LOCAL_INFEASIBLE": 3327,
+    "LOCAL_KKT_PASS": 568,
+    "NUMERIC_UNRESOLVED": 3,
+    "actual_attempt_outcomes": {
+      "source_only_failed": 178,
+      "norm_only_failed": 164,
+      "source_and_norm_failed": 138,
+      "accepted": 88
+    },
+    "norm_excess_failures": 302,
+    "norm_excess_relative": {
+      "min": 9.374523379790389e-11,
+      "median": 3.335363207845887e-08,
+      "max": 4.867682736886536e-07
+    },
+    "rejected_proposals_with_existing_norm_only_candidate": 58,
+    "counterfactual_only_not_retrained": true
+  },
+  "source": {
+    "REFINE_final_native_NLL": 1.1552999203419336,
+    "M1_final_native_NLL": 0.006466110182011549,
+    "M3_final_native_NLL": 0.009137869079306688,
+    "M13_final_native_NLL": 0.007002021432675169,
+    "REFINE_all7_weighted_source_gain": 1.8850839403401238,
+    "M1_all7_weighted_source_gain": 2.900012161131288
+  },
+  "references": {
+    "M3": {
+      "final_Fisher_C_min": 0.017229239200729593,
+      "final_Fisher_C_mean": 0.047759541129688325,
+      "final_Fisher_C_max": 0.09416483056494128,
+      "finals_within_point1C": 8,
+      "trajectory_Fisher_C_max": 0.22404078326388538,
+      "complete_paths_within_point1C": 0
+    },
+    "M13": {
+      "final_Fisher_C_min": 0.007152088769782417,
+      "final_Fisher_C_mean": 0.03546164237004566,
+      "final_Fisher_C_max": 0.09286748760009925,
+      "finals_within_point1C": 8,
+      "trajectory_Fisher_C_max": 0.22072319750538782,
+      "complete_paths_within_point1C": 0
+    }
+  },
+  "verification": {
+    "real_resume_checks_PASS": 8,
+    "all_save_load_exact": true,
+    "all_scalar_clocks": 160,
+    "score_missing": 0,
+    "forced_and_natural_both_regress": true,
+    "CPU_math_geometry_trust_rechecks": "PASS",
+    "actual_GPU_trajectory_replay": false,
+    "weights_previously_consumed_and_released": true
+  },
+  "blocks": [
+    {
+      "step_range": [
+        1,
+        20
+      ],
+      "nonzero": 160,
+      "total": 160
+    },
+    {
+      "step_range": [
+        21,
+        40
+      ],
+      "nonzero": 145,
+      "total": 160
+    },
+    {
+      "step_range": [
+        41,
+        60
+      ],
+      "nonzero": 60,
+      "total": 160
+    },
+    {
+      "step_range": [
+        61,
+        80
+      ],
+      "nonzero": 28,
+      "total": 160
+    },
+    {
+      "step_range": [
+        81,
+        100
+      ],
+      "nonzero": 11,
+      "total": 160
+    },
+    {
+      "step_range": [
+        101,
+        120
+      ],
+      "nonzero": 13,
+      "total": 160
+    },
+    {
+      "step_range": [
+        121,
+        140
+      ],
+      "nonzero": 6,
+      "total": 160
+    },
+    {
+      "step_range": [
+        141,
+        160
+      ],
+      "nonzero": 7,
+      "total": 160
+    }
+  ]
+}
