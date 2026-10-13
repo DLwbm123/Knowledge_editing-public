@@ -141,7 +141,7 @@ def cpu():
     c.write(RUN/'public/CPU_ADMISSION.json',admission)
 
 
-def report():
+def report(retain_for_full=False):
     rows=[c.read(p) for p in sorted((RUN/'private/results_joint').glob('*.json'))]
     assert len(rows)==8 and {x['owner'] for x in rows}==set(range(1,9))
     assert len(list((RUN/'private/PARENT_PARITY').glob('*.json')))==8
@@ -177,6 +177,8 @@ def report():
             final_gain_ratio=summary([t['refinement']['final']['actual_source_gain']/t['pure_gain'] for t in ts]),
             paired_gain_ratio_change=summary([(t['refinement']['final']['actual_source_gain']-t['actual_source_gain'])/t['pure_gain'] for t in ts]),
             paired_basis_KL_change=summary([t['refinement']['final']['metrics']['basis_mean_KL']-t['metrics']['basis_mean_KL'] for t in ts])))
+    pending = retain_for_full and witnesses > 0
+    if pending:out['next_consumer']='AUTHORIZED_FULL160_PENDING_ADMISSION'
     c.write(RUN/'public/RESULTS.json',out)
     (RUN/'public/REPORT_ZH.md').write_text(f'''# 有限再线性化终结报告
 
@@ -191,10 +193,16 @@ def report():
     assert len(paths)==23 and all(p.is_file() and not p.is_symlink() and RUN.resolve() in p.resolve().parents for p in paths)
     lifecycle=dict(files=len(paths),bytes=sum(p.stat().st_size for p in paths),copies=False,
                    reason='All fixed repair, parity, save-load and report consumers complete',reconstruction_requires_training=True)
-    c.write(RUN/'private/CONSUMED.json',dict(lifecycle,paths=[str(p) for p in paths]))
-    for p in paths:p.unlink()
+    if pending:
+        lifecycle.update(reason='User-authorized full160 consumer pending admission',retained=True)
+        c.write(RUN/'private/FULL_CONSUMER_PENDING.json',dict(lifecycle,paths=[str(p) for p in paths]))
+        with (RUN/'public/REPORT_ZH.md').open('a') as handle:
+            handle.write('\n用户新增完整训练与评测授权：机制见证存在，所需23包保留至完整消费者结束；后续仍须续训与评分准入验证。\n')
+    else:
+        c.write(RUN/'private/CONSUMED.json',dict(lifecycle,paths=[str(p) for p in paths]))
+        for p in paths:p.unlink()
     c.write(RUN/'public/EXECUTION_AUDIT.json',dict(status='PASS',all_GPU_leases_ended=True,counts=totals,
-            lifecycle=lifecycle,owned_pt_remaining=0,full_validation_started=False))
+            lifecycle=lifecycle,owned_pt_remaining=len(paths) if pending else 0,full_validation_started=False))
     c.write(RUN/'private/REPORT_COMPLETE.json',dict(status='COMPLETE',epoch=time.time()))
     c.write(RUN/'public/PROGRESS.json',dict(status=out['decision'],complete=True,publication_complete=False))
     print(json.dumps({k:out[k] for k in ('decision','original_rule_witness_states','resources')}),flush=True)
