@@ -9,6 +9,7 @@ import time
 sys.path.insert(0,os.environ['RUN_ROOT']+'/private/tools')
 import astra_queue as a
 from contract import ARM
+from pause100 import planned_controller_failure
 
 q,R=a.q,a.RUN
 q.ROOT=R/'private/judge_purew146'
@@ -80,7 +81,7 @@ if __name__=='__main__':
                 protocol=q.PROTOCOL,prompt=q.PROMPT,attempts_per_payload=1,workers=4,batch_size=50))
         ingest(db);q.ingest=lambda db:None
         op=json.loads(os.environ.get('QUEUE_REQUEST','{"action":"next"}'))
-        failures=list((R/'private/failures').glob('*.json'))
+        failures=[p for p in (R/'private/failures').glob('*.json') if not planned_controller_failure(p,R)]
         if failures and op['action']=='next':
             answer=dict(state=dict(status='STOPPED',failure='Retained GPU/CPU failure requires review'),rows=[])
         else:
