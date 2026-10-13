@@ -1,6 +1,6 @@
-<!doctype html><html lang="zh"><meta charset="utf-8"><title>C/P/O/L 冻结设计</title><style>body{max-width:1000px;margin:40px auto;font:16px system-ui}pre{white-space:pre-wrap}</style><h1>C/P/O/L 有限机制对照</h1><p>设计与 C 范数预算已冻结；数据资格和真实模型准入通过前不得启动训练。当前原146连续写入不变。</p><pre>{
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>C/P/O/L 冻结设计</title><style>body{max-width:1000px;margin:40px auto;font:16px system-ui}pre{white-space:pre-wrap}</style><h1>C/P/O/L 有限机制对照</h1><p>DESIGN_FROZEN_DATA_BLOCKED</p><pre>{
   &quot;epoch&quot;: &quot;PUREW_CPOL146_V1_20261013&quot;,
-  &quot;status&quot;: &quot;DESIGN_FROZEN_DATA_QUALIFICATION_PENDING&quot;,
+  &quot;status&quot;: &quot;DESIGN_FROZEN_DATA_BLOCKED&quot;,
   &quot;frozen_at_utc&quot;: &quot;2026-10-13T02:42:39Z&quot;,
   &quot;host&quot;: &quot;pro5000&quot;,
   &quot;GPUs&quot;: [
@@ -87,7 +87,8 @@
     &quot;labels&quot;: &quot;training native answer only&quot;,
     &quot;evaluation_use&quot;: &quot;deterministic collision screening and final evaluation only; never author/reviewer/trainer&quot;,
     &quot;no_evaluation_guided_repair&quot;: true,
-    &quot;status&quot;: &quot;PENDING&quot;
+    &quot;status&quot;: &quot;BLOCKED_DATA_QUALIFICATION&quot;,
+    &quot;candidate_binding&quot;: &quot;876ee17b250ce8bebd5bdb34c771b8803b3297c394e65a18b00f66a28591da7b&quot;
   },
   &quot;scoring&quot;: {
     &quot;model&quot;: &quot;gpt-6-astra&quot;,
