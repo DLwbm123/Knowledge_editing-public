@@ -1,0 +1,130 @@
+{
+  "epoch": "PUREW_PROTECT100_V1_20261013",
+  "status": "FROZEN_PREPARATION_DATA_PASS_GPU_NOT_LAUNCH_READY",
+  "authorization": "Preparation and qualification only; no GPU execution authorized by the route picker",
+  "host": "pro5000",
+  "GPUs": [
+    5
+  ],
+  "GPU_UUID": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+  "reference_run": "/data/bmw/Knowledge_editing/outputs/purew-original146-v1-20261012/run",
+  "original146": "Keep paused; retain owner101/step1 and all clocks",
+  "OL": "Keep original full predecessor barrier; no reprioritized launch",
+  "comparison": {
+    "C": "reuse original continuous first100, prefixes1/50/100 and actual T0 insertion",
+    "K": "one new continuous trajectory from Base, same first100; add fixed BASIS KL weight1"
+  },
+  "training": {
+    "steps_per_edit": 160,
+    "order": "original first100, no performance-selected subset",
+    "seed": "original per-edit seed",
+    "current": ".5 native CE + .5 cyclic original FIT CE",
+    "history": ".5 cyclic past native CE, identical source clock",
+    "protection": "one cyclic fixed BASIS prompt per step, KL(Base || current), weight1, fixed actual historical Base token prefix",
+    "protection_clock": "((owner-1)*160+step-1) modulo61",
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "precision": "native FP16 with temporary FP32 master/gradient and loss scale128",
+    "direction": "SGD direction of combined loss; per-step FP32 proposal rescaled to the frozen C continuous proposal norm",
+    "optimizer": "SGD; no Adam, projection, RLS or routing",
+    "new_inference_parameters": 0,
+    "new_inference_branch": false
+  },
+  "qualification": {
+    "buffer": "entire historical61 BASIS/31source groups, source-only admitted SLAKE train",
+    "collision_check": "one independent full-input and source-group check against ALL original146 evaluation inputs and native/FIT groups",
+    "text_only": "report separately, does not establish evaluation-input overlap on a different source/image",
+    "no_filter_or_repair": true,
+    "evaluation_answers_used": false,
+    "teacher": "fresh native FP16 Base distribution on frozen historical actual Base token prefixes; never reuse old FP32 logits",
+    "historical_semantic_scores": "reuse only; no new Judge or label",
+    "native_base_admission": "exact original Base3 outputs plus all61 historical Base outputs, real gradient/write, unchanged upstream/schema/parameter count; failed admission blocks the whole arm",
+    "status": "PASS_SOURCE_PROVENANCE_AND_COLLISION",
+    "basis_binding": "5aad5a54bdb734e123006f0308cd13b71235ee91483b7c04d8d608077be86279",
+    "rows": 61,
+    "source_groups": 31
+  },
+  "norm": {
+    "shape": [
+      100,
+      160
+    ],
+    "binding": "735e7f770a4b072aa95d73a1ddab020e7735b4eb573a2405dbab2ff7184f7e11",
+    "target": "C continuous, not C singles",
+    "interpretation": "Equal FP32 proposal norms do not imply equal FP16 steps, path length, net displacement or functional change",
+    "native_path_ratio_gate": [
+      0.9,
+      1.1
+    ],
+    "outside_gate": "retain and label amplitude confounded; no tuning, resampling or deletion",
+    "diagnostics": [
+      "source/history/KL component gradient norms and cosine at steps1/40/80/160",
+      "proposal/native norms and changed elements each step",
+      "FP32 master/native discrepancy",
+      "path length and edit-relative net displacement separately"
+    ],
+    "proposal_relative_tolerance": 1e-05,
+    "proposal_absolute_tolerance": 1e-08,
+    "SGD_note": "Positive scalar SGD clipping cancels when rescaled to C; tests cover a toy zero-KL comparison, not bit-exact VLM replay of C"
+  },
+  "evaluation": {
+    "prefixes": [
+      1,
+      50,
+      100
+    ],
+    "all_original_tasks": true,
+    "insertion": "Actual T0 and eligible T2G at each own insertion; C has no T2G insertion measurement and remains NA",
+    "single": "reuse independent C singles only as independent comparisons, never insertion proxy",
+    "scoring": "Astra medium, original Stage17 source-agreement isolation, one attempt; no failed Judge retry",
+    "feedback": "Generate registered panels, score only after new trajectory and reload are frozen; no evaluation-driven training changes",
+    "missing": "retain shared exact bounds; C prefix100 has1 permanent missing, C matched singles11; panel denominators never mixed",
+    "bootstrap": 10000,
+    "bootstrap_seed": 20260912,
+    "source_cluster": true,
+    "primary": "Base-correct T2L/T1L new damage at prefix100, exact fixed denominators",
+    "secondary": "actual insertion-to-prefix endpoints; T2G macro and paired shared-missing lower bounds",
+    "panel_output_counts": {
+      "1": 46,
+      "50": 575,
+      "100": 1074
+    },
+    "insertion_outputs": 486,
+    "new_evaluation_consumer_limit": 2181
+  },
+  "success": {
+    "protection": "zero new wrong on all34 Base-correct T2L and2 T1L in first100; unknown cannot pass; also report same-first50 50-to100 new wrong/repairs",
+    "edited_knowledge": "all100 actual T0 insertion and prefix100 correct; no per-edit T2G regression relative to C lower shared-missing bound",
+    "generalization": "report all T1G/T2G per-edit regressions; do not trade them against protection in an average",
+    "scoring": "complete required scores; inherited unknowns cannot be called full scientific success",
+    "clinical": "not independent clinical/SOTA confirmation; patient independence UNKNOWN; all100 chosen after observed development outcomes",
+    "T2G_retention": "Zero verified actual insertion-to-prefix100 correct-to-wrong; report repairs separately, unknown cannot pass; no analogous historical C endpoint can be invented"
+  },
+  "budgets": {
+    "formal_updates": 16000,
+    "maximum_committed_updates": 16001,
+    "temporary_admission_updates": 1,
+    "maximum_backwards": 63844,
+    "maximum_generations": 2247,
+    "maximum_new_Judge": 2181,
+    "maximum_forward_calls": 3000000,
+    "GPU_process_hours": 24,
+    "wall_hours": 48,
+    "owned_weight_limit_bytes": 2147483648,
+    "minimum_free_bytes": 8589934592,
+    "activation": "one new activation clock, exclude preparation/waiting; cannot reset or borrow original/OL budgets",
+    "formal_backwards": 63840
+  },
+  "implementation": {
+    "qualification": "stdlib source/role/collision/reference audit",
+    "GPU_executor": "NOT_IMPLEMENTED_NOT_LAUNCH_READY",
+    "scoring_executor": "NOT_IMPLEMENTED",
+    "CPU_method_recovery": "NOT_RUN",
+    "real_VLM_admission": "NOT_RUN",
+    "CPU_math": "PASS_TOY_KL_NORM_NATIVE_MASTER_RNG_ONLY"
+  },
+  "no_extra_arms_or_seeds": true,
+  "no_automatic_tuning": true,
+  "no_recurring_monitor": true,
+  "frozen_at_utc": "2026-10-13T08:37:43.483713+00:00",
+  "interpretation": "K-C is an added-protection-objective plus extra61-source-data contrast at matched FP32 proposal schedule; does not isolate KL from extra data, guarantee protection, or establish the original failure cause"
+}
