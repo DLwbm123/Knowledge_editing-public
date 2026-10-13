@@ -1,0 +1,156 @@
+{
+  "epoch": "PUREW_ORIGINAL146_V1_20261012",
+  "status": "FROZEN_BEFORE_NEW_GPU_OUTPUTS",
+  "host": "pro5000",
+  "GPUs": [
+    5
+  ],
+  "GPU_UUID": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+  "arm": "PUREW_H146",
+  "reference_methods": [
+    "TT88_W0_RETRO146",
+    "balancedit"
+  ],
+  "common_parent": "/data/bmw/Knowledge_editing/outputs/medtrace-common146-medium-v1-20261011/run",
+  "original_N": 146,
+  "original_order": true,
+  "original_Base_masks": true,
+  "settings": [
+    "single_R0",
+    "insertion_R0",
+    "bank_R0"
+  ],
+  "prefixes": [
+    1,
+    50,
+    100,
+    146
+  ],
+  "consumers_per_method": 5722,
+  "model": "original LLaVA-Med Mistral7B",
+  "precision": "NATIVE_FP16_MATCHED_TO_REUSED_BASELINES",
+  "layer": "model.layers.21.mlp.down_proj",
+  "new_inference_parameters": 0,
+  "new_inference_branch": false,
+  "training": {
+    "steps_per_edit": 160,
+    "seed": "original per-edit seed",
+    "current": ".5 native CE + .5 cyclic original conservative FIT CE",
+    "history": ".5 one cyclic previously inserted native CE; sequential only; no success selection",
+    "permitted": "Original146 native and conservative source-only FIT labels; historical native only",
+    "external_BASIS": false,
+    "KL": false,
+    "GFIT": false,
+    "projection": false,
+    "RLS": false,
+    "source_only_H_not_contrastive_H": true,
+    "learning_rate": 0.01,
+    "gradient_norm_cap": 5,
+    "optimizer": "deterministic SGD; FP32 gradient accumulation and temporary FP32 master of existing W; native FP16 materialization each step",
+    "quantization": "actual FP16 displacement and zero-write fraction logged; no claim native displacement equals FP32 proposal cap",
+    "history_clock": "(step-1) modulo prior inserted edits; stable source order",
+    "single_resets_Base": true,
+    "sequential_real_continuous": true,
+    "fixed_loss_scale": 128
+  },
+  "adaptation": "Source24 H-source used external61 BASIS KL. This benchmark deliberately removes that extra data and adds original conservative FIT; no claim of identical old recipe or coordinate-only causal attribution.",
+  "generation": {
+    "batch": 1,
+    "greedy": true,
+    "beams": 1,
+    "max_new_tokens": 1024,
+    "use_cache": true,
+    "configuration": "exact inherited native generation contract"
+  },
+  "scoring": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "medium",
+    "prompt": "original Stage17 source-agreement",
+    "attempts_per_payload": 1,
+    "workers": 4,
+    "batch": 50,
+    "reuse": "full query/image/prompt/attention/runtime/generation/raw text/raw tokens/Judge identity only; recovery1 accepted scores retained",
+    "consecutive_transport_stop": 3,
+    "no_retry": true,
+    "no_Base_rejudge": true
+  },
+  "metrics": {
+    "primary": "bank146 edit-macro T2G Fix",
+    "all_tasks": [
+      "T0",
+      "T1G",
+      "T2G",
+      "T1L",
+      "T2L"
+    ],
+    "secondary": [
+      "PostAcc",
+      "c2w",
+      "insertion-to-final retention",
+      "single",
+      "all registered prefixes",
+      "probe-micro",
+      "parameters/storage/timing"
+    ],
+    "support": {
+      "T0": [
+        146,
+        146
+      ],
+      "T1G": [
+        146,
+        578
+      ],
+      "T2G": [
+        146,
+        557
+      ],
+      "T1L": [
+        1,
+        2
+      ],
+      "T2L": [
+        31,
+        54
+      ]
+    },
+    "bootstrap": 10000,
+    "bootstrap_seed": 20260912,
+    "source_cluster": true,
+    "missing_shared_exact_bounds": true,
+    "active_target": "original exact image+question rule; 68 native-input collisions in noneligible T1L only; do not repurpose locality references for optimization",
+    "protected_locality": "historical diagnostic, not independently qualified clinical protection"
+  },
+  "success": {
+    "structural": "all original parameter keys/shapes/dtypes/count unchanged, no editor hook, exact native reload",
+    "primary": "full scoring; T2G paired missing-bound lower >= each baseline; T0/T1G lower >= each baseline; T2L lower >= each baseline; source insertion/final each edit correct",
+    "claim": "predeclared DEV benchmark gates, no independent clinical/SOTA/noninferiority confirmation; all failures reported",
+    "no_average_compensation": true
+  },
+  "budgets": {
+    "maximum_committed_updates": 46720,
+    "temporary_admission_updates": 1,
+    "maximum_backwards": 116642,
+    "maximum_generations": 5800,
+    "maximum_new_Judge": 5722,
+    "maximum_forward_calls": 7000000,
+    "GPU_process_hours": 64,
+    "wall_hours": 72,
+    "owned_weight_limit_bytes": 2147483648,
+    "minimum_free_bytes": 8589934592
+  },
+  "performance": {
+    "queries": "native and firstT2G of original owners1/50/100/146",
+    "repeats": 3,
+    "warmup": 1,
+    "timing_only": true,
+    "route_time": 0,
+    "baseline_historical_timing": "NA unless same hardware and exact timed workload evidence exists; never fabricate/reconstruct old weights"
+  },
+  "resume": "every committed step stores master/native W,RNG,source-clock,full count,loss/norm event atomically; committed training and durable generation skipped; started generation without durable output is a hard block, no implicit replay",
+  "checkpoint_lifecycle": "single active consumed after own panel; sequential active retained through146; final capture retained through fresh native reload and timing; explicit own-file receipts, no historical deletion",
+  "automatic_next_round": false,
+  "recurring_monitor": false,
+  "independent_confirmation": false,
+  "patient_independence": "UNKNOWN"
+}

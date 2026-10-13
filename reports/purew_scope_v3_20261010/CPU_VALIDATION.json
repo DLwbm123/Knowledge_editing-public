@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "checks": {
+    "math": {
+      "status": "PASS",
+      "full_projection": true,
+      "coordinate_dense_parity": true,
+      "norm_match": true,
+      "zero_gradient_skips": true,
+      "initial_RLS_identity": true,
+      "trust_cap": true,
+      "real_descent": true
+    },
+    "journal": {
+      "status": "PASS",
+      "binding_rejection": true,
+      "checkpoint_log_gap_repaired": true,
+      "completed_receipt_skipped": true,
+      "dead_process_rejected": true
+    },
+    "recovery": {
+      "status": "PASS",
+      "all5_resume_bit_exact": true,
+      "all5_native_reload": true,
+      "independent_event_gap": true
+    },
+    "score_inheritance": {
+      "status": "PASS",
+      "exact_valid_reused": true,
+      "old_failure_not_retried": true,
+      "changed_binding_rejected": true
+    }
+  },
+  "protocol_idempotent": true
+}

@@ -1,0 +1,31 @@
+{
+  "status": "SCORING_STARTED_NOT_RESULTS",
+  "consumers": 1019,
+  "unique_payloads": 465,
+  "maximum_attempts": 1019,
+  "old_scores_reused": 0,
+  "model": "gpt-6-astra",
+  "reasoning_effort": "medium",
+  "workers": 4,
+  "attempts_per_payload": 1,
+  "no_regeneration": true,
+  "data_visible": [
+    "opaque_query_id",
+    "question",
+    "gold_answer",
+    "raw_base_answer"
+  ],
+  "tools_disabled": true,
+  "isolated_fresh_sessions": true,
+  "zero_attempt_import_failure_retained": true,
+  "checks": [
+    "queue binding validation",
+    "continual forgetting counterexample",
+    "all-success gate",
+    "damage rejection",
+    "missing rejection",
+    "native-precision binding",
+    "neutral scorer argv"
+  ],
+  "scope": "DEV reference agreement; no independent clinical or SOTA confirmation"
+}

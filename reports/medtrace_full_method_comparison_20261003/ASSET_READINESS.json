@@ -1,0 +1,43 @@
+{
+  "status": "FOUND_NOT_REUSE_ADMITTED",
+  "records": [
+    {
+      "method": "BalancEdit",
+      "mode": "single",
+      "completion_receipts": 146,
+      "raw_query_files": 2378,
+      "cohort_binding": "PER_EDIT_JOIN_PENDING"
+    },
+    {
+      "method": "BalancEdit",
+      "mode": "sequential",
+      "completion_receipts": 146,
+      "raw_query_files": 3359,
+      "cohort_binding": "PHASE_ORDER_PREFIX_PASS"
+    },
+    {
+      "method": "BELoRA",
+      "mode": "single",
+      "completion_receipts": 146,
+      "raw_query_files": 2524,
+      "cohort_binding": "PHASE_ORDER_PREFIX_PASS"
+    },
+    {
+      "method": "BELoRA",
+      "mode": "sequential",
+      "completion_receipts": 146,
+      "raw_query_files": 3359,
+      "cohort_binding": "PHASE_ORDER_PREFIX_PASS"
+    }
+  ],
+  "raw_answer_or_token_identity_validation": "PENDING_UNTIL_DATA_ADMISSION",
+  "asset_host": "historical persistent host",
+  "new_host_CPU_import": {
+    "torch": "2.7.1+cu128",
+    "cuda_build": "12.8",
+    "transformers": "4.51.3"
+  },
+  "runtime_environment_binding": "NOT_QUALIFIED_AGAINST_ORIGINAL_STACK",
+  "GPU_model_loading_performed": false,
+  "baseline_retraining_not_started": true
+}

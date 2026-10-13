@@ -1,0 +1,525 @@
+{
+  "status": "COMPLETE",
+  "decision": "NO_LOCAL_SUPPORT",
+  "protection": {
+    "RAW": 1.8859714052956363e-06,
+    "BOUNDED": 1.937552342925496e-06,
+    "MATCHED_RAW": 1.8859714052956363e-06,
+    "expert_CI": [
+      -3.682081517407495e-08,
+      1.4558657955848784e-07
+    ],
+    "source_CI": [
+      -1.0145561716894494e-07,
+      1.7223285091794222e-07
+    ]
+  },
+  "edit_progress": {
+    "RAW": 0.0061634977049044495,
+    "BOUNDED": 0.005658977060655358,
+    "MATCHED_RAW": 0.0061634977049044495
+  },
+  "primary_queries": 63,
+  "primary_sources": 29,
+  "response_lost_tokens": {
+    "RAW": 6,
+    "BOUNDED": 6,
+    "MATCHED_RAW": 6
+  },
+  "edit_lost_tokens": 0,
+  "all96_secondary": {
+    "RAW": {
+      "KL": 2.0208056493893474e-06,
+      "lost_correct_tokens": 11
+    },
+    "BOUNDED": {
+      "KL": 2.031755262406988e-06,
+      "lost_correct_tokens": 9
+    },
+    "MATCHED_RAW": {
+      "KL": 2.0208056493893474e-06,
+      "lost_correct_tokens": 11
+    }
+  },
+  "per_expert": [
+    {
+      "expert_order": 1,
+      "edit_progress": {
+        "RAW": 0.0066577423091527385,
+        "BOUNDED": 0.006033097898221903,
+        "MATCHED_RAW": 0.0066577423091527385
+      },
+      "actual_edit_retention": 0.9061777428555466,
+      "heldout_KL": {
+        "RAW": 2.044035552052112e-06,
+        "BOUNDED": 2.0033739087471656e-06,
+        "MATCHED_RAW": 2.044035552052112e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8997524812888605,
+        "required": 0.8997524812888604,
+        "norm_multiplier": 0.0036980636015720224,
+        "KKT_residual": 3.4723448936489715e-17,
+        "metric_condition": 387896.355286023,
+        "rank": 512,
+        "objective": 1.7176337326849185e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.006200556306851832,
+        "actual_linear_edit_progress": 0.005580500677966899,
+        "RAW_map_norm": 0.022627124971270965,
+        "BOUNDED_map_norm": 0.02262712497295675,
+        "objective_RAW": 5.512273642634289e-08,
+        "objective_BOUNDED": 1.7176337385596595e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.0017241255546017332,
+        "raw_predicted_norm": 0.008844058433029853,
+        "roundoff_parameter_norm": 5.753772525431894e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.02262712497295675,
+        "actual": 0.022627124971270965,
+        "relative_error": 7.450276865873798e-11,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.010494253681564345,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    },
+    {
+      "expert_order": 2,
+      "edit_progress": {
+        "RAW": 0.006818269417694531,
+        "BOUNDED": 0.006045388560245575,
+        "MATCHED_RAW": 0.006818269417694531
+      },
+      "actual_edit_retention": 0.8866455972767514,
+      "heldout_KL": {
+        "RAW": 1.972390623640553e-06,
+        "BOUNDED": 1.9770205142077483e-06,
+        "MATCHED_RAW": 1.972390623640553e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8995465483901931,
+        "required": 0.8995465483901932,
+        "norm_multiplier": 0.005374237259303021,
+        "KKT_residual": 7.14030631550568e-17,
+        "metric_condition": 311037.6217014338,
+        "rank": 512,
+        "objective": 1.369999960773301e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.0066069250789747595,
+        "actual_linear_edit_progress": 0.005946232547124016,
+        "RAW_map_norm": 0.022627303123630964,
+        "BOUNDED_map_norm": 0.022627303023330117,
+        "objective_RAW": 3.063458388966882e-08,
+        "objective_BOUNDED": 1.3699999571625412e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.001549197622628495,
+        "raw_predicted_norm": 0.006997751929462505,
+        "roundoff_parameter_norm": 5.392017302013592e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627303023330117,
+        "actual": 0.022627303123630964,
+        "relative_error": 4.432735416380455e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.011197148733427927,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    },
+    {
+      "expert_order": 3,
+      "edit_progress": {
+        "RAW": 0.004646142141224427,
+        "BOUNDED": 0.004330552260178771,
+        "MATCHED_RAW": 0.004646142141224427
+      },
+      "actual_edit_retention": 0.9320748544807788,
+      "heldout_KL": {
+        "RAW": 2.0285710546412973e-06,
+        "BOUNDED": 2.0365946621816183e-06,
+        "MATCHED_RAW": 2.0285710546412973e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8987430090592012,
+        "required": 0.8987430090592013,
+        "norm_multiplier": 0.008560835033812969,
+        "KKT_residual": 7.619287748931514e-17,
+        "metric_condition": 243595.7678433942,
+        "rank": 512,
+        "objective": 1.5623369305627032e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.003949921715399587,
+        "actual_linear_edit_progress": 0.003554929537041824,
+        "RAW_map_norm": 0.022627294166122996,
+        "BOUNDED_map_norm": 0.022627294130820916,
+        "objective_RAW": 3.383218584645915e-08,
+        "objective_BOUNDED": 1.5623369169286967e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.0016434210165758507,
+        "raw_predicted_norm": 0.007151414008391395,
+        "roundoff_parameter_norm": 6.023999768957573e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627294130820916,
+        "actual": 0.022627294166122996,
+        "relative_error": 1.5601547626077077e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.014029671978239552,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    },
+    {
+      "expert_order": 4,
+      "edit_progress": {
+        "RAW": 0.008186016509716046,
+        "BOUNDED": 0.00734923736593004,
+        "MATCHED_RAW": 0.008186016509716046
+      },
+      "actual_edit_retention": 0.8977794458644414,
+      "heldout_KL": {
+        "RAW": 1.8039633302677543e-06,
+        "BOUNDED": 1.664618391721823e-06,
+        "MATCHED_RAW": 1.8039633302677543e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8993079514705726,
+        "required": 0.8993079514705726,
+        "norm_multiplier": 0.005163912031724117,
+        "KKT_residual": 1.115546125511644e-16,
+        "metric_condition": 502951.29500896303,
+        "rank": 512,
+        "objective": 2.177638235114551e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.008222567410522134,
+        "actual_linear_edit_progress": 0.007400310665159756,
+        "RAW_map_norm": 0.022627324196325595,
+        "BOUNDED_map_norm": 0.022627324195993198,
+        "objective_RAW": 5.270738884483748e-08,
+        "objective_BOUNDED": 2.1776382176667512e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.0019126171982426416,
+        "raw_predicted_norm": 0.008660387329451005,
+        "roundoff_parameter_norm": 5.422293855308114e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627324195993198,
+        "actual": 0.022627324196325595,
+        "relative_error": 1.4690084485759928e-11,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.010502337316755424,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    },
+    {
+      "expert_order": 5,
+      "edit_progress": {
+        "RAW": 0.002680767593596423,
+        "BOUNDED": 0.0025322763376624375,
+        "MATCHED_RAW": 0.002680767593596423
+      },
+      "actual_edit_retention": 0.9446086798838184,
+      "heldout_KL": {
+        "RAW": 1.6855827184977934e-06,
+        "BOUNDED": 1.928580092200088e-06,
+        "MATCHED_RAW": 1.6855827184977934e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.898722570243341,
+        "required": 0.898722570243341,
+        "norm_multiplier": 0.006209242919483173,
+        "KKT_residual": 7.743026641733115e-17,
+        "metric_condition": 409022.28850680526,
+        "rank": 512,
+        "objective": 2.0243686386933026e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.0032696923227164337,
+        "actual_linear_edit_progress": 0.0029427230914689257,
+        "RAW_map_norm": 0.022623622348477812,
+        "BOUNDED_map_norm": 0.022623622345807937,
+        "objective_RAW": 3.356822799849159e-08,
+        "objective_BOUNDED": 2.0243686522656987e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.0018608927628327623,
+        "raw_predicted_norm": 0.007238501245098662,
+        "roundoff_parameter_norm": 5.87225901249689e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022623622345807937,
+        "actual": 0.022623622348477812,
+        "relative_error": 1.1801269916681354e-10,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.012556681523719243,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    },
+    {
+      "expert_order": 6,
+      "edit_progress": {
+        "RAW": 0.004562783946445939,
+        "BOUNDED": 0.004422697213387811,
+        "MATCHED_RAW": 0.004562783946445939
+      },
+      "actual_edit_retention": 0.9692979692437015,
+      "heldout_KL": {
+        "RAW": 1.8885613430750106e-06,
+        "BOUNDED": 2.0193393450052666e-06,
+        "MATCHED_RAW": 1.8885613430750106e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8996543492571905,
+        "required": 0.8996543492571903,
+        "norm_multiplier": 0.0047570113256534706,
+        "KKT_residual": 6.40916902864404e-17,
+        "metric_condition": 358575.9915978472,
+        "rank": 512,
+        "objective": 1.3982156912585365e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.0047488263826297745,
+        "actual_linear_edit_progress": 0.004273943732967881,
+        "RAW_map_norm": 0.022627295849425556,
+        "BOUNDED_map_norm": 0.022627295799314526,
+        "objective_RAW": 3.8566926397504734e-08,
+        "objective_BOUNDED": 1.3982156749810952e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.0015297583656336989,
+        "raw_predicted_norm": 0.007401929528722958,
+        "roundoff_parameter_norm": 5.505371624874436e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627295799314526,
+        "actual": 0.022627295849425556,
+        "relative_error": 2.2146274284550646e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.013444186122002022,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    },
+    {
+      "expert_order": 7,
+      "edit_progress": {
+        "RAW": 0.010692538541306239,
+        "BOUNDED": 0.010172470910119379,
+        "MATCHED_RAW": 0.010692538541306239
+      },
+      "actual_edit_retention": 0.951361631367725,
+      "heldout_KL": {
+        "RAW": 1.914225519442406e-06,
+        "BOUNDED": 1.868653633556757e-06,
+        "MATCHED_RAW": 1.914225519442406e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8997910782201796,
+        "required": 0.8997910782201796,
+        "norm_multiplier": 0.004925877136481501,
+        "KKT_residual": 4.5782155459699166e-17,
+        "metric_condition": 385485.6497306184,
+        "rank": 512,
+        "objective": 2.2280858741077044e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.011073448494188658,
+        "actual_linear_edit_progress": 0.00996610367309958,
+        "RAW_map_norm": 0.022627360894553614,
+        "BOUNDED_map_norm": 0.022627360964345023,
+        "objective_RAW": 3.900049860569841e-08,
+        "objective_BOUNDED": 2.2280858807193536e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.0019927688621310833,
+        "raw_predicted_norm": 0.007658498299470794,
+        "roundoff_parameter_norm": 5.591731255134406e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627360964345023,
+        "actual": 0.022627360894553614,
+        "relative_error": 3.0843812883552905e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.009222690136289787,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    },
+    {
+      "expert_order": 8,
+      "edit_progress": {
+        "RAW": 0.00506372118009925,
+        "BOUNDED": 0.004386095939496948,
+        "MATCHED_RAW": 0.00506372118009925
+      },
+      "actual_edit_retention": 0.866180380692086,
+      "heldout_KL": {
+        "RAW": 1.7504411007481628e-06,
+        "BOUNDED": 2.0022381957835e-06,
+        "MATCHED_RAW": 1.7504411007481628e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8998456698815297,
+        "required": 0.8998456698815297,
+        "norm_multiplier": 0.0072085280786011174,
+        "KKT_residual": 9.015422233892273e-17,
+        "metric_condition": 263188.56407262885,
+        "rank": 512,
+        "objective": 1.576694789551259e-09,
+        "algorithm": "MINIMUM_UNNORMALIZED_TOKEN_RESPONSE_WITH_EDIT_GAIN_AND_MAP_NORM_CONSTRAINTS",
+        "raw_linear_edit_progress": 0.005057613015228905,
+        "actual_linear_edit_progress": 0.004551851712531437,
+        "RAW_map_norm": 0.02262716496308032,
+        "BOUNDED_map_norm": 0.022627164976546953,
+        "objective_RAW": 3.9746706520091925e-08,
+        "objective_BOUNDED": 1.5766947716396542e-09,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "actual_predicted_norm": 0.001646376244561342,
+        "raw_predicted_norm": 0.007519326455002025,
+        "roundoff_parameter_norm": 5.167623479523982e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627164976546953,
+        "actual": 0.02262716496308032,
+        "relative_error": 5.951533951264973e-10,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1514,
+        "questions": 61,
+        "mean_gradient_checks": 61,
+        "maximum_mean_gradient_relative_error": 0.0,
+        "maximum_individual_gradient_aggregation_error": 0.009842151697732926,
+        "all_actual_tokens_including_EOS": true,
+        "parity_definition": "SINGLE_BACKWARD_OF_TOKEN_MEAN_VS_ORIGINAL_LOSS"
+      }
+    }
+  ],
+  "resource": {
+    "new_GPU_process_hours": 0.2238586273458269,
+    "cumulative_GPU_process_hours": 41.08687464197477,
+    "cumulative_Judge": 12406,
+    "forward_calls": 4592,
+    "backward_calls": 13144,
+    "temporary_updates": 8,
+    "new_generations": 0,
+    "new_Judge": 0,
+    "new_checkpoints": 0
+  },
+  "proxy_is_full_KL": false,
+  "independent_confirmation": false,
+  "clinical_protection": false,
+  "full_training_success": false
+}

@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "selfcheck": {
+    "status": "PASS",
+    "directional_derivative": true,
+    "shift_invariance": true,
+    "quadratic_scaling": true
+  },
+  "experts": 8,
+  "basis_questions": 61,
+  "edit_questions": 5,
+  "heldout_measured": false,
+  "scales": [
+    0.0,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "precisions": [
+    "ORIGINAL_FP16",
+    "MATH_FP16",
+    "MATH_FP32"
+  ],
+  "arms": [
+    "RAW",
+    "BOUNDED"
+  ],
+  "new_candidates": 0,
+  "candidate_reconstructions": 0,
+  "inherited_fixed_candidates": 8,
+  "forward_calls": 13279,
+  "backward_passes": 4232,
+  "reconstruction_forwards": 0,
+  "reconstruction_backwards": 0,
+  "mechanical_forwards": 31,
+  "mechanical_backwards": 8,
+  "diagnostic_forwards": 13248,
+  "diagnostic_backwards": 4224,
+  "JVP_method": "autograd.functional.jvp double backward, no random probes",
+  "primary_gate_unchanged": "PR47 NO_LOCAL_SUPPORT; calibration is not a method success test",
+  "new_generations": 0,
+  "new_Judge": 0,
+  "temporary_candidate_packages": 8
+}

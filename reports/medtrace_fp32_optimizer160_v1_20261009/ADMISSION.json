@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "arms": [
+    "RAW",
+    "ADAM"
+  ],
+  "steps": 160,
+  "diagnostic_nodes": [
+    0,
+    1,
+    8,
+    16,
+    32,
+    64,
+    96,
+    128,
+    160
+  ],
+  "experts": 8,
+  "trajectories": 16,
+  "trainable_parameters": 7168,
+  "trainable_cores": [
+    "G1",
+    "G2",
+    "G3",
+    "G4"
+  ],
+  "initial_state": "ORIGINAL_SEEDED_ZERO_TT88",
+  "optimizer_steps": 2560,
+  "training_backwards": 5120,
+  "source_non_generation_forwards": 6092,
+  "new_generations": 80,
+  "maximum_forwards": 88012,
+  "maximum_new_Judge": 80,
+  "optimizer": "same two-group Adam; RAW replaces direction, ADAM retains actual proposal",
+  "loss": ".5 native + .5 cyclic FIT",
+  "clip": 1.0,
+  "native_updates_per_trajectory": 160,
+  "FIT_updates_per_question": 40,
+  "learning_rates": [
+    0.0001,
+    0.001
+  ],
+  "seed_selection": false,
+  "checkpoint_selection": false,
+  "source_roles": [
+    "NATIVE",
+    "FIT"
+  ],
+  "BASIS_access": false,
+  "heldout_access": false,
+  "generation": "MATH_FP32_FROZEN_FP16_PREFILL_GREEDY_1024",
+  "mechanical": {
+    "prefix_logits_rtol": 1e-05,
+    "prefix_logits_atol": 0.0005,
+    "terminal_all_native_target_prefixes": true
+  },
+  "final_endpoint_only": true,
+  "automatic_protection_training": false,
+  "automatic_step_extension": false,
+  "epoch": 1791537140.979664,
+  "selfcheck": {
+    "status": "PASS",
+    "token_diagnostics": true,
+    "Adam_write_unchanged": true,
+    "RAW_original_selfcheck": true,
+    "six_disjoint_partitions": true
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "amendment": "H8_QWEN_C32_20261004_V1",
+  "authorized_by": "User: 后续评分换成 qwen 32 并发",
+  "frozen_epoch": 1791119398.6138592,
+  "prior_Astra_attempts": 0,
+  "model": "Qwen/Qwen3-32B-AWQ",
+  "snapshot": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+  "reasoning_effort": "disabled",
+  "protocol": "MEDTRACE_STAGE17_SOURCE_AGREEMENT_V1_QWEN_SINGLE_RECORD_C32",
+  "rubric": "Unchanged original Stage17 PROMPT and four blind visible fields",
+  "concurrency": 32,
+  "records_per_context": 1,
+  "batch_size": 32,
+  "temperature": 0,
+  "seed": 0,
+  "max_tokens": 256,
+  "quantization": "awq_marlin",
+  "dtype": "half",
+  "enable_thinking": false,
+  "enable_prefix_caching": false,
+  "enforce_eager": true,
+  "gpu_memory_utilization": 0.75,
+  "max_num_batched_tokens": 4096,
+  "context_candidates": [
+    2048,
+    4096,
+    8192
+  ],
+  "truncate": false,
+  "packages": {
+    "torch": "2.8.0",
+    "transformers": "4.55.2",
+    "vllm": "0.10.2"
+  },
+  "guided_decoding": "xgrammar exact two JSON Boolean choices per independent record",
+  "same_epoch_all_four_arms": true,
+  "old_scores_reused": false,
+  "old_missing": "Historical Astra/SOL locks retained; Qwen full Judge model/protocol identity is different. No retry of an Astra object as Astra. New Qwen object once only.",
+  "attempts_per_payload": 1,
+  "semantic_retries": 0,
+  "consecutive_transport_failure_limit": 3,
+  "local_compute_failure": "mark attempted unresolved payloads permanently missing, preserve successful validated items, stop immediately; no model fallback",
+  "GPU_allowlist": [
+    4,
+    5
+  ],
+  "start": "after GENERATION_COMPLETE and all prior GPU leases ended; wait for >=60000MiB free on one allowed GPU",
+  "budgets": "Original 24 cumulative GPUh including new local Judge,12000 payload attempts,48h first-clock,4GiB generated checkpoints,8GiB disk reserve unchanged",
+  "external_monitor": false,
+  "benchmark": "Existing 200-record Qwen concurrency32 throughput test informs timing only; no benchmark scores reused",
+  "limitation": "Judge model and batch context differ from original Astra. Matched four-arm comparison remains internal to new Qwen epoch; historical Astra values remain separate. Format validation is not clinical validation."
+}

@@ -1,0 +1,588 @@
+{
+  "status": "COMPLETE",
+  "decision": "NO_LOCAL_SUPPORT",
+  "protection": {
+    "RAW": 1.8859714052956363e-06,
+    "BOUNDED": 1.923778037761308e-06,
+    "MATCHED_RAW": 1.8859714052956363e-06,
+    "expert_CI": [
+      -1.2369827027426522e-07,
+      2.0775611249888976e-07
+    ],
+    "source_CI": [
+      -6.488315427919935e-08,
+      1.403879187851779e-07
+    ]
+  },
+  "edit_progress": {
+    "RAW": 0.0061634977049044495,
+    "BOUNDED": 0.00585090233810158,
+    "MATCHED_RAW": 0.0061634977049044495
+  },
+  "primary_queries": 63,
+  "primary_sources": 29,
+  "response_lost_tokens": {
+    "RAW": 6,
+    "BOUNDED": 2,
+    "MATCHED_RAW": 6
+  },
+  "edit_lost_tokens": 0,
+  "source_fit_diagnostic": {
+    "RAW": {
+      "KL": 1.8959390195395891e-06,
+      "lost_correct_tokens": 0
+    },
+    "BOUNDED": {
+      "KL": 1.8513028048746398e-06,
+      "lost_correct_tokens": 0
+    },
+    "MATCHED_RAW": {
+      "KL": 1.8959390195395891e-06,
+      "lost_correct_tokens": 0
+    }
+  },
+  "source_fit_observations": 488,
+  "all96_secondary": {
+    "RAW": {
+      "KL": 2.0208056493893474e-06,
+      "lost_correct_tokens": 11
+    },
+    "BOUNDED": {
+      "KL": 1.961622127022113e-06,
+      "lost_correct_tokens": 6
+    },
+    "MATCHED_RAW": {
+      "KL": 2.0208056493893474e-06,
+      "lost_correct_tokens": 11
+    }
+  },
+  "per_expert": [
+    {
+      "expert_order": 1,
+      "edit_progress": {
+        "RAW": 0.0066577423091527385,
+        "BOUNDED": 0.00657699179188802,
+        "MATCHED_RAW": 0.0066577423091527385
+      },
+      "actual_edit_retention": 0.9878711861296124,
+      "heldout_KL": {
+        "RAW": 2.044035552052112e-06,
+        "BOUNDED": 1.71160430152615e-06,
+        "MATCHED_RAW": 2.044035552052112e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8997524812888604,
+        "required": 0.8997524812888604,
+        "norm_multiplier": 0.024902425026697168,
+        "KKT_residual": 1.7187338861879269e-16,
+        "metric_condition": 516.5220645684851,
+        "rank": 512,
+        "objective": 3.279183921285109e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.006200556306851832,
+        "actual_linear_edit_progress": 0.005580500651139735,
+        "RAW_map_norm": 0.022627124971270965,
+        "BOUNDED_map_norm": 0.022627124863880552,
+        "objective_RAW": 1.6106241176490633e-07,
+        "objective_BOUNDED": 3.279183895397933e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00018108517044192028,
+        "raw_predicted_norm": 0.0004013258174661908,
+        "roundoff_parameter_norm": 5.354403988833867e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627124863880552,
+        "actual": 0.022627124971270965,
+        "relative_error": 4.746091833622699e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    },
+    {
+      "expert_order": 2,
+      "edit_progress": {
+        "RAW": 0.006818269417694531,
+        "BOUNDED": 0.005959376689714773,
+        "MATCHED_RAW": 0.006818269417694531
+      },
+      "actual_edit_retention": 0.874030685007725,
+      "heldout_KL": {
+        "RAW": 1.972390623640553e-06,
+        "BOUNDED": 2.0037373442592924e-06,
+        "MATCHED_RAW": 1.972390623640553e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8995465483901932,
+        "required": 0.8995465483901932,
+        "norm_multiplier": 0.021949638441434802,
+        "KKT_residual": 1.8072043725246033e-16,
+        "metric_condition": 522.9264983963934,
+        "rank": 512,
+        "objective": 3.010303698156894e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.0066069250789747595,
+        "actual_linear_edit_progress": 0.005946232562977902,
+        "RAW_map_norm": 0.022627303123630964,
+        "BOUNDED_map_norm": 0.02262730310339514,
+        "objective_RAW": 1.1711882209771231e-07,
+        "objective_BOUNDED": 3.0103036845633463e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00017350226755184919,
+        "raw_predicted_norm": 0.0003422262732428829,
+        "roundoff_parameter_norm": 6.083884485814922e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.02262730310339514,
+        "actual": 0.022627303123630964,
+        "relative_error": 8.943099997870426e-10,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    },
+    {
+      "expert_order": 3,
+      "edit_progress": {
+        "RAW": 0.004646142141224427,
+        "BOUNDED": 0.00441838248536413,
+        "MATCHED_RAW": 0.004646142141224427
+      },
+      "actual_edit_retention": 0.950978758518939,
+      "heldout_KL": {
+        "RAW": 2.0285710546412973e-06,
+        "BOUNDED": 1.8442875065028776e-06,
+        "MATCHED_RAW": 2.0285710546412973e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8987430090592013,
+        "required": 0.8987430090592013,
+        "norm_multiplier": 0.028118027264669387,
+        "KKT_residual": 2.3943312824234356e-16,
+        "metric_condition": 385.7118639228834,
+        "rank": 512,
+        "objective": 2.9392997606059803e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.003949921715399587,
+        "actual_linear_edit_progress": 0.0035549295416846703,
+        "RAW_map_norm": 0.022627294166122996,
+        "BOUNDED_map_norm": 0.022627294146332307,
+        "objective_RAW": 9.913196572560733e-08,
+        "objective_BOUNDED": 2.939299759500127e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00017144386135117603,
+        "raw_predicted_norm": 0.00031485229191734865,
+        "roundoff_parameter_norm": 5.945862620031095e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627294146332307,
+        "actual": 0.022627294166122996,
+        "relative_error": 8.746379391282171e-10,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    },
+    {
+      "expert_order": 4,
+      "edit_progress": {
+        "RAW": 0.008186016509716046,
+        "BOUNDED": 0.007860811132430008,
+        "MATCHED_RAW": 0.008186016509716046
+      },
+      "actual_edit_retention": 0.9602730611525094,
+      "heldout_KL": {
+        "RAW": 1.8039633302677543e-06,
+        "BOUNDED": 1.9219781012325017e-06,
+        "MATCHED_RAW": 1.8039633302677543e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8993079514705726,
+        "required": 0.8993079514705726,
+        "norm_multiplier": 0.021060288755631432,
+        "KKT_residual": 1.6261133659059755e-16,
+        "metric_condition": 515.2468454442877,
+        "rank": 512,
+        "objective": 2.857841871351646e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.008222567410522134,
+        "actual_linear_edit_progress": 0.0074003106660856886,
+        "RAW_map_norm": 0.022627324196325595,
+        "BOUNDED_map_norm": 0.022627324183656695,
+        "objective_RAW": 1.3879392634537264e-07,
+        "objective_BOUNDED": 2.857841869899291e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00016905152675735565,
+        "raw_predicted_norm": 0.0003725505688431742,
+        "roundoff_parameter_norm": 5.801523049109807e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627324183656695,
+        "actual": 0.022627324196325595,
+        "relative_error": 5.598938941229366e-10,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    },
+    {
+      "expert_order": 5,
+      "edit_progress": {
+        "RAW": 0.002680767593596423,
+        "BOUNDED": 0.0029450113563483636,
+        "MATCHED_RAW": 0.002680767593596423
+      },
+      "actual_edit_retention": 1.0985701869058482,
+      "heldout_KL": {
+        "RAW": 1.6855827184977934e-06,
+        "BOUNDED": 1.7844474178867077e-06,
+        "MATCHED_RAW": 1.6855827184977934e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8987225702433408,
+        "required": 0.898722570243341,
+        "norm_multiplier": 0.022410586784991332,
+        "KKT_residual": 1.7015762636074921e-16,
+        "metric_condition": 532.9842861716214,
+        "rank": 512,
+        "objective": 3.150898451741542e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.0032696923227164337,
+        "actual_linear_edit_progress": 0.0029427230930567164,
+        "RAW_map_norm": 0.022623622348477812,
+        "BOUNDED_map_norm": 0.022623622347652916,
+        "objective_RAW": 1.1627059480278171e-07,
+        "objective_BOUNDED": 3.150898467039793e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00017750770312974573,
+        "raw_predicted_norm": 0.0003409847427712591,
+        "roundoff_parameter_norm": 5.88096215333458e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022623622347652916,
+        "actual": 0.022623622348477812,
+        "relative_error": 3.6461698954326383e-11,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    },
+    {
+      "expert_order": 6,
+      "edit_progress": {
+        "RAW": 0.004562783946445939,
+        "BOUNDED": 0.004408903416046501,
+        "MATCHED_RAW": 0.004562783946445939
+      },
+      "actual_edit_retention": 0.9662748593390447,
+      "heldout_KL": {
+        "RAW": 1.8885613430750106e-06,
+        "BOUNDED": 2.312624520345236e-06,
+        "MATCHED_RAW": 1.8885613430750106e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8996543492571903,
+        "required": 0.8996543492571903,
+        "norm_multiplier": 0.02862542183155802,
+        "KKT_residual": 1.8955221217339245e-16,
+        "metric_condition": 468.8402601647097,
+        "rank": 512,
+        "objective": 3.466514910106561e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.0047488263826297745,
+        "actual_linear_edit_progress": 0.004273943749871611,
+        "RAW_map_norm": 0.022627295849425556,
+        "BOUNDED_map_norm": 0.02262729588131437,
+        "objective_RAW": 1.4306861860336006e-07,
+        "objective_BOUNDED": 3.466514917360861e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00018618579208309267,
+        "raw_predicted_norm": 0.0003782441256693356,
+        "roundoff_parameter_norm": 5.584013114196406e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.02262729588131437,
+        "actual": 0.022627295849425556,
+        "relative_error": 1.409307354839464e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    },
+    {
+      "expert_order": 7,
+      "edit_progress": {
+        "RAW": 0.010692538541306239,
+        "BOUNDED": 0.009768825294813432,
+        "MATCHED_RAW": 0.010692538541306239
+      },
+      "actual_edit_retention": 0.9136114176325464,
+      "heldout_KL": {
+        "RAW": 1.914225519442406e-06,
+        "BOUNDED": 1.7294732621071928e-06,
+        "MATCHED_RAW": 1.914225519442406e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8997910782201795,
+        "required": 0.8997910782201796,
+        "norm_multiplier": 0.02247020666307245,
+        "KKT_residual": 1.6755438385964514e-16,
+        "metric_condition": 479.16351797754317,
+        "rank": 512,
+        "objective": 3.507867059737897e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.011073448494188658,
+        "actual_linear_edit_progress": 0.009966103608613937,
+        "RAW_map_norm": 0.022627360894553614,
+        "BOUNDED_map_norm": 0.02262736082341629,
+        "objective_RAW": 1.3049794072938807e-07,
+        "objective_BOUNDED": 3.507867028703091e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00018729300650860116,
+        "raw_predicted_norm": 0.0003612449871339227,
+        "roundoff_parameter_norm": 5.745260706509192e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.02262736082341629,
+        "actual": 0.022627360894553614,
+        "relative_error": 3.143863120065168e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    },
+    {
+      "expert_order": 8,
+      "edit_progress": {
+        "RAW": 0.00506372118009925,
+        "BOUNDED": 0.004868916538207414,
+        "MATCHED_RAW": 0.00506372118009925
+      },
+      "actual_edit_retention": 0.9615293506567006,
+      "heldout_KL": {
+        "RAW": 1.7504411007481628e-06,
+        "BOUNDED": 2.0820718482305076e-06,
+        "MATCHED_RAW": 1.7504411007481628e-06
+      },
+      "edit_lost_tokens": {
+        "RAW": 0,
+        "BOUNDED": 0,
+        "MATCHED_RAW": 0
+      },
+      "geometry": {
+        "norm": 1.0,
+        "gain": 0.8998456698815296,
+        "required": 0.8998456698815297,
+        "norm_multiplier": 0.031581776180521194,
+        "KKT_residual": 2.2921677516766375e-16,
+        "metric_condition": 386.90192148098333,
+        "rank": 512,
+        "objective": 2.7385591391229632e-08,
+        "algorithm": "BOUNDED_FULL_VOCABULARY_FISHER_SKETCH",
+        "raw_linear_edit_progress": 0.005057613015228905,
+        "actual_linear_edit_progress": 0.004551851702483036,
+        "RAW_map_norm": 0.02262716496308032,
+        "BOUNDED_map_norm": 0.022627164918436554,
+        "objective_RAW": 1.1690899371209957e-07,
+        "objective_BOUNDED": 2.738559120330891e-08,
+        "source_questions": 61,
+        "source_tokens": 1514,
+        "proxy_is_full_KL": false,
+        "proxy_is_KL_curvature_estimate": true,
+        "probes_per_question": 32,
+        "actual_predicted_norm": 0.00016548592448697533,
+        "raw_predicted_norm": 0.0003419195719933265,
+        "roundoff_parameter_norm": 6.149998276834846e-10
+      },
+      "matching": {
+        "scale": 1.0,
+        "target": 0.022627164918436554,
+        "actual": 0.02262716496308032,
+        "relative_error": 1.973016263445423e-09,
+        "evaluations": 1
+      },
+      "basis_audit": {
+        "rows": 1952,
+        "questions": 61,
+        "tokens": 1514,
+        "probes_per_question": 32,
+        "probe_seed_rule": "20261009+original_BASIS_question_index",
+        "probe_resampling": false,
+        "maximum_centering_error": 8.866190910339355e-07,
+        "mean_gradient_checks": 0,
+        "full_vocabulary": true,
+        "metric": "FINITE_FISHER_SKETCH_NOT_EXACT_KL",
+        "zero_rows": 0
+      }
+    }
+  ],
+  "resource": {
+    "new_GPU_process_hours": 0.28389202806684705,
+    "cumulative_GPU_process_hours": 41.37076667004161,
+    "cumulative_Judge": 12406,
+    "forward_calls": 6544,
+    "backward_calls": 15672,
+    "temporary_updates": 8,
+    "new_generations": 0,
+    "new_Judge": 0,
+    "new_checkpoints": 0
+  },
+  "proxy_is_full_KL": false,
+  "independent_confirmation": false,
+  "clinical_protection": false,
+  "full_training_success": false
+}
