@@ -10,7 +10,7 @@ INNER_MARGIN = 1e-5
 
 
 def solve(matrix, offset, center, step_offset, orthogonal, radius,
-          source, required, trust=None):
+          source, required, trust=None, fisher_objective=False):
     """Nearest proposal in whitened tangent-operator coordinates."""
     matrix, offset, center, step_offset, source = [np.asarray(x, dtype=np.float64)
         for x in (matrix, offset, center, step_offset, source)]
@@ -28,17 +28,21 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
     ce, se, so = [vectors.T@x for x in (center, step_offset, source)]
     trust2 = trust**2 if trust is not None else 1e30
 
-    def evaluate(x, regularizer=1.):
+    regularizer = 1e-6 if fisher_objective else 1.
+    fisher_weight = .5 if fisher_objective else 0.
+
+    def evaluate(x, certificate=False):
         lam, mu, nu, eta = x
-        rhs = regularizer*ce-2*lam*af-2*mu*se+nu*so
-        diagonal = regularizer+2*lam*values+2*mu+2*eta
-        if regularizer == 0 and diagonal.min() <= 1e-10*max(1., diagonal.max()):
+        tie, weight = (0., 0.) if certificate else (regularizer, fisher_weight)
+        rhs = tie*ce-2*(weight+lam)*af-2*mu*se+nu*so
+        diagonal = tie+2*(weight+lam)*values+2*mu+2*eta
+        if certificate and diagonal.min() <= 1e-10*max(1., diagonal.max()):
             return None
         z = vectors@(rhs/diagonal)
         residuals = np.array([np.linalg.norm(matrix@z+offset)**2-1.,
             np.linalg.norm(z+step_offset)**2-ball, required-source@z,
             np.linalg.norm(z)**2-trust2])
-        objective = .5*regularizer*np.linalg.norm(z-center)**2+x@residuals
+        objective = .5*tie*np.linalg.norm(z-center)**2+weight*np.linalg.norm(matrix@z+offset)**2+x@residuals
         return objective, residuals, z, rhs, diagonal
 
     def dual(x):
@@ -55,13 +59,14 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
         solver_message=str(result.message), residuals=residuals.tolist(),
         stationarity=stationarity, complementarity=complementarity,
         multipliers=result.x.tolist(), dimension=len(center), certificate_scope='CURRENT_TANGENT_SUBSPACE')
+    audit['objective'] = 'FISHER_WITH_FIXED_1e-6_DISTANCE_TIE' if fisher_objective else 'NEAREST_PROPOSAL'
     if (residuals.max() <= 1e-7 and stationarity <= 1e-7*max(1., np.linalg.norm(rhs))
             and complementarity <= 1e-6*max(1., abs(objective))):
         audit['status'] = 'LOCAL_KKT_PASS'
         return z, audit
     if result.x.sum() > 0:
         weights = result.x/result.x.sum()
-        bound = evaluate(weights, regularizer=0.)
+        bound = evaluate(weights, certificate=True)
         constants = np.array([offset@offset-1., step_offset@step_offset-ball, required, -trust2])
         if bound is not None and bound[0] > 1e-6*max(1., np.max(np.abs(weights*constants))):
             audit.update(status='CERTIFIED_LOCAL_INFEASIBLE',
