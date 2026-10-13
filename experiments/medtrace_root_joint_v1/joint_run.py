@@ -65,7 +65,7 @@ def measure(runtime,hook,expert,state,sources,protection,refs):
 
 
 def diagnostics(runtime,hook,expert,task,step,before,pure,scalar_before,scalar_after,
-                sources,protection,refs,cache,budget,losses,old_decision,before_rng,numpy_before):
+                sources,protection,refs,cache,budget,losses,old_decision,before_rng,numpy_before,consumer=None):
     numpy_rng=np.random.get_state()
     payload=dict(before=r.s.previous.weights(before),pure=r.s.previous.weights(pure),
                  scalar_before=scalar_before,scalar_after=scalar_after,rng=before_rng,
@@ -127,6 +127,8 @@ def diagnostics(runtime,hook,expert,task,step,before,pure,scalar_before,scalar_a
                            budget_pass=budget_ok,step_upper_pass=upper_ok,original_rule_pass=passed,
                            matched_step_pass=passed and norm>=.9*target-1e-10,
                            metrics=measure(runtime,hook,expert,updated,sources,protection,refs))
+                if consumer is not None:
+                    consumer(rec, updated, candidate, transform, inverse, center, orthogonal)
             records.append(rec)
     np.random.set_state(numpy_rng)
     expert.load_state_dict(before);expert.zero_grad(set_to_none=True)
@@ -266,7 +268,7 @@ def report():
     print(json.dumps({k:out[k] for k in ['decision','original_rule_witness_states','matched_step_witness_states','resources']}),flush=True)
 
 
-def stage(action,parts):
+def stage(action,parts,file='joint_run.py'):
     import pipeline
     waiting=list(parts);jobs=[];busy=set()
     expected=c.read(RUN/'PLAN_CONFIG.json')['hardware']['UUIDs']
@@ -283,7 +285,7 @@ def stage(action,parts):
             if int(free)<45*1024:continue
             part=waiting.pop(0)
             assert not (RUN/'private'/f'START_CHAIN_{action}_{part}.json').exists(), 'No duplicate dispatch'
-            jobs.append((pipeline.launch('joint_run.py',action,gpu,part),gpu));busy.add(gpu)
+            jobs.append((pipeline.launch(file,action,gpu,part),gpu));busy.add(gpu)
         if waiting:c.write(RUN/'public/RESOURCE_WAIT.json',dict(action=action,waiting=len(waiting),required_free_MiB=45*1024))
         if waiting or any(job.poll() is None for job,gpu in jobs):time.sleep(10)
     assert all(job.returncode==0 for job,gpu in jobs)

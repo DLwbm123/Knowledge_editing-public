@@ -27,8 +27,8 @@ def count(*_):
 r.count = count
 
 
-def memory_record(gpu, stage, complete=False):
-    path=RUN/'private'/f"MEMORY_guard_probe_{os.environ['PARTITION']}.json"
+def memory_record(gpu, stage, complete=False, prefix='guard_probe'):
+    path=RUN/'private'/f"MEMORY_{prefix}_{os.environ['PARTITION']}.json"
     previous=c.read(path) if path.exists() else {}
     reserved=torch.cuda.memory_reserved()
     try:

@@ -15,10 +15,13 @@ q.ROOT = RUN / 'private/judge_m13_astra_medium'
 q.BATCH_LEDGER = 'Astra_m13_batches'
 MAX_JUDGE = 1158
 CONSUMERS = 1158
+EPOCH = "MEDTRACE_M13_20261012_V1"
+PARENTS = ("PROTECTION_PARENT", "DAMAGE_PARENT", "GENERATION_PARENT", "FP32_BASELINE_PARENT",
+           "OPTIMIZER160_PARENT", "SCOPE_PARENT", "ENDPOINT_PARENT", "MODULE_PARENT")
 
 
 def ingest(db):
-    lock = dict(epoch='MEDTRACE_M13_20261012_V1', model='gpt-6-astra', reasoning_effort='medium',
+    lock = dict(epoch=EPOCH, model='gpt-6-astra', reasoning_effort='medium',
         protocol=q.PROTOCOL, prompt=q.PROMPT, batch_size=50, workers=4, attempts_per_payload=1,
         scientific_lock=q.digest(q.read(RUN / 'private/SCOPE_LOCK.json')),
         maximum_new_Judge=MAX_JUDGE, inheritance='EXACT_FULL_PAYLOAD_IDENTITY_ONLY', selfcheck=selfcheck())
@@ -37,8 +40,7 @@ def ingest(db):
     assert recovery['epoch'] == 'MEDTRACE_CONSTRAINED_RECOVERY1_20261009_V1' and recovery['payloads'] == 40
     allowed_recovery = set(recovery['keys'])
     known, sources = {}, []
-    for key in ('PROTECTION_PARENT', 'DAMAGE_PARENT', 'GENERATION_PARENT', 'FP32_BASELINE_PARENT',
-                'OPTIMIZER160_PARENT', 'SCOPE_PARENT', 'ENDPOINT_PARENT', 'MODULE_PARENT'):
+    for key in PARENTS:
         for path in sorted((Path(env[key]) / 'private').glob('judge*/queue.sqlite')):
             with sqlite3.connect('file:' + str(path) + '?mode=ro', uri=True) as previous:
                 count = 0
@@ -96,7 +98,7 @@ def request(db, operation):
     return a.request(db, operation)
 
 
-if __name__ == '__main__':
+def main():
     operation = json.loads(os.environ.get('QUEUE_REQUEST', '{"action":"ingest"}'))
     q.ROOT.mkdir(parents=True, exist_ok=True)
     with (q.ROOT / 'QUEUE.lock').open('a') as lock:
@@ -110,3 +112,7 @@ if __name__ == '__main__':
         if generated and not db.execute("SELECT 1 FROM payload WHERE status IN ('PENDING','RESERVED')").fetchone():
             q.write(q.ROOT / 'ALL_WORKERS_COMPLETE.json', dict(status='SCORING_COMPLETE', epoch=time.time()))
     print(json.dumps(answer, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()
