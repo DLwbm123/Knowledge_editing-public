@@ -49,6 +49,12 @@ def main():
         fd,entry=tempfile.mkstemp(prefix='e.',suffix='.py',dir=os.environ['TMPDIR']);os.close(fd)
         Path(entry).write_text("import os,sys,runpy\nsys.path.insert(0,os.environ['RUN_ROOT']+'/private/tools')\nrunpy.run_path(os.environ['TASK_FILE'],run_name='__main__')\n")
         env=dict(os.environ,RUN_ROOT=str(fixture),CUDA_VISIBLE_DEVICES='',TASK_FILE=str(run/'private/tools/paired_queue.py'))
+        standalone=dict(env,QUEUE_REQUEST='{"action":"reserved","worker":0}')
+        standalone.pop('PYTHONPATH',None)
+        result=subprocess.run([os.environ['TRAIN_PYTHON'],'-c',
+            "import os,runpy;runpy.run_path(os.environ['TASK_FILE'],run_name='__main__')"],
+            env=standalone,capture_output=True,text=True)
+        assert result.returncode==0 and json.loads(result.stdout)==[],result.stderr[-5000:]
         execute(entry,env)
         import sqlite3
         queue=fixture/'private/judge_multicore_astra_medium'

@@ -1,6 +1,7 @@
 """Two new arms, one isolated one-attempt queue, historical scores read-only."""
 import os
 import sys
+sys.path.insert(0,os.environ['RUN_ROOT']+'/private/tools')
 sys.path.insert(0,os.environ['RUN_ROOT']+'/private/source')
 import m13_queue as base
 base.q.ROOT=base.RUN/'private/judge_multicore_astra_medium'
