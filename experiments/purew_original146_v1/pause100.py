@@ -17,14 +17,19 @@ def planned_controller_failure(path,run):
             and json.loads(Path(path).read_text()).get('traceback','').endswith('AssertionError: gpu failed; inspect saved state, never blindly restart\n'))
 
 
-def alive(row):
-    p=Path('/proc')/str(row['pid'])
+def alive(row,proc_root=Path('/proc')):
+    p=proc_root/str(row['pid'])
     if not p.exists():return False
     try:fields=(p/'stat').read_text().split()
     except FileNotFoundError:return False
     if fields[2]=='Z':return False
     assert fields[21]==str(row['start_ticks']), 'PID reused; do not signal'
-    argv=(p/'cmdline').read_bytes().replace(b'\0',b' ').decode()
+    try:argv=(p/'cmdline').read_bytes().replace(b'\0',b' ').decode()
+    except FileNotFoundError:return False
+    if not argv:
+        try:latest=(p/'stat').read_text().split()
+        except FileNotFoundError:return False
+        if latest[2]=='Z':return False
     assert row['entry'] in argv and not any(x in argv for x in ('wangbomin','Knowledge_editing','purew'))
     return True
 
@@ -70,6 +75,13 @@ def main():
     while alive(auth['gpu']) or alive(auth['controller']):
         assert time.time()<deadline_exit, 'Cooperative stop not confirmed; never escalate to SIGKILL'
         time.sleep(.2)
+    finalize(run,root,auth,panel)
+
+
+def finalize(run,root,auth,panel):
+    """Complete a reviewed, already-signalled pause without sending another signal."""
+    assert (root/'SIGNAL_ATTEMPT.json').exists()
+    assert not alive(auth['gpu']) and not alive(auth['controller'])
     import torch
     active=run/'private/active/bank_R0.pt'
     state=torch.load(active,map_location='cpu',weights_only=True)
@@ -94,7 +106,8 @@ def main():
                  extra_committed_after_prefix100=state['committed']-16000,active_checkpoint_retained=True,
                  native_master_match=True,RNG_and_event_preserved=True,GPU_lease_closed=True,
                  GPU_seconds_used=ledger['gpu_seconds_used'],full_run_complete=False,OL_dependency_satisfied=False,
-                 scoring_may_continue=True,automatic_resume=False,epoch=time.time())
+                 scoring_may_continue=True,automatic_resume=False,
+                 signal_epoch=json.loads((root/'SIGNAL_ATTEMPT.json').read_text())['epoch'],epoch=time.time())
     write(root/'STATUS.json',receipt);write(run/'private/PAUSED_USER_REQUEST.json',receipt)
     write(run/'public/PAUSE_PREFIX100_RECEIPT.json',receipt)
     write(run/'public/PROGRESS.json',receipt)

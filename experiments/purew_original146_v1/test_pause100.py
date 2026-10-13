@@ -46,4 +46,14 @@ def check(owner,step):
 
 
 check(100,160);check(101,1)
+fields=['99','(python)','R']+['0']*18+['123']
+class ExitRace:
+    calls=0
+    def __truediv__(self,name):return self
+    def exists(self):return True
+    def read_text(self):
+        self.calls+=1
+        return ' '.join(fields if self.calls==1 else fields[:2]+['Z']+fields[3:])
+    def read_bytes(self):return b''
+assert not p.alive(dict(pid=99,start_ticks='123',entry='entry.py'),proc_root=ExitRace())
 print('PASS: planned failure isolation, durable target, exact resume clocks, retained state, no repeat signal or full completion')
