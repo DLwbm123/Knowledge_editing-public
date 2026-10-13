@@ -1,4 +1,7 @@
 """Reuse one-attempt full-payload scoring, including frozen M13 results."""
+import os
+import sys
+sys.path.insert(0,os.environ['RUN_ROOT']+'/private/tools')
 import m13_queue as base
 base.q.ROOT=base.RUN/'private/judge_full_astra_medium'
 base.q.BATCH_LEDGER='Astra_full_batches'
