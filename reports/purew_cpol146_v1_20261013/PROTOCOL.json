@@ -1,0 +1,165 @@
+{
+  "epoch": "PUREW_CPOL146_V1_20261013",
+  "status": "DESIGN_FROZEN_DATA_BLOCKED",
+  "frozen_at_utc": "2026-10-13T02:42:39Z",
+  "host": "pro5000",
+  "GPUs": [
+    5
+  ],
+  "GPU_UUID": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+  "reference_run": "/data/bmw/Knowledge_editing/outputs/purew-original146-v1-20261012/run",
+  "arm_order": [
+    "P",
+    "O",
+    "L"
+  ],
+  "arms": {
+    "C": {
+      "reuse": "existing single146 only",
+      "FIT": "original four source wrappers",
+      "optimizer": "SGD",
+      "layer": 21
+    },
+    "P": {
+      "FIT": "four independently qualified semantic question rewrites",
+      "optimizer": "SGD direction with matched C norm",
+      "layer": 21
+    },
+    "O": {
+      "FIT": "original four source wrappers",
+      "optimizer": "Adam direction with matched C norm",
+      "beta1": 0.9,
+      "beta2": 0.999,
+      "eps": 1e-08,
+      "weight_decay": 0,
+      "layer": 21
+    },
+    "L": {
+      "FIT": "original four source wrappers",
+      "optimizer": "SGD direction with matched C norm",
+      "layer": 31
+    }
+  },
+  "layer_module": "mlp.down_proj",
+  "settings": [
+    "single_R0"
+  ],
+  "new_continuous_runs": false,
+  "members": 146,
+  "original_order": true,
+  "original_per_edit_seed": true,
+  "training": {
+    "steps": 160,
+    "loss": ".5 native CE + .5 cyclic FIT CE",
+    "single_resets_Base": true,
+    "precision": "native FP16 with temporary FP32 master and gradients",
+    "loss_scale": 128,
+    "history": false,
+    "KL": false,
+    "RLS": false,
+    "projection": false,
+    "optimizer_state_reset_each_edit": true
+  },
+  "pure_W": {
+    "added_inference_parameters": 0,
+    "editor_hooks": false,
+    "inference_branch": false,
+    "temporary_optimizer_state_not_deployed": true
+  },
+  "norm_budget": {
+    "binding": "029cac9972673b052562ba01cbc9900d9d51678099574091791fff0ddba57892",
+    "shape": [
+      146,
+      160
+    ],
+    "target": "C saved proposal_norm per owner and step; positive; maximum .05",
+    "formal_updates": 70080,
+    "proposal_relative_tolerance": 1e-05,
+    "proposal_absolute_tolerance": 1e-08,
+    "zero_direction": "hard stop; no substituted update",
+    "native_quantization": "record actual FP16 displacement, changed elements, native/master discrepancy; never claim matched native movement from matched proposal",
+    "attribution_gate": "For each edit, native FP16 path-length ratio relative to C must be in [0.9,1.1]; outside is retained as norm-confounded, not retuned or removed"
+  },
+  "qualification": {
+    "plan": "QUALIFICATION_PLAN.json",
+    "source_binding": "c76886efce873b9860135dccd4f82877bf7670c3394badcfbe1ea4ea847d39b9",
+    "require_all_584": true,
+    "labels": "training native answer only",
+    "evaluation_use": "deterministic collision screening and final evaluation only; never author/reviewer/trainer",
+    "no_evaluation_guided_repair": true,
+    "status": "BLOCKED_DATA_QUALIFICATION",
+    "candidate_binding": "876ee17b250ce8bebd5bdb34c771b8803b3297c394e65a18b00f66a28591da7b"
+  },
+  "scoring": {
+    "model": "gpt-6-astra",
+    "effort": "medium",
+    "protocol": "original Stage17 source-agreement",
+    "workers": 4,
+    "attempts_per_new_payload": 1,
+    "no_retry": true,
+    "old_11_missing": "permanent; exact shared missing bounds retained",
+    "reuse": "complete input/runtime/generation/raw text/raw tokens/prompt/model identity binding",
+    "stop_after_consecutive_transport_failures": 3
+  },
+  "evaluation": {
+    "primary": "single146 edit-macro T2G Fix",
+    "denominators": {
+      "T0": 146,
+      "T1G": 578,
+      "T2G": 557,
+      "T1L": 2,
+      "T2L": 54
+    },
+    "new_consumers_per_arm": 2372,
+    "contrasts": [
+      "P-C",
+      "O-C",
+      "L-C"
+    ],
+    "bootstrap": 10000,
+    "bootstrap_seed": 20260912,
+    "edit_and_source_cluster": true,
+    "shared_missing_exact_bounds": true,
+    "not_attempted_distinct_from_missing": true
+  },
+  "success": {
+    "full_scoring_required": true,
+    "T2G": "paired complete-denominator lower difference > 0 and no per-edit regression; average cannot compensate failure",
+    "T0": "retain all 146 C-correct sources",
+    "T1G": "retain all 578 C-correct probes",
+    "protection": "zero new wrong among 49 C-correct T2L and 2 C-correct T1L; missing cannot pass; additionally report all 54 Base-correct T2L and total damage <= C five",
+    "zero_total_Base_damage_claim": false,
+    "attribution": "conditional main effects only; no interaction or general clinical conclusion"
+  },
+  "budgets": {
+    "maximum_committed_updates": 70080,
+    "temporary_admission_updates": 3,
+    "maximum_backwards": 140166,
+    "maximum_generations": 7140,
+    "maximum_new_Judge": 7116,
+    "maximum_forward_calls": 8000000,
+    "GPU_process_hours": 54,
+    "wall_hours": 72,
+    "owned_weight_limit_bytes": 2147483648,
+    "minimum_free_bytes": 8589934592
+  },
+  "dependency": {
+    "required": [
+      "old TRAINING_GENERATION_COMPLETE",
+      "old FINAL_CONSUMED",
+      "old EXIT_gpu=0",
+      "old EXIT_reload=0",
+      "old no active GPU lease",
+      "data qualification PASS",
+      "new CPU and real VLM admission PASS",
+      "published frozen source and protocol"
+    ],
+    "current_continuous": "continue unchanged; no termination or restart",
+    "activation_clock": "starts once at first new GPU installation/activation after old GPU completion; qualification preparation and waiting excluded; never reset",
+    "old_scoring_delivery": "continue independently with existing original146 workers and finite tail"
+  },
+  "finite": true,
+  "no_extra_arms_or_seeds": true,
+  "patient_independence": "UNKNOWN",
+  "evidence": "same already observed development benchmark; not independent confirmation"
+}

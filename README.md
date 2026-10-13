@@ -72,3 +72,5 @@ This public snapshot does not include:
 ## Licensing
 
 `VLKEB_LICENSE` applies to the VLKEB-derived portion of the codebase. Files under `third_party/` and `external/` remain subject to their respective upstream terms. No additional project-wide license is asserted by this snapshot.
+
+- [独立C/O/L冻结协议与执行链](reports/purew_col146_v1_20261013/DESIGN_ZH.md)：O/L与P资格解耦，复用C，原146 GPU阶段全部结束后仅GPU5接续。
