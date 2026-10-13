@@ -22,8 +22,8 @@ def main():
         assert time.time()<deadline,'Finite qualification deadline expired'
         time.sleep(30)
     if (S/'SOURCE_QUALIFICATION.json').exists():
-        code='import os,runpy;runpy.run_path(os.environ["WORKSPACE"]+"/experiments/purew_cpol146_v1/collision_revision2.py",run_name="__main__")'
-        subprocess.run([sys.executable,'-c',code],env=dict(os.environ,WORKSPACE=str(W)),check=True)
+        import runpy
+        runpy.run_path(str(W/'experiments/purew_cpol146_v1/collision_revision2.py'),run_name='__main__')
         result=read(S/'QUALIFICATION_FINAL.json')
     else:
         result=dict(status='BLOCKED_INCOMPLETE_QUALIFICATION',failure_record_retained=True,training_launched=False)
