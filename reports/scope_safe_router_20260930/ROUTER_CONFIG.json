@@ -1,0 +1,134 @@
+{
+  "stage": "scope_safe_router_20260930",
+  "parent_public_sha": "f5c629ccb8b7eac2e5792ee250b740ad876ba487",
+  "frozen_weights": "historical H/AH seed20260929 80 continuation steps",
+  "methods": [
+    "R0",
+    "RCAP",
+    "NEG0",
+    "SAFE"
+  ],
+  "bank_order": {
+    "DEV": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "REG": [
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48
+    ]
+  },
+  "prefixes": [
+    4,
+    8,
+    12,
+    24
+  ],
+  "positive": "native plus exactly four frozen S_fit",
+  "negative": {
+    "universe": "frozen audited U_bg",
+    "rule": "existing hard_pool.select; nearest distance, input hash tie-break",
+    "maximum": 16,
+    "source_cap": 2
+  },
+  "tau": 0,
+  "epsilon_rule": "float32 nextafter(min_capture_distance, -inf)",
+  "RCAP_previous_bank": "sequential RCAP accepted radii; trial candidate original radius",
+  "hazard": {
+    "previous_bank": "original R0 historical prefixes",
+    "capture": "new logical selection equals newly inserted expert",
+    "H_count": "number of captured U_bg inputs",
+    "H_source": "unique captured source groups",
+    "H_switch": "previous active expert to newly inserted expert",
+    "ranking": "descending each H separately; equal hazards share rank, insertion order display tie only",
+    "flag": "nonempty capture triggers deterministic RCAP rule; no correctness-based threshold"
+  },
+  "unsafe_radius": "mark UNSAFE_NO_RADIUS_SEPARATION; candidate with such entry is not deployment admissible; do not substitute router",
+  "unsupported_negative": "mark UNSUPPORTED_NEGATIVE_PROTO; candidate is not deployment admissible; do not fabricate or silently fall back",
+  "admission": {
+    "T0_max_new_errors": 0,
+    "T1G_max_new_errors": 0,
+    "T2G_max_new_errors": 1,
+    "T2L_max_new_errors": 1,
+    "Pressure_known_gain": 3,
+    "Pressure_exact_delta_lower": 0,
+    "old35_max_new_errors_each_prefix": 1,
+    "requires_known_route_rescue": true
+  },
+  "complexity": [
+    "RCAP",
+    "NEG0",
+    "SAFE"
+  ],
+  "REG_max_methods": [
+    "R0",
+    "best passing candidate"
+  ],
+  "formal_training_steps": 0,
+  "JUDGE": {
+    "model": "gpt-6.1-sol",
+    "reasoning": "high",
+    "inherit_attempts": 7156,
+    "internal_cap": null,
+    "attempts_per_new_payload": 1,
+    "permanent_missing_retry": false,
+    "consecutive_transport_failure_stop": 3
+  },
+  "CAL_SCOPE": "side-track only; verified provenance required; no tuning this stage",
+  "GPU": [
+    5,
+    6,
+    7
+  ],
+  "storage_soft_GiB": 10,
+  "storage_hard_GiB": 20,
+  "target_wall_hours": [
+    6,
+    12
+  ],
+  "single_RCAP": "independent singleton insertion into empty bank using same frozen U_bg"
+}

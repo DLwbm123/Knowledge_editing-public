@@ -1,0 +1,90 @@
+{
+  "status": "PASS",
+  "epoch": "MEDTRACE_MODULE_TRANSFER_20261011_V1",
+  "arms": [
+    "C",
+    "M1",
+    "M2",
+    "M3",
+    "M12",
+    "M123"
+  ],
+  "owners": 8,
+  "steps": 160,
+  "parameters": 7168,
+  "GPUS": [
+    2,
+    3,
+    4
+  ],
+  "primary": "M123 versus frozen E",
+  "updates": 7680,
+  "NN_backwards": 40352,
+  "operator_backwards": 2560,
+  "maximum_non_generation_forwards": 170000,
+  "maximum_generation_attempts": 5846,
+  "consumers": 6948,
+  "maximum_new_Judge": 5790,
+  "new_GPU_process_hours": 24,
+  "source_loss": ".25 native + .25 cyclic FIT + .5 cyclic GFIT",
+  "M1": "right-canonical projector-pivot frame; two scalar RMS second moments; no first moment",
+  "M2": "seven individual descent halfspaces; actual proposal projection; finite checks 1,.5,.25,.125",
+  "M3": "Base full-vocabulary Fisher of composed operator; 61 questions,32 probes,1952 directions,1514 tokens",
+  "Fisher_seed": 20261009,
+  "Fisher_coefficient_fraction": 0.1,
+  "NLL_tolerance": 1e-06,
+  "scalar_beta2": 0.999,
+  "scalar_eps": 1e-08,
+  "LRS": [
+    0.001,
+    0.0001
+  ],
+  "function_match_rtol": 0.001,
+  "canonical_function_rtol": 0.002,
+  "Fisher_heldout": false,
+  "all_candidates_frozen_before_eval": true,
+  "selection": false,
+  "automatic_extension": false,
+  "independent_confirmation": false,
+  "registered_epoch": 1791727905.2546973,
+  "CPU_admission": {
+    "math": {
+      "status": "PASS",
+      "zero_root": true,
+      "three_nonorthogonal_bonds": true,
+      "composed_operator_preserved": true,
+      "optimizer_scalar_state_invariance": true,
+      "conflicting_and_duplicate_objectives": true,
+      "zero_objective": true,
+      "operator_Fisher_value_and_gradient_match_dense": true
+    },
+    "reporting": {
+      "status": "PASS",
+      "missing_and_each_failed_gate_block_success": true,
+      "M3_increment_and_E_reference_reported": true
+    },
+    "status": "PASS",
+    "native_TT_parameters": 7168,
+    "native_FP32_gauge_checks": [
+      {
+        "state": "BASE",
+        "relative_output_error": 0.0
+      },
+      {
+        "state": "FINAL",
+        "relative_output_error": 1.0450708032294642e-06
+      }
+    ],
+    "seven_gradient_accumulation": true,
+    "finite_accept_and_reject": true,
+    "three_GPU_partition": true,
+    "original_baselines_readable": true,
+    "VLM_forwards": 0,
+    "Judge": 0
+  },
+  "queue_pre_generation_wait_passed": true,
+  "queue_preflight_Judge": 0,
+  "source_freeze_pending": false,
+  "source_commit": "fa9e7b7c05f16f2f85b53cad1308990060e40f39",
+  "PR": "https://github.com/DLwbm123/Knowledge_editing-public/pull/67"
+}

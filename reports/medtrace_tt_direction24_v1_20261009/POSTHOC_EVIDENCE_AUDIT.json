@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "posthoc": true,
+  "no_new_training_generation_or_Judge": true,
+  "cohorts": [
+    {
+      "scope": "affected",
+      "editing_experts": 24,
+      "evaluation_edit_units": 27,
+      "positive_edit_units": 3,
+      "negative_edit_units": 0,
+      "zero_edit_units": 24,
+      "positive_source_clusters": 3,
+      "exact_bootstrap_probability_of_no_positive_unit": 0.04157975192738791,
+      "micro_correct_before": 92,
+      "micro_correct_after": 95,
+      "observations": 96
+    },
+    {
+      "scope": "new16",
+      "editing_experts": 16,
+      "evaluation_edit_units": 18,
+      "positive_edit_units": 2,
+      "negative_edit_units": 0,
+      "zero_edit_units": 16,
+      "positive_source_clusters": 2,
+      "exact_bootstrap_probability_of_no_positive_unit": 0.1200202690378377,
+      "micro_correct_before": 60,
+      "micro_correct_after": 62,
+      "observations": 63
+    },
+    {
+      "scope": "pilot8",
+      "editing_experts": 8,
+      "evaluation_edit_units": 9,
+      "positive_edit_units": 1,
+      "negative_edit_units": 0,
+      "zero_edit_units": 8,
+      "positive_source_clusters": 1,
+      "exact_bootstrap_probability_of_no_positive_unit": 0.34643941611461837,
+      "micro_correct_before": 32,
+      "micro_correct_after": 33,
+      "observations": 33
+    }
+  ],
+  "T2G_unique_query_transitions": {
+    "unchanged": 93,
+    "gain": 3,
+    "gain_old_below_cap": 3,
+    "gain_new_below_cap": 3
+  },
+  "groups": 10240,
+  "zero_gradient_fallback": 0,
+  "all_group_norms_within_bound": true,
+  "median_Adam_negative_gradient_cosine": 0.4849704954460208,
+  "minimum_actual_negative_gradient_cosine": 0.9999999984603472,
+  "native_FIT_targets": 80,
+  "all_native_FIT_argmax_correct": true,
+  "maximum_final_CE": 0.0003896064590662718,
+  "interpretation": "Descriptive audit only. Evaluation edit units differ from edited experts under frozen routing. No revised interval or promotion rule; termination association is not isolated causality."
+}
+

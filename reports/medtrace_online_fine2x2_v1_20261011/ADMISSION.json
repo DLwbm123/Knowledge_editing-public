@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "checks": {
+    "status": "PASS",
+    "no_group_compensation": true,
+    "independent_factor_gates": true,
+    "raw_not_assumed_feasible": true,
+    "wrong_tokens_excluded": true,
+    "actual_restore_factor_isolation": true,
+    "raw_infeasible_skip_preserved": true,
+    "all_source_baseline_paths": true,
+    "hardware": [
+      6,
+      7
+    ]
+  },
+  "protocol": {
+    "stage": "online_fine2x2",
+    "GPUS": [
+      6,
+      7
+    ],
+    "arms": [
+      "C",
+      "D",
+      "N",
+      "T",
+      "NT"
+    ],
+    "trajectories": 40,
+    "steps": 160,
+    "updates": 6400,
+    "maximum_generations": 3586,
+    "maximum_Judge": 3474,
+    "maximum_backwards": 304896,
+    "maximum_non_generation_forwards": 1500000,
+    "maximum_new_GPU_hours": 64,
+    "source_fraction": 0.9,
+    "token_margin_fraction": 0.9,
+    "restoration_iterations": 16,
+    "primary_candidate": "NT",
+    "main_reference": "E",
+    "strong_gate_CI_lower_bounds_strictly_positive": true,
+    "all_candidates_frozen_before_eval": true,
+    "threshold_search": false
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "stage": "medtrace_cp_init_ablation_v1_20261005",
+  "frozen_utc": "2026-10-05T02:30:14.463951+00:00",
+  "authorization": "User: 你做一下关于 cp 初始化的消融实验",
+  "scope": "original H8 independent single-edit initialization ablation; not full146 sequential comparison",
+  "original_cohort_N": 146,
+  "evaluated_edit_N": 8,
+  "H8_orders": [
+    31,
+    35,
+    49,
+    71,
+    87,
+    125,
+    126,
+    146
+  ],
+  "arms": [
+    "CP_NO_H",
+    "CP_H1",
+    "DIRECT_NO_H",
+    "DIRECT_H1"
+  ],
+  "parent_run": "/data/bmw/Knowledge_editing/outputs/medtrace-h8-causal-v1-20261004/run",
+  "historical_structured_run": "/data/bmw/Knowledge_editing/outputs/medtrace-structured-h8-v1-20261004/run",
+  "run_root": "/data/bmw/Knowledge_editing/outputs/medtrace-cp-init-ablation-v1-20261005/run",
+  "initialization": {
+    "CP": "original native CP training (original early stop every20, maximum200) -> original A2 80 -> original CP_W0 320 -> exact rank4 A/B expansion",
+    "DIRECT": "independent seeded Gaussian A rows normalized to unit norm; B exactly0; same native update count N selected solely by CP native training stop, then same A2 80 and task-only W0 320 in free A/B coordinates",
+    "matching": "each route N+80+320 warmup updates, same native/fit sequence, optimizer family/lrs and reset boundaries; after warmup clone for H0/H1, each320 original stage18 updates; four final arms FREE rank4 73728 FP32 params",
+    "native_and_A2_optimizer": "AdamW all expert parameters lr1e-3 default betas .9/.999 eps1e-8 weight_decay0; clip1 and original factor normalization",
+    "W0_optimizer": "Adam input1e-4/output1e-3 betas.9/.999 eps1e-8 wd0 clip1; reset before W0",
+    "continuation_optimizer": "original stage18 FREE optimizer reset at320 continuation; common .5native+.5fit+.01KL_U; H1 +1H CE, H0 noH",
+    "seed": "original canonical per-edit seed,20260912 namespace, same fixed schedules; no additional seeds",
+    "no_CP_in_DIRECT": "A sampled directly with independent CPU Generator using canonical seed; no CP basis copied or CP learned weights used. N is budget-matching training signal only, no eval/Judge selection",
+    "interpretation": "trained CP warm-start recipe vs direct low-rank training under matched optimizer-update/token exposure; optimization coordinates and per-update compute differ; not isolated algebraic factorization or matched wall-time proof"
+  },
+  "continuations": 32,
+  "mechanical_orders": [
+    31,
+    35
+  ],
+  "mechanical_products_reused": true,
+  "metrics": {
+    "primary": "CP_NO_H minus DIRECT_NO_H H8 single T2G macro",
+    "secondary": [
+      "CP_H1 minus DIRECT_H1",
+      "CP_H1 minus CP_NO_H",
+      "DIRECT_H1 minus DIRECT_NO_H"
+    ],
+    "interaction": "(CP_H1-CP_NO_H)-(DIRECT_H1-DIRECT_NO_H)",
+    "panels": [
+      "T0",
+      "T1G",
+      "T2G",
+      "T1L",
+      "T2L",
+      "H_fit diagnostic"
+    ],
+    "mask": "original Base masks full denominators; H_eval NA and patient UNKNOWN; new Base sensitivity separate",
+    "bootstrap_repetitions": 10000,
+    "bootstrap_seed": 20260912,
+    "source_sensitivity": "native image/source + shared H connected components",
+    "missing": "full denominator shared-key exact macro/micro difference bounds; no successful-subset selection",
+    "decision": "report direction and paired95%CI; supportive on this exposed H8 panel only if primary edit and source CI lower>0 and T0/T1G macro point lower>=0; otherwise mixed/inconclusive or not supported. Empty locality remains NA. No automatic promotion/search/full146 claim"
+  },
+  "hardware": {
+    "host": "pro5000",
+    "physical_GPUs": [
+      5,
+      6
+    ],
+    "UUIDs": {
+      "5": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+      "6": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6"
+    }
+  },
+  "caps": {
+    "GPU_hours_cumulative": 8,
+    "wall_hours": 24,
+    "new_Judge_attempts": 2000,
+    "owned_weights_GiB": 1,
+    "reserve_GiB": 8,
+    "reset_allowed": false,
+    "all_failures_count": true
+  },
+  "judge": "same fixed parent Qwen3-32B-AWQ snapshot/prompt/decode/runtime,32 independent contexts; exact-key valid and permanent missing evidence inheritance; oneattempt;3 consecutive transport stop; allother errorsstop",
+  "lifecycle": "owned finals retained until all single/Hfit/save-load/ancestry/storage consumers done; explicit inventory cleanup after report/review; no parent weight dependencies; historical weights already reclaimed and not restored",
+  "automation": "finite controller trains then scores then CPU report; no hourly automation resume; no next science",
+  "publication": "source/config/anonymous aggregate/Chinese report new draft PR via127.0.0.1:7897 after completion; no private QA/images/keys/tokens/weights",
+  "limitations": [
+    "8 H-supported edits previously exposed; not146 full-method evidence",
+    "12 H relationships from7 distinct source QA/images; Hfit not independent H_eval",
+    "Original shared U and patient independence limitations unchanged",
+    "Fixed per-edit seed; no multi-seed robustness claim",
+    "Matching updates/tokens does not equal matching wall-time or optimization geometry"
+  ]
+}

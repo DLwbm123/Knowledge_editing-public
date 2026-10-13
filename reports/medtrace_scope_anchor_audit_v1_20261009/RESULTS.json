@@ -1,0 +1,93 @@
+{
+  "status": "COMPLETE",
+  "decision": "DATA_GATE_NOT_MET",
+  "paired_observations": 883,
+  "source_QA": 7167,
+  "eligible_QA": 268,
+  "eligible_images": 74,
+  "owner_coverage": [
+    {
+      "owner": 1,
+      "status": "NO_SUPPORTED_ANCHOR_IN_AUDITED_POOL",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "Available partial attributes do not establish the native compound disease proposition."
+    },
+    {
+      "owner": 2,
+      "status": "PARTIAL_SOURCE_EVIDENCE_ONLY",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "One same-answer source plus partial-function evidence; native anatomical binding and complete relation/conflict review are not established."
+    },
+    {
+      "owner": 3,
+      "status": "PARTIAL_SOURCE_EVIDENCE_ONLY",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "Two source images support the lesion attribute (open and binary questions), but the edited scope relation and BASIS conflict review are not qualified."
+    },
+    {
+      "owner": 4,
+      "status": "NO_SUPPORTED_ANCHOR_IN_AUDITED_POOL",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "No original annotation for the edited treatment proposition in the eligible pool."
+    },
+    {
+      "owner": 5,
+      "status": "NO_SUPPORTED_ANCHOR_IN_AUDITED_POOL",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "Bilateral finding and unrelated laterality labels do not establish the edited unilateral proposition."
+    },
+    {
+      "owner": 6,
+      "status": "NO_SUPPORTED_ANCHOR_IN_AUDITED_POOL",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "No original annotation for the edited nerve-involvement proposition in the eligible pool."
+    },
+    {
+      "owner": 7,
+      "status": "PARTIAL_SOURCE_EVIDENCE_ONLY",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "One source supports both contrast types and another only one component; complete scope and conflict qualification are not established."
+    },
+    {
+      "owner": 8,
+      "status": "NO_SUPPORTED_ANCHOR_IN_AUDITED_POOL",
+      "qualified_images": 0,
+      "basis_conflict_review": "NOT_RUN_NO_ADMITTED_ANCHORS",
+      "reason": "No original annotation for the edited etiology proposition in the eligible pool."
+    }
+  ],
+  "source_review": "All eligible source QA inspected; same-answer and lexical candidates are not automatic scope labels",
+  "training_started": false,
+  "six_GPUs_authorized": true,
+  "GPUs_used": 0,
+  "natural_route_evaluation": "NOT_STARTED_DATA_GATE_NOT_MET",
+  "basis_conflict_review": "NOT_COMPLETED_NO_ADMITTED_FULL_EIGHT_OWNER_ANCHOR_SET",
+  "resource": {
+    "new_GPU_process_hours": 0,
+    "new_Judge": 0,
+    "new_generations": 0,
+    "new_checkpoints": 0,
+    "cumulative_GPU_process_hours": 54.96259710470835,
+    "cumulative_Judge": 13149
+  },
+  "engineering_failures": [
+    {
+      "error": "Missing legacy original_image_path field",
+      "correction": "Use existing source_group identity; paired output files preserved",
+      "new_model_calls": 0
+    }
+  ],
+  "limitations": [
+    "Audited local source inventory only, not proof no valid anchors exist elsewhere",
+    "No clinical qualification or independent confirmation",
+    "Partial candidates and unknown relationships were not promoted or used for training",
+    "No causal inference from text/token divergence"
+  ]
+}

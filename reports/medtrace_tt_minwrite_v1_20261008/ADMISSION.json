@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "arms": [
+    "NATIVE",
+    "NATIVE_FIT"
+  ],
+  "primary": "NATIVE_FIT",
+  "experts": 8,
+  "tau": 0.001,
+  "iterations": 12,
+  "optimizer_steps": 0,
+  "calibration_forwards_upper": 752,
+  "new_generations": 220,
+  "Judge_upper_bound": 220,
+  "consumers": 8621,
+  "training_roles": [
+    "native",
+    "FIT"
+  ],
+  "replay": false,
+  "calibration_GPUs": [
+    4,
+    5
+  ],
+  "inference_GPUs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "parameters": 7168,
+  "final_TT": 16,
+  "selfcheck": {
+    "status": "PASS",
+    "bracket_endpoints": true,
+    "shifted_target_mask": true,
+    "TT_scaling": true,
+    "zero_residual": true
+  },
+  "Base_lookup_unique_inputs": 110
+}

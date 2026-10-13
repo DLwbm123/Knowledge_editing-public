@@ -1,0 +1,509 @@
+{
+  "status": "COMPLETE_TEXT_ONLY",
+  "model": "Qwen/Qwen3-32B-AWQ",
+  "snapshot": "0499c3ac83fdef8810b907a23894ba91e95eddd8",
+  "new_rubric_identity_separate_from_T0_judge": true,
+  "summaries": [
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "repeated_observations": 16,
+      "token_equal": 2,
+      "semantic_labels": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 12,
+        "SEMANTIC_SAME": 2
+      },
+      "semantic_agreement": 4,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "repeated_observations": 16,
+      "token_equal": 2,
+      "semantic_labels": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 8,
+        "SEMANTIC_SAME": 4,
+        "UNDETERMINED": 2
+      },
+      "semantic_agreement": 6,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "repeated_observations": 16,
+      "token_equal": 0,
+      "semantic_labels": {
+        "SEMANTIC_CHANGED": 16
+      },
+      "semantic_agreement": 0,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "repeated_observations": 16,
+      "token_equal": 2,
+      "semantic_labels": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 10,
+        "SEMANTIC_SAME": 2,
+        "UNDETERMINED": 2
+      },
+      "semantic_agreement": 4,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "repeated_observations": 16,
+      "token_equal": 2,
+      "semantic_labels": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 12,
+        "SEMANTIC_SAME": 2
+      },
+      "semantic_agreement": 4,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "repeated_observations": 16,
+      "token_equal": 2,
+      "semantic_labels": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 8,
+        "SEMANTIC_SAME": 4,
+        "UNDETERMINED": 2
+      },
+      "semantic_agreement": 6,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "repeated_observations": 16,
+      "token_equal": 4,
+      "semantic_labels": {
+        "WORDING_ONLY": 8,
+        "SEMANTIC_CHANGED": 6,
+        "SEMANTIC_SAME": 2
+      },
+      "semantic_agreement": 10,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "repeated_observations": 16,
+      "token_equal": 2,
+      "semantic_labels": {
+        "WORDING_ONLY": 4,
+        "SEMANTIC_CHANGED": 6,
+        "SEMANTIC_SAME": 4,
+        "UNDETERMINED": 2
+      },
+      "semantic_agreement": 8,
+      "medical_accuracy": null,
+      "Base_correct_retention": null,
+      "qualification": "DEV_TEXT_ONLY_NOT_IMAGE_GROUNDED_FACTUAL_REVIEW",
+      "distinct_source_groups": 8
+    }
+  ],
+  "seed_label_totals": [
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 3
+      }
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_CHANGED": 3,
+        "SEMANTIC_SAME": 1
+      }
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 3
+      }
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_CHANGED": 3,
+        "SEMANTIC_SAME": 1
+      }
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 2,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 2,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "CE_U_MULTI",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "SEMANTIC_CHANGED": 4
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_CHANGED": 4
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "SEMANTIC_CHANGED": 4
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_CHANGED": 4
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 2,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 1,
+        "SEMANTIC_CHANGED": 3
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 2,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "FROZEN_W0",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 1,
+        "SEMANTIC_CHANGED": 3
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 3
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_CHANGED": 3,
+        "SEMANTIC_SAME": 1
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 3
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_CHANGED": 3,
+        "SEMANTIC_SAME": 1
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 2,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 1,
+        "SEMANTIC_CHANGED": 2,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "HOLD_U",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_SAME": 1,
+        "SEMANTIC_CHANGED": 1
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 8,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_SAME": 1,
+        "SEMANTIC_CHANGED": 1
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 1,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 0,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CAL",
+      "counts": {
+        "WORDING_ONLY": 2,
+        "SEMANTIC_CHANGED": 1,
+        "UNDETERMINED": 1
+      }
+    },
+    {
+      "arm": "U_ONLY",
+      "mode": "bank_R0",
+      "prefix": 24,
+      "slot": 1,
+      "role": "CHECK",
+      "counts": {
+        "SEMANTIC_SAME": 2,
+        "SEMANTIC_CHANGED": 2
+      }
+    }
+  ],
+  "required_factual_categories": "NA_IMAGE_REFERENCE_SCOPE_QUALIFICATION_PENDING",
+  "no_clinical_accuracy_claim": true,
+  "source_qualification": "Distinct image/source groups; patient-level independence and medical scope not established."
+}

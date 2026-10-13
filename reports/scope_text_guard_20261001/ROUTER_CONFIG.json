@@ -1,0 +1,29 @@
+{
+  "stage": "scope_text_guard_20261001",
+  "parent": "c5a1e0ce9854ac9bdcd0f0330a0864985f1a739e",
+  "asset_origin": "PR11 frozen H/Base/prototypes, read-only",
+  "DEV_methods": [
+    "R0",
+    "NEG0",
+    "TXT"
+  ],
+  "candidates": [
+    "TXT"
+  ],
+  "rule": "Original R0 winner active AND (NEG0 tau0 OR canon(actual_question) matches legal native/S_fit canon questions minus all canon U_bg questions)",
+  "normalization": "NFKC+casefold+whitespace collapse; exact equality, punctuation retained",
+  "guard_construction_formal_inputs_outcomes": 0,
+  "threshold_search": false,
+  "expert_training": 0,
+  "GPU_only": [
+    6,
+    7
+  ],
+  "GPU_hours_limit": 4,
+  "wall_hours_limit": 6,
+  "new_Judge_limit": 500,
+  "REG": "Only clear TXT DEV PASS: R0+TXT; exposed regression",
+  "gates": "PR10/11 exact shared-missing joint gates unchanged",
+  "CAL": "Still UNAVAILABLE; this lexical control creates no verified cross-image data",
+  "independent_CONFIRM": false
+}

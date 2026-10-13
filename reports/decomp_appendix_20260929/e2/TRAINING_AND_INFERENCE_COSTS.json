@@ -1,0 +1,155 @@
+{
+  "stages": [
+    {
+      "structure": "CP",
+      "method": "CP",
+      "stage": "A2",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 494.47561955451965,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "CP",
+      "method": "CP",
+      "stage": "W0",
+      "completed": 24,
+      "steps_sum": 7680,
+      "seconds_sum": 1902.6840226650238,
+      "CE_forward_calls": 15360,
+      "CE_target_tokens": 227840
+    },
+    {
+      "structure": "CP",
+      "method": "CP",
+      "stage": "native",
+      "completed": 24,
+      "steps_sum": 3820,
+      "seconds_sum": 996.0950586795807,
+      "CE_forward_calls": 3820,
+      "CE_target_tokens": 59160
+    },
+    {
+      "structure": "CP",
+      "method": "M1_STRUCT",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 798.2565383911133,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "LR",
+      "method": "LR",
+      "stage": "A2",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 435.606764793396,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "LR",
+      "method": "LR",
+      "stage": "W0",
+      "completed": 24,
+      "steps_sum": 7680,
+      "seconds_sum": 1693.264806509018,
+      "CE_forward_calls": 15360,
+      "CE_target_tokens": 227840
+    },
+    {
+      "structure": "LR",
+      "method": "LR",
+      "stage": "native",
+      "completed": 24,
+      "steps_sum": 480,
+      "seconds_sum": 133.34750843048096,
+      "CE_forward_calls": 480,
+      "CE_target_tokens": 7120
+    },
+    {
+      "structure": "LR",
+      "method": "M1",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 785.4454567432404,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "LR",
+      "method": "M4",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 795.8266844749451,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "LR",
+      "method": "M6",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 736.8502626419067,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "LR",
+      "method": "M7",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 1006.1860628128052,
+      "CE_forward_calls": 5760,
+      "CE_target_tokens": 85440
+    },
+    {
+      "structure": "TK",
+      "method": "M4_STRUCT",
+      "stage": "continuation",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 783.636472940445,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "TK",
+      "method": "TK",
+      "stage": "A2",
+      "completed": 24,
+      "steps_sum": 1920,
+      "seconds_sum": 540.2285451889038,
+      "CE_forward_calls": 3840,
+      "CE_target_tokens": 56960
+    },
+    {
+      "structure": "TK",
+      "method": "TK",
+      "stage": "W0",
+      "completed": 24,
+      "steps_sum": 7680,
+      "seconds_sum": 1977.0535519123077,
+      "CE_forward_calls": 15360,
+      "CE_target_tokens": 227840
+    },
+    {
+      "structure": "TK",
+      "method": "TK",
+      "stage": "native",
+      "completed": 24,
+      "steps_sum": 3880,
+      "seconds_sum": 1031.5343828201294,
+      "CE_forward_calls": 3880,
+      "CE_target_tokens": 62500
+    }
+  ],
+  "note": "CE call counters exclude KL calls. GPU residency includes teacher preparation, diagnostics and generation; no equal-compute claim."
+}

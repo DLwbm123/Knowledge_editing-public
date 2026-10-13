@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "decision_unchanged": "NO_LOCAL_SUPPORT",
+  "posthoc_descriptive_only": true,
+  "primary_observations": 504,
+  "primary_queries": 63,
+  "primary_sources": 29,
+  "primary_baseline_all_argmax_correct": 496,
+  "primary_baseline_correct_tokens": 12048,
+  "primary_tokens": 12056,
+  "primary_content_and_EOS": {
+    "content": {
+      "RAW": {
+        "KL": 1.9925575306820408e-06,
+        "lost_correct_tokens": 6
+      },
+      "PROJECTED": {
+        "KL": 2.0425697979614397e-06,
+        "lost_correct_tokens": 7
+      },
+      "MATCHED_RAW": {
+        "KL": 2.1386623522878825e-06,
+        "lost_correct_tokens": 8
+      }
+    },
+    "EOS": {
+      "RAW": {
+        "KL": 1.773290761756677e-10,
+        "lost_correct_tokens": 0
+      },
+      "PROJECTED": {
+        "KL": 1.6119190431866552e-10,
+        "lost_correct_tokens": 0
+      },
+      "MATCHED_RAW": {
+        "KL": 1.5202811034442118e-10,
+        "lost_correct_tokens": 0
+      }
+    }
+  },
+  "KL_relative_reduction": 0.04504713788903569,
+  "edit_progress_retention": 0.9552463016895169,
+  "experts_with_lower_KL": 6,
+  "constraint_ranks": [
+    61,
+    61,
+    61,
+    61,
+    61,
+    61,
+    61,
+    61
+  ],
+  "maximum_matching_relative_error": 0.0009958545509216698,
+  "normalized_linear_response_ratios": [
+    9.929596483390446e-16,
+    1.8285924490520163e-15,
+    1.7554268203122637e-15,
+    1.995155432719508e-15,
+    2.0934140154614977e-15,
+    1.5016808162735503e-15,
+    1.3002114699067935e-15,
+    1.901582858263572e-15
+  ],
+  "actual_linear_response_ratios": [
+    1.796045053735461e-08,
+    2.0371219428276317e-08,
+    2.5958090968033178e-08,
+    2.0608226636326634e-08,
+    2.4001782342602227e-08,
+    2.2452518548377866e-08,
+    2.3033050815887458e-08,
+    1.705377864208361e-08
+  ],
+  "sessions_ended": true,
+  "public_raw_inputs": false,
+  "clinical_correctness": "ASTRA_AGAINST_EXISTING_ANNOTATIONS_ONLY",
+  "heldout_previously_exposed": true,
+  "independent_confirmation": false
+}

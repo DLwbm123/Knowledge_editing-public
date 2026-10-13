@@ -1,0 +1,31 @@
+{
+  "stage": "edit_guarded_protection_20260930",
+  "frozen_public_commit": "06620956d9cea39936e80a03d49fc91f93c9290e",
+  "seed": 20260929,
+  "rank": 4,
+  "layer": "model.layers.30.mlp.down_proj",
+  "router": "R0",
+  "initial": "INIT_POST80",
+  "steps": 80,
+  "global_clip": 1.0,
+  "lambda_res": 0.1,
+  "beta_anchor": 0.1,
+  "rho": [
+    1,
+    2
+  ],
+  "shared_rho": true,
+  "selection": "all three CHECK_POS eligible; maximize equally weighted three CHECK_NEG source macro; tie rho2",
+  "judge": "gpt-6.1-sol/high",
+  "transport_attempts": 1,
+  "missing_same_key_shared": true,
+  "no_formal_before_shared_rho": true,
+  "formal_continuations": 96,
+  "max_REG_continuations": 48,
+  "physical_GPUs": [
+    5,
+    6,
+    7
+  ],
+  "old_results_readonly": true
+}

@@ -1,0 +1,27 @@
+{
+  "review_basis": "Assistant text review against fixed references, not clinician adjudication or new formal Judge scores; full raw outputs retained separately",
+  "main_new_damage": {
+    "BINARY_INSTEAD_OF_OPEN": 8,
+    "EMPTY": 7,
+    "CONTENT_OMISSION": 7,
+    "CORRUPT_OR_MIXED_FRAGMENT": 3,
+    "TARGET_PHRASE_PLUS_CONTRADICTORY_TAIL": 1
+  },
+  "open_CHECK": {
+    "SOURCE_MATCH_ACCEPTED": 7,
+    "QUANTITY_MISMATCH_TO_SOURCE": 5,
+    "EMPTY": 6,
+    "BINARY_INSTEAD_OF_OPEN": 1,
+    "WRONG_ANSWER_CATEGORY_OR_EDIT_CONTENT": 8,
+    "CORRUPT_OR_MIXED_FRAGMENT": 5
+  },
+  "Base_losses": {
+    "CORRUPT_OR_MIXED_FRAGMENT": 3,
+    "WRONG_ANSWER_CATEGORY_OR_EDIT_CONTENT": 5,
+    "EMPTY": 1,
+    "BINARY_INSTEAD_OF_OPEN": 1,
+    "BINARY_POLARITY_MISMATCH_TO_SOURCE": 6
+  },
+  "new_Base_losses_vs_W0": 2,
+  "medical_image_adjudication": false
+}

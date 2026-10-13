@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "arms": [
+    "RAW_DIR_540"
+  ],
+  "primary": "RAW_DIR_540",
+  "experts": 24,
+  "new_experts": 16,
+  "reused_experts": 8,
+  "support_counts": {
+    "pilot8": {
+      "main": 84,
+      "forced": 24,
+      "natural": 2
+    },
+    "new16": {
+      "main": 168,
+      "forced": 48,
+      "natural": 21
+    },
+    "all24": {
+      "main": 252,
+      "forced": 72,
+      "natural": 23
+    }
+  },
+  "phases": [
+    [
+      "native",
+      140
+    ],
+    [
+      "A2",
+      80
+    ],
+    [
+      "original_tail_RAW",
+      320
+    ]
+  ],
+  "optimizer_steps": 8960,
+  "training_forwards": 15680,
+  "training_backwards": 15680,
+  "diagnostic_forwards": 160,
+  "endpoint_rebuild_extra_steps": 320,
+  "new_generations": 237,
+  "Judge_upper_bound": 237,
+  "consumers": 3602,
+  "training_roles": [
+    "native",
+    "FIT"
+  ],
+  "replay": false,
+  "training_GPUs": [
+    4,
+    5
+  ],
+  "inference_GPUs": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "parameters": 7168,
+  "final_TT": 16,
+  "require_24_T2G_edit_CI_positive": true,
+  "require_new16_positive_point_and_no_harm": true,
+  "require_no_increase_generation_caps": true,
+  "selfcheck": {
+    "status": "PASS",
+    "group_step_norms_match_with_roundoff": true,
+    "raw_gradient_direction": true,
+    "zero_gradient_fallback_preserves_Adam": true
+  },
+  "Base_lookup_unique_inputs": 224
+}

@@ -1,0 +1,37 @@
+{
+  "steps": 32,
+  "experts": 8,
+  "trainable_parameters": 7168,
+  "trainable_cores": [
+    "G1",
+    "G2",
+    "G3",
+    "G4"
+  ],
+  "optimizer_steps": 256,
+  "training_forwards": 512,
+  "training_backwards": 512,
+  "source_non_generation_forwards": 616,
+  "maximum_forwards": 41576,
+  "new_generations": 40,
+  "maximum_new_Judge": 40,
+  "roles": [
+    "native",
+    "FIT"
+  ],
+  "heldout_access": false,
+  "geometry_access": false,
+  "initial_state": "ORIGINAL_SEEDED_ZERO_TT88",
+  "optimizer": "original two-group Adam step norms, raw-gradient directions",
+  "loss": ".5 native + .5 cyclic FIT",
+  "clip": 1.0,
+  "all_experts_preserved": true,
+  "generation": "MATH_FP32_FROZEN_FP16_PREFILL_GREEDY_1024",
+  "mechanical": {
+    "prefix_logits_rtol": 1e-05,
+    "prefix_logits_atol": 0.0005,
+    "nonzero_generation_residual_required": true
+  },
+  "next_gate": "all native scores present and at least one of eight originally wrong native answers repaired",
+  "epoch": 1791534586.6372106
+}
