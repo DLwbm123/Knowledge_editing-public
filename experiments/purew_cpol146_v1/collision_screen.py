@@ -9,6 +9,7 @@ from pathlib import Path
 import subprocess
 import hashlib
 W=Path(os.environ['WORKSPACE']);S=W/'.local_run'
+REPORT_DIR=W/'reports/purew_cpol146_v1_20261013'
 
 def main():
     candidates=json.loads((S/'CANDIDATES.json').read_text())
@@ -49,6 +50,6 @@ print(json.dumps(dict(candidate_count=len(rows)*4,collision_candidates=len(faile
         status='PASS' if source['failed_candidates']==0 and check['collision_candidates']==0 else 'BLOCKED_DATA_QUALIFICATION',
         candidates_repaired=0,evaluation_examples_disclosed_to_author=0,training_launched=False)
     (S/'QUALIFICATION_FINAL.json').write_text(json.dumps(result,indent=2))
-    (W/'reports/purew_cpol146_v1_20261013/QUALIFICATION_RESULT.json').write_text(json.dumps(result,indent=2)+'\n')
+    (REPORT_DIR/'QUALIFICATION_RESULT.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result))
 if __name__=='__main__':main()

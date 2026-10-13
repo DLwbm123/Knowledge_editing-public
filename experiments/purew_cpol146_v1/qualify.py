@@ -20,6 +20,7 @@ sys.path.insert(0, str(TOOLS))
 from scripts.medtrace import stage17_judge as isolation
 CLI = '/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex'
 STYLES = ['syntax', 'terminology', 'interrogative', 'context']
+PLAN = W/'reports/purew_cpol146_v1_20261013/QUALIFICATION_PLAN.json'
 
 def digest(d):
     return hashlib.sha256(json.dumps(d,ensure_ascii=False,sort_keys=True,separators=(',', ':')).encode()).hexdigest()
@@ -46,6 +47,7 @@ def call(stage, index, rows):
     if evidence_path.exists():
         ev=json.loads(evidence_path.read_text())
         assert ev['status']=='FORMAT_VALID' and final.exists(), 'Prior attempt is not retryable'
+        assert ev['source_binding']==digest(rows), 'Cannot reuse response for changed input'
         return json.loads(final.read_text())['rows']
     folder.mkdir(parents=True,exist_ok=True)
     for r in rows:
@@ -105,7 +107,7 @@ def call(stage, index, rows):
 def main():
     import fcntl
     lock=(S/'QUALIFICATION.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    plan=json.loads((W/'reports/purew_cpol146_v1_20261013/QUALIFICATION_PLAN.json').read_text())
+    plan=json.loads(PLAN.read_text())
     sources=json.loads((S/'SOURCE_ONLY.json').read_text())
     assert digest(sources)==plan['source_binding'] and len(sources)==146
     batches=[sources[i:i+20] for i in range(0,146,20)]
