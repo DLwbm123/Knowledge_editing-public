@@ -47,7 +47,7 @@ def count(*_):
     if not r.GENERATING:
         r.COUNTS['non_generation_forwards']+=1
         limits=dict(module_fisher=128,paired_probe=15000,paired_train=160000,
-                    paired_evaluate=200,paired_route=1024)
+                    paired_evaluate=200,paired_route=1024,paired_route_recovery1=1024)
         assert r.COUNTS['non_generation_forwards']<=limits[os.environ['ACTION']]
 r.count=count
 
@@ -301,22 +301,30 @@ def controller():
         c.write(RUN/'public/PROGRESS.json',dict(status='PAIRED_FULL_FROZEN_EVALUATION_RUNNING'))
         j.stage('paired_evaluate',range(3),file='paired_run.py')
         j.stage('paired_route',[0],file='paired_run.py')
-        outputs=list((RUN/'private/outputs').glob('*/*/*.json'));assert len(outputs)==2316
-        counts=[c.read(p) for p in (RUN/'private').glob('COUNTS_*.json')]
-        assert sum(v['updates'] for v in counts)==2219
-        assert sum(v['backwards'] for v in counts)<=144593 and sum(v['operator_backwards'] for v in counts)<=15152
-        assert sum(v['local_solves'] for v in counts)<=45328
-        assert sum(v['non_generation_forwards'] for v in counts)<=600000 and sum(v['generation_attempts'] for v in counts)<=2316
-        c.write(RUN/'private/MODULE_GENERATION_COMPLETE.json',dict(outputs=2316,counts=counts))
-        import pipeline
-        pipeline.wait([pipeline.launch('paired_queue.py','ingest')])
-        c.write(RUN/'public/PROGRESS.json',dict(status='PAIRED_GENERATED_SCORING_PENDING'))
-        root=RUN/'private/judge_multicore_astra_medium'
-        while not (root/'ALL_WORKERS_COMPLETE.json').exists():
-            c.budget();assert not list((root/'workers').glob('*/SCORER_FAILURE.json'));time.sleep(20)
-        pipeline.wait([pipeline.launch('paired_report.py','paired_report')])
-        retire('Both full arms and all paired consumers complete')
-        c.write(RUN/'public/PROGRESS.json',dict(status='PAIRED_FULL_COMPLETE_PUBLICATION_PENDING'))
+        scoring_tail()
+    final_report()
+
+
+def scoring_tail():
+    outputs=list((RUN/'private/outputs').glob('*/*/*.json'));assert len(outputs)==2316
+    counts=[c.read(p) for p in (RUN/'private').glob('COUNTS_*.json')]
+    assert sum(v['updates'] for v in counts)==2219
+    assert sum(v['backwards'] for v in counts)<=144593 and sum(v['operator_backwards'] for v in counts)<=15152
+    assert sum(v['local_solves'] for v in counts)<=45328
+    assert sum(v['non_generation_forwards'] for v in counts)<=600000 and sum(v['generation_attempts'] for v in counts)<=2316
+    c.write(RUN/'private/MODULE_GENERATION_COMPLETE.json',dict(outputs=2316,counts=counts))
+    import pipeline
+    pipeline.wait([pipeline.launch('paired_queue.py','ingest')])
+    c.write(RUN/'public/PROGRESS.json',dict(status='PAIRED_GENERATED_SCORING_PENDING'))
+    root=RUN/'private/judge_multicore_astra_medium'
+    while not (root/'ALL_WORKERS_COMPLETE.json').exists():
+        c.budget();assert not list((root/'workers').glob('*/SCORER_FAILURE.json'));time.sleep(20)
+    pipeline.wait([pipeline.launch('paired_report.py','paired_report')])
+    retire('Both full arms and all paired consumers complete')
+    c.write(RUN/'public/PROGRESS.json',dict(status='PAIRED_FULL_COMPLETE_PUBLICATION_PENDING'))
+
+
+def final_report():
     ledger=c.read(RUN/'RESOURCE_LEDGER.json');inherited=c.read(RUN/'private/INHERITED_COST.json')
     assert all(v.get('ended_epoch') for v in ledger['gpu_sessions'])
     mechanism=c.read(RUN/'public/MECHANISM_RESULTS.json')

@@ -31,7 +31,7 @@ def main():
     for path in tools.glob('*.py'):
         if path.name!='prepare.py':shutil.copy2(path,run/'private/tools'/path.name)
     for name in ['SOURCE_COMMIT.json','EVAL_BINDINGS.json','SCOPE_LOCK.json','OPTIMIZER160_LOCK.json',
-                 'HELD_BASE.json','TARGETS.json','REFERENCE_EXACT.json']:
+                 'HELD_BASE.json','TARGETS.json','REFERENCE_EXACT.json','BENCHMARK146_QUEUE.json']:
         shutil.copy2(parent/'private'/name,run/'private'/name)
     for name in ['source','official_llava','derived_inputs','cpu_gate']:
         (run/'private'/name).symlink_to((parent/'private'/name).resolve(),target_is_directory=True)
