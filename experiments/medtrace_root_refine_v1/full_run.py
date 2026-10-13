@@ -258,10 +258,34 @@ def controller():
     c.write(RUN/'private/FULL_COMPLETE.json',dict(status='COMPLETE',epoch=time.time()))
 
 
+def admit():
+    # An exclusive CPU admission waits for the complete fixed diagnostic, never a subset.
+    with (RUN/'private/FULL_ADMISSION_ONCE').open('x'):pass
+    while not (RUN/'private/REPORT_COMPLETE.json').exists():
+        c.budget();assert not list((RUN/'private').glob('FAILURE*'));time.sleep(10)
+    if c.read(RUN/'public/RESULTS.json')['original_rule_witness_states']==0:
+        c.write(RUN/'private/FULL_NOT_STARTED.json',dict(reason='NO_VERIFIED_REFINEMENT_WITNESS',epoch=time.time()))
+        return
+    cpu()
+    manifest=c.read(RUN/'RUN_MANIFEST.json')
+    assert manifest['Judge_limit']==17177
+    c.write(RUN/'private/full_authorization1/RUN_MANIFEST_BEFORE_FULL.json',manifest)
+    manifest['Judge_limit']=18335
+    c.write(RUN/'RUN_MANIFEST.json',manifest)
+    plan=c.read(RUN/'PLAN_CONFIG.json')
+    plan['full_consumer']=dict(arm=ARM,steps=160,owners=8,new_proposals=939,maximum_NN_backwards=47889,
+        maximum_non_generation_forwards=110000,maximum_local_solves=15024,maximum_generations=1158,
+        maximum_Judge=1158,comparators=['M1','M3','M13','E'],source_commit=os.environ['FULL_SOURCE_COMMIT'])
+    c.write(RUN/'PLAN_CONFIG.json',plan)
+    c.write(RUN/'private/FULL_CONSUMER_READY.json',dict(status='PASS',source_commit=os.environ['FULL_SOURCE_COMMIT'],
+        mechanism_gate='ORIGINAL_REAL_RULE_WITNESS_AND_ALL_EIGHT_PARITY',new_model_calls=0,epoch=time.time()))
+
+
 if __name__=='__main__':
     try:
         action=os.environ['ACTION']
         if action=='full_cpu':cpu()
+        elif action=='full_admit':admit()
         elif action=='full_train':train()
         elif action=='full_evaluate':r.evaluate(expected_candidates=8)
         elif action=='full_route':
