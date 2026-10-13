@@ -1,0 +1,164 @@
+<!doctype html><html lang="zh"><meta charset="utf-8"><title>C/P/O/L 冻结设计</title><style>body{max-width:1000px;margin:40px auto;font:16px system-ui}pre{white-space:pre-wrap}</style><h1>C/P/O/L 有限机制对照</h1><p>设计与 C 范数预算已冻结；数据资格和真实模型准入通过前不得启动训练。当前原146连续写入不变。</p><pre>{
+  &quot;epoch&quot;: &quot;PUREW_CPOL146_V1_20261013&quot;,
+  &quot;status&quot;: &quot;DESIGN_FROZEN_DATA_QUALIFICATION_PENDING&quot;,
+  &quot;frozen_at_utc&quot;: &quot;2026-10-13T02:42:39Z&quot;,
+  &quot;host&quot;: &quot;pro5000&quot;,
+  &quot;GPUs&quot;: [
+    5
+  ],
+  &quot;GPU_UUID&quot;: &quot;GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca&quot;,
+  &quot;reference_run&quot;: &quot;/data/bmw/Knowledge_editing/outputs/purew-original146-v1-20261012/run&quot;,
+  &quot;arm_order&quot;: [
+    &quot;P&quot;,
+    &quot;O&quot;,
+    &quot;L&quot;
+  ],
+  &quot;arms&quot;: {
+    &quot;C&quot;: {
+      &quot;reuse&quot;: &quot;existing single146 only&quot;,
+      &quot;FIT&quot;: &quot;original four source wrappers&quot;,
+      &quot;optimizer&quot;: &quot;SGD&quot;,
+      &quot;layer&quot;: 21
+    },
+    &quot;P&quot;: {
+      &quot;FIT&quot;: &quot;four independently qualified semantic question rewrites&quot;,
+      &quot;optimizer&quot;: &quot;SGD direction with matched C norm&quot;,
+      &quot;layer&quot;: 21
+    },
+    &quot;O&quot;: {
+      &quot;FIT&quot;: &quot;original four source wrappers&quot;,
+      &quot;optimizer&quot;: &quot;Adam direction with matched C norm&quot;,
+      &quot;beta1&quot;: 0.9,
+      &quot;beta2&quot;: 0.999,
+      &quot;eps&quot;: 1e-08,
+      &quot;weight_decay&quot;: 0,
+      &quot;layer&quot;: 21
+    },
+    &quot;L&quot;: {
+      &quot;FIT&quot;: &quot;original four source wrappers&quot;,
+      &quot;optimizer&quot;: &quot;SGD direction with matched C norm&quot;,
+      &quot;layer&quot;: 31
+    }
+  },
+  &quot;layer_module&quot;: &quot;mlp.down_proj&quot;,
+  &quot;settings&quot;: [
+    &quot;single_R0&quot;
+  ],
+  &quot;new_continuous_runs&quot;: false,
+  &quot;members&quot;: 146,
+  &quot;original_order&quot;: true,
+  &quot;original_per_edit_seed&quot;: true,
+  &quot;training&quot;: {
+    &quot;steps&quot;: 160,
+    &quot;loss&quot;: &quot;.5 native CE + .5 cyclic FIT CE&quot;,
+    &quot;single_resets_Base&quot;: true,
+    &quot;precision&quot;: &quot;native FP16 with temporary FP32 master and gradients&quot;,
+    &quot;loss_scale&quot;: 128,
+    &quot;history&quot;: false,
+    &quot;KL&quot;: false,
+    &quot;RLS&quot;: false,
+    &quot;projection&quot;: false,
+    &quot;optimizer_state_reset_each_edit&quot;: true
+  },
+  &quot;pure_W&quot;: {
+    &quot;added_inference_parameters&quot;: 0,
+    &quot;editor_hooks&quot;: false,
+    &quot;inference_branch&quot;: false,
+    &quot;temporary_optimizer_state_not_deployed&quot;: true
+  },
+  &quot;norm_budget&quot;: {
+    &quot;binding&quot;: &quot;029cac9972673b052562ba01cbc9900d9d51678099574091791fff0ddba57892&quot;,
+    &quot;shape&quot;: [
+      146,
+      160
+    ],
+    &quot;target&quot;: &quot;C saved proposal_norm per owner and step; positive; maximum .05&quot;,
+    &quot;formal_updates&quot;: 70080,
+    &quot;proposal_relative_tolerance&quot;: 1e-05,
+    &quot;proposal_absolute_tolerance&quot;: 1e-08,
+    &quot;zero_direction&quot;: &quot;hard stop; no substituted update&quot;,
+    &quot;native_quantization&quot;: &quot;record actual FP16 displacement, changed elements, native/master discrepancy; never claim matched native movement from matched proposal&quot;,
+    &quot;attribution_gate&quot;: &quot;For each edit, native FP16 path-length ratio relative to C must be in [0.9,1.1]; outside is retained as norm-confounded, not retuned or removed&quot;
+  },
+  &quot;qualification&quot;: {
+    &quot;plan&quot;: &quot;QUALIFICATION_PLAN.json&quot;,
+    &quot;source_binding&quot;: &quot;c76886efce873b9860135dccd4f82877bf7670c3394badcfbe1ea4ea847d39b9&quot;,
+    &quot;require_all_584&quot;: true,
+    &quot;labels&quot;: &quot;training native answer only&quot;,
+    &quot;evaluation_use&quot;: &quot;deterministic collision screening and final evaluation only; never author/reviewer/trainer&quot;,
+    &quot;no_evaluation_guided_repair&quot;: true,
+    &quot;status&quot;: &quot;PENDING&quot;
+  },
+  &quot;scoring&quot;: {
+    &quot;model&quot;: &quot;gpt-6-astra&quot;,
+    &quot;effort&quot;: &quot;medium&quot;,
+    &quot;protocol&quot;: &quot;original Stage17 source-agreement&quot;,
+    &quot;workers&quot;: 4,
+    &quot;attempts_per_new_payload&quot;: 1,
+    &quot;no_retry&quot;: true,
+    &quot;old_11_missing&quot;: &quot;permanent; exact shared missing bounds retained&quot;,
+    &quot;reuse&quot;: &quot;complete input/runtime/generation/raw text/raw tokens/prompt/model identity binding&quot;,
+    &quot;stop_after_consecutive_transport_failures&quot;: 3
+  },
+  &quot;evaluation&quot;: {
+    &quot;primary&quot;: &quot;single146 edit-macro T2G Fix&quot;,
+    &quot;denominators&quot;: {
+      &quot;T0&quot;: 146,
+      &quot;T1G&quot;: 578,
+      &quot;T2G&quot;: 557,
+      &quot;T1L&quot;: 2,
+      &quot;T2L&quot;: 54
+    },
+    &quot;new_consumers_per_arm&quot;: 2372,
+    &quot;contrasts&quot;: [
+      &quot;P-C&quot;,
+      &quot;O-C&quot;,
+      &quot;L-C&quot;
+    ],
+    &quot;bootstrap&quot;: 10000,
+    &quot;bootstrap_seed&quot;: 20260912,
+    &quot;edit_and_source_cluster&quot;: true,
+    &quot;shared_missing_exact_bounds&quot;: true,
+    &quot;not_attempted_distinct_from_missing&quot;: true
+  },
+  &quot;success&quot;: {
+    &quot;full_scoring_required&quot;: true,
+    &quot;T2G&quot;: &quot;paired complete-denominator lower difference &gt; 0 and no per-edit regression; average cannot compensate failure&quot;,
+    &quot;T0&quot;: &quot;retain all 146 C-correct sources&quot;,
+    &quot;T1G&quot;: &quot;retain all 578 C-correct probes&quot;,
+    &quot;protection&quot;: &quot;zero new wrong among 49 C-correct T2L and 2 C-correct T1L; missing cannot pass; additionally report all 54 Base-correct T2L and total damage &lt;= C five&quot;,
+    &quot;zero_total_Base_damage_claim&quot;: false,
+    &quot;attribution&quot;: &quot;conditional main effects only; no interaction or general clinical conclusion&quot;
+  },
+  &quot;budgets&quot;: {
+    &quot;maximum_committed_updates&quot;: 70080,
+    &quot;temporary_admission_updates&quot;: 3,
+    &quot;maximum_backwards&quot;: 140166,
+    &quot;maximum_generations&quot;: 7140,
+    &quot;maximum_new_Judge&quot;: 7116,
+    &quot;maximum_forward_calls&quot;: 8000000,
+    &quot;GPU_process_hours&quot;: 54,
+    &quot;wall_hours&quot;: 72,
+    &quot;owned_weight_limit_bytes&quot;: 2147483648,
+    &quot;minimum_free_bytes&quot;: 8589934592
+  },
+  &quot;dependency&quot;: {
+    &quot;required&quot;: [
+      &quot;old TRAINING_GENERATION_COMPLETE&quot;,
+      &quot;old FINAL_CONSUMED&quot;,
+      &quot;old EXIT_gpu=0&quot;,
+      &quot;old EXIT_reload=0&quot;,
+      &quot;old no active GPU lease&quot;,
+      &quot;data qualification PASS&quot;,
+      &quot;new CPU and real VLM admission PASS&quot;,
+      &quot;published frozen source and protocol&quot;
+    ],
+    &quot;current_continuous&quot;: &quot;continue unchanged; no termination or restart&quot;,
+    &quot;activation_clock&quot;: &quot;starts once at first new GPU installation/activation after old GPU completion; qualification preparation and waiting excluded; never reset&quot;,
+    &quot;old_scoring_delivery&quot;: &quot;continue independently with existing original146 workers and finite tail&quot;
+  },
+  &quot;finite&quot;: true,
+  &quot;no_extra_arms_or_seeds&quot;: true,
+  &quot;patient_independence&quot;: &quot;UNKNOWN&quot;,
+  &quot;evidence&quot;: &quot;same already observed development benchmark; not independent confirmation&quot;
+}</pre></html>

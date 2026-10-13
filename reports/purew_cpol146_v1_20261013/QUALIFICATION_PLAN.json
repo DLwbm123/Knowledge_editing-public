@@ -1,0 +1,26 @@
+{
+  "status": "FROZEN_BEFORE_AUTHOR_CALLS",
+  "source_binding": "c76886efce873b9860135dccd4f82877bf7670c3394badcfbe1ea4ea847d39b9",
+  "norm_schedule_binding": "029cac9972673b052562ba01cbc9900d9d51678099574091791fff0ddba57892",
+  "source_count": 146,
+  "candidates_per_source": 4,
+  "styles": [
+    "syntax",
+    "terminology",
+    "interrogative",
+    "context"
+  ],
+  "author_model": "gpt-6-astra",
+  "review_model": "gpt-6-astra",
+  "effort": "medium",
+  "batch_size": 20,
+  "maximum_author_calls": 8,
+  "maximum_review_calls": 8,
+  "attempts_per_batch": 1,
+  "author_and_reviewer_inputs": "training source question and answer only; reviewer also sees candidates",
+  "evaluation_access": "separate deterministic collision checker only; no evaluation labels in author/reviewer or trainer",
+  "candidate_repairs": 0,
+  "gate": "all 584 candidates independently equivalent, answer-compatible and without added information; changed core question; distinct; no normalized evaluation-text collision",
+  "source_fail": "retain all failures and block this data version; no subset selection",
+  "old_missing": "11 original single scores remain missing, no retry"
+}
