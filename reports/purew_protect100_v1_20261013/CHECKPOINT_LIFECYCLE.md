@@ -1,3 +1,5 @@
+User now explicitly authorizes half-hour monitoring under MONITORING_AUTHORIZATION.json. Only safe engineering continuation inside the existing frozen budgets is allowed; original146 stays paused and O/L waits.
+
 User authorization 2026-10-13 now includes full implementation, real admission, and immediate GPU5 launch after PASS; EXECUTION_AUTHORIZATION.json supersedes the preparation-only paragraphs below. Frozen science and budgets stay unchanged.
 
 # Preparation and future checkpoint lifecycle
