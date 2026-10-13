@@ -26,7 +26,10 @@ r.count=count
 
 def correction(runtime,hook,expert,before,pure,step,sources,losses,cache,cpu_cache,budget,arm):
     assert arm==NEW
-    baseline,old=original_correction(runtime,hook,expert,before,pure,step,sources,losses,cache,cpu_cache,budget,'MULTI')
+    # MULTI's root fallback recursively resolves paired_run.correction.
+    p.correction=original_correction
+    try:baseline,old=original_correction(runtime,hook,expert,before,pure,step,sources,losses,cache,cpu_cache,budget,'MULTI')
+    finally:p.correction=correction
     if old['original']['pure_source_gain']<=0:return baseline,dict(kind='MULTI_NONPOSITIVE_FALLBACK',baseline=old)
     baseline_penalty=float(r.mm.operator_penalty(baseline,cache));records=[]
     with c.diagnostic_scope(hook):
@@ -117,9 +120,17 @@ def cpu():
             selected,audit=correction(*args);assert selected is low and audit['kind']=='FISHER_MIN_ACCEPTED'
         with patch(__name__+'.trial',return_value=(high,{'original_rule_pass':True})) as attempts:
             selected,audit=correction(*args);assert selected is baseline and audit['kind']=='MULTI_FALLBACK' and attempts.call_count==4
+    with patch.object(c,'diagnostic_scope',side_effect=lambda _:nullcontext()), \
+         patch.object(r.mm,'operator_penalty',side_effect=lambda state,_:state['value']), \
+         patch.object(g,'source_batches',return_value=[]), \
+         patch.object(g,'select_guard',return_value=(baseline,{'status':'SKIPPED_INFEASIBLE','pure_source_gain':1.})), \
+         patch.object(p,'trial',return_value=(None,{})) as baseline_trials, \
+         patch(__name__+'.trial',return_value=(None,{})):
+        selected,audit=correction(None,None,None,baseline,None,1,None,None,None,None,1.,NEW)
+        assert selected is baseline and baseline_trials.call_count==8 and audit['kind']=='MULTI_FALLBACK'
     c.write(RUN/'public/FULL_CPU_CHECKS.json',dict(status='PASS',single_arm_consumers=1158,
         historical_MULTI_and_M1_M3_M13_E_bound=True,report_failure_gates_preserved=True,
-        lower_Fisher_selection_and_baseline_fallback=True,real_resume_admission_pending=True,new_model_calls=0))
+        lower_Fisher_selection_and_baseline_fallback=True,MULTI_recursive_root_fallback=True,real_resume_admission_pending=True,new_model_calls=0))
 
 
 def retire():
@@ -193,6 +204,10 @@ def controller():
 if __name__=='__main__':
     try:
         action=os.environ['ACTION']
+        if action in ('paired_train','paired_evaluate','paired_route'):
+            version=c.read(RUN/'private/FULL_GPU_SOURCE_VERSION1.json')
+            c.write(RUN/'private'/f"FULL_LOADED_SOURCE_{action}_{os.environ.get('PARTITION')}.json",
+                dict(version,pid=os.getpid(),epoch=time.time()))
         if action=='fisher_min_full_cpu':cpu()
         elif action=='fisher_min_full_controller':controller()
         elif action=='paired_train':p.train()
