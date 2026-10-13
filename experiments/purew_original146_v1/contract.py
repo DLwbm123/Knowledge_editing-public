@@ -41,7 +41,7 @@ def source_audit(tasks, ledger):
                 active_target_rule_preserved=True, external_training_data=0)
 
 
-def proposals(gradient, master):
+def proposals(gradient, master, *, tensor_metrics=False):
     import torch
     assert gradient.dtype == master.dtype == torch.float32
     assert torch.isfinite(gradient).all()
@@ -49,7 +49,8 @@ def proposals(gradient, master):
     delta = -.01 * gradient * (5. / norm.clamp_min(5.))
     after = master + delta
     assert torch.isfinite(after).all()
-    return after, dict(gradient_norm=float(norm), proposal_norm=float(delta.norm()))
+    metrics = dict(gradient_norm=norm, proposal_norm=delta.norm())
+    return after, metrics if tensor_metrics else {k:float(v) for k,v in metrics.items()}
 
 
 def selfcheck():
@@ -58,6 +59,8 @@ def selfcheck():
     w = torch.ones_like(g)
     z, d = proposals(g, w)
     assert torch.allclose(z, w - .01 * g) and abs(d['proposal_norm'] - .05) < 1e-7
+    tensor_z, tensor_d = proposals(g, w, tensor_metrics=True)
+    assert torch.equal(z, tensor_z) and d == {k:float(v) for k,v in tensor_d.items()}
     assert torch.equal(proposals(torch.zeros_like(g), w)[0], w)
     half = w.half()
     tiny = torch.full_like(w, 1e-4)

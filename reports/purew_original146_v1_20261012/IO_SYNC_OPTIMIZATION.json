@@ -1,0 +1,59 @@
+{
+  "epoch": 1791869503.47043,
+  "status": "USER_AUTHORIZED_IO_SYNC_OPTIMIZATION",
+  "scope": [
+    "checkpoint owned-weight inventory once per worker; each destination registered; total includes existing weight and new atomic temporary file",
+    "deferred scalar diagnostics packed as float64 into one CPU transfer per update"
+  ],
+  "scientific_recipe_unchanged": true,
+  "all_existing_checks_retained": true,
+  "checkpoint_interval_steps": 20,
+  "quota_and_resume_unchanged": true,
+  "all_prior_attempts_retained": true,
+  "compute_budgets_unchanged_since_checkpoint20_amendment": true,
+  "tests": "CPU and GPU5 synthetic exact equality for events, master/native state, stop, counters; finite-input rejection; weight quota acceptance/rejection",
+  "baseline": [
+    {
+      "owner": 46,
+      "steps": 160,
+      "mean_step": 0.4048050424587802,
+      "ordinary_mean": 0.30779438618792604,
+      "checkpoint_mean": 2.2358811795711517
+    },
+    {
+      "owner": 47,
+      "steps": 160,
+      "mean_step": 0.40066990162591515,
+      "ordinary_mean": 0.30595612999619237,
+      "checkpoint_mean": 2.1883923411369324
+    },
+    {
+      "owner": 48,
+      "steps": 160,
+      "mean_step": 0.40488882484675953,
+      "ordinary_mean": 0.3087631550845721,
+      "checkpoint_mean": 2.2192608416080475
+    },
+    {
+      "owner": 49,
+      "steps": 160,
+      "mean_step": 0.4030072329179296,
+      "ordinary_mean": 0.30708682616025407,
+      "checkpoint_mean": 2.213504910469055
+    },
+    {
+      "owner": 50,
+      "steps": 160,
+      "mean_step": 0.40570439482634924,
+      "ordinary_mean": 0.3081125881498223,
+      "checkpoint_mean": 2.2477497458457947
+    }
+  ],
+  "resume_checkpoint": {
+    "mode": "bank_R0",
+    "owner": 50,
+    "step": 160,
+    "committed": 8000
+  },
+  "measurement_scope": "next three complete training edits; no additional training or evaluations"
+}

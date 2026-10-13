@@ -16,6 +16,7 @@ from contract import ARM, PREFIXES, proposals, selfcheck, base_completion
 
 R = c.RUN
 STOP_REQUESTED = False
+OWNED_WEIGHT_PATHS = None
 
 
 def request_stop(signum, frame):
@@ -67,7 +68,12 @@ def schema(model):
 
 
 def save(path, state):
-    c.save(path, state)
+    global OWNED_WEIGHT_PATHS
+    if OWNED_WEIGHT_PATHS is None:
+        # This worker is the sole checkpoint writer; inventory once, register each new destination.
+        OWNED_WEIGHT_PATHS = set((R/'private').rglob('*.pt'))
+    OWNED_WEIGHT_PATHS.add(Path(path))
+    c.save(path, state, weight_paths=OWNED_WEIGHT_PATHS)
     with Path(path).open('rb') as f:
         os.fsync(f.fileno())
     fd = os.open(Path(path).parent, os.O_RDONLY)
@@ -243,14 +249,18 @@ def trajectory(runtime, bindings, tasks, weight, original, original_schema, froz
                 (128*factor*loss).backward()
                 assert weight.grad is not None
                 gradient.add_(weight.grad.float()/128)
-                losses.append(float(loss.detach()))
+                losses.append(loss.detach())
                 del z,loss
             before = weight.detach().float()
-            master, event = proposals(gradient,master)
+            master, event = proposals(gradient,master,tensor_metrics=True)
             native = master.half()
-            event.update(owner=i,step=step,mode=mode,source_losses=losses,
-                         actual_native_norm=float((native.float()-before).norm()),
-                         changed_elements=int((native!=weight.detach()).sum()))
+            # Float64 packs diagnostics without rounding the int64 changed-element count.
+            scalars = losses + [event['gradient_norm'], event['proposal_norm'],
+                                (native.float()-before).norm(), (native!=weight.detach()).sum()]
+            values = torch.stack([x.to(dtype=torch.float64) for x in scalars]).cpu().tolist()
+            event = dict(owner=i,step=step,mode=mode,source_losses=values[:-4],
+                         gradient_norm=values[-4],proposal_norm=values[-3],
+                         actual_native_norm=values[-2],changed_elements=int(values[-1]))
             with torch.no_grad():
                 weight.copy_(native)
             weight.grad = None

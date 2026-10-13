@@ -27,7 +27,7 @@ def main():
     code="import os,runpy\nos.environ['RUN_ROOT']="+repr(R)+"\nrunpy.run_path("+repr(R+'/private/tools/report146.py')+",run_name='__main__')\n"
     output=remote(code);(W/'.local_run/REPORT_OUTPUT.txt').write_text(output)
     report=W/'reports/purew_original146_v1_20261012'
-    data=json.loads(remote("import json,pathlib\nr=pathlib.Path("+repr(R)+")\nprint(json.dumps({p.name:p.read_text() for p in (r/'public').iterdir() if p.name in ['RESULTS.json','REPORT_ZH.md','REAL_VLM_ADMISSION.json','BASELINE_REUSE_ADMISSION.json','NATIVE_RELOAD_PERFORMANCE.json','CPU_VALIDATION.json','CHECKPOINT_AMENDMENT.json']}))\n"))
+    data=json.loads(remote("import json,pathlib\nr=pathlib.Path("+repr(R)+")\nprint(json.dumps({p.name:p.read_text() for p in (r/'public').iterdir() if p.name in ['RESULTS.json','REPORT_ZH.md','REAL_VLM_ADMISSION.json','BASELINE_REUSE_ADMISSION.json','NATIVE_RELOAD_PERFORMANCE.json','CPU_VALIDATION.json','CHECKPOINT_AMENDMENT.json','IO_SYNC_OPTIMIZATION.json','IO_SYNC_SPEED.json']}))\n"))
     for name,text in data.items():
         if name.endswith('.json'):
             obj=json.loads(text)
