@@ -32,7 +32,7 @@ def main():
         else:assert batch['status']=='FAILED_NO_RETRY' and all(scores[k] is None for k in batch['keys'])
     assert len(attempted)==len(set(attempted))==cost['Judge_attempts']
     attempts=[c.read(p) for p in (R/'private/attempts').glob('*.json')]
-    counts={k:sum(x.get(k,0) for x in attempts) for k in ('forwards','backwards','committed_updates','generation_attempts','attempt_slots','vision_forwards')}
+    counts={k:sum(x.get(k,0) for x in attempts) for k in ('forwards','backwards','committed_updates','generation_attempts','attempt_slots','vision_forwards','engineering_replayed_native_writes')}
     generated={arm:sum(c.read(p)['outputs'] for p in (R/'private/outputs'/arm).glob('*/*/*/COMPLETE.json')) for arm in ARMS}
     result=dict(status='COMPLETE_WITH_MISSING' if complete else 'PARTIAL_NOT_ALL_CONSUMERS_COMPLETE',scientific_success=False,
         coverage=coverage,expected_consumers_per_arm=2181,generated=generated,not_generated={a:2181-generated[a] for a in ARMS},
@@ -126,7 +126,8 @@ def main():
                 source_evidence_diagnostics=[{k:v for k,v in c.read(p).items() if k!='order'} for p in (R/'private/source_diagnostics'/arm/'final').glob('*.json')])
         result['gates']['M-E']['T2G_per_edit_nonregression']=all(x['edits_negative_lower_bound']==0 for x in result['contrasts'] if x['comparison'] in ('M-E-minus-M-S-prefix100','M-E-minus-K-prefix100') and x['task']=='T2G')
         result['scientific_success']=all(result['gates']['M-E'].values())
-        result['reconstructed_rejected_slots']=sum(x.get('engineering_reconstructed_original_rejected_slot',False) for a in ARMS for x in [c.read(p) for p in (R/'private/steps'/a).glob('*/*.json')])
+        if (R/'private/CHECKPOINT_LAYOUT_RECOVERY_VALIDATED.json').exists():result['engineering_recovery']=c.read(R/'private/CHECKPOINT_LAYOUT_RECOVERY_VALIDATED.json')
+        result['reconstructed_slots']=sum(x.get('engineering_reconstructed_original_slot',False) for a in ARMS for x in [c.read(p) for p in (R/'private/steps'/a).glob('*/*.json')])
     c.write(R/'public/RESULTS.json',result)
     lines=['# 无历史病例重放的连续纯W M/M-S/M-E有限对照','',f'状态：{result["status"]}；完整科学门槛：{result["scientific_success"]}。','',
         '|方法|T0|T1G宏界%|T2G宏界%|T1L Base损伤|T2L Base损伤|','|---|---:|---:|---:|---:|---:|']

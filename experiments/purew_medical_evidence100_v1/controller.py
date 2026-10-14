@@ -41,7 +41,7 @@ def main():
             if ctrl.exists():
                 assert arm=='M'
                 if (R/'private/CHECKPOINT_LAYOUT_RECOVERY.json').exists():
-                    assert c.read(R/'private/CHECKPOINT_LAYOUT_RECOVERY.json')['status']=='VERIFIED_ONE_REJECTED_SLOT_AFTER_BOUNDARY'
+                    assert c.read(R/'private/CHECKPOINT_LAYOUT_RECOVERY.json')['status']=='VERIFIED_ONE_DETERMINISTIC_SLOT_AFTER_BOUNDARY'
                 else:
                     reviewed=c.read(R/'private/ENGINEERING_PRETRAINING_RESTART.json')
                     assert reviewed['status']=='VERIFIED_ZERO_NATIVE_WRITES' and not list((R/'private/units'/arm).glob('*.json'))

@@ -148,7 +148,7 @@ def main():
             active=R/'private/active'/ARM/'state.pt'
             if active.exists():
                 plan=c.read(R/'private/CHECKPOINT_LAYOUT_RECOVERY.json')
-                assert ARM=='M' and plan['status']=='VERIFIED_ONE_REJECTED_SLOT_AFTER_BOUNDARY'
+                assert ARM=='M' and plan['status']=='VERIFIED_ONE_DETERMINISTIC_SLOT_AFTER_BOUNDARY'
                 resume=validate_state(checkpoint.read(active))
                 assert resume['owner']==1 and resume['slot']==160 and resume['boundary'] and resume['completed_slots']==160
                 assert c.read(R/'public/REAL_VLM_ADMISSION_M.json')['status']=='PASS'
@@ -170,19 +170,30 @@ def main():
                 weight.requires_grad_(True);edit_initial=weight.detach().float().clone();start_slot=1
                 if resume is not None:
                     assert owner==2 and ARM=='M'
-                    # The lost slot made no native/master/risk change, proven by persisted write counters.
+                    # Recover one lost committed slot from exact pre-step state, clocks and deterministic current inputs.
                     g,ce,scope,norm=source_gradient(runtime,weight,master,full,[],None,1)
-                    diagnostic=Risk(weight);diagnostic.restore(risk.state(),runtime.device)
-                    _,_,zero=native_candidate(master,weight,g,diagnostic)
-                    assert not zero['accepted'] and zero['actual_native_norm']==0 and diagnostic.q==risk.q
-                    zero.update(owner=2,step=1,slot=1,arm=ARM,completed_slots=161,source_CE=ce,medical_scope_loss=scope,
-                        unclipped_gradient_norm=norm,risk_compression_envelope=risk.eq,edit_native_net_displacement=0.,FIT_clock=0,
-                        optimization_seconds=None,engineering_reconstructed_original_rejected_slot=True,
-                        reconstruction_additional_calls_counted=True,original_native_write_proven_zero=True)
-                    c.write(R/'private/steps'/ARM/'2/1.json',zero);save(master,weight,risk,2,1,161,zero,edit_initial)
-                    c.write(R/'private/CHECKPOINT_LAYOUT_RECOVERY_VALIDATED.json',dict(status='PASS',no_replayed_W_update=True,
-                        preserved_consumed_slot=1,additional_diagnostic_backwards=2,compressed_state_exact=True))
-                    start_slot=2;resume=None;del g,diagnostic
+                    g2,ce2,scope2,norm2=source_gradient(runtime,weight,master,full,[],None,1)
+                    assert torch.equal(g,g2) and (ce,scope,norm)==(ce2,scope2,norm2)
+                    r1=Risk(weight);r1.restore(risk.state(),runtime.device)
+                    r2=Risk(weight);r2.restore(risk.state(),runtime.device)
+                    m1,n1,event=native_candidate(master,weight,g,r1)
+                    m2,n2,event2=native_candidate(master,weight,g2,r2)
+                    assert event['accepted'] and event2['accepted']
+                    assert torch.equal(m1,m2) and torch.equal(n1,n2) and checkpoint.exact(r1.state(),r2.state())
+                    with torch.no_grad():weight.copy_(n1)
+                    master=m1;risk=r1
+                    b.COUNTS['committed_updates']+=1;b.COUNTS['engineering_replayed_native_writes']=1;b.call('C');b.counts()
+                    event.update(owner=2,step=1,slot=1,arm=ARM,completed_slots=161,source_CE=ce,medical_scope_loss=scope,
+                        unclipped_gradient_norm=norm,risk_compression_envelope=risk.eq,
+                        edit_native_net_displacement=float((weight.detach().float()-edit_initial).norm()),FIT_clock=0,
+                        optimization_seconds=None,engineering_reconstructed_original_slot=True,
+                        reconstruction_additional_calls_counted=True,consumed_formal_clock_not_repeated=True)
+                    c.write(R/'private/steps'/ARM/'2/1.json',event);save(master,weight,risk,2,1,161,event,edit_initial)
+                    c.write(R/'private/CHECKPOINT_LAYOUT_RECOVERY_VALIDATED.json',dict(status='PASS',deterministic_current_gradients_bit_exact=True,
+                        repeated_master_native_risk_candidates_bit_exact=True,preserved_consumed_formal_slot=1,
+                        additional_diagnostic_backwards=4,accounted_replayed_native_writes=1,compressed_state_exact=True,
+                        lost_after_step_bytes_available=False,recovery_basis='Exact before-step state plus frozen deterministic operator/input/clock'))
+                    start_slot=2;resume=None;del g,g2,r2,m2,n2
                 for slot in range(start_slot,161):
                     c.budget();start=time.perf_counter()
                     master,event=optimize(runtime,weight,master,risk,full,actual_removed,anchors,slot);completed+=1
