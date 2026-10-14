@@ -1,0 +1,23 @@
+{
+  "status": "USER_AUTHORIZED_HALF_HOURLY_MONITORING",
+  "authorization_date": "2026-10-14",
+  "authorization": "每半小时监测 M/M-S/M-E，正常保持安静；工程故障先保留现场，只在冻结协议和预算内、能证明恢复正确时续接。原146保持暂停，O/L继续等待。完成后对比三臂与K的T2G和逐题保护损伤，缺分保留上下界，完整评分后push并通知我。",
+  "automation_id": "w-146",
+  "interval_minutes": 30,
+  "notification_intent": "Quiet while healthy; notify on meaningful progress, faults and repairs, required action, or verified terminal delivery.",
+  "scientific_protocol": "PROTOCOL.json",
+  "arms": ["M", "M-S", "M-E"],
+  "reference": "K_REUSE_ONLY",
+  "hardware": "pro5000 physical GPU5 / GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+  "recovery": "Retain fault state and all costs; resume only unfinished consumers after proving complete state continuity and no duplicate attempted action within frozen budgets.",
+  "terminal_delivery": "Required scoring terminal, missing bounds and individual protection gates preserved; public source, anonymous report and costs pushed to PR80; verify remote SHA and anonymous access, notify user, then pause w-146.",
+  "unrecoverable_or_budget_stop": "Explicit partial with retained failures and accounting, public-delivery verification and user notification.",
+  "original146": "PAUSED_RETAINED_OWNER101_STEP1",
+  "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+  "supersedes": "Earlier operational no-monitor flags only; retain original preparation and execution receipts.",
+  "scientific_change": false,
+  "activation_reset": false,
+  "budget_change": false,
+  "new_install_or_training_restart": false,
+  "automatic_next_round": false
+}

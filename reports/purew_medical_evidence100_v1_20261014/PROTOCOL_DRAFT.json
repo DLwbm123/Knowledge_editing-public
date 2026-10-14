@@ -1,0 +1,245 @@
+{
+  "version": "PUREW_M_MS_ME100_SOURCE_REGION_DRAFT_V1_20261014",
+  "status": "PREPARATION_ONLY_DRAFT_NOT_EXECUTABLE",
+  "execution_authorized": false,
+  "GPU_launches": 0,
+  "additional_model_or_Judge_requests": 0,
+  "new_training_updates": 0,
+  "preserved": {
+    "original146": "PAUSED_RETAINED_OWNER101_STEP1",
+    "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+    "historical_assets": "READ_ONLY",
+    "old_protocols_and_budgets": "UNCHANGED"
+  },
+  "hardware_if_later_authorized": {
+    "host": "pro5000",
+    "physical_GPU": 5,
+    "GPU_UUID": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca"
+  },
+  "cohort": {
+    "native_edit_count": 100,
+    "original_order_and_per_edit_seed": true,
+    "remove_or_reorder_failed_region_sources": false,
+    "native_and_four_original_FITs_only": true,
+    "native_edit_source_not_official_train_only_split": true,
+    "clinical_independence": "UNKNOWN"
+  },
+  "qualification": {
+    "summary": "QUALIFICATION_SUMMARY.json",
+    "private_gate": "SOURCE_REVIEW_PRIVATE.json",
+    "local_image": 45,
+    "global_image": 5,
+    "KG": 50,
+    "coarse_box_active": 12,
+    "coarse_box_scope": "brain MRI only",
+    "pixel_mask_active": 0,
+    "neutral_view_active": 0,
+    "source_only_assistant_triage": true,
+    "independent_physician_review": false,
+    "no_evaluation_question_answer_or_model_outputs_in_review_input": true,
+    "no_automatic_region_repair_or_annotation": true
+  },
+  "arms": {
+    "M": {
+      "current_objective": ".5 native CE + .5 cyclic original FIT CE",
+      "consolidated_functions": [
+        "source answer logits"
+      ],
+      "old_native_replay": false,
+      "BASIS_KL_replay": false
+    },
+    "M-S": {
+      "current_objective": "M CE + a_i * (.5 d_native_removed^2 + .5 d_cyclicFIT_removed^2)",
+      "consolidated_functions": [
+        "source answer logits"
+      ],
+      "old_native_replay": false,
+      "BASIS_KL_replay": false
+    },
+    "M-E": {
+      "current_objective": "identical to M-S",
+      "consolidated_functions": [
+        "source answer logits",
+        "source full-minus-evidence-removed logit contrasts on12 eligible sources"
+      ],
+      "old_native_replay": false,
+      "BASIS_KL_replay": false
+    },
+    "K_reference": {
+      "reuse_only": true,
+      "historical_replay_and_extra61_protection_sources": "DISCLOSED_DIFFERENT_DATA_CONDITION",
+      "rebuild_old_weights_or_rescore_failed_Judge": false,
+      "unmeasured_evidence_metrics": "NA"
+    }
+  },
+  "medical_view": {
+    "a_i": "fixed private source-only gate;1 for12 eligible coarse-box sources,0 for88 others",
+    "box_union": "all source-reviewed matching lesion instances, xywh converted to clipped xyxy",
+    "pixel_mask_semantic_decoder": "DISABLED",
+    "region_padding_pixels": 0,
+    "intervention": "copy current original RGB image and set union pixels to constant128 in all3 channels; deterministic; not healthy-image synthesis",
+    "new_answers_for_removed_images": false,
+    "opposite_answer_or_absence_label": false,
+    "background_invariance_loss_weight": 0,
+    "same_qualified_views_for_M-S_and_M-E": true,
+    "teacher": "before-edit current native model; cache only current five source/FIT full/removed mean log probabilities, then retire at boundary",
+    "d": "mean_logp_current(source answer|view)-mean_logp_before_edit(source answer|same view)",
+    "medical_scope_weight": 1.0,
+    "no_new_training_questions": true
+  },
+  "training": {
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "native_precision": "FP16",
+    "temporary_master_and_grad": "FP32",
+    "loss_scale": 128,
+    "clip_joint_gradient_norm": 5.0,
+    "proposed_eta": 0.01,
+    "optimizer_attempt_slots_per_edit": 160,
+    "arms_with_new_training": 3,
+    "maximum_formal_attempt_slots": 48000,
+    "accepted_native_writes_may_be_fewer": true,
+    "no_fill_or_extra_steps_for_rejected_or_zero_native_candidates": true,
+    "new_inference_parameters": 0,
+    "new_inference_branches": 0,
+    "frozen_vision_and_upstream_structure": true,
+    "original_Base_and_preprocessing": "same frozen native Base as K, no new encoder, resolution or answer truncation"
+  },
+  "functional_curvature": {
+    "r": "center full-vocabulary logits at each source-answer teacher-forced position, divide concatenated vector by sqrt(answer token count)",
+    "answer_function": "concat sqrt(.5)*r_native and sqrt(.125)*r_each_original_FIT",
+    "evidence_function": "same weighted five-input full-minus-removed contrasts; only eligible current source",
+    "ideal_G": "J_answer.T@J_answer + lambda_E*J_contrast.T@J_contrast in M-E; answer block only in M/M-S",
+    "lambda_E": 1.0,
+    "answer_Gaussian_VJP_probes_per_edit": 4,
+    "evidence_Gaussian_VJP_probes_per_eligible_edit_in_M_E": 4,
+    "separate_block_sampling_preserves_PSD_addition": true,
+    "fixed_sketch_rank": 4,
+    "maximum_FD_stack_rows": 8,
+    "answer_probe_seed": "20260912 + source order, separate from training RNG",
+    "evidence_probe_seed": "20260912 +100000 +source order",
+    "candidate_rows_retained_after_consolidation": false,
+    "historical_sample_features_or_teacher_caches_retained": false,
+    "initial_state": "B empty;rho=q=0;v=0;no initial Base-protection sample buffer",
+    "compression": "Frequent Directions PSD completion centered at current W, retaining cumulative q/v;never reset to latest anchor",
+    "risk_state": "Qbar(w+delta)=q+v.T@delta+.5*delta.T@(B.T@B+rho*I)@delta",
+    "update": "delta(lambda)=-eta*(I+eta*lambda*H)^-1*(g+lambda*v), finite1D root +Woodbury",
+    "proposed_total_proxy_budget_epsilon": 0.01,
+    "budget_units": "sampled centered source-logit quadratic energy; not a probability or clinical risk",
+    "budget_selection": "one prospective draft value; not calibrated using any evaluation result",
+    "actual_FP16_check": "candidate actual native delta must satisfy proxy budget and non-increasing first-order proximal objective; finite backtracking without rescaling upward",
+    "maximum_root_iterations_per_slot": 48,
+    "maximum_native_backtracks_per_slot": 8,
+    "backtrack_factor": 0.5,
+    "zero_or_rejected_candidate": "discard both candidate native and candidate master; count consumed slot and every actual call; advance source clock",
+    "approximation_limits": [
+      "sampling error unbounded without extra assumptions",
+      "FD envelope concerns sampled quadratic only",
+      "nonlinear Taylor remainder needs unknown valid constants",
+      "FP16 network Jacobian uses local real-valued shadow model",
+      "no unseen Base T2L or T2G correctness guarantee",
+      "parameter statistics do not provide a privacy guarantee"
+    ]
+  },
+  "analysis_plan": {
+    "primary_mechanism_contrast": "M-E minus M-S",
+    "scope_acquisition_contrast": "M-S minus M",
+    "historical_comparisons": [
+      "K",
+      "C",
+      "TT88",
+      "BalancEdit"
+    ],
+    "K_vs_new_no_replay": "different replay/data conditions; not isolated KL coefficient comparison",
+    "new_curvature_probe_compute": "account separately; not an equal-compute claim",
+    "do_not_force_equal_C_or_K_update_norms": true,
+    "report_actual_norm_path_net_and_quantization": true,
+    "report_all100_and_source-defined12_support_separately": true
+  },
+  "evaluation": {
+    "frozen_original_Base_masks_and_active_target_rule": true,
+    "prefixes": [
+      1,
+      50,
+      100
+    ],
+    "prefix100_denominators": {
+      "T0": 100,
+      "T1G": 394,
+      "T2G": 386,
+      "T1L": 2,
+      "T2L": 34
+    },
+    "panel_consumer_counts": {
+      "1": 46,
+      "50": 575,
+      "100": 1074
+    },
+    "actual_insertion_T0_and_eligible_T2G_consumers": 486,
+    "evaluation_consumers_per_new_arm": 2181,
+    "all_three_maximum_consumers": 6543,
+    "single_not_an_insertion_proxy": true,
+    "actual_T2G_insertion_to_final_wrong_and_repairs": true,
+    "source_evidence_diagnostics": "full-minus-removed logit and target-logprob drift at actual insertion and final on source-defined12; training-source retention diagnostic, not independent clinical grounding",
+    "source_diagnostic_teacher_forcing_only": true,
+    "background_or_sham_training_loss": false,
+    "no_fresh_K_evidence_model_calls": "unmeasured is NA; no old weight reconstruction",
+    "scoring_after_full_trajectory_native_reload_and_GPU_lease_retirement": true,
+    "shared_missing_exact_bounds": true,
+    "unattempted_or_not_generated_not_permanent_missing": true,
+    "paired_bootstrap": 10000,
+    "bootstrap_seed": 20260912,
+    "paired_units": [
+      "edit",
+      "original source group"
+    ],
+    "Judge": "existing Stage17 isolation, gpt-6-astra medium, one attempt per new payload, no failed retry",
+    "consecutive_new_transport_failure_stop": 3
+  },
+  "hard_gates": {
+    "Base_protection": "all34 original Base-correct T2L and2 T1L individually correct at prefix100;unknown cannot pass; repairs/averages cannot compensate harm",
+    "native": "all100 actual insertion T0 and final T0 correct",
+    "T1G": "retain all original qualified T1G, report every lost edit/probe",
+    "T2G": "report per-edit shared-missing nonregression bounds for M-E vs M-S and K; any negative or unknown cannot pass full success",
+    "evidence": "report every source-defined contrast drift; do not invent a clinical truth threshold",
+    "scores": "all required payload consumers terminal; permanent unknown still precludes complete scientific success"
+  },
+  "proposed_new_budget_NOT_ACTIVE": {
+    "formal_attempt_slots": 48000,
+    "maximum_committed_native_writes_with_admission": 48003,
+    "temporary_admission_writes": 3,
+    "maximum_backwards": 120000,
+    "maximum_forward_calls": 1000000,
+    "maximum_generations": 6558,
+    "maximum_new_Judge": 6543,
+    "GPU_process_hours": 72,
+    "wall_hours": 96,
+    "owned_matrix_state_limit_bytes": 6442450944,
+    "minimum_free_disk_bytes": 8589934592,
+    "maximum_GPU_memory_bytes": 48318382080,
+    "activation": "one activation only after future authorization, exclude preparation;never borrow original146/K/O-L budgets",
+    "budget_note": "prospective ceilings, not measured runtime or execution authorization"
+  },
+  "lifecycle": {
+    "current_stage": "source audit and protocol only",
+    "GPU_executor_implemented": false,
+    "CPU_M_native_recovery_and_solver_admission": "NOT_RUN_FOR_THIS_PROTOCOL",
+    "real_VLM_intervention_and_no_replay_admission": "NOT_RUN",
+    "scoring_executor_implemented_for_new_arms": false,
+    "background_consumers_installed": false,
+    "future_order": [
+      "M",
+      "M fresh native reload",
+      "M-S",
+      "M-S fresh native reload",
+      "M-E",
+      "M-E fresh native reload",
+      "full terminal scoring",
+      "aggregate report and public delivery"
+    ],
+    "hard_interrupt_no_unaccounted_replay": true
+  },
+  "automatic_expansion": false,
+  "automatic_third_annotation_revision": false,
+  "automatic_tuning_or_seed_or_layer_sweep": false,
+  "recurring_monitor_installed": false
+}

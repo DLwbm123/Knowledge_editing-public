@@ -1,0 +1,29 @@
+{
+  "status": "CPU_VERIFIED_ACCOUNTED_DETERMINISTIC_RESUME_PENDING_GPU_VALIDATION",
+  "failure": "Raw full-sketch atomic serialization exceeds6GiB owned matrix ceiling",
+  "checkpoint_native_shape": [
+    4096,
+    14336
+  ],
+  "stored_checkpoint_bytes": 3405793443,
+  "failed_temporary_peak_estimate_bytes": 6811586886,
+  "estimate_not_exact_measurement": true,
+  "temporary_removed_by_original_quota_guard": true,
+  "repair": "Lossless gzip level1 atomic serialization; full FP64 state precision unchanged",
+  "CPU_compressed_state_bit_exact": true,
+  "retained_committed_source1_slots": 160,
+  "source2_consumed_slots": 1,
+  "source2_native_writes": 1,
+  "proof": "Total28 writes =26 persisted source1 writes +1 temporary admission +1 lost source2 write",
+  "recovery": "Exact before-step native/master/curvature plus preserved current source and clock; require two identical gradients and native/master/risk candidates, commit one accounted recovery write and advance no additional formal slot",
+  "extra_diagnostic_backwards": 4,
+  "extra_calls_counted": true,
+  "original_full_trajectory_and_quotas_unchanged": true,
+  "activation_reset": false,
+  "prior_source1_generation_replayed": false,
+  "new_Judge": 0,
+  "retained_all_failure_costs": true,
+  "previous_zero_write_hypothesis": "RETRACTED_BY_PER_STEP_AUDIT",
+  "accounted_replayed_native_writes": 1,
+  "lost_after_step_bytes_available": false
+}
