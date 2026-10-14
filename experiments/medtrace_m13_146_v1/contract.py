@@ -95,4 +95,4 @@ def selfcheck():
     assert CAPS['evaluation_consumers']==3*7494+2385
     assert CAPS['local_solves']==0
     return dict(status='PASS',M13_original_flags=True,soft_Fisher_not_a_hard_budget=True,
-        no_90percent_or_direction_gate=True,bounded_counts=True,training_launcher_implemented=False)
+        no_90percent_or_direction_gate=True,bounded_counts=True,training_launcher_implemented=True,training_ready=False)
