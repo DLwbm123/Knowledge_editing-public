@@ -1,23 +1,76 @@
 {
-  "status": "INSTALL_PENDING_HOST_IO",
-  "frozen_GPU_code_commit": "3b72bef9a6fe8c9fe11e50d25dffba5e8ee1e8d6",
-  "install_attempts": 1,
+  "status": "VERIFIED_RECOVERY_WAITING_GPU_MEMORY",
+  "original_install_process_exited": true,
+  "installation_count": 1,
+  "original_install_exit_code": "NA_SSH_TIMEOUT_NOT_CAPTURED",
+  "prior_pause_delivery_confirmed": false,
+  "prior_execution_preserved": true,
+  "real_VLM_admission": {
+    "F": "PASS",
+    "S": "PASS"
+  },
+  "F_formal_slots": 160,
+  "F_accepted_updates": 26,
+  "S_formal_slots": 0,
+  "F_complete_first_source_outputs": 51,
+  "GPU_process_hours_used": 1.0493908364905251,
+  "actual_compute_counts": {
+    "forwards": 1435,
+    "vision_forwards": 77,
+    "backwards": 386,
+    "committed_updates": 28,
+    "attempt_slots": 160,
+    "generation_attempts": 57
+  },
+  "new_Judge": 0,
+  "checkpoint_boundary": {
+    "owner": 1,
+    "slot": 160,
+    "RNG_master_native_risk_event_exact": true
+  },
+  "recovery_CPU": "PASS_BIT_EXACT",
+  "recovery_controller_identity_verified": true,
+  "recovery_controller_pid": 430289,
+  "minimum_free_GPU_MiB": 46080,
+  "observed_free_GPU_MiB": 27819,
+  "GPU_active": false,
+  "stage_memory_reservation_GiB": 43,
+  "budget_reset": false,
   "activation_epoch": 1791969242.962559,
   "deadline_epoch": 1792055642.962559,
-  "budget_reset": false,
-  "controller_started": false,
-  "real_VLM_admission": "NOT_STARTED",
-  "formal_attempt_slots": 0,
-  "new_Judge": 0,
-  "GPU_process_hours": 0,
-  "kernel_wait": "folio_wait_bit_common",
-  "host_MemAvailable_KiB": 5244988,
-  "host_IO_full_avg10_percent": 89.13,
-  "finite_adoption_alive": true,
-  "finite_adoption_actions": "Read retained exact controller identity, then start only unattempted local scoring/publication consumers; never reinstall or replay GPU stages",
-  "original_M": "PAUSED_OWNER4_SLOT51_RETAINED",
-  "original146": "PAUSED_OWNER101_STEP1",
-  "OL": "WAITING",
+  "controller_code_commit": "6aceb41a832a6074aea2ef7799f00c805f9f7524",
+  "GPU_stage_code_commit": "50495c73b978c4dae8dcda560c3b0f06739187e7",
+  "consumer_code_commit": "eccebb7b12017bfc9eefd22151013e605f7a8d90",
+  "original146": "PAUSED_RECOVERY_POINT_PRESENT",
+  "original_M": "PAUSED_RECOVERY_POINT_PRESENT",
+  "OL": "WAITING_PREDECESSOR_NOT_INSTALLED",
+  "old_partial_report_retained": true,
   "scientific_success": false,
-  "epoch": 1791969664.606545
+  "epoch": 1791976509.773908,
+  "local_consumers": {
+    "SCORERS.json": [
+      {
+        "pid": 84389,
+        "identity_matches": true
+      },
+      {
+        "pid": 84391,
+        "identity_matches": true
+      },
+      {
+        "pid": 84393,
+        "identity_matches": true
+      },
+      {
+        "pid": 84395,
+        "identity_matches": true
+      }
+    ],
+    "FINITE_TAIL.json": [
+      {
+        "pid": 84397,
+        "identity_matches": true
+      }
+    ]
+  }
 }

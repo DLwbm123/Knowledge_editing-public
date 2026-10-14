@@ -1,3 +1,3 @@
-# F/S有限诊断partial
+# F/S阶段状态：恢复等待显存
 
-执行故障或预算止步，所需轨迹/重载/评分屏障未完成。指标NA，未生成/未评分不伪作永久missing；失败、实际成本和恢复点全部保留，不能声称科学成功。详见RESULTS.json及私有故障回执。原146/M暂停，O/L等待，无盲重放。
+本轮未完成，正在原预算内等待安全恢复条件，详见LAUNCH_STATUS_ZH.md和STARTUP_VERIFICATION.json。原故障时partial报告与成本保留在RESULTS_BEFORE_RECOVERY_PARTIAL.json及公开提交804044d，不能将其伪作完整科学结果。
