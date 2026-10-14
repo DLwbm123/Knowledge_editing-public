@@ -21,7 +21,8 @@ def start(queue_file='queue146.py',result_folder='judge_m13_146_astra_medium',
     run=os.environ['M13_REMOTE_RUN'];root=Path(os.environ['M13_LOCAL_SCORER_ROOT'])
     source=os.environ['SCORER_SOURCE'];task=os.environ['SCORER_TASK']
     assert root.is_dir() and not any(root.iterdir()),'New empty isolated root required'
-    assert admission_file in ('M13_146_RUNTIME_ADMISSION.json','SELECTED_RUNTIME_ADMISSION1.json')
+    assert admission_file in ('M13_146_RUNTIME_ADMISSION.json','SELECTED_RUNTIME_ADMISSION1.json',
+                              'SELECTED_PREFILL_RECOVERY_ADMISSION1.json')
     code="import json,pathlib; r=pathlib.Path("+repr(run)+"); a=json.loads((r/'private'/"+repr(admission_file)+").read_text()); assert a['status']=='PASS' and a['launch_authorized']; s=json.loads((r/'private/SOURCE_ADMISSION146.json').read_text()); assert s['status']=='PASS'; print('PASS')"
     p=subprocess.run(['ssh','pro5000','python3 -'],input=code,text=True,capture_output=True,check=True)
     assert p.stdout.strip()=='PASS'
