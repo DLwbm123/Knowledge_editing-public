@@ -97,6 +97,15 @@ with tempfile.TemporaryDirectory(prefix='e.',dir='/data/bmw/tmp') as folder:
     q=queue.q;q.ROOT.mkdir(parents=True,exist_ok=True);q.write(q.ROOT/'EPOCH_MANIFEST.json',dict(epoch='CPU_FIXTURE',model='gpt-6-astra',reasoning_effort='medium',protocol=q.PROTOCOL,prompt=q.PROMPT))
     c.write(R/'private/M_PARENT_PROTOCOL_BINDING.json',dict(protocol=c.digest(payload['protocol'])))
     db=q.connect();queue.ingest(db)
+    env=dict(os.environ,ENTRY=str(R/'private/tools/queue_fs.py'),PYTHONPATH='');env.pop('ACTION',None)
+    runner="import os,runpy,sys;runpy.run_path(os.environ['ENTRY'],run_name='__main__');assert 'torch' not in sys.modules"
+    fresh=subprocess.run([sys.executable,'-'],input=runner,env=env,capture_output=True,text=True,timeout=30)
+    assert fresh.returncode==0,fresh.stderr
+    assert json.loads(fresh.stdout)==[]
+    env['ENTRY']=str(R/'private/tools/report_fs.py')
+    fresh=subprocess.run([sys.executable,'-'],input="import os,runpy;runpy.run_path(os.environ['ENTRY'],run_name='entry_import_selfcheck')",env=env,capture_output=True,text=True,timeout=30)
+    assert fresh.returncode==0,fresh.stderr
+    result.update(standalone_queue_entry=True,standalone_report_import=True,queue_no_torch=True)
     old=queue.parent.ro(Path(payload['protocol']['K_reference_run'])/'private/judge_purew146/queue.sqlite')
     lookup={x['query_id']:x['path'] for x in old.execute("SELECT * FROM consumer WHERE method='K' AND mode='bank_R0' AND prefix=100")}
     tasks=c.read(R/'private/BENCHMARK146_QUEUE.json')['tasks'];ledger=c.read(R/'private/EVAL_LEDGER.json')

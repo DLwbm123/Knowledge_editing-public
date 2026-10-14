@@ -1,10 +1,13 @@
 """Anonymous finite diagnostic: exact shared missing bounds and unchanged protection gate."""
 from collections import Counter
 import json
+import os
+import sys
 import sqlite3
 import time
+sys.path.insert(0, os.environ["RUN_ROOT"] + "/private/tools")
 import astra_report as ar
-from evaluator import protection_ids
+from panels import protection_ids
 from logic import transitions
 R,c,r=ar.RUN,ar.common,ar.r
 

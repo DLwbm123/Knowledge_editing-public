@@ -4,9 +4,11 @@ import json
 import os
 from pathlib import Path
 import sqlite3
+import sys
 import time
+sys.path.insert(0, os.environ["RUN_ROOT"] + "/private/tools")
 import base_queue as parent
-from evaluator import expected_ids
+from panels import expected_ids
 q, R, a = parent.q, parent.R, parent.a
 protocol = q.read(R/'private/FROZEN_PROTOCOL.json')
 
