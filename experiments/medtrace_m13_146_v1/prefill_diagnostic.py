@@ -20,14 +20,17 @@ def backend():
 
 
 def main():
-    gate = c.read(RUN/'private/PREFILL_DIAGNOSTIC_ADMISSION1.json')
-    assert gate['status'] == 'PASS' and gate['owner'] == 3 and gate['GPU'] == 0
+    diagnostic = int(os.environ.get('PREFILL_DIAGNOSTIC_ID', '1'))
+    assert diagnostic in (1, 2)
+    gate = c.read(RUN/'private'/f'PREFILL_DIAGNOSTIC_ADMISSION{diagnostic}.json')
+    owner, gpu = diagnostic + 2, diagnostic - 1
+    assert gate['status'] == 'PASS' and gate['owner'] == owner and gate['GPU'] == gpu
     assert gate['max_GPU_seconds'] == 900 and gate['max_backwards'] == 4
     assert gate['max_non_generation_forwards'] == 24 and gate['scientific_updates'] == 0
     assert c.read(RUN/'private/SELECTED_RECOVERY_EXIT1.json')['exit_code'] == 1
     assert all(v.get('ended_epoch') for v in c.read(RUN/'RESOURCE_LEDGER.json')['gpu_sessions'])
     assert c.read(RUN/'private/PREFILL_POLICY_CPU_DIAGNOSIS1.json')['status'] == 'PASS'
-    with (RUN/'private/PREFILL_DIAGNOSTIC_ONCE1').open('x'):
+    with (RUN/'private'/f'PREFILL_DIAGNOSTIC_ONCE{diagnostic}').open('x'):
         pass
     worker.configure()
     native.g.SOURCE_WEIGHTS = (.5, .5)
@@ -40,11 +43,11 @@ def main():
         assert r.COUNTS['non_generation_forwards'] <= gate['max_non_generation_forwards']
 
     r.count = count
-    task = worker.tasks()[3-1]
-    rows = trajectory.source_rows(worker.packet(), 3)
-    prior = c.read(RUN/'private/selected_recovery_original1/NATIVE_FMIN_FIRST_STEP_REAL_3.json')
-    reference = c.read(RUN/'private/results/C/3.json')
-    initial_path = RUN/'private/resume146/FISHER_MIN_INITIAL_3.pt'
+    task = worker.tasks()[owner-1]
+    rows = trajectory.source_rows(worker.packet(), owner)
+    prior = c.read(RUN/'private/selected_recovery_original1'/f'NATIVE_FMIN_FIRST_STEP_REAL_{owner}.json')
+    reference = c.read(RUN/'private/results/C'/f'{owner}.json')
+    initial_path = RUN/'private/resume146'/f'FISHER_MIN_INITIAL_{owner}.pt'
     assert initial_path.is_file() and not initial_path.is_symlink()
     saved = torch.load(initial_path, map_location='cpu', weights_only=False)
     assert saved['step'] == saved['scalar']['step'] == 0
@@ -53,8 +56,8 @@ def main():
     from m3bench_repro.editors.llava_runtime import seed_everything
     report = dict(status='DIAGNOSTIC_RUNNING', source=gate['source_commit'],
                   scientific_updates=0, corrections=0, generation=0, Judge=0, variants=[])
-    with r.p.lease(0):
-        runtime, bindings, handle = r.load(0)
+    with r.p.lease(gpu):
+        runtime, bindings, handle = r.load(gpu)
         handle.remove()
         handle = runtime.model.register_forward_pre_hook(lambda *args: r.count(*args))
         try:
@@ -94,7 +97,7 @@ def main():
                     report['variants'].append(dict(prefill=name, backend=flags, pure_gain=gain,
                         old_pure_gain=prior['pure_gain'], exact_old_pure_gain=gain == prior['pure_gain'],
                         source_RMS_diagnostic_clock=scalar['step']))
-                    c.write(RUN/'private/PREFILL_DIAGNOSTIC_RESULT1.json', report)
+                    c.write(RUN/'private'/f'PREFILL_DIAGNOSTIC_RESULT{diagnostic}.json', report)
                 finally:
                     hook.detach()
             differences = []
@@ -106,7 +109,7 @@ def main():
                 counts=dict(r.COUNTS), epoch=time.time(), no_training_resume=True)
             assert r.COUNTS['updates'] == r.COUNTS['generation_attempts'] == 0
             assert r.COUNTS['backwards'] == gate['max_backwards']
-            c.write(RUN/'private/PREFILL_DIAGNOSTIC_RESULT1.json', report)
+            c.write(RUN/'private'/f'PREFILL_DIAGNOSTIC_RESULT{diagnostic}.json', report)
         finally:
             handle.remove()
             r.save_counts()
@@ -118,8 +121,9 @@ if __name__ == '__main__':
         main()
     except BaseException as error:
         code = 1
-        c.write(RUN/'private/PREFILL_DIAGNOSTIC_FAILURE1.json',
+        c.write(RUN/'private'/f'PREFILL_DIAGNOSTIC_FAILURE{os.environ.get("PREFILL_DIAGNOSTIC_ID", "1")}.json',
             dict(error=repr(error), traceback=traceback.format_exc(), automatic_retry=False))
         raise
     finally:
-        c.write(RUN/'private/PREFILL_DIAGNOSTIC_EXIT1.json', dict(exit_code=code, epoch=time.time()))
+        c.write(RUN/'private'/f'PREFILL_DIAGNOSTIC_EXIT{os.environ.get("PREFILL_DIAGNOSTIC_ID", "1")}.json',
+                dict(exit_code=code, epoch=time.time()))
