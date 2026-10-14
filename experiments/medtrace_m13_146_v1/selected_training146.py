@@ -18,17 +18,19 @@ def assignments(part):
 
 
 def recovering():return (RUN/'private/SELECTED_RECOVERY_ADMISSION1.json').exists()
-def source_file():return 'SELECTED_RECOVERY_SOURCE1.json' if recovering() else 'SELECTED_SOURCE1.json'
+def prefill_recovery():return (RUN/'private/SELECTED_PREFILL_RECOVERY_ADMISSION1.json').exists()
+def recovery_gate_file():return 'SELECTED_PREFILL_RECOVERY_ADMISSION1.json' if prefill_recovery() else 'SELECTED_RECOVERY_ADMISSION1.json'
+def source_file():return 'SELECTED_PREFILL_RECOVERY_SOURCE1.json' if prefill_recovery() else 'SELECTED_RECOVERY_SOURCE1.json' if recovering() else 'SELECTED_SOURCE1.json'
 def caps():
     base=dict(comparison146.CAPS)
     if recovering():
-        extra=c.read(RUN/'private/SELECTED_RECOVERY_ADMISSION1.json')['additional_compute_caps']
+        extra=c.read(RUN/'private'/recovery_gate_file())['additional_compute_caps']
         for key,value in extra.items():base[key]=base.get(key,0)+value
     return base
 
 
 def require_admission():
-    gate=c.read(RUN/'private'/('SELECTED_RECOVERY_ADMISSION1.json' if recovering() else 'SELECTED_RUNTIME_ADMISSION1.json'))
+    gate=c.read(RUN/'private'/(recovery_gate_file() if recovering() else 'SELECTED_RUNTIME_ADMISSION1.json'))
     assert gate['status']=='PASS' and gate['execution_ready'] and gate['launch_authorized']
     assert gate['owners']==OWNERS and gate['physical_GPUs']==[0,1]
     assert gate['packet_binding']==c.digest(worker.packet())
@@ -45,6 +47,12 @@ def require_admission():
     assert c.read(RUN/'PLAN_CONFIG.json')['maximum_counts']==caps()
     assert c.read(RUN/'STAGE_CAP.json')['GPU_seconds_limit']==c.read(RUN/'RUN_MANIFEST.json')['GPU_seconds_limit']
     if recovering():assert c.read(RUN/'private/SELECTED_RECOVERY_CPU_CHECKS1.json')['status']=='PASS'
+    if prefill_recovery():
+        assert c.read(RUN/'private/PREFILL_RECOVERY_CPU_CHECKS1.json')['status']=='PASS'
+        for i in (1,2):
+            assert c.read(RUN/'private'/f'PREFILL_DIAGNOSTIC_EXIT{i}.json')['exit_code']==0
+            rows=c.read(RUN/'private'/f'PREFILL_DIAGNOSTIC_RESULT{i}.json')['variants']
+            assert rows[1]['exact_old_pure_gain'] and not rows[0]['exact_old_pure_gain']
     assert gate['cpu_checks_binding']==c.digest(c.read(RUN/'private/SELECTED_TRAINING_CPU_CHECKS1.json'))
     assert c.read(RUN/'private/SELECTED_TRAINING_CPU_CHECKS1.json')['status']=='PASS'
     assert c.read(RUN/'private/NATIVE_FMIN_EXIT1.json')['exit_code']==0
@@ -80,8 +88,12 @@ def train():
     assert gpu==part and gpu in (0,1)
     recovery=os.environ.get('SELECTED_RECOVERY')=='1'
     assert recovery==recovering()
-    with (RUN/'private'/f"SELECTED_{'RECOVERY_' if recovery else ''}TRAIN_ONCE_{part}").open('x'):pass
-    if recovery:r.COUNTS.update(c.read(RUN/'private/selected_recovery_original1'/f'COUNTS_selected_train_{part}.json'))
+    phase='PREFILL_RECOVERY_' if prefill_recovery() else 'RECOVERY_' if recovery else ''
+    with (RUN/'private'/f"SELECTED_{phase}TRAIN_ONCE_{part}").open('x'):pass
+    if recovery:
+        folder='selected_prefill_recovery_original1' if prefill_recovery() else 'selected_recovery_original1'
+        action='selected_recovery_train' if prefill_recovery() else 'selected_train'
+        r.COUNTS.update(c.read(RUN/'private'/folder/f'COUNTS_{action}_{part}.json'))
     r.NATIVE_FORWARD_CAP=caps()['non_generation_forwards']
     worker.configure()
     with r.p.lease(gpu):

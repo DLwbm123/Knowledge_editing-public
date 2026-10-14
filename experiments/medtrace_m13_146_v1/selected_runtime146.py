@@ -11,7 +11,7 @@ import selected_training146 as training
 def main():
     training.require_admission();worker.r.NATIVE_FORWARD_CAP=training.comparison146.CAPS['non_generation_forwards']
     action=os.environ['ACTION']
-    if action in ('selected_train','selected_recovery_train'):training.train()
+    if action in ('selected_train','selected_recovery_train','selected_prefill_recovery_train'):training.train()
     elif action in ('m13_146_single','m13_146_bank'):
         worker.configure()
         from bank146 import evaluate

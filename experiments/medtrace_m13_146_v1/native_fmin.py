@@ -50,7 +50,8 @@ def main(full=False,loaded=None,recovery=False):
     if recovery:
         assert owner in (3,4) and full
         assert c.read(RUN/'private/SELECTED_RECOVERY_ADMISSION1.json')['status']=='PASS'
-    with (RUN/'private'/f"NATIVE_FMIN_{'RECOVERY_' if recovery else ''}ONCE_{owner}").open('x'):pass
+    phase='PREFILL_RECOVERY_' if os.environ.get('ACTION')=='selected_prefill_recovery_train' else 'RECOVERY_' if recovery else ''
+    with (RUN/'private'/f"NATIVE_FMIN_{phase}ONCE_{owner}").open('x'):pass
     configure();task=worker.tasks()[owner-1];rows=trajectory.source_rows(worker.packet(),owner)
     assert not worker.point(task,'FISHER_MIN').exists()
     calibration=c.read(RUN/'private/calibration146'/f'{owner}.json')
@@ -64,6 +65,8 @@ def main(full=False,loaded=None,recovery=False):
             cache={k:v.to(runtime.device) if isinstance(v,torch.Tensor) else v
                 for k,v in r.p.load_state(RUN/'private/OPERATOR_FISHER.pt').items()}
             cpu_cache=p.cache_cpu(cache)
+            # A reused C/M13 model already has this policy before visual prefill.
+            if recovery:r.old.fp32(runtime)
             runtime.model.half();prepared=r.s.prepare(runtime,bindings,task,rows,True)
             r.old.fp32(runtime);sources=[r.old.batch_on(runtime,v[1]) for v in prepared]
             seed_everything(task['seed']);initial=r.p.tr.TT4(task['seed'],8,8).state_dict()
@@ -127,6 +130,10 @@ def main(full=False,loaded=None,recovery=False):
                         assert finite or (unchanged and abs(selected_gain)<=1e-6)
                         if recovery:
                             prior=c.read(RUN/'private/selected_recovery_original1'/f'NATIVE_FMIN_FIRST_STEP_REAL_{owner}.json')
+                            c.write(RUN/'private'/f'SELECTED_RECOVERY_FIRST_STEP_OBSERVATION_{owner}.json',dict(
+                                pure_gain=pure_gain,selected_gain=selected_gain,Fisher_ratio=candidate_penalty/budget,
+                                prior=prior,exact_gain_parity=pure_gain==prior['pure_gain'] and selected_gain==prior['selected_gain'],
+                                exact_Fisher_parity=candidate_penalty/budget==prior['Fisher_ratio']))
                             assert pure_gain==prior['pure_gain'] and selected_gain==prior['selected_gain']
                             assert candidate_penalty/budget==prior['Fisher_ratio']
                             c.write(RUN/'private'/f'SELECTED_RECOVERY_FIRST_STEP_PARITY_{owner}.json',dict(status='PASS',

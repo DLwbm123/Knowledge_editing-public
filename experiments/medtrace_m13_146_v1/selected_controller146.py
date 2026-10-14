@@ -25,14 +25,14 @@ def main():
     training.require_admission()
     assert all(v.get('ended_epoch') for v in c.read(RUN/'RESOURCE_LEDGER.json')['gpu_sessions'])
     recovery=os.environ.get('SELECTED_RECOVERY')=='1'
-    with (RUN/'private'/('SELECTED_RECOVERY_CONTROLLER_ONCE1' if recovery else 'SELECTED_CONTROLLER_ONCE1')).open('x'):pass
+    with (RUN/'private'/('SELECTED_PREFILL_RECOVERY_CONTROLLER_ONCE1' if training.prefill_recovery() else 'SELECTED_RECOVERY_CONTROLLER_ONCE1' if recovery else 'SELECTED_CONTROLLER_ONCE1')).open('x'):pass
     def stage(action,file='selected_runtime146.py'):
         c.budget()
         jobs=[launch(action,gpu,gpu,file,training.source_file()) for gpu in (0,1)]
         wait(jobs)
         assert all(v.get('ended_epoch') for v in c.read(RUN/'RESOURCE_LEDGER.json')['gpu_sessions'])
         training.check_counts()
-    stage('selected_recovery_train' if recovery else 'selected_train')
+    stage('selected_prefill_recovery_train' if training.prefill_recovery() else 'selected_recovery_train' if recovery else 'selected_train')
     for part in (0,1):assert c.read(RUN/'private'/f'SELECTED_TRAIN_DONE_{part}.json')['owners']==training.assignments(part)
     for task in worker.tasks():
         for arm in ('C',)+training.comparison146.METHODS:
@@ -79,4 +79,4 @@ if __name__=='__main__':
         c.write(RUN/'private/FAILURE_selected_controller1.json',dict(error=repr(error),traceback=traceback.format_exc(),epoch=time.time(),automatic_retry=False))
         raise
     finally:
-        c.write(RUN/'private'/('SELECTED_RECOVERY_EXIT1.json' if os.environ.get('SELECTED_RECOVERY')=='1' else 'SELECTED_EXIT1.json'),dict(exit_code=code,epoch=time.time()))
+        c.write(RUN/'private'/('SELECTED_PREFILL_RECOVERY_EXIT1.json' if training.prefill_recovery() else 'SELECTED_RECOVERY_EXIT1.json' if os.environ.get('SELECTED_RECOVERY')=='1' else 'SELECTED_EXIT1.json'),dict(exit_code=code,epoch=time.time()))
