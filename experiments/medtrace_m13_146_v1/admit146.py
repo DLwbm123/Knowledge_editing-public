@@ -3,9 +3,16 @@ import os
 from pathlib import Path
 import shutil
 import tempfile
+import torch
 import contract
 import trajectory
 from runtime146 import c,r,RUN
+
+
+def check_router(entry,original):
+    assert entry['logical_edit_id']==original['logical_edit_id'] and entry['radius']==original['radius']
+    assert tuple(entry.get('label',()))==tuple(original.get('label',()))
+    assert torch.equal(torch.as_tensor(entry['key'],dtype=torch.float32),torch.as_tensor(original['key'],dtype=torch.float32))
 
 
 def admit():
@@ -30,11 +37,14 @@ def admit():
             if row.get('admitted'):assert all(Path(v['path']).is_file() for v in row['source_evidence'])
     plan=contract.evaluation_plan(packet,c.read(RUN/'private/EVAL_QUERIES146.json'))
     router=c.read(RUN/'private/ROUTER_BINDINGS146.json')
+    original_router=c.read(RUN/'private/ORIGINAL_ROUTER_MANIFEST146.json')
     assert set(router)=={str(i) for i in range(1,147)}
     for task in packet['original_tasks']:
         saved=r.p.load_state(Path(router[str(task['order'])]))
         assert len(saved['entries'])==1 and saved['entries'][0]['logical_edit_id']==task['edit_id']
         assert saved['native_binding']==contract.original.task_binding(task)['native']
+        assert original_router[str(task['order'])]['native_binding']==saved['native_binding']
+        check_router(saved['entries'][0],original_router[str(task['order'])]['entry'])
     assert shutil.disk_usage(RUN).free>=8*1024**3
     with tempfile.NamedTemporaryFile(dir=RUN) as file:
         file.write(b'm13 storage probe');file.flush();assert Path(file.name).read_bytes()==b'm13 storage probe'

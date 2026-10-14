@@ -6,7 +6,7 @@ bank146独立调用原MemoryRouter和生成接口：single只装对应专家，�
 
 queue146使用新隔离epoch和完整24867消费者，scorer_start只为新空目录配置四个新中性入口，worker结果目录互相隔离，复用原sealed Astra medium通用客户端；不是旧评分任务复活。一次尝试、全局覆盖、四完成回执和有效/永久缺失精确复用保持。report146复用原报告数学，包含M1/M3/M13的single/逐次插入与所有prefix覆盖、原T2L31编辑54探针、双CI、FIT/T2G逐编辑和M3逐编辑损伤门槛。科学FAIL和缺失不会因为执行完整而变成PASS。controller同时等待全局覆盖和四个完成回执，避免最后一次评分发布先写全局状态导致提前报告；prefix1的逐单编辑数值只留私有审计，公开仅标记该小组已审计，原门槛照常计算。候选权重与Fisher只在source/single/所有真实库/报告最后消费者完成后释放；不删除历史C/D。
 
-admit146只对明确配置的新RUN做CPU运行准入，不启动GPU：需全部原来源、显式用户启动记录、当前ALIGNED真实完成/交付、四CPU报告、物理证据/图像、原native绑定的R0条目、版本、2GiB/8GiB存储、计数与GPU清单均齐备。任务元数据、同版工具/source快照、LAUNCH_ENV、模型/数据路径、BASIS/heldout、原R0 bindings、EVAL_QUERIES、PRIOR_CALIBRATIONS、继承成本ledger和硬件UUID由独立RUN配置提供；不复制当前活跃权重，不把CPU快照当实际GPU恢复准入。当前没有创建新科学RUN、写真实READY或运行scorer_start。
+admit146只对明确配置的新RUN做CPU运行准入，不启动GPU：需全部原来源、显式用户启动记录、当前ALIGNED真实完成/交付、四CPU报告、物理证据/图像、对原冻结manifest逐值核对key/radius/label/id的R0条目、版本、2GiB/8GiB存储、计数与GPU清单均齐备。任务元数据、同版工具/source快照、LAUNCH_ENV、模型/数据路径、BASIS/heldout、原R0 bindings及ORIGINAL_ROUTER_MANIFEST146、EVAL_QUERIES、PRIOR_CALIBRATIONS、继承成本ledger和硬件UUID由独立RUN配置提供；不复制当前活跃权重，不把CPU快照当实际GPU恢复准入。当前没有创建新科学RUN、写真实READY或运行scorer_start。
 
 CPU已核验146冷初始化，首项对现有真实C BASE逐核一致；实际MemoryRouter完成三方法四前缀共12路由及438插入前缀，未来专家和重复条目拒绝。当前真实139来源缺口阻止worker入场。四scorer配置彼此隔离。完整报告夹具24867消费者验证原31/54掩码、三方法面板、单编辑FIT退化/缺失/零CI正确阻断成功。详见RUNTIME_CPU_CHECKS/REPORT_CPU_CHECKS；早前训练数学/160循环/队列检查也保持。
 

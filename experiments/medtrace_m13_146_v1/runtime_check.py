@@ -15,6 +15,7 @@ import runtime146 as worker
 import bank146
 import scorer_start
 import source_workplan
+import admit146
 from m3bench_repro.editors.routing import MemoryRouter
 
 
@@ -46,6 +47,11 @@ def main():
         for n in range(1,147):
             assert len(bank146.bank_entries(entries,dict(method=method,mode='insertion',prefix=n,owner=n)))==n
     assert len(bank146.bank_entries(entries,dict(method='M13',mode='single',prefix=1,owner=146)))==1
+    admit146.check_router(entries[0],entries[0])
+    changed=copy.deepcopy(entries[0]);changed['radius']+=1
+    rejected(lambda:admit146.check_router(changed,entries[0]))
+    changed=copy.deepcopy(entries[0]);changed['key'][0]+=1
+    rejected(lambda:admit146.check_router(changed,entries[0]))
     duplicate=copy.deepcopy(entries);duplicate[1]=duplicate[0]
     rejected(lambda:bank146.bank_entries(duplicate,dict(method='M13',mode='bank',prefix=146,owner=0)))
     original_run=worker.RUN
@@ -65,6 +71,7 @@ def main():
     result=dict(status='PASS',cold_initializers=146,original_C_BASE_exact=True,
         actual_R0_CPU_routes=routes,all_438_insertion_prefixes=True,no_future_expert_or_duplicate_bank=True,
         actual_source_gap_blocks_worker=True,four_new_isolated_scorer_configs=True,source_plan=plan,
+        original_router_key_and_radius_changes_rejected=True,
         new_GPU_leases=0,new_VLM_calls=0,new_Judge=0,training_ready=False,
         live_network_and_operational_admission_pending=True)
     Path(os.environ['M13_CPU_REPORT']).write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
