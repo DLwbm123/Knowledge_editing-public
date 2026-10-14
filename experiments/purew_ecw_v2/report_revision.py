@@ -26,7 +26,8 @@ def main():
     result=dict(status='PARTIAL_NOT_COMPLETE',scientific_success=False,diagnostic_only=True,generated=generated,diagnostics=diagnostics,
         new_Judge=cost['Judge_attempts'],GPU_process_hours=cost['gpu_seconds_used']/3600,
         actual_counts={k:sum(c.read(p).get(k,0) for p in (R/'private/attempts').glob('*.json')) for k in ['forwards','vision_forwards','backwards','committed_updates','attempt_slots','generation_attempts']},
-        failures=len(list((R/'private/failures').glob('*.json'))),followup146_activated=False,
+        GPU_stage_failures=len(list((R/'private/failures').glob('*.json'))),
+        engineering_receipts=[c.read(p) for p in (R/'public').glob('ENGINEERING_*.json')],followup146_activated=False,
         scalability_146='NOT_ADMITTED_FULL_SUPPORT_CPU_MEMORY_AND_STREAMING_PENDING',historical_results_preserved=True)
     if not full:
         assert list((R/'private/failures').glob('*.json')),'Healthy incomplete trajectory is not terminal'
