@@ -4,7 +4,7 @@
 
 ## 盘点与现有候选
 
-原146中七例/十四锚点已合格，剩余拆为138例尚待有界审阅及一项累计12候选0PASS、等待原命题证据。逐例绑定/队列保存在私有SOURCE_WORKPLAN146.json，公开仅SOURCE_WORKPLAN_SUMMARY.json。138例每例最多六候选，首版共预留828次候选审阅。本次已登记两候选，最多剩余826次；不是需要耗满上限、更不是保证通过。
+原146中七例/十四锚点已合格，当前剩余拆为137例尚待有界审阅、一项六个候选身份已登记但完整图文与角色证明待补，以及一项累计12候选0PASS、等待原命题证据。逐例绑定/队列保存在私有SOURCE_WORKPLAN146.json，公开仅SOURCE_WORKPLAN_SUMMARY.json。138例每例最多六候选，首版共预留828次候选审阅。目前首个待补项已登记六候选，最多剩余822次；不是需要耗满上限、更不是保证通过。
 
 现有268条候选图像均可定位，但provenance_verified_scope全为false、patient_independence全为UNKNOWN。其中180条已标evaluated，不能转入训练；88条ORIGINAL_DATASET_ANNOTATION只作检索线索，仍不能当作合格GFIT。候选数量、答案或病名相同均不替代完整命题/图像/病例资格。
 
