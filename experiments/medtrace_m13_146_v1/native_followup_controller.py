@@ -10,22 +10,23 @@ import runtime146 as worker
 c,RUN=worker.c,worker.RUN
 
 
-def launch(action,gpu,owner):
+def launch(action,gpu,owner,file='native_followup.py',source_file='NATIVE_FOLLOWUP_SOURCE1.json'):
     hardware=c.read(RUN/'PLAN_CONFIG.json')['hardware']['UUIDs']
     uuid,free=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=uuid,memory.free',
         '--format=csv,noheader,nounits'],text=True).strip().split(', ')
     assert uuid==hardware[str(gpu)] and int(free)>=45*1024
     with (RUN/'private'/f'LAUNCH_ONCE_{action}_{owner}').open('x'):pass
     fd,name=tempfile.mkstemp(prefix='e.',suffix='.py',dir=os.environ['TMPDIR']);os.close(fd)
-    Path(name).write_text("import os,sys,runpy\nsys.path.insert(0,os.environ['NATIVE_FOLLOWUP_TOOLS'])\nrunpy.run_path(os.environ['NATIVE_FOLLOWUP_TOOLS']+'/native_followup.py',run_name='__main__')\n")
-    env=dict(os.environ,ACTION=action,GPU=str(gpu),OWNER=str(owner),PARTITION=str(gpu),CUDA_VISIBLE_DEVICES=str(gpu))
+    Path(name).write_text("import os,sys,runpy\nsys.path.insert(0,os.environ['NATIVE_FOLLOWUP_TOOLS'])\nrunpy.run_path(os.environ['NATIVE_WORKER_FILE'],run_name='__main__')\n")
+    env=dict(os.environ,ACTION=action,GPU=str(gpu),OWNER=str(owner),PARTITION=str(gpu),CUDA_VISIBLE_DEVICES=str(gpu),
+        NATIVE_WORKER_FILE=str(Path(os.environ['NATIVE_FOLLOWUP_TOOLS'])/file))
     process=subprocess.Popen([env['TRAIN_PYTHON'],'-u',name],env=env,
         stdout=(RUN/'logs'/f'{action}_{owner}.log').open('ab'),stderr=subprocess.STDOUT,start_new_session=True)
     proc=Path('/proc')/str(process.pid)
     c.write(RUN/'private'/f'START_{action}_{owner}.json',dict(pid=process.pid,
         start_ticks=proc.joinpath('stat').read_text().split(') ',1)[1].split()[19],gpu=gpu,owner=owner,
         argv=proc.joinpath('cmdline').read_bytes().replace(b'\0',b' ').decode(),entry=name,
-        gpu_uuid=uuid,source=c.read(RUN/'private/NATIVE_FOLLOWUP_SOURCE1.json')['commit'],epoch=time.time()))
+        gpu_uuid=uuid,source=c.read(RUN/'private'/source_file)['commit'],epoch=time.time()))
     return process
 
 
