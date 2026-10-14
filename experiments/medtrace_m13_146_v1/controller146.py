@@ -41,11 +41,11 @@ def controller():
     c.write(RUN/'private/M13_146_CANDIDATES_FROZEN.json',dict(candidates=584,selection=False))
     stage('m13_146_single');stage('m13_146_bank')
     plan=c.read(RUN/'private/EVAL_PLAN146.json');outputs=[c.read(p) for p in (RUN/'private/outputs').glob('*/*/*.json')]
-    assert len(outputs)==len(plan)==24867 and {d['consumer_id'] for d in outputs}=={contract.consumer_id(d) for d in plan}
+    assert len(outputs)==len(plan)==contract.CAPS['evaluation_consumers'] and {d['consumer_id'] for d in outputs}=={contract.consumer_id(d) for d in plan}
     counts=[c.read(p) for p in (RUN/'private').glob('COUNTS_m13_146_*.json')]
     for k,cap in contract.CAPS.items():
         if k not in ('evaluation_consumers','Judge_attempts'):assert sum(v.get(k,0) for v in counts)<=cap
-    c.write(RUN/'private/M13_146_GENERATION_COMPLETE.json',dict(outputs=24867,counts=counts,epoch=time.time()))
+    c.write(RUN/'private/M13_146_GENERATION_COMPLETE.json',dict(outputs=len(outputs),counts=counts,epoch=time.time()))
     pipeline.wait([pipeline.launch('queue146.py','m13_146_ingest')])
     while (not (RUN/'private/judge_m13_146_astra_medium/ALL_WORKERS_COMPLETE.json').exists()
            or not all((RUN/'private/judge_m13_146_astra_medium/workers'/str(worker)/'SCORER_DONE.json').exists() for worker in range(4))):

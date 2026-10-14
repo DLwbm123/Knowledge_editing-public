@@ -41,7 +41,7 @@ def main():
         missing=q.digest(full_identity(second,judge))
         known={key:('FORMAT_VALID',1),missing:('MISSING',None)}
         with db:result=queue.ingest_generated(q,db,plan,outputs(plan),full_identity,judge,'fixture lock',known)
-        assert result['consumers']==24867 and not result['all_scores_valid'] and not result['all_attempts_resolved']
+        assert result['consumers']==contract.CAPS['evaluation_consumers'] and not result['all_scores_valid'] and not result['all_attempts_resolved']
         assert result['consumer_status']['FORMAT_VALID']>1 and result['consumer_status']['MISSING']>1
         db.commit()
         assert queue.known_scores(q,[q.ROOT/'queue.sqlite'],judge)[key]==('FORMAT_VALID',1)
@@ -76,7 +76,7 @@ def main():
             assert db.execute('SELECT count(*) FROM consumer').fetchone()[0]==0
             assert db.execute('SELECT count(*) FROM payload').fetchone()[0]==0
             db.close()
-    result=dict(status='PASS',fixture_consumers=24867,unique_fixture_payloads=before,
+    result=dict(status='PASS',fixture_consumers=contract.CAPS['evaluation_consumers'],unique_fixture_payloads=before,
         exact_consumer_coverage=True,reserved_sources_rejected=True,
         missing_duplicate_changed_input_wrong_method_rollback=True,
         inherited_valid_and_permanent_missing_preserved=True,repeated_attempt_rejected=True,

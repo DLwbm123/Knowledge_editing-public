@@ -17,7 +17,7 @@ def coefficient(C_source_gain,C_penalty,prior=None):
 
 
 def step(r,before,source_gradients,cache,regularization,scalar,target,arm='M13'):
-    """source_gradients must be the un-clipped cyclic .25/.25/.5 aggregate."""
+    """source_gradients must be the un-clipped frozen source-recipe aggregate."""
     assert arm in ('M1','M13') and scalar['step']>=0 and len(scalar['second_moments'])==2
     assert math.isfinite(target) and target>=0 and math.isfinite(regularization) and regularization>=0
     assert arm!='M1' or regularization==0

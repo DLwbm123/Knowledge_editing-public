@@ -8,7 +8,7 @@ import sqlite3
 import time
 import contract
 
-EPOCH='MEDTRACE_M13_ORIGINAL146_20261014_V1'
+EPOCH='MEDTRACE_M13_NATIVE_FIT146_20261014_V1'
 MAX_JUDGE=contract.CAPS['Judge_attempts']
 
 
@@ -30,7 +30,7 @@ def known_scores(q,paths,judge):
 def ingest_generated(q,db,plan,outputs,identity,judge,scope_lock,known):
     expected={contract.original.consumer_id(row):row for row in plan}
     assert len(expected)==len(plan)==MAX_JUDGE
-    assert collections.Counter(row['method'] for row in plan)==dict(M1=7494,M3=7494,M13=7494,BASE=2385)
+    assert collections.Counter(row['method'] for row in plan)==contract.METHOD_CONSUMERS
     assert not any(row['query'].get('unfilled_source_slot') for row in plan)
     assert not db.execute('SELECT 1 FROM consumer LIMIT 1').fetchone()
     actual=set()

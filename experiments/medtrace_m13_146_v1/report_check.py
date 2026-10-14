@@ -50,7 +50,7 @@ def main():
         db.execute("UPDATE payload SET status='MISSING',correct=NULL WHERE key=?",(key,));db.commit();report.main()
         assert q.read(root/'public/M13_146_RESULTS.json')['gates']['complete'] is False
         db.close()
-    checks=dict(status='PASS',synthetic_scores_only=True,consumers=24867,three_method_panels=True,
+    checks=dict(status='PASS',synthetic_scores_only=True,consumers=contract.CAPS['evaluation_consumers'],three_method_panels=True,
         original_T2L_31_edits_54_probes=True,one_edit_regression_blocks_success=True,
         missing_blocks_complete=True,zero_CI_blocks_success=True,M3_damage_gate_present=True,
         new_GPU_leases=0,new_VLM_calls=0,new_Judge=0,training_ready=False)

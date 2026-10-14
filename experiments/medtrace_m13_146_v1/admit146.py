@@ -18,9 +18,15 @@ def check_router(entry,original):
 def admit():
     assert RUN.resolve().is_relative_to(Path('/data/bmw/Knowledge_editing/outputs'))
     packet=c.read(RUN/'private/M13_SOURCE_PACKET.json')
+    assert packet['source_recipe']==contract.SOURCE_RECIPE
     assert contract.source_admission(packet)['status']=='PASS','All original146 source evidence is mandatory'
     authorization=c.read(RUN/'private/USER_LAUNCH_AUTHORIZATION.json')
     assert authorization['launch_authorized'] is True and authorization['original_questions_unchanged'] is True
+    comparison=c.read(RUN/'private/FINAL_COMPARISON_ADMISSION.json')
+    assert comparison['status']=='PASS' and comparison['source_recipe']==contract.SOURCE_RECIPE
+    assert len(comparison['primary_methods'])==2 and 'M13' in comparison['primary_methods']
+    assert set(comparison['primary_methods'])<=set(('M13','FISHER_MIN','ALIGNED_MIN'))
+    assert comparison['all_declared_consumers_implemented'] and comparison['finite_budget_frozen']
     env=c.read(RUN/'private/LAUNCH_ENV.json');upstream=Path(env['ALIGNED_CONTROL_PARENT'])
     assert c.read(upstream/'private/COMPLETE.json')['status']=='COMPLETE'
     assert c.read(upstream/'private/FULL_EXIT1.json')['exit_code']==0
@@ -32,9 +38,6 @@ def admit():
         initial=r.p.tr.TT4(task['seed'],8,8).state_dict()
         assert sum(v.numel() for v in initial.values())==7168
         for row in trajectory.source_rows(packet,task['order']):assert Path(row['image_path']).is_file()
-    for rows in packet['reviews']['owners'].values():
-        for row in rows:
-            if row.get('admitted'):assert all(Path(v['path']).is_file() for v in row['source_evidence'])
     plan=contract.evaluation_plan(packet,c.read(RUN/'private/EVAL_QUERIES146.json'))
     router=c.read(RUN/'private/ROUTER_BINDINGS146.json')
     original_router=c.read(RUN/'private/ORIGINAL_ROUTER_MANIFEST146.json')
@@ -53,7 +56,8 @@ def admit():
     assert manifest['owned_weight_limit_bytes']==2*1024**3 and manifest['min_free_bytes']==8*1024**3
     assert c.read(RUN/'PLAN_CONFIG.json')['maximum_counts']==contract.CAPS
     scope=dict(method_flags={k:list(v) for k,v in contract.FLAGS.items()},methods=contract.METHODS,
-        steps=160,parameters=7168,source_weights=[.25,.25,.5],prefixes=contract.PREFIXES,
+        steps=160,parameters=7168,source_recipe=contract.SOURCE_RECIPE,
+        source_weights=list(contract.SOURCE_WEIGHTS),prefixes=contract.PREFIXES,
         soft_Fisher_coefficient_fraction=.1,hard_Fisher_budget=False,source_rejection=False,
         task_binding=[contract.original.task_binding(t) for t in packet['original_tasks']])
     with (RUN/'private/M13_146_ADMISSION_ONCE').open('x'):pass
