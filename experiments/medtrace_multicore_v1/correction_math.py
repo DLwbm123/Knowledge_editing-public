@@ -14,34 +14,37 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
     """Nearest proposal in whitened tangent-operator coordinates."""
     matrix, offset, center, step_offset, source = [np.asarray(x, dtype=np.float64)
         for x in (matrix, offset, center, step_offset, source)]
-    assert matrix.shape[1] == len(center) == len(source) == len(step_offset)
+    assert matrix.shape[1] == len(center) == source.shape[-1] == len(step_offset)
     assert all(np.isfinite(x).all() for x in (matrix, offset, center, step_offset, source))
     ball = radius**2-orthogonal
     if ball < -1e-8:
         return None, dict(status='CERTIFIED_LOCAL_INFEASIBLE', certificate='tangent_orthogonal_distance')
-    normalization = max(np.linalg.norm(source), abs(required), 1e-12)
-    source, required = source/normalization, required/normalization
+    source=np.atleast_2d(source);required=np.atleast_1d(required)
+    assert len(source)==len(required) and np.isfinite(required).all()
+    normalization = np.maximum(np.maximum(np.linalg.norm(source,axis=1),np.abs(required)),1e-12)
+    source, required = source/normalization[:,None], required/normalization
     values, vectors = np.linalg.eigh(matrix.T@matrix)
     assert values.min() >= -1e-8*max(1., values.max())
     values = np.maximum(values, 0.)
     af = vectors.T@(matrix.T@offset)
-    ce, se, so = [vectors.T@x for x in (center, step_offset, source)]
+    ce, se = [vectors.T@x for x in (center, step_offset)]
+    so=vectors.T@source.T
     trust2 = trust**2 if trust is not None else 1e30
 
     regularizer = 1e-6 if fisher_objective else 1.
     fisher_weight = .5 if fisher_objective else 0.
 
     def evaluate(x, certificate=False):
-        lam, mu, nu, eta = x
+        lam, mu, eta = x[0],x[1],x[-1]
+        nu=x[2:-1]
         tie, weight = (0., 0.) if certificate else (regularizer, fisher_weight)
-        rhs = tie*ce-2*(weight+lam)*af-2*mu*se+nu*so
+        rhs = tie*ce-2*(weight+lam)*af-2*mu*se+so@nu
         diagonal = tie+2*(weight+lam)*values+2*mu+2*eta
         if certificate and diagonal.min() <= 1e-10*max(1., diagonal.max()):
             return None
         z = vectors@(rhs/diagonal)
-        residuals = np.array([np.linalg.norm(matrix@z+offset)**2-1.,
-            np.linalg.norm(z+step_offset)**2-ball, required-source@z,
-            np.linalg.norm(z)**2-trust2])
+        residuals = np.r_[np.linalg.norm(matrix@z+offset)**2-1.,
+            np.linalg.norm(z+step_offset)**2-ball,required-source@z,np.linalg.norm(z)**2-trust2]
         objective = .5*tie*np.linalg.norm(z-center)**2+weight*np.linalg.norm(matrix@z+offset)**2+x@residuals
         return objective, residuals, z, rhs, diagonal
 
@@ -49,8 +52,8 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
         objective, residuals, *_ = evaluate(x)
         return -objective, -residuals
 
-    result = minimize(dual, np.zeros(4), jac=True, method='L-BFGS-B',
-        bounds=[(0., None)]*3+[(0., None) if trust is not None else (0., 0.)],
+    result = minimize(dual, np.zeros(3+len(required)), jac=True, method='L-BFGS-B',
+        bounds=[(0., None)]*(2+len(required))+[(0., None) if trust is not None else (0., 0.)],
         options=dict(maxiter=2000, maxls=50, ftol=1e-14, gtol=1e-10))
     objective, residuals, z, rhs, diagonal = evaluate(result.x)
     stationarity = float(np.linalg.norm(diagonal*(vectors.T@z)-rhs))
@@ -67,7 +70,7 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
     if result.x.sum() > 0:
         weights = result.x/result.x.sum()
         bound = evaluate(weights, certificate=True)
-        constants = np.array([offset@offset-1., step_offset@step_offset-ball, required, -trust2])
+        constants = np.r_[offset@offset-1., step_offset@step_offset-ball,required,-trust2]
         if bound is not None and bound[0] > 1e-6*max(1., np.max(np.abs(weights*constants))):
             audit.update(status='CERTIFIED_LOCAL_INFEASIBLE',
                          certificate='positive_constraint_mixture', certificate_lower_bound=float(bound[0]))
@@ -106,7 +109,7 @@ def feature_direction(state, direction, cache):
     return torch.stack([x.sum(0) for x in values.split(cache['token_counts'])]).flatten()
 
 
-def tangent(current, proposal, before, gradients, protection_gradient, cache, radius, budget):
+def tangent(current, proposal, before, gradients, protection_gradient, cache, radius, budget, alignment_reference=None):
     state = {k:v.detach().cpu().double() for k,v in current.items()}
     gradient = {k:v.detach().cpu().double() for k,v in gradients.items()}
     protect = {k:v.detach().cpu().double() for k,v in protection_gradient.items()}
@@ -165,9 +168,17 @@ def tangent(current, proposal, before, gradients, protection_gradient, cache, ra
             for k in mm.KEYS:out[k] += coefficient*direction[k]
         out,_ = mm.canonicalize(out)
         return {k:v.to(current[k]) for k,v in out.items()}
-    return dict(matrix=(matrix@mapping/budget**.5).numpy(),offset=(features(state,cache)/budget**.5).numpy(),
+    model=dict(matrix=(matrix@mapping/budget**.5).numpy(),offset=(features(state,cache)/budget**.5).numpy(),
         center=(-target).numpy(),step_offset=step_offset.numpy(),orthogonal=orthogonal,
-        source=(-mapping.T@source).numpy()),candidate,dict(root_dimensions=root_size,
+        source=(-mapping.T@source).numpy())
+    if alignment_reference is not None:
+        reference={k:v.detach().cpu().double() for k,v in alignment_reference.items()}
+        projected,_=projection(reference)
+        cb,ca=mm.factors(state);bb,ba=mm.factors({k:v.detach().cpu().double() for k,v in before.items()})
+        pb,pa=mm.factors(reference)
+        model.update(alignment=(step_offset-projected).numpy(),
+            alignment_offset=float(inner([(cb,ca),(-bb,ba)],[(pb,pa),(-bb,ba)]))/radius**2)
+    return model,candidate,dict(root_dimensions=root_size,
         tail_directions=len(tails),tangent_rank=int(keep.sum()),same_TT_parameter_count=sum(v.numel() for v in state.values()))
 
 
