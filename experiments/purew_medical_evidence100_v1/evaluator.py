@@ -20,7 +20,7 @@ def expected_ids(tasks,ledger,mode,owner,prefix):
 
 def panel(runtime,bindings,tasks,ledger,mode,owner,prefix):
     phase=dict(arm=ARM,mode=mode,owner=owner,prefix=prefix,
-        protocol=c.digest(c.read(R/'private/FROZEN_PROTOCOL.json')),code=c.read(R/'private/GPU_SOURCE_VERSION.json')['commit'])
+        protocol=c.digest(c.read(R/'private/FROZEN_PROTOCOL.json')),code=(c.read(R/'private/PHASE_CODE_BINDINGS.json')[ARM] if (R/'private/PHASE_CODE_BINDINGS.json').exists() and ARM in c.read(R/'private/PHASE_CODE_BINDINGS.json') else c.read(R/'private/GPU_SOURCE_VERSION.json')['commit']))
     dest=R/'private/outputs'/ARM/mode/str(owner)/str(prefix)
     ids=expected_ids(tasks,ledger,mode,owner,prefix)
     for q in ids:
@@ -79,7 +79,12 @@ def evaluate():
                 current_case_IO_guard=True,independent_evaluator=True,added_parameters=0,security_boundary='Python I/O enforcement, not adversarial OS sandbox'))
             weight=runtime.get_module(c.LAYER).weight
             assert not any(p.requires_grad for p in runtime.model.parameters())
-            for owner in range(1,101):
+            start_owner=2 if ARM=='M' and (R/'private/CHECKPOINT_LAYOUT_RECOVERY.json').exists() else 1
+            if start_owner==2:
+                import checkpoint
+                active=checkpoint.read(R/'private/active/M/state.pt')
+                with torch.no_grad():weight.copy_(active['native'].to(runtime.device))
+            for owner in range(start_owner,101):
                 req=wait(CONTROL/'EVALUATE.json');assert req['owner']==owner
                 saved=torch.load(CONTROL/'native.pt',map_location='cpu',weights_only=True)
                 assert set(saved)=={'native'} and saved['native'].dtype==torch.float16

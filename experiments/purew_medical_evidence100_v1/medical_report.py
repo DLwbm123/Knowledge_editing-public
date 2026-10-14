@@ -40,7 +40,7 @@ def main():
         scoring_statuses=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),new_Judge_attempts=cost['Judge_attempts'],
         failed_new_batches=sum(x['status']=='FAILED_NO_RETRY' for x in cost['Astra_purew146_batches']),actual_compute_counts=counts,
         GPU_process_hours=cost['gpu_seconds_used']/3600,owned_weight_peak_bytes=cost['weights_observed_peak_bytes'],
-        GPU_memory_observed_peak_MiB=cost.get('GPU_memory_observed_peak_MiB'),failures=len(list((R/'private/failures').glob('*.json'))),
+        GPU_memory_observed_peak_MiB=cost.get('GPU_memory_observed_peak_MiB'),failures=len(list((R/'private/failures').glob('*.json')))+len(list((R/'private').glob('engineering*/failures/*.json'))),
         panels=[],contrasts=[],endpoint_transitions=[],gates={},diagnostics={},new_inference_parameters=0,
         original146='PAUSED_RETAINED',OL='WAIT_ORIGINAL_FULL_PREDECESSOR',
         limitations=['Current-case-only source objective; no historical sample replay or BASIS KL',
@@ -115,7 +115,7 @@ def main():
             result['gates'][arm]=dict(zero_Base_damage=all(x['known_correct']==x['observations'] for x in final if x['task'] in ('T1L','T2L')),
                 T0_insertion_and_final_all_correct=all(x==1 for x in native) and next(x for x in final if x['task']=='T0')['known_correct']==100,
                 T1G_full_retention=next(x for x in final if x['task']=='T1G')['known_correct']==394,
-                full_required_scoring=all(scores[x['payload_key']] is not None for x in rows if x['method']==arm))
+                full_required_scoring=all(scores[x['payload_key']] is not None for x in rows if x['method'] in (arm,'M-S','K')))
             events=[c.read(p) for p in (R/'private/steps'/arm).glob('*/*.json')];assert len(events)==16000
             assert {(x['owner'],x['slot']) for x in events}=={(i,s) for i in range(1,101) for s in range(1,161)}
             result['diagnostics'][arm]=dict(slots=len(events),accepted_native_writes=sum(x['accepted'] for x in events),
@@ -126,6 +126,7 @@ def main():
                 source_evidence_diagnostics=[{k:v for k,v in c.read(p).items() if k!='order'} for p in (R/'private/source_diagnostics'/arm/'final').glob('*.json')])
         result['gates']['M-E']['T2G_per_edit_nonregression']=all(x['edits_negative_lower_bound']==0 for x in result['contrasts'] if x['comparison'] in ('M-E-minus-M-S-prefix100','M-E-minus-K-prefix100') and x['task']=='T2G')
         result['scientific_success']=all(result['gates']['M-E'].values())
+        result['reconstructed_rejected_slots']=sum(x.get('engineering_reconstructed_original_rejected_slot',False) for a in ARMS for x in [c.read(p) for p in (R/'private/steps'/a).glob('*/*.json')])
     c.write(R/'public/RESULTS.json',result)
     lines=['# 无历史病例重放的连续纯W M/M-S/M-E有限对照','',f'状态：{result["status"]}；完整科学门槛：{result["scientific_success"]}。','',
         '|方法|T0|T1G宏界%|T2G宏界%|T1L Base损伤|T2L Base损伤|','|---|---:|---:|---:|---:|---:|']

@@ -13,6 +13,7 @@ import torch.nn.functional as F
 from runtime import R,ARM,WINDOW,CONTROL,c,b,load_learner,track,backward,wait,lease,peak_memory
 from curvature import Risk,native_candidate
 from access import install
+import checkpoint
 
 
 def batches(runtime,packet):
@@ -45,7 +46,7 @@ def current_anchors(runtime,full,removed):
         return dict(full=[float(meanlogp(runtime,x)) for x in full],removed=[float(meanlogp(runtime,x)) for x in removed])
 
 
-def optimize(runtime,weight,master,risk,full,removed,anchors,slot):
+def source_gradient(runtime,weight,master,full,removed,anchors,slot):
     index=1+(slot-1)%4
     gradient=torch.zeros_like(master);ce=scope=0.
     for k in (0,index):
@@ -56,6 +57,11 @@ def optimize(runtime,weight,master,risk,full,removed,anchors,slot):
             scope+=float(loss.detach());gradient+=backward(loss,weight)
     norm=float(gradient.norm());assert math.isfinite(norm)
     gradient*=min(1.,5/max(norm,1e-30))
+    return gradient,ce,scope,norm
+
+
+def optimize(runtime,weight,master,risk,full,removed,anchors,slot):
+    gradient,ce,scope,norm=source_gradient(runtime,weight,master,full,removed,anchors,slot)
     master,native,event=native_candidate(master,weight,gradient,risk)
     if event['accepted']:
         with torch.no_grad():weight.copy_(native)
@@ -98,7 +104,7 @@ def save(master,weight,risk,owner,slot,completed,event,edit_initial,boundary=Fal
         numpy_rng=(np.random.get_state()[0],torch.from_numpy(np.random.get_state()[1].astype('int64')),*np.random.get_state()[2:]),
         clocks=dict(FIT=(slot-1)%4,answer_probe=20260912+owner,evidence_probe=20260912+100000+owner),arm=ARM)
     validate_state(state)
-    b.save(R/'private/active'/ARM/'state.pt',state)
+    checkpoint.write(R/'private/active'/ARM/'state.pt',state)
     c.write(CONTROL/'CHECKPOINT.json',dict(owner=owner,slot=slot,completed_slots=completed,boundary=boundary))
     return state
 
@@ -138,9 +144,18 @@ def main():
                 else:raise AssertionError('Historical access was allowed')
             weight=runtime.get_module(c.LAYER).weight;shape=b.schema(runtime.model)
             frozen={n:p._version for n,p in runtime.model.named_parameters() if p is not weight}
-            master=weight.detach().float().clone();risk=Risk(weight);completed=0
-            assert not (R/'private/active'/ARM/'state.pt').exists(),'Existing state requires audited continuation'
-            for owner in range(1,101):
+            master=weight.detach().float().clone();risk=Risk(weight);completed=0;resume=None;start_owner=1
+            active=R/'private/active'/ARM/'state.pt'
+            if active.exists():
+                plan=c.read(R/'private/CHECKPOINT_LAYOUT_RECOVERY.json')
+                assert ARM=='M' and plan['status']=='VERIFIED_ONE_REJECTED_SLOT_AFTER_BOUNDARY'
+                resume=validate_state(checkpoint.read(active))
+                assert resume['owner']==1 and resume['slot']==160 and resume['boundary'] and resume['completed_slots']==160
+                assert c.read(R/'public/REAL_VLM_ADMISSION_M.json')['status']=='PASS'
+                with torch.no_grad():weight.copy_(resume['native'].to(runtime.device))
+                master=resume['master'].to(runtime.device);risk.restore(resume['risk'],runtime.device)
+                completed=161;start_owner=2
+            for owner in range(start_owner,101):
                 c.write(CONTROL/'NEED_SOURCE.json',dict(owner=owner))
                 packet=wait(WINDOW/'current.json');assert packet['task']['order']==owner
                 task=packet['task'];random.seed(task['seed']);np.random.seed(task['seed']);torch.manual_seed(task['seed']);torch.cuda.manual_seed_all(task['seed'])
@@ -152,8 +167,23 @@ def main():
                     wait(CONTROL/'BASE_ADMITTED.json')
                 actual_removed=removed if ARM!='M' else []
                 anchors=current_anchors(runtime,full,actual_removed)
-                weight.requires_grad_(True);edit_initial=weight.detach().float().clone()
-                for slot in range(1,161):
+                weight.requires_grad_(True);edit_initial=weight.detach().float().clone();start_slot=1
+                if resume is not None:
+                    assert owner==2 and ARM=='M'
+                    # The lost slot made no native/master/risk change, proven by persisted write counters.
+                    g,ce,scope,norm=source_gradient(runtime,weight,master,full,[],None,1)
+                    diagnostic=Risk(weight);diagnostic.restore(risk.state(),runtime.device)
+                    _,_,zero=native_candidate(master,weight,g,diagnostic)
+                    assert not zero['accepted'] and zero['actual_native_norm']==0 and diagnostic.q==risk.q
+                    zero.update(owner=2,step=1,slot=1,arm=ARM,completed_slots=161,source_CE=ce,medical_scope_loss=scope,
+                        unclipped_gradient_norm=norm,risk_compression_envelope=risk.eq,edit_native_net_displacement=0.,FIT_clock=0,
+                        optimization_seconds=None,engineering_reconstructed_original_rejected_slot=True,
+                        reconstruction_additional_calls_counted=True,original_native_write_proven_zero=True)
+                    c.write(R/'private/steps'/ARM/'2/1.json',zero);save(master,weight,risk,2,1,161,zero,edit_initial)
+                    c.write(R/'private/CHECKPOINT_LAYOUT_RECOVERY_VALIDATED.json',dict(status='PASS',no_replayed_W_update=True,
+                        preserved_consumed_slot=1,additional_diagnostic_backwards=2,compressed_state_exact=True))
+                    start_slot=2;resume=None;del g,diagnostic
+                for slot in range(start_slot,161):
                     c.budget();start=time.perf_counter()
                     master,event=optimize(runtime,weight,master,risk,full,actual_removed,anchors,slot);completed+=1
                     b.COUNTS['attempt_slots']=b.COUNTS.get('attempt_slots',0)+1;b.counts()
@@ -164,7 +194,7 @@ def main():
                     c.write(R/'private/steps'/ARM/str(owner)/(str(slot)+'.json'),event)
                     if b.STOP_REQUESTED:raise SystemExit('Cooperative stop saved; no automatic continuation')
                     if slot%20==0:
-                        b.guard(runtime,weight,shape,frozen);b.write_progress(status='TRAINING',arm=ARM,owner=owner,slot=slot,attempt_slots=completed,accepted=risk.q<=.01,risk=risk.q)
+                        b.guard(runtime,weight,shape,frozen);b.write_progress(status='TRAINING',arm=ARM,owner=owner,slot=slot,attempt_slots=completed,last_slot_accepted=event['accepted'],risk=risk.q)
                         print('TRAIN',ARM,owner,slot,completed,event['accepted'],risk.q,flush=True)
                 marker=R/'private/consolidation'/ARM/(str(owner)+'.STARTED.json')
                 assert not marker.exists(),'Probe attempt may not be blindly replayed'
@@ -181,6 +211,7 @@ def main():
                 b.save(CONTROL/'native.pt',dict(native=weight.detach().cpu()))
                 del full,removed,actual_removed,anchors,packet,task,edit_initial
                 gc.collect();torch.cuda.empty_cache()
+                if b.STOP_REQUESTED:raise SystemExit('Cooperative boundary stop: full curvature/RNG checkpoint durable')
                 c.write(CONTROL/'EVALUATE.json',dict(owner=owner))
                 wait(CONTROL/(str(owner)+'.EVAL_DONE.json'))
                 c.write(R/'private/units'/ARM/(str(owner)+'.json'),dict(status='COMPLETE',slots=160,completed_slots=completed))

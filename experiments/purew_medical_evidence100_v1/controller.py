@@ -39,11 +39,16 @@ def main():
                 time.sleep(30)
             ctrl=R/'private/control'/arm;window=R/'private/window'/arm
             if ctrl.exists():
-                reviewed=c.read(R/'private/ENGINEERING_PRETRAINING_RESTART.json')
-                assert arm=='M' and reviewed['status']=='VERIFIED_ZERO_NATIVE_WRITES' and not list((R/'private/units'/arm).glob('*.json'))
+                assert arm=='M'
+                if (R/'private/CHECKPOINT_LAYOUT_RECOVERY.json').exists():
+                    assert c.read(R/'private/CHECKPOINT_LAYOUT_RECOVERY.json')['status']=='VERIFIED_ONE_REJECTED_SLOT_AFTER_BOUNDARY'
+                else:
+                    reviewed=c.read(R/'private/ENGINEERING_PRETRAINING_RESTART.json')
+                    assert reviewed['status']=='VERIFIED_ZERO_NATIVE_WRITES' and not list((R/'private/units'/arm).glob('*.json'))
             ctrl.mkdir(parents=True,exist_ok=True);window.mkdir(parents=True,exist_ok=True)
             learner=launch('learn_'+arm,arm,'learner.py');evaluator=launch('evaluate_'+arm,arm,'evaluator.py')
-            for owner in range(1,101):
+            start_owner=2 if arm=='M' and (R/'private/CHECKPOINT_LAYOUT_RECOVERY.json').exists() else 1
+            for owner in range(start_owner,101):
                 need=ctrl/'NEED_SOURCE.json'
                 while not need.exists() or c.read(need)['owner']!=owner:
                     c.budget();assert learner.poll() is None and evaluator.poll() is None,'Preserve stage failure';time.sleep(.2)

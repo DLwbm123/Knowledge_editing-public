@@ -1,0 +1,26 @@
+{
+  "status": "CPU_VERIFIED_SAFE_RESUME_PENDING_REAL_DIAGNOSTIC",
+  "failure": "Raw full-sketch atomic serialization exceeds6GiB owned matrix ceiling",
+  "checkpoint_native_shape": [
+    4096,
+    14336
+  ],
+  "stored_checkpoint_bytes": 3405793443,
+  "failed_temporary_peak_estimate_bytes": 6811586886,
+  "estimate_not_exact_measurement": true,
+  "temporary_removed_by_original_quota_guard": true,
+  "repair": "Lossless gzip level1 atomic serialization; full FP64 state precision unchanged",
+  "CPU_compressed_state_bit_exact": true,
+  "retained_committed_source1_slots": 160,
+  "source2_consumed_slots": 1,
+  "source2_native_writes": 0,
+  "proof": "Total28 native writes =27 persisted accepted source1 updates +1 temporary admission;161 total formal slots",
+  "recovery": "Only reconstruct read-only diagnostics of consumed rejected source2 slot1, retain its consumed clock; no W update replay",
+  "extra_diagnostic_backwards": 2,
+  "extra_calls_counted": true,
+  "original_full_trajectory_and_quotas_unchanged": true,
+  "activation_reset": false,
+  "prior_source1_generation_replayed": false,
+  "new_Judge": 0,
+  "retained_all_failure_costs": true
+}

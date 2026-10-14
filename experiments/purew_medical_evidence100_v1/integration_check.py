@@ -27,7 +27,7 @@ with tempfile.TemporaryDirectory(prefix='e.',dir='/data/bmw/tmp') as folder:
     c.write(R/'private/FROZEN_PROTOCOL.json',payload['protocol']);c.write(R/'private/GPU_SOURCE_VERSION.json',dict(commit='CPU_FIXTURE'))
     c.write(R/'RUN_MANIFEST.json',dict(deadline_epoch=time.time()+3600,GPU_seconds_limit=86400,Judge_limit=6543,min_free_bytes=1,owned_weight_limit_bytes=6*1024**3))
     c.write(R/'STAGE_CAP.json',dict(GPU_seconds_limit=86400));c.write(R/'RESOURCE_LEDGER.json',dict(Judge_attempts=0,Astra_purew146_batches=[],gpu_sessions=[],gpu_seconds_used=0,weights_observed_peak_bytes=0))
-    import learner
+    import learner,checkpoint
     from types import SimpleNamespace
     class Toy(torch.nn.Module):
         def __init__(self):super().__init__();self.weight=torch.nn.Parameter(torch.randn(7,3).half())
@@ -48,7 +48,7 @@ with tempfile.TemporaryDirectory(prefix='e.',dir='/data/bmw/tmp') as folder:
     c.restore_rng(rng);np.random.set_state(npr);rr=Risk(weight)
     partial,event=advance(master.clone(),rr,1,4)
     saved=learner.save(partial,weight,rr,1,4,4,event,initial.float())
-    loaded=torch.load(R/'private/active/M/state.pt',map_location='cpu',weights_only=True)
+    loaded=checkpoint.read(R/'private/active/M/state.pt')
     assert set(loaded['risk'])=={'B','v','rho','q','ev','erho','eq','compressions'}
     assert not any(k in loaded for k in ('question','image','labels','teacher','features','old_cases'))
     assert loaded['completed_slots']==(loaded['owner']-1)*160+loaded['slot']
@@ -71,8 +71,11 @@ with tempfile.TemporaryDirectory(prefix='e.',dir='/data/bmw/tmp') as folder:
     mr=Risk(weight);mm=initial.float().clone();aa=learner.current_anchors(runtime,full,full)
     mm,ee=learner.optimize(runtime,weight,mm,mr,full,full,aa,1)
     learner.save(mm,weight,mr,1,1,1,ee,initial.float(),anchors=aa)
-    ms=torch.load(R/'private/active/M/state.pt',map_location='cpu',weights_only=True);learner.validate_state(ms)
+    ms=checkpoint.read(R/'private/active/M/state.pt');learner.validate_state(ms)
     assert ms['current_anchors']==aa
+    checkpoint.write(R/'private/active/M/copy.pt',ms)
+    assert checkpoint.exact(ms,checkpoint.read(R/'private/active/M/copy.pt'))
+    result['compressed_checkpoint_bit_exact']=True
     result.update(actual_executor_update=True,exact_master_native_rng_resume=True,corrupt_source_clock_rejected=True,
         old_sample_free_state=True,separate_probe_RNG=True,current_anchor_scalar_loss=True)
     print('CPU executor PASS',flush=True)
