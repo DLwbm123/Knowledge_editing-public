@@ -32,9 +32,9 @@ def main():
         p=folder/n;p.write_text(text);paths.append(str(p.relative_to(W)))
     env=dict(os.environ,HTTP_PROXY='http://127.0.0.1:7897',HTTPS_PROXY='http://127.0.0.1:7897',ALL_PROXY='http://127.0.0.1:7897',NO_PROXY='',no_proxy='')
     subprocess.run(['git','add','--',*paths],cwd=W,check=True);subprocess.run(['git','commit','-m','Deliver bounded ECW GPU4 implementation validation and retained costs'],cwd=W,check=True)
-    subprocess.run(['git','-c','http.proxy=http://127.0.0.1:7897','push','origin',os.environ['BRANCH']],cwd=W,env=env,check=True,timeout=120)
+    subprocess.run(['git','-c','http.proxy=http://127.0.0.1:7897','-c','http.version=HTTP/1.1','push','origin',os.environ['BRANCH']],cwd=W,env=env,check=True,timeout=120)
     sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=W,text=True).strip()
-    actual=subprocess.check_output(['git','-c','http.proxy=http://127.0.0.1:7897','ls-remote','origin','refs/heads/'+os.environ['BRANCH']],cwd=W,env=env,text=True,timeout=45).split()[0];assert actual==sha
+    actual=subprocess.check_output(['git','-c','http.proxy=http://127.0.0.1:7897','-c','http.version=HTTP/1.1','ls-remote','origin','refs/heads/'+os.environ['BRANCH']],cwd=W,env=env,text=True,timeout=45).split()[0];assert actual==sha
     os.environ.update({k:env[k] for k in ['HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','no_proxy']})
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({'http':env['HTTP_PROXY'],'https':env['HTTPS_PROXY']}))
     with opener.open('https://raw.githubusercontent.com/DLwbm123/Knowledge_editing-public/'+sha+'/reports/purew_ecw_v1_20261014/QUICK_RESULTS.json',timeout=45) as response:assert response.status==200
