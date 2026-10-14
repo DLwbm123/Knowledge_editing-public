@@ -1,5 +1,7 @@
 # Authorized finite execution lifecycle
 
+Latest authority: PAUSE_FS_AUTHORIZATION.json cooperatively pauses M/M-S/M-E. Preserve the exact PAUSE_FS_RECEIPT recovery point and all logs/costs; do not resume or finish old trajectories automatically. The old w-146 heartbeat is paused. A separately frozen F/S diagnostic may reuse the verified post-source3 M matrix, with its own counters and activation; this does not complete or reset the old experiment.
+
 This directory is a new source-audit/protocol namespace. It does not amend any original146, K or O/L scientific protocol, budget, process or checkpoint. The user explicitly authorized implementation, real admission and immediate finite GPU5 execution on2026-10-14. EXECUTION_AUTHORIZATION.json supersedes preparation-only flags. The subsequent MONITORING_AUTHORIZATION.json authorizes the existing w-146 heartbeat every30 minutes, quiet while healthy. Historical monitor=false fields remain preparation receipts, not the current operational authority. Science, activation and budgets remain unchanged.
 
 Current records:
