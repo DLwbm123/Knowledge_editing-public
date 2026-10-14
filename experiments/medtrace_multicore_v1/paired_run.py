@@ -202,7 +202,7 @@ def mechanism_report():
     return passed
 
 
-def train():
+def train(resume=None):
     assert c.read(RUN/'private/MECHANISM_COMPLETE.json')['mechanism_gate']
     part=int(os.environ['PARTITION']);gpu=int(os.environ['GPU']);tasks=r.s.tasks()[part::3]
     with r.p.lease(gpu):
@@ -239,12 +239,16 @@ def train():
                         scalar=copy.deepcopy(active['scalar']);curve=copy.deepcopy(active['curve'])
                         for x in curve[:-1]:x['operator_step_norm']=x['decision']['norm_ratio']*reference['curve'][x['step']-1]['operator_step_norm']
                         curve[-1].update(decision=dict(kind='FROZEN_PAIRED_SELECTION',selected=selected is not None),operator_step_norm=r.fm.map_norm(before,state))
-                        expert.load_state_dict(state);c.restore_rng(active['rng']);f.numpy_restore(probe['numpy_rng'])
-                        now=c.rng();assert all(torch.equal(now[k],active['rng'][k].cpu()) for k in ('torch_rng','cuda_rng'))
-                        assert now['python_rng']==active['rng']['python_rng']
-                        c.write(RUN/'private/RESUME_REAL'/f'{arm}_{owner}.json',dict(status='PASS',source_state_RNG_RMS=True))
+                        saved_rng, numpy_rng = active['rng'], probe['numpy_rng']
+                        if resume is not None:
+                            state, scalar, curve, saved_rng, numpy_rng = resume(task, arm, state, scalar, curve, saved_rng, numpy_rng)
+                        expert.load_state_dict(state);c.restore_rng(saved_rng);f.numpy_restore(numpy_rng)
+                        now=c.rng();assert all(torch.equal(now[k],saved_rng[k].cpu()) for k in ('torch_rng','cuda_rng'))
+                        assert now['python_rng']==saved_rng['python_rng']
+                        receipt='USER_RESUME_STATE_REAL1' if resume is not None else 'RESUME_REAL'
+                        c.write(RUN/'private'/receipt/f'{arm}_{owner}.json',dict(status='PASS',source_state_RNG_RMS=True,step=scalar['step']))
                         start=dict(r.COUNTS)
-                        for step in range(probe['step']+1,161):
+                        for step in range(scalar['step']+1,161):
                             before=r.old.snapshot(expert)
                             _,losses=r.source_gradients(runtime,hook,expert,sources,step,False)
                             torch.nn.utils.clip_grad_norm_(expert.parameters(),1.)

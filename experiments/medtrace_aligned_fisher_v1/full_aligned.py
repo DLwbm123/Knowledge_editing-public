@@ -100,8 +100,9 @@ def report_source():
     source=source.replace("('MULTICORE_PARENT', ('MULTI', 'NATURAL_MULTI'))", "('MULTICORE_PARENT', ('MULTI', 'NATURAL_MULTI')), ('BASE_PARENT', ('FISHER_MIN', 'NATURAL_FISHER_MIN'))")
     source=source.replace("forced = ('C', 'M1', 'M3', 'M13', 'E', 'MULTI', 'ALIGNED_MIN')", "forced = ('C', 'M1', 'M3', 'M13', 'E', 'MULTI', 'FISHER_MIN', 'ALIGNED_MIN')")
     source=source.replace("('MULTI', 'ALIGNED_MIN'))", "('MULTI', 'ALIGNED_MIN'), ('FISHER_MIN', 'ALIGNED_MIN'))")
-    source=source.replace("len(ledger['gpu_sessions']) == 11 + failed_leases", "len(ledger['gpu_sessions']) == 13")
+    source=source.replace("len(ledger['gpu_sessions']) == 11 + failed_leases", "len(ledger['gpu_sessions']) == 13 + (2 if (RUN/'private/USER_RESUME_ADMISSION1.json').exists() else 0)")
     source=source.replace("resource['zero_work_failed_GPU_leases'] = failed_leases", "resource['zero_work_failed_GPU_leases'] = 1\n    resource['baseline_repair_GPU_leases'] = 2")
+    source=source.replace("resource['baseline_repair_GPU_leases'] = 2", "resource['baseline_repair_GPU_leases'] = 2\n    if (RUN/'private/USER_RESUME_ADMISSION1.json').exists():\n        resource['user_interruption'] = q.read(RUN/'private/USER_RESUME_ADMISSION1.json')['public_accounting']")
     assert "('BASE_PARENT', ('FISHER_MIN', 'NATURAL_FISHER_MIN'))" in source
     assert "('MULTI', 'FISHER_MIN', 'ALIGNED_MIN')" not in source
     compile(source,'aligned_full_report','exec');return source
@@ -157,6 +158,10 @@ def controller():
     c.write(RUN/'private/FULL_READY.json',dict(status='PASS',new_proposals=939,alignment_floor=.9))
     c.write(RUN/'public/PROGRESS.json',dict(status='ALIGNED_FULL160_TRAINING_RUNNING'))
     j.stage('paired_train',range(3),file='full_aligned.py')
+    finish()
+
+
+def finish():
     for owner in range(1,9):
         result=c.read(RUN/'private/results'/NEW/f'{owner}.json')
         assert len(result['curve'])==result['scalar_optimizer_state']['step']==160 and result['save_load_exact']
@@ -166,6 +171,11 @@ def controller():
     counts=[c.read(x) for x in (RUN/'private').glob('COUNTS_*.json')];totals={k:sum(x[k] for x in counts) for k in counts[0]}
     assert totals['updates']==1280 and totals['backwards']<=200000 and totals['operator_backwards']<=46000
     assert totals['local_solves']<=65000 and totals['non_generation_forwards']<=1500000 and totals['generation_attempts']<=1158
+    recovery=RUN/'private/USER_RESUME_ADMISSION1.json'
+    if recovery.exists():
+        upper=c.read(recovery)['discarded_compute_upper_bound']
+        for key,limit in dict(backwards=200000,operator_backwards=46000,local_solves=65000,non_generation_forwards=1500000).items():
+            assert totals[key]+upper[key]<=limit
     c.write(RUN/'private/MODULE_GENERATION_COMPLETE.json',dict(outputs=1158,counts=counts))
     import pipeline
     pipeline.wait([pipeline.launch('full_queue.py','ingest')])
