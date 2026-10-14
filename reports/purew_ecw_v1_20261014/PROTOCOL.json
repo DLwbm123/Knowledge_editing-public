@@ -1,0 +1,126 @@
+{
+  "version": "PUREW_ECW_DESIGN_V1_20261014",
+  "status": "FROZEN_DESIGN_FULL_RUN_NOT_AUTHORIZED",
+  "implementation_scope": "main ECW update and bounded quick validation; formal six-arm execution/scoring not implemented or admitted",
+  "cohort": "original first100, original order/per-edit seeds/Native+four FIT; existing12 coarse-box source gates only; no new annotation/data",
+  "stage_A": {
+    "arms": [
+      "Q0 compact rank4 FD",
+      "Q1 exact compact covariance",
+      "Q2 add whitening",
+      "Q3 add actual-native Armijo"
+    ],
+    "sources": 3,
+    "slots_per_source": 160,
+    "main_contrasts": [
+      "Q1-Q0",
+      "Q2-Q1",
+      "Q3-Q2"
+    ]
+  },
+  "stage_B": {
+    "arms": [
+      "Q3 answer-only continued to100",
+      "Q3-S add current scope KL",
+      "Q3-E add historical Bernoulli evidence Fisher"
+    ],
+    "sources": 100,
+    "slots_per_source": 160,
+    "first3_Q3_reuse": "only exact same protocol/state/RNG/counters; no repeated updates",
+    "main_contrasts": [
+      "Q3-S minus Q3",
+      "Q3-E minus Q3-S"
+    ]
+  },
+  "frozen_parameters": {
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "native": "FP16",
+    "master_gradient": "FP32",
+    "statistics": "FP64",
+    "loss_reduction": "FP64 CE and scope KL over actual native logits to avoid FP32 loss-test rounding",
+    "eta": 0.01,
+    "gradient_clip": 5,
+    "loss_scale": 128,
+    "proposal_coordinate_norm_cap": 0.05,
+    "epsilon": 0.01,
+    "armijo_sigma": 0.0001,
+    "backtracks": 8,
+    "root_iterations": 48,
+    "basis_rank_left": 32,
+    "basis_rank_right": 32,
+    "basis": "source-free original Base randomized SVD q32 niter2 seed20260912; FP64 QR orthogonality<1e-10",
+    "whitening_eigenvalue_interval": [
+      0.1,
+      10
+    ],
+    "metric_frozen_within_source": true,
+    "rows_per_block": 4,
+    "seed": "original per-edit; Fisher20260912+order/evidence+100000"
+  },
+  "budgets": {
+    "formal_attempt_slots": 49440,
+    "maximum_committed_updates": 49446,
+    "maximum_backwards": 140000,
+    "maximum_forward_calls": 12000000,
+    "maximum_generations": 7158,
+    "maximum_new_Judge": 7126,
+    "GPU_process_hours": 64,
+    "wall_hours": 96,
+    "owned_weight_limit_bytes": 21474836480,
+    "minimum_free_bytes": 8589934592,
+    "owned_GPU_memory_limit_MiB": 46080,
+    "activation": "none until separately authorized one installation; no borrowing F/S budgets"
+  },
+  "evaluation": {
+    "total_consumers": 7126,
+    "short_arms_three_times161": 483,
+    "long_arms_three_times2181": 6543,
+    "extra_Q3_prefix3_and_fixed36": 100,
+    "Base_canaries": 18,
+    "fresh_reload_generations": 14,
+    "Judge": "gpt-6-astra medium/Stage17 isolation/once per new payload",
+    "failed_retry": false,
+    "shared_missing_exact_bounds": true,
+    "bootstrap": 10000,
+    "bootstrap_seed": 20260912,
+    "units": [
+      "edit",
+      "source"
+    ],
+    "short_K_matched": "NA",
+    "full_T0": 100,
+    "full_T1G": 394,
+    "full_T2G": 386,
+    "full_T1L": 2,
+    "full_T2L": 34
+  },
+  "hard_gates": {
+    "individual_Base_zero_damage": "34 T2L and2 T1L; any wrong/unknown fails; repair/mean cannot compensate",
+    "T0": "actual insertion and final all correct",
+    "T1G": "all eligible retained",
+    "T2G": "per-edit shared-missing nonregression, full ECW vs matched Q3/Q3-S; report K/C/TT/BE as different-mechanism references",
+    "full_terminal_scoring": true
+  },
+  "scientific_failure_flags": {
+    "quantization_freeze": ">=95% slots in a source rejected with native envelope active while coordinate risk<=.01 and last sourceCE>.05; do not relax gate/refill slots",
+    "space_failure": "projected/raw gradient ratio<1e-4 with sourceCE>.05, report not expand basis",
+    "sampling_blindness": "sampled-only constraint never claimed true KL/correctness guarantee",
+    "medical_zero_curvature": "qualified source evidence full/projection norm zero; retain source, no posthoc exclusion",
+    "budget_stop": "preserve actual state/costs, explicit partial; no reset or automatic replay"
+  },
+  "mechanical_failures": [
+    "nonfinite",
+    "negative energy outside declared numerical tolerance",
+    "wrong clock/RNG/native-master binding",
+    "basis orthogonality>=1e-10",
+    "unexpected inference parameter/module/upstream change",
+    "evaluation/history leakage",
+    "incorrect reload or output/request binding",
+    "disk/GPU/budget guard"
+  ],
+  "no_old_cases_or_features": true,
+  "parameter_statistics_not_privacy_guarantee": true,
+  "clinical_success_claim": false,
+  "automatic_next_round": false,
+  "activation_epoch": null
+}
