@@ -17,8 +17,18 @@ def assignments(part):
     return OWNERS[part::2]
 
 
+def recovering():return (RUN/'private/SELECTED_RECOVERY_ADMISSION1.json').exists()
+def source_file():return 'SELECTED_RECOVERY_SOURCE1.json' if recovering() else 'SELECTED_SOURCE1.json'
+def caps():
+    base=dict(comparison146.CAPS)
+    if recovering():
+        extra=c.read(RUN/'private/SELECTED_RECOVERY_ADMISSION1.json')['additional_compute_caps']
+        for key,value in extra.items():base[key]=base.get(key,0)+value
+    return base
+
+
 def require_admission():
-    gate=c.read(RUN/'private/SELECTED_RUNTIME_ADMISSION1.json')
+    gate=c.read(RUN/'private'/('SELECTED_RECOVERY_ADMISSION1.json' if recovering() else 'SELECTED_RUNTIME_ADMISSION1.json'))
     assert gate['status']=='PASS' and gate['execution_ready'] and gate['launch_authorized']
     assert gate['owners']==OWNERS and gate['physical_GPUs']==[0,1]
     assert gate['packet_binding']==c.digest(worker.packet())
@@ -30,9 +40,11 @@ def require_admission():
     assert scope['steps']==160 and scope['parameters']==7168 and not scope['alignment_rule']
     assert scope['M13_flags']==[True,False,True] and scope['FISHER_MIN_gain_fraction']==.9
     assert scope['FISHER_MIN_budget_fraction']==.1
-    assert gate['source_commit']==c.read(RUN/'private/SELECTED_SOURCE1.json')['commit']
+    assert gate['source_commit']==c.read(RUN/'private'/source_file())['commit']
     assert gate['plan_binding']==c.digest(c.read(RUN/'PLAN_CONFIG.json'))
-    assert c.read(RUN/'PLAN_CONFIG.json')['maximum_counts']==comparison146.CAPS
+    assert c.read(RUN/'PLAN_CONFIG.json')['maximum_counts']==caps()
+    assert c.read(RUN/'STAGE_CAP.json')['GPU_seconds_limit']==c.read(RUN/'RUN_MANIFEST.json')['GPU_seconds_limit']
+    if recovering():assert c.read(RUN/'private/SELECTED_RECOVERY_CPU_CHECKS1.json')['status']=='PASS'
     assert gate['cpu_checks_binding']==c.digest(c.read(RUN/'private/SELECTED_TRAINING_CPU_CHECKS1.json'))
     assert c.read(RUN/'private/SELECTED_TRAINING_CPU_CHECKS1.json')['status']=='PASS'
     assert c.read(RUN/'private/NATIVE_FMIN_EXIT1.json')['exit_code']==0
@@ -51,7 +63,7 @@ def counts():
 
 def check_counts():
     totals=counts()
-    for key,cap in comparison146.CAPS.items():
+    for key,cap in caps().items():
         if key not in ('evaluation_consumers','Judge_attempts'):
             assert totals.get(key,0)<=cap,(key,totals.get(key),cap)
     return totals
@@ -66,8 +78,11 @@ def train():
     require_admission()
     gpu,part=int(os.environ['GPU']),int(os.environ['PARTITION'])
     assert gpu==part and gpu in (0,1)
-    with (RUN/'private'/f'SELECTED_TRAIN_ONCE_{part}').open('x'):pass
-    r.NATIVE_FORWARD_CAP=comparison146.CAPS['non_generation_forwards']
+    recovery=os.environ.get('SELECTED_RECOVERY')=='1'
+    assert recovery==recovering()
+    with (RUN/'private'/f"SELECTED_{'RECOVERY_' if recovery else ''}TRAIN_ONCE_{part}").open('x'):pass
+    if recovery:r.COUNTS.update(c.read(RUN/'private/selected_recovery_original1'/f'COUNTS_selected_train_{part}.json'))
+    r.NATIVE_FORWARD_CAP=caps()['non_generation_forwards']
     worker.configure()
     with r.p.lease(gpu):
         runtime,bindings,handle=r.load(gpu)
@@ -78,17 +93,21 @@ def train():
             for owner in assignments(part):
                 os.environ['OWNER']=str(owner)
                 task=worker.tasks()[owner-1]
-                assert all(not worker.point(task,arm).exists() for arm in ('C',)+comparison146.METHODS)
+                restart=recovery and owner==part+3
+                if not restart:assert all(not worker.point(task,arm).exists() for arm in ('C',)+comparison146.METHODS)
                 assert all(Path(v['image_path']).is_file() for v in trajectory.source_rows(worker.packet(),owner))
                 for arm,run in (('C',native_calibration.main),('M13',native_followup.train),('FISHER_MIN',native_fmin.main)):
+                    if restart and arm!='FISHER_MIN':
+                        assert c.read(RUN/'private/results'/arm/f'{owner}.json')['save_load_exact']
+                        continue
                     c.budget();check_counts()
                     c.write(RUN/'private'/f'SELECTED_PROGRESS_{part}.json',dict(owner=owner,arm=arm,epoch=time.time()))
-                    run(full=True,loaded=(runtime,bindings))
+                    run(full=True,loaded=(runtime,bindings),recovery=restart) if arm=='FISHER_MIN' else run(full=True,loaded=(runtime,bindings))
                     result=c.read(RUN/'private/results'/arm/f'{owner}.json')
                     assert len(result['curve'])==160 and worker.point(task,arm).is_file()
                     r.save_counts();check_counts()
             c.write(RUN/'private'/f'SELECTED_TRAIN_DONE_{part}.json',dict(status='COMPLETE',owners=assignments(part),
-                counts=dict(r.COUNTS),source=c.read(RUN/'private/SELECTED_SOURCE1.json')['commit'],epoch=time.time()))
+                counts=dict(r.COUNTS),source=c.read(RUN/'private'/source_file())['commit'],epoch=time.time()))
         finally:handle.remove();r.save_counts()
 
 

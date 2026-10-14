@@ -26,7 +26,7 @@ def configure():
 
 
 def validate(saved,binding):
-    assert saved['binding']==binding and 0<saved['step']<=160
+    assert saved['binding']==binding and 0<=saved['step']<=160
     assert saved['scalar']['step']==saved['step'] and len(saved['scalar']['second_moments'])==2
     assert all(np.isfinite(v) and v>=0 for v in saved['scalar']['second_moments'])
     assert len(saved['curve'])==saved['step'] and [v['step'] for v in saved['curve']]==list(range(1,saved['step']+1))
@@ -36,7 +36,7 @@ def validate(saved,binding):
     assert set(saved['rng'])>=set(('torch_rng','python_rng','cuda_rng')) and len(saved['numpy_rng'])==5
 
 
-def main(full=False,loaded=None):
+def main(full=False,loaded=None,recovery=False):
     gate,scope_file,source_file=worker.stage_admission('FISHER_MIN',full);scope=c.read(RUN/'private'/scope_file)
     assert gate['status']=='PASS'
     if not full:assert gate['owners']==[1,2]
@@ -47,7 +47,10 @@ def main(full=False,loaded=None):
     assert contract.source_admission(worker.packet())['status']=='PASS'
     owner=int(os.environ['OWNER']);gpu=int(os.environ['GPU']);assert owner in gate['owners'] and gpu in (0,1)
     if not full:assert owner==gpu+1 and owner in (1,2)
-    with (RUN/'private'/f'NATIVE_FMIN_ONCE_{owner}').open('x'):pass
+    if recovery:
+        assert owner in (3,4) and full
+        assert c.read(RUN/'private/SELECTED_RECOVERY_ADMISSION1.json')['status']=='PASS'
+    with (RUN/'private'/f"NATIVE_FMIN_{'RECOVERY_' if recovery else ''}ONCE_{owner}").open('x'):pass
     configure();task=worker.tasks()[owner-1];rows=trajectory.source_rows(worker.packet(),owner)
     assert not worker.point(task,'FISHER_MIN').exists()
     calibration=c.read(RUN/'private/calibration146'/f'{owner}.json')
@@ -90,6 +93,10 @@ def main(full=False,loaded=None):
                     budget=budget,steps=160,parameters=7168)
                 scalar=dict(step=0,second_moments=[0.,0.]);curve=[];start=dict(r.COUNTS)
                 resume=RUN/'private/resume146'/f'FISHER_MIN_{owner}.pt';assert not resume.exists()
+                if full:
+                    state=dict(state=r.old.snapshot(expert),scalar=copy.deepcopy(scalar),step=0,curve=[],binding=binding,
+                        counts=dict(r.COUNTS),counts_start=counts_start,rng=c.rng(),numpy_rng=copy.deepcopy(np.random.get_state()))
+                    validate(state,binding);c.save(RUN/'private/resume146'/f'FISHER_MIN_INITIAL_{owner}.pt',state)
                 for step in range(1,161):
                     c.budget();before=r.old.snapshot(expert)
                     _,losses=trajectory.source_gradients(r,runtime,hook,expert,sources,step)
@@ -118,6 +125,12 @@ def main(full=False,loaded=None):
                             r.fm.map_norm(before,selected),r.fm.map_norm(before,pure))
                         unchanged=all(torch.equal(before[k],selected[k]) for k in before)
                         assert finite or (unchanged and abs(selected_gain)<=1e-6)
+                        if recovery:
+                            prior=c.read(RUN/'private/selected_recovery_original1'/f'NATIVE_FMIN_FIRST_STEP_REAL_{owner}.json')
+                            assert pure_gain==prior['pure_gain'] and selected_gain==prior['selected_gain']
+                            assert candidate_penalty/budget==prior['Fisher_ratio']
+                            c.write(RUN/'private'/f'SELECTED_RECOVERY_FIRST_STEP_PARITY_{owner}.json',dict(status='PASS',
+                                first_pure_selected_gain_and_Fisher_exact=True,source_RMS_clock=step,old_failed_updates_retained=9))
                         c.write(RUN/'private'/f'NATIVE_FMIN_FIRST_STEP_REAL_{owner}.json',dict(status='PASS',
                             before_pure_selected_losses_verified=True,pure_gain=pure_gain,selected_gain=selected_gain,
                             Fisher_ratio=candidate_penalty/budget,source_RMS_clock=step,

@@ -11,11 +11,11 @@ import selected_training146 as training
 def main():
     training.require_admission();worker.r.NATIVE_FORWARD_CAP=training.comparison146.CAPS['non_generation_forwards']
     action=os.environ['ACTION']
-    if action=='selected_train':training.train()
+    if action in ('selected_train','selected_recovery_train'):training.train()
     elif action in ('m13_146_single','m13_146_bank'):
         worker.configure()
         from bank146 import evaluate
-        evaluate(292,2,training.require_admission,'SELECTED_CANDIDATES_FROZEN1.json','SELECTED_SCOPE1.json','SELECTED_SOURCE1.json')
+        evaluate(292,2,training.require_admission,'SELECTED_CANDIDATES_FROZEN1.json','SELECTED_SCOPE1.json',training.source_file())
     else:raise ValueError(action)
 
 

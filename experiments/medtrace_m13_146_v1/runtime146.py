@@ -68,8 +68,8 @@ def network(gpu,loaded=None):
 
 def stage_admission(stage,full):
     if full:
-        from selected_training146 import require_admission
-        return require_admission(), 'SELECTED_SCOPE1.json', 'SELECTED_SOURCE1.json'
+        from selected_training146 import require_admission,source_file
+        return require_admission(), 'SELECTED_SCOPE1.json', source_file()
     names={'C':'NATIVE_CALIBRATION','M13':'NATIVE_FOLLOWUP','FISHER_MIN':'NATIVE_FMIN'}
     name=names[stage]
     return c.read(RUN/'private'/f'{name}_ADMISSION1.json'), (

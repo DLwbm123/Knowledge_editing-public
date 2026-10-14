@@ -120,7 +120,7 @@ def admit():
     historical_view(old)
     manifest.update(stage='SELECTED_NATIVE_FIT146_FULL',GPU_seconds_limit=ceiling,
         Judge_limit=c.read(RUN/'private/INHERITED_COST.json')['Judge_attempts']+comparison146.CONSUMERS)
-    c.write(RUN/'RUN_MANIFEST.json',manifest);c.write(RUN/'PLAN_CONFIG.json',new_plan)
+    c.write(RUN/'RUN_MANIFEST.json',manifest);c.write(RUN/'STAGE_CAP.json',dict(GPU_seconds_limit=ceiling));c.write(RUN/'PLAN_CONFIG.json',new_plan)
     for name,value in [('SELECTED_SCOPE1.json',scope),('EVAL_PLAN146.json',plan),('ROUTER_BINDINGS146.json',routers),
                        ('ORIGINAL146_TASKS.json',worker.tasks()),('ORIGINAL_BASE_MASK146.json',packet['base_mask']),
                        ('SOURCE_ADMISSION146.json',dict(status='PASS',packet_binding=c.digest(packet))),
