@@ -92,6 +92,10 @@ def replay():
         assert not (RUN/'private/BASELINE_REPAIR1.json').exists()
         marker=RUN/'private/BASELINE_REPAIR_ZERO_WORK_TAKEOVER1'
     with marker.open('x'):pass
+    if marker.name=='BASELINE_REPAIR_ZERO_WORK_TAKEOVER1':
+        archive=RUN/'private/zero_work_baseline_batch1/FAILURE1.json'
+        archive.parent.mkdir(exist_ok=True);assert not archive.exists()
+        (RUN/'private/FAILURE_baseline_repair1.json').rename(archive)
     gpu=int(os.environ['GPU']);task=next(t for t in r.s.tasks() if t['order']==5)
     probe=r.p.load_state(RUN/'private/probes/5.pt')
     with r.p.lease(gpu):
