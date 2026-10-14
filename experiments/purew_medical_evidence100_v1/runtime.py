@@ -31,8 +31,14 @@ def load_learner():
 
 
 def track(runtime):
+    from contextlib import ExitStack
+    stack=ExitStack()
     def forward(*_):b.COUNTS['forwards']+=1;b.call('F')
-    return runtime.model.register_forward_pre_hook(forward)
+    def vision(*_):
+        b.COUNTS['forwards']+=1;b.COUNTS['vision_forwards']=b.COUNTS.get('vision_forwards',0)+1;b.call('V')
+    stack.callback(runtime.model.register_forward_pre_hook(forward).remove)
+    stack.callback(runtime.model.get_vision_tower().register_forward_pre_hook(vision).remove)
+    return stack
 
 
 def backward(loss,weight):

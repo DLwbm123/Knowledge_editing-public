@@ -189,7 +189,7 @@ def main():
             b.save(R/'private/final'/ARM/'native.pt',dict(native=weight.detach().cpu(),schema=shape,
                    parameters=sum(p.numel() for p in runtime.model.parameters())))
             c.write(R/'private'/('TRAINING_COMPLETE_'+ARM+'.json'),dict(status='COMPLETE',attempt_slots=16000))
-        finally:h.remove();b.counts()
+        finally:h.close();b.counts()
 
 
 if __name__=='__main__':

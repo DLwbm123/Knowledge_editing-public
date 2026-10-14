@@ -91,7 +91,7 @@ def evaluate():
                 peak_memory();c.write(CONTROL/(str(owner)+'.EVAL_DONE.json'),dict(owner=owner,outputs_durable=True))
                 while (CONTROL/'EVALUATE.json').exists():time.sleep(.1)
             c.write(R/'private'/('EVALUATION_COMPLETE_'+ARM+'.json'),dict(status='COMPLETE',consumers=2181))
-        finally:h.remove();b.counts()
+        finally:h.close();b.counts()
 
 
 def reload():
@@ -113,7 +113,7 @@ def reload():
             for path in paths:
                 assert R in path.parents and not path.is_symlink()
                 if path.exists():path.unlink()
-        finally:h.remove();b.counts()
+        finally:h.close();b.counts()
 
 
 if __name__=='__main__':

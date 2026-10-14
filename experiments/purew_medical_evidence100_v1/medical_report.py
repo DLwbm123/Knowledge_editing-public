@@ -32,7 +32,7 @@ def main():
         else:assert batch['status']=='FAILED_NO_RETRY' and all(scores[k] is None for k in batch['keys'])
     assert len(attempted)==len(set(attempted))==cost['Judge_attempts']
     attempts=[c.read(p) for p in (R/'private/attempts').glob('*.json')]
-    counts={k:sum(x.get(k,0) for x in attempts) for k in ('forwards','backwards','committed_updates','generation_attempts','attempt_slots')}
+    counts={k:sum(x.get(k,0) for x in attempts) for k in ('forwards','backwards','committed_updates','generation_attempts','attempt_slots','vision_forwards')}
     generated={arm:sum(c.read(p)['outputs'] for p in (R/'private/outputs'/arm).glob('*/*/*/COMPLETE.json')) for arm in ARMS}
     result=dict(status='COMPLETE_WITH_MISSING' if complete else 'PARTIAL_NOT_ALL_CONSUMERS_COMPLETE',scientific_success=False,
         coverage=coverage,expected_consumers_per_arm=2181,generated=generated,not_generated={a:2181-generated[a] for a in ARMS},
