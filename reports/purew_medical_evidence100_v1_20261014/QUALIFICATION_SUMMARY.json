@@ -1,0 +1,79 @@
+{
+  "status": "SOURCE_TRIAGE_COMPLETE_COARSE_BOX_SUPPORT_ONLY",
+  "source_native_questions": 100,
+  "source_native_answers_matched": 100,
+  "source_answer_match_normalization": "NFKC, casefold and whitespace; not a byte-identity claim",
+  "unique_source_images": 91,
+  "original_FIT_wrappers_verified": 400,
+  "reviewer": "current task assistant; source-only annotation triage, not a clinician or independent model panel",
+  "independent_clinician_review": false,
+  "source_visual_triage_questions": 55,
+  "primary_kind_counts": {
+    "LOCAL_IMAGE": 45,
+    "KG": 50,
+    "GLOBAL_IMAGE": 5
+  },
+  "primary_kind_by_dataset": {
+    "SLAKE": {
+      "LOCAL_IMAGE": 21,
+      "KG": 45
+    },
+    "VQA-RAD": {
+      "LOCAL_IMAGE": 24,
+      "KG": 5,
+      "GLOBAL_IMAGE": 5
+    }
+  },
+  "original_metadata_KG_questions": 45,
+  "local_region_status": {
+    "ELIGIBLE_COARSE_BOX": 12,
+    "BLOCKED_MISSING_REGION": 24,
+    "BLOCKED_TARGET_CLASS": 3,
+    "BLOCKED_LATERALITY": 5,
+    "BLOCKED_GRANULARITY": 1
+  },
+  "local_blocking_reason_counts": {
+    "NO_SOURCE_REGION_ANNOTATION": 24,
+    "QUESTION_TARGET_NOT_ANNOTATED": 3,
+    "LATERALITY_OR_VIEW_ORIENTATION_UNVERIFIED": 5,
+    "TARGET_INSTANCE_VS_GROUP_AMBIGUITY": 1
+  },
+  "coarse_region_admitted_questions": 12,
+  "coarse_region_admitted_scope": "existing brain MRI lesion box unions only",
+  "pixel_mask_admitted_questions": 0,
+  "neutral_view_admitted_questions": 0,
+  "annotation_availability": {
+    "questions_with_detection_file": 66,
+    "unique_images_with_detection_and_mask_files": 64,
+    "valid_xywh_boxes_on_unique_images": 215,
+    "questions_with_mask_file": 66,
+    "unique_mask_mode_counts": {
+      "RGBA": 10,
+      "RGB": 54
+    },
+    "unique_mask_color_buckets": {
+      "few_colors_le8": 48,
+      "many_colors_gt256": 16
+    },
+    "mask_label_map_found": false,
+    "image_mask_dimension_mismatches": 0,
+    "VQA_RAD_named_regions_or_masks_found": 0
+  },
+  "source_split_counts": {
+    "SLAKE/train.json": 45,
+    "SLAKE/validation.json": 7,
+    "VQA-RAD/VQA_RAD Dataset Public.json": 34,
+    "SLAKE/test.json": 14
+  },
+  "source_role": "frozen native editing inputs, not an official train-only dataset split",
+  "evaluation_panel_fields_in_review_input": 0,
+  "native_target_exception": "existing native edit QAs may also be T0 under the frozen active-target rule; no independent evaluation material loaded",
+  "additional_model_or_Judge_requests": 0,
+  "GPU_calls": 0,
+  "new_training_updates": 0,
+  "clinical_causal_evidence_qualification": "NOT_ESTABLISHED",
+  "patient_independence": "UNKNOWN",
+  "full_cohort_region_coverage": false,
+  "original146": "keep paused",
+  "OL": "keep original predecessor barrier"
+}
