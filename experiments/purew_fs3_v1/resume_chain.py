@@ -5,7 +5,10 @@ import traceback
 from pathlib import Path
 import fcntl
 from base_controller import launch
-from controller import provide
+import importlib.util
+spec=importlib.util.spec_from_file_location('frozen_fs_controller',Path(os.environ['RUN_ROOT'])/'private/tools/controller.py')
+broker=importlib.util.module_from_spec(spec);spec.loader.exec_module(broker)
+provide=broker.provide
 import common as c
 R=c.RUN
 
