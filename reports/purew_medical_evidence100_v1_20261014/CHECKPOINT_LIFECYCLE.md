@@ -1,6 +1,6 @@
 # Authorized finite execution lifecycle
 
-This directory is a new source-audit/protocol namespace. It does not amend any original146, K or O/L scientific protocol, budget, process or checkpoint. The user explicitly authorized implementation, real admission and immediate finite GPU5 execution on2026-10-14. EXECUTION_AUTHORIZATION.json supersedes preparation-only flags. No new recurring monitor is authorized.
+This directory is a new source-audit/protocol namespace. It does not amend any original146, K or O/L scientific protocol, budget, process or checkpoint. The user explicitly authorized implementation, real admission and immediate finite GPU5 execution on2026-10-14. EXECUTION_AUTHORIZATION.json supersedes preparation-only flags. The subsequent MONITORING_AUTHORIZATION.json authorizes the existing w-146 heartbeat every30 minutes, quiet while healthy. Historical monitor=false fields remain preparation receipts, not the current operational authority. Science, activation and budgets remain unchanged.
 
 Current records:
 
@@ -28,3 +28,5 @@ The source-only audit and PROTOCOL_DRAFT remain unchanged as preparation evidenc
 B and cumulative vectors use FP64; master/gradient FP32, deployed native W FP16. The fixed-size energy/error-envelope state is preserved without per-case anchors. Full source logit vectors are not retained: evidence diagnostics report target-logprob contrast and logit-norm magnitude changes. No vector-drift claim.
 
 Only owned active/final/current matrices can be retired after each arm fresh reload and FINAL_CONSUMED receipt. Old146/K/O-L matrices and files stay untouched. Installation, activation, every stage, generation and Judge attempt are append-only one-attempt records; an uncertain hard interruption needs audit, not automatic restart.
+
+During authorized monitoring, preserve faults and their attempt/cost receipts before any repair. Continue only unfinished consumers when complete master/native/RNG/clocks/statistics/events and actual accounting prove correct recovery within the existing budget. Rejected or zero-native slots are frozen scientific outcomes, not a reason to tune or refill. After all required scoring reaches terminal states, verify the finite public delivery, notify the user of M/M-S/M-E versus K T2G and individual protection damage with missing bounds, then pause w-146. An unrecoverable or budget-limited run requires an explicit partial report and public-delivery verification. Original146 stays paused and O/L retains its original predecessor barrier throughout.
