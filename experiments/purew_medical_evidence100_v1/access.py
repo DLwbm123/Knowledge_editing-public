@@ -15,8 +15,8 @@ def install(run,window,source_image_root):
         p=Path(os.fsdecode(args[0])).resolve()
         if p.is_dir():return
         if window in p.parents or p==window:return
-        code_root=(run/'private/source').resolve()
-        if code_root in p.parents and p.suffix in ('.py','.pyc','.so'):return
+        code_roots=((run/'private/source').resolve(),(run/'private/official_llava').resolve())
+        if any(x in p.parents for x in code_roots) and p.suffix in ('.py','.pyc','.so'):return
         blocked=(p.name in forbidden_names or any(p==x or x in p.parents for x in denied)
                  or p==image_root or image_root in p.parents
                  or (old_root in p.parents and run not in p.parents))
@@ -32,8 +32,15 @@ def selfcheck():
         r=Path(t)/'run';w=r/'private/window';w.mkdir(parents=True)
         (w/'current.json').write_text('{}')
         p=r/'private/EVAL_LEDGER.json';p.write_text('{}')
+        old=Path(t)/'old';old.mkdir();(old/'conversation.py').write_text('x=1')
+        (r/'private/official_llava').symlink_to(old)
+        (old/'cases.json').write_text('{}')
         install(r,w,Path(t)/'images')
         assert (w/'current.json').read_text()=='{}'
+        assert (r/'private/official_llava/conversation.py').read_text()=='x=1'
+        try:(r/'private/official_llava/cases.json').read_text()
+        except PermissionError:pass
+        else:raise AssertionError('Historical case file allowed')
         try:p.read_text()
         except PermissionError:pass
         else:raise AssertionError('Evaluation read allowed')

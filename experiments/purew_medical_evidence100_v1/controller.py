@@ -37,7 +37,11 @@ def main():
                 assert u==c.read(R/'PLAN_CONFIG.json')['hardware']['UUIDs']['5']
                 if int(free)>=45*1024:break
                 time.sleep(30)
-            ctrl=R/'private/control'/arm;window=R/'private/window'/arm;ctrl.mkdir(parents=True);window.mkdir(parents=True)
+            ctrl=R/'private/control'/arm;window=R/'private/window'/arm
+            if ctrl.exists():
+                reviewed=c.read(R/'private/ENGINEERING_PRETRAINING_RESTART.json')
+                assert arm=='M' and reviewed['status']=='VERIFIED_ZERO_NATIVE_WRITES' and not list((R/'private/units'/arm).glob('*.json'))
+            ctrl.mkdir(parents=True,exist_ok=True);window.mkdir(parents=True,exist_ok=True)
             learner=launch('learn_'+arm,arm,'learner.py');evaluator=launch('evaluate_'+arm,arm,'evaluator.py')
             for owner in range(1,101):
                 need=ctrl/'NEED_SOURCE.json'
