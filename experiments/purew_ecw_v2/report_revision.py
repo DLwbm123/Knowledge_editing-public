@@ -1,6 +1,8 @@
 """Bounded X/Y diagnosis; terminal scores and per-item protection precede any expansion."""
 from collections import Counter
-import json,sqlite3,time
+import json,sqlite3,time,os,sys
+sys.path.insert(0,os.environ["RUN_ROOT"]+"/private/source")
+sys.path.insert(0,os.environ["RUN_ROOT"]+"/private/tools")
 import astra_report as ar
 from panels import protection_ids
 from logic import transitions
@@ -8,6 +10,10 @@ from report_fs import audit_requests
 R,c,r=ar.RUN,ar.common,ar.r
 
 def main():
+    marker=R/'private/REPORT_COMPLETE.json'
+    if marker.exists():
+        old=c.read(R/'public/RESULTS.json');assert old['status'] in ('COMPLETE','COMPLETE_WITH_MISSING'),'Review old partial before replacing'
+        print(old['status']);return
     cost=c.read(R/'RESOURCE_LEDGER.json');assert all(x.get('ended_epoch') for x in cost['gpu_sessions'])
     generated={a:sum(c.read(p)['outputs'] for p in (R/'private/outputs'/a).glob('*/*/*/COMPLETE.json')) for a in ('X','Y')}
     full=(R/'private/GENERATION_COMPLETE.json').exists() and (R/'private/judge_purew146/ALL_WORKERS_COMPLETE.json').exists()
