@@ -19,16 +19,23 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
     ball = radius**2-orthogonal
     if ball < -1e-8:
         return None, dict(status='CERTIFIED_LOCAL_INFEASIBLE', certificate='tangent_orthogonal_distance')
-    source=np.atleast_2d(source);required=np.atleast_1d(required)
-    assert len(source)==len(required) and np.isfinite(required).all()
-    normalization = np.maximum(np.maximum(np.linalg.norm(source,axis=1),np.abs(required)),1e-12)
-    source, required = source/normalization[:,None], required/normalization
+    scalar = source.ndim == 1
+    if scalar:
+        # Preserve the historical arithmetic: boundary acceptance is FP32-sensitive.
+        normalization = max(np.linalg.norm(source), abs(required), 1e-12)
+        source, required = source/normalization, required/normalization
+    else:
+        required=np.atleast_1d(required)
+        assert source.ndim==2 and len(source)==len(required) and np.isfinite(required).all()
+        normalization = np.maximum(np.maximum(np.linalg.norm(source,axis=1),np.abs(required)),1e-12)
+        source, required = source/normalization[:,None], required/normalization
+    halfspaces = 1 if scalar else len(required)
     values, vectors = np.linalg.eigh(matrix.T@matrix)
     assert values.min() >= -1e-8*max(1., values.max())
     values = np.maximum(values, 0.)
     af = vectors.T@(matrix.T@offset)
     ce, se = [vectors.T@x for x in (center, step_offset)]
-    so=vectors.T@source.T
+    so=vectors.T@source if scalar else vectors.T@source.T
     trust2 = trust**2 if trust is not None else 1e30
 
     regularizer = 1e-6 if fisher_objective else 1.
@@ -36,9 +43,9 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
 
     def evaluate(x, certificate=False):
         lam, mu, eta = x[0],x[1],x[-1]
-        nu=x[2:-1]
+        nu=x[2] if scalar else x[2:-1]
         tie, weight = (0., 0.) if certificate else (regularizer, fisher_weight)
-        rhs = tie*ce-2*(weight+lam)*af-2*mu*se+so@nu
+        rhs = tie*ce-2*(weight+lam)*af-2*mu*se+(nu*so if scalar else so@nu)
         diagonal = tie+2*(weight+lam)*values+2*mu+2*eta
         if certificate and diagonal.min() <= 1e-10*max(1., diagonal.max()):
             return None
@@ -52,8 +59,8 @@ def solve(matrix, offset, center, step_offset, orthogonal, radius,
         objective, residuals, *_ = evaluate(x)
         return -objective, -residuals
 
-    result = minimize(dual, np.zeros(3+len(required)), jac=True, method='L-BFGS-B',
-        bounds=[(0., None)]*(2+len(required))+[(0., None) if trust is not None else (0., 0.)],
+    result = minimize(dual, np.zeros(3+halfspaces), jac=True, method='L-BFGS-B',
+        bounds=[(0., None)]*(2+halfspaces)+[(0., None) if trust is not None else (0., 0.)],
         options=dict(maxiter=2000, maxls=50, ftol=1e-14, gtol=1e-10))
     objective, residuals, z, rhs, diagonal = evaluate(result.x)
     stationarity = float(np.linalg.norm(diagonal*(vectors.T@z)-rhs))

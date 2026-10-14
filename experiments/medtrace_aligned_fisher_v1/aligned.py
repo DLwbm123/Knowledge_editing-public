@@ -53,6 +53,12 @@ m.trial=trial
 
 def report():
     rows=[c.read(RUN/'private/paired'/f'{i}.json') for i in range(1,9)]
+    repair=RUN/'private/BASELINE_REPAIR1.json'
+    if repair.exists():
+        fixed=c.read(repair)
+        assert fixed['status']=='PASS' and fixed['only_baseline_case']==[5,.25]
+        assert fixed['new_direction_cases_recomputed']==0 and fixed['new_source_updates']==0
+        rows[4]['arms'][m.BASE]['trials'][2]=fixed['trial']
     parent=Path(os.environ['BASE_PARENT']);improved=first=valid=0
     all_align=[];all_fisher=[]
     for row in rows:
