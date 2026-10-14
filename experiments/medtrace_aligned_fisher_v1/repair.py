@@ -85,13 +85,20 @@ def audit():
 
 def replay():
     cpu();audit()
-    with (RUN/'private/BASELINE_REPAIR_ONCE1').open('x'):pass
+    marker=RUN/'private/BASELINE_REPAIR_ONCE1'
+    if marker.exists():
+        failed=c.read(RUN/'private/FAILURE_baseline_repair1.json')
+        assert not any(failed['counts'].values()) and "kwargs['inputs_embeds'].dtype==torch.float16" in failed['traceback']
+        assert not (RUN/'private/BASELINE_REPAIR1.json').exists()
+        marker=RUN/'private/BASELINE_REPAIR_ZERO_WORK_TAKEOVER1'
+    with marker.open('x'):pass
     gpu=int(os.environ['GPU']);task=next(t for t in r.s.tasks() if t['order']==5)
     probe=r.p.load_state(RUN/'private/probes/5.pt')
     with r.p.lease(gpu):
         runtime,_,handle=r.load(gpu)
+        frozen=[r.old.cpu(runtime.build_edit_batch(r.s.record(task,x))) for x in r.s.source(task)]
         r.old.fp32(runtime)
-        sources=[r.old.batch_on(runtime,r.old.cpu(runtime.build_edit_batch(r.s.record(task,x)))) for x in r.s.source(task)]
+        sources=[r.old.batch_on(runtime,b) for b in frozen]
         before={k:v.to(runtime.device) for k,v in probe['before'].items()}
         pure={k:v.to(runtime.device) for k,v in probe['pure'].items()}
         cache={k:v.to(runtime.device) if isinstance(v,torch.Tensor) else v for k,v in r.p.load_state(RUN/'private/OPERATOR_FISHER.pt').items()}
