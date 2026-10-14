@@ -34,4 +34,6 @@ M13固定原flags=(true,false,true)：M1规范坐标/两组标量RMS，M3实际�
 
 已实现：独立M13数据/方法契约、146来源审计、三方法真实队列覆盖预留、有限预算算术、未知/版本变化/失效图像拒绝检查，以及实际M13数学的CPU检查。新增原M1/M13训练步和报告数学CPU接线，真实7168核/RMS四case精确复现及逐编辑损伤门槛PASS，见TRAINING_REPORT_INTEGRATION_ZH.md。新增独立隔离queue146入队/请求/全局覆盖CPU验证24867消费者PASS，见QUEUE_INTEGRATION_ZH.md；无新评分请求。新增C/M3原Adam+RAW训练步的四组三步/保存加载CPU精确复现PASS，见RAW_TRAINING_INTEGRATION_ZH.md；四类原训练步数学已接出。新增固定160训练循环、资格来源读取和完整状态/RNG快照，四类160步替代损失CPU检查PASS，见TRAJECTORY_INTEGRATION_ZH.md；未实现GPU调度或准入。理论草稿见THEORY_ZH.md。
 
-尚未完成：139例完整来源、146专用训练调度和真实bank/scorer运行接线、真实网络入场/恢复、全局评分覆盖与最终报告集成。这些不标记READY，不启动GPU，也不调用旧REFINE146训练器充当M13。当前ALIGNED监测继续直到原轮真实完成交付；随后仅推进M13准备，如仍卡在需用户改变的数据边界则说明缺口后暂停，不开新机制。
+新增独立runtime/controller/真实R0 bank/四scorer配置与全报告调用代码及运行准入入口，CPU初始化/R0/原覆盖与报告夹具PASS，见FULL_WIRING_ZH.md。
+
+尚未完成：139例完整来源、独立RUN的实际数据/工具快照/原R0绑定配置及真实VLM/GPU入场与端到端实际输出身份检查。代码和CPU检查不等于运行就绪，training_ready=false，当前未启动146。用户已选择保留原题等待完整证据；先按有限方案推进其余138例，不追加耗尽项第三轮。当前ALIGNED照常结束和交付，之后不加新机制。

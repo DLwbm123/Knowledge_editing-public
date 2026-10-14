@@ -5,11 +5,15 @@ import importlib.util
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
-spec=importlib.util.spec_from_file_location('original146_contract',ROOT/'experiments/medtrace_root_refine_v1/full146_contract.py')
+original_path=ROOT/'experiments/medtrace_root_refine_v1/full146_contract.py'
+if not original_path.exists():original_path=Path(__file__).with_name('original146_contract.py')
+spec=importlib.util.spec_from_file_location('original146_contract',original_path)
 original=importlib.util.module_from_spec(spec);spec.loader.exec_module(original)
 METHODS=('C','M1','M3','M13')
 FLAGS={'M1':(True,False,False),'M3':(False,False,True),'M13':(True,False,True)}
 PREFIXES=original.PREFIXES
+consumer_id=original.consumer_id
+fit_rows=original.fit_rows
 # Upper reservations, including one Fisher reconstruction if no lawful cache survives.
 CAPS=dict(updates=93440,backwards=282272,operator_backwards=46720,
           non_generation_forwards=500000,local_solves=0,
@@ -67,6 +71,19 @@ def coverage_reservation(tasks,base_mask):
     ids=[original.consumer_id(row) for row in rows]
     assert len(set(ids))==len(rows)==CAPS['evaluation_consumers']
     assert collections.Counter(r['method'] for r in rows)==dict(M1=7494,M3=7494,M13=7494,BASE=2385)
+    return rows
+
+
+def evaluation_plan(packet,queries):
+    assert source_admission(packet)['status']=='PASS'
+    tasks=packet['original_tasks'];anchors=packet['reviews']['qualified_anchors']
+    assert original.ids(tasks)<=queries.keys()
+    assert all(all(k in queries[q] for k in ('question','reference','image_path')) for q in original.ids(tasks))
+    rows=original.evaluation_plan(tasks,queries,anchors,packet['base_mask'])
+    for row in rows:
+        if row['method']=='REFINE':row['method']='M13'
+    rows += [dict(row,method='M3') for row in rows if row['method']=='M1']
+    assert len({consumer_id(row) for row in rows})==len(rows)==CAPS['evaluation_consumers']
     return rows
 
 
