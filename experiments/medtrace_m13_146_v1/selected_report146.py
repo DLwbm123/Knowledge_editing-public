@@ -92,6 +92,7 @@ def main():
         cumulative_GPU_process_hours=ledger['gpu_seconds_used']/3600,new_Judge=ledger['Judge_attempts']-prior['Judge_attempts'],
         cumulative_Judge=ledger['Judge_attempts'])
     result['historical_reference_audit']=q.read(RUN/'private/HISTORICAL_146_REUSE_AUDIT1.json')
+    result['historical_reference_performance']=q.read(RUN/'private/HISTORICAL_PERFORMANCE_PANELS1.json')
     q.write(RUN/'private/NATIVE146_RESULTS_WITH_OWNER_AUDIT.json',dict(result,owner_panels=owners))
     public=json.loads(json.dumps(result));public['historical_reference_audit'].pop('epoch',None)
     for method in contract.METHODS:

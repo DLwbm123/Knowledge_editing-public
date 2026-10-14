@@ -12,25 +12,27 @@ import runtime146 as worker
 r,c,RUN=worker.r,worker.c,worker.RUN
 
 
-def main():
+def main(full=False,loaded=None):
     packet=worker.packet();gate=contract.source_admission(packet)
     assert packet['source_recipe']==contract.SOURCE_RECIPE and gate['status']=='PASS'
-    admission=c.read(RUN/'private/NATIVE_CALIBRATION_ADMISSION1.json')
+    admission,scope_file,source_file=worker.stage_admission('C',full)
     assert admission['status']=='PASS' and admission['packet_binding']==c.digest(packet)
-    assert admission['owners']==[1,2] and admission['physical_GPUs']==[0,1]
-    gpu=int(os.environ['GPU']);owner=int(os.environ['OWNER']);assert owner==gpu+1 and gpu in (0,1)
+    assert admission['physical_GPUs']==[0,1]
+    if not full:assert admission['owners']==[1,2]
+    gpu=int(os.environ['GPU']);owner=int(os.environ['OWNER']);assert owner in admission['owners'] and gpu in (0,1)
+    if not full:assert owner==gpu+1
     with (RUN/'private'/f'CALIBRATION_ONCE_{owner}').open('x'):pass
     assert c.read(RUN/'private/NATIVE_FIT_CPU_CHECKS.json')['gradient']['status']=='PASS'
     task=packet['original_tasks'][owner-1];rows=trajectory.source_rows(packet,owner)
     assert all(Path(row['image_path']).is_file() for row in rows)
     worker.configure()
-    counted=r.count
+    counted=r.count;forward_start=r.COUNTS['non_generation_forwards']
     def count(*args):
-        counted(*args);assert r.COUNTS['non_generation_forwards']<=2000
+        counted(*args);assert r.COUNTS['non_generation_forwards']-forward_start<=2000
     r.count=count
     from m3bench_repro.editors.llava_runtime import seed_everything
-    with r.p.lease(gpu):
-        runtime,bindings,handle=r.load(gpu)
+    counts_start=dict(r.COUNTS)
+    with worker.network(gpu,loaded) as (runtime,bindings):
         try:
             runtime.model.half();prepared=r.s.prepare(runtime,bindings,task,rows,True)
             r.old.fp32(runtime);batches=[r.old.batch_on(runtime,v[1]) for v in prepared]
@@ -56,15 +58,15 @@ def main():
                 binding=dict(arm='C',seed=task['seed'],steps=160,parameters=7168,
                     source_recipe=contract.SOURCE_RECIPE,source_order=[row['query_id'] for row in rows],
                     source_binding=c.digest(contract.original.source_binding(rows)),
-                    scientific_lock=c.digest(c.read(RUN/'private/SCOPE_LOCK.json')),
-                    source_version=c.read(RUN/'private/GPU_SOURCE_VERSION.json')['commit'],
+                    scientific_lock=c.digest(c.read(RUN/'private'/scope_file)),
+                    source_version=c.read(RUN/'private'/source_file)['commit'],
                     budget_binding=c.digest(c.read(RUN/'PLAN_CONFIG.json')))
                 start=dict(r.COUNTS)
                 resume=RUN/'private/resume146'/f'C_{owner}.pt'
                 def checkpoint(saved):c.save(resume,saved);r.save_counts()
                 final=trajectory.run(r,runtime,hook,expert,batches,'C',None,0.,None,binding,checkpoint)
-                assert r.COUNTS['updates']==160 and r.COUNTS['backwards']==324
-                assert r.COUNTS['operator_backwards']==r.COUNTS['generation_attempts']==0
+                assert r.COUNTS['updates']-counts_start['updates']==160 and r.COUNTS['backwards']-counts_start['backwards']==324
+                assert all(r.COUNTS[k]==counts_start[k] for k in ('operator_backwards','generation_attempts'))
                 r.finish_candidate(runtime,hook,expert,task,'C',before,batches,refs,final['curve'],start,None,
                     mechanism=dict(source_recipe=contract.SOURCE_RECIPE,source_binding=binding['source_binding'],
                         native_calibration_first_two=True,reusable_only_with_exact_recipe_and_seed=True))
@@ -73,7 +75,7 @@ def main():
                     last_consumers=['same-source M13 C-step matching','same-source FISHER_MIN C budget'],
                     generation=0,Judge=0,epoch=time.time()))
             finally:hook.detach()
-        finally:handle.remove();r.save_counts()
+        finally:r.save_counts()
 
 
 if __name__=='__main__':

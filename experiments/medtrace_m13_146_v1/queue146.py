@@ -11,6 +11,9 @@ import contract
 EPOCH='MEDTRACE_M13_NATIVE_FIT146_20261014_V1'
 QUEUE_FOLDER='judge_m13_146_astra_medium'
 BATCH_LEDGER='Astra_m13_146_batches'
+ADMISSION_FILE='M13_146_RUNTIME_ADMISSION.json'
+SCOPE_FILE='SCOPE_LOCK.json'
+GENERATION_FILE='M13_146_GENERATION_COMPLETE.json'
 MAX_JUDGE=contract.CAPS['Judge_attempts']
 
 
@@ -70,7 +73,8 @@ def coverage(db):
 
 def request(a,q,run,db,operation):
     action=operation['action']
-    if action in ('next','reserve') and list((run/'private').glob('FAILURE_m13_146*.json')):
+    failed=list((run/'private').glob('FAILURE_m13_146*.json'))+list((run/'private').glob('FAILURE_selected*.json'))
+    if action in ('next','reserve') and failed:
         assert action!='reserve','Own stage failed; no new Judge attempt'
         return dict(state=dict(status='STOPPED',reason='OWN_STAGE_FAILED'),rows=[])
     if action=='reserve':
@@ -92,12 +96,12 @@ def main():
     q.ROOT.mkdir(parents=True,exist_ok=True)
     with (q.ROOT/'QUEUE.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX);db=q.connect();q.ingest=lambda _:None
-        generated=(run/'private/M13_146_GENERATION_COMPLETE.json').exists()
+        generated=(run/'private'/GENERATION_FILE).exists()
         if generated:
-            assert q.read(run/'private/M13_146_RUNTIME_ADMISSION.json')['status']=='PASS'
+            assert q.read(run/'private'/ADMISSION_FILE)['status']=='PASS'
             assert q.read(run/'private/SOURCE_ADMISSION146.json')['status']=='PASS'
             judge=dict(model='gpt-6-astra',reasoning_effort='medium',protocol=q.PROTOCOL,prompt=q.PROMPT)
-            epoch=dict(epoch=EPOCH,**judge,scientific_lock=q.digest(q.read(run/'private/SCOPE_LOCK.json')),
+            epoch=dict(epoch=EPOCH,**judge,scientific_lock=q.digest(q.read(run/'private'/SCOPE_FILE)),
                 workers=4,batch_size=50,attempts_per_payload=1,maximum_new_Judge=MAX_JUDGE,selfcheck=selfcheck())
             receipt=q.ROOT/'EPOCH_MANIFEST.json'
             if receipt.exists():assert q.read(receipt)==epoch

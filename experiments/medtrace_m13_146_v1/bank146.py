@@ -15,10 +15,11 @@ def bank_entries(entries,row):
     assert row['mode'] in ('bank','insertion') and 1<=row['prefix']<=146
     return entries[:row['prefix']]
 
-def evaluate(expected_candidates=584,partitions=3):
+def evaluate(expected_candidates=584,partitions=3,admit=require_ready,
+        frozen_file='M13_146_CANDIDATES_FROZEN.json',scope_file='SCOPE_LOCK.json',source_file='GPU_SOURCE_VERSION.json'):
     from m3bench_repro.editors.routing import MemoryRouter, decision_as_json
-    require_ready()
-    assert c.read(RUN/'private/M13_146_CANDIDATES_FROZEN.json')['candidates'] == expected_candidates
+    admit()
+    assert c.read(RUN/'private'/frozen_file)['candidates'] == expected_candidates
     part, gpu = int(os.environ['PARTITION']), int(os.environ['GPU'])
     action = os.environ['ACTION']
     rows = c.read(RUN/'private/EVAL_PLAN146.json')
@@ -79,6 +80,7 @@ def evaluate(expected_candidates=584,partitions=3):
                     data.update(method=row['method'], mode=row['mode'], prefix=row['prefix'],
                         owner=row['owner'], eval_owner=row['owner'], consumer_id=contract.consumer_id(row),
                         effective_expert=selected, original_router=True,
+                        lock=c.digest(c.read(RUN/'private'/scope_file)),execution=c.read(RUN/'private'/source_file),
                         active_target=row['mode'] in ('bank', 'insertion') and
                             (query.get('image_sha256'), query['question']) in active)
                     c.write(dest(row), data)

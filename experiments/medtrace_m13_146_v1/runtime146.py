@@ -1,5 +1,6 @@
 """New M13 original146 worker; explicit admissions precede every GPU load."""
 import os
+from contextlib import contextmanager
 from pathlib import Path
 import time
 import traceback
@@ -44,13 +45,36 @@ def configure():
     r.s.tasks=tasks;r.s.source=lambda task:trajectory.source_rows(packet(),task['order']);r.s.point=point
     r.s.baseline=lambda task,row:base_path(row)
     r.GPUS=(int(os.environ.get('GPU','0')),)
-    r.COUNTS['local_solves']=0
+    r.COUNTS.setdefault('local_solves',0)
     r.source_gradients=lambda *args,**kwargs:trajectory.source_gradients(r,*args,**kwargs)
     def count(*_):
         c.budget();r.COUNTS['forwards']+=1
         if not r.GENERATING:r.COUNTS['non_generation_forwards']+=1
-        assert r.COUNTS['non_generation_forwards']<=contract.CAPS['non_generation_forwards']
+        assert r.COUNTS['non_generation_forwards']<=getattr(r,'NATIVE_FORWARD_CAP',contract.CAPS['non_generation_forwards'])
     r.count=count
+
+
+@contextmanager
+def network(gpu,loaded=None):
+    # A full-lane worker owns one lease/model; each task still gets a fresh expert.
+    if loaded is not None:
+        yield loaded
+        return
+    with r.p.lease(gpu):
+        runtime,bindings,handle=r.load(gpu)
+        try:yield runtime,bindings
+        finally:handle.remove()
+
+
+def stage_admission(stage,full):
+    if full:
+        from selected_training146 import require_admission
+        return require_admission(), 'SELECTED_SCOPE1.json', 'SELECTED_SOURCE1.json'
+    names={'C':'NATIVE_CALIBRATION','M13':'NATIVE_FOLLOWUP','FISHER_MIN':'NATIVE_FMIN'}
+    name=names[stage]
+    return c.read(RUN/'private'/f'{name}_ADMISSION1.json'), (
+        'SCOPE_LOCK.json' if stage=='C' else name+'_SCOPE1.json'), (
+        'GPU_SOURCE_VERSION.json' if stage=='C' else name+'_SOURCE1.json')
 
 
 def train():
