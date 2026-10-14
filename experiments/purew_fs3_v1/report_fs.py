@@ -40,6 +40,7 @@ def partial_coverage(generated,db):
 
 def main():
     cost=c.read(R/'RESOURCE_LEDGER.json');assert all(x.get('ended_epoch') for x in cost['gpu_sessions'])
+    hardware=c.read(R/'public/GPU6_AUTHORIZATION.json') if (R/'public/GPU6_AUTHORIZATION.json').exists() else None
     if not (R/'private/GENERATION_COMPLETE.json').exists() or not (R/'private/judge_purew146/ALL_WORKERS_COMPLETE.json').exists():
         assert list((R/'private/failures').glob('*.json')),'Healthy incomplete run cannot be declared terminal'
         generated={a:sum(c.read(p)['outputs'] for p in (R/'private/outputs'/a).glob('*/*/*/COMPLETE.json')) for a in ('M','F','S')}
@@ -52,13 +53,13 @@ def main():
         coverage=partial_coverage(generated,db)
         if db is not None:db.close()
         counts={k:sum(c.read(p).get(k,0) for p in (R/'private/attempts').glob('*.json')) for k in ('forwards','vision_forwards','backwards','committed_updates','attempt_slots','generation_attempts')}
-        result=dict(status='PARTIAL_DIAGNOSTIC_NOT_COMPLETE',scientific_success=False,diagnostic_only=True,generated=generated,
+        result=dict(status='PARTIAL_DIAGNOSTIC_NOT_COMPLETE',scientific_success=False,diagnostic_only=True,hardware_authorization=hardware,generated=generated,
             not_generated={a:161-generated[a] for a in generated},**coverage,actual_compute_counts=counts,
             new_Judge=cost['Judge_attempts'],GPU_process_hours=cost['gpu_seconds_used']/3600,
             failures=len(list((R/'private/failures').glob('*.json'))),metrics='NA_UNFINISHED',permanent_missing_not_used_for_unattempted=True,
             original146='PAUSED',original_M='PAUSED',OL='WAITING',automatic_replay=False)
         c.write(R/'public/RESULTS.json',result)
-        (R/'public/REPORT_ZH.md').write_text('# F/S有限诊断partial\n\n执行故障或预算止步，所需轨迹/重载/评分屏障未完成。指标NA，未生成/未评分不伪作永久missing；失败、实际成本和恢复点全部保留，不能声称科学成功。详见RESULTS.json及私有故障回执。原146/M暂停，O/L等待，无盲重放。\n')
+        (R/'public/REPORT_ZH.md').write_text('# F/S有限诊断partial\n\n执行故障或预算止步，所需轨迹/重载/评分屏障未完成。指标NA，未生成/未评分不伪作永久missing；失败、实际成本和恢复点全部保留，不能声称科学成功。详见RESULTS.json及私有故障回执。原146/M暂停，O/L等待，无盲重放。GPU5历史与用户授权GPU6接续分阶段留账，原预算不重置。\n')
         c.write(R/'private/REPORT_COMPLETE.json',dict(status=result['status'],epoch=time.time()))
         print(json.dumps(dict(status=result['status'])));return
     assert (R/'private/GENERATION_COMPLETE.json').exists() and (R/'private/FINAL_CONSUMED.json').exists()
@@ -128,7 +129,7 @@ def main():
     counts={k:sum(c.read(p).get(k,0) for p in (R/'private/attempts').glob('*.json')) for k in ('forwards','vision_forwards','backwards','committed_updates','attempt_slots','generation_attempts')}
     assert counts['attempt_slots']==960
     full=all(scores[x['payload_key']] is not None for x in rows)
-    result=dict(status='COMPLETE' if full else 'COMPLETE_WITH_MISSING',scientific_success=False,diagnostic_only=True,
+    result=dict(status='COMPLETE' if full else 'COMPLETE_WITH_MISSING',scientific_success=False,diagnostic_only=True,hardware_authorization=hardware,
         panels=panels,contrasts=contrasts,protection=protection,endpoints=endpoints,gates=gates,diagnostics=diagnostics,
         actual_compute_counts=counts,GPU_process_hours=cost['gpu_seconds_used']/3600,new_Judge=cost['Judge_attempts'],
         owned_weight_peak_bytes=cost['weights_observed_peak_bytes'],failures=len(list((R/'private/failures').glob('*.json'))),
@@ -149,6 +150,7 @@ def main():
     lines+=['','M复用前三项真实训练及插入输出；新读取验证后的前三项末端W生成登记面板，不重训。K无同轨迹前三项测量，记NA，不把前100当作匹配对照。',
         'F与S使用相同token平均Fisher采样和0.01累计代理能量；S前三项保留最多12个旋转参数统计方向，不做FD各向同性补全，不保存旧病例/问答/特征。',
         '逐候选ZERO_NATIVE/RISK/PROXIMAL原因、接受/零更新、共享缺分差界、10000编辑/来源区间、真实插入端点与成本见RESULTS.json。',
+        'GPU5准入/首源和GPU6后续接续属于混合物理GPU轨迹，全部时间/失败成本累计；不声称全程同物理GPU或同硬件配对时延。',
         '完整评分终态含永久missing也不能认定全部门槛通过；未知与损伤不以修复或平均补偿。原146和原M保持暂停，O/L继续等待。']
     (R/'public/REPORT_ZH.md').write_text('\n'.join(lines)+'\n');c.write(R/'private/REPORT_COMPLETE.json',dict(status=result['status'],epoch=time.time()))
     print(json.dumps(dict(status=result['status'],diagnostic_only=True)))
