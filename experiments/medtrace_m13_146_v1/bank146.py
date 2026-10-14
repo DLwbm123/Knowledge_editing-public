@@ -9,20 +9,21 @@ from runtime146 import r,c,RUN,tasks,point,dest,require_ready
 
 def bank_entries(entries,row):
     assert len(entries)==146 and len({e['logical_edit_id'] for e in entries})==146
-    assert row['method'] in ('M1','M3','M13')
+    assert row['method'] in ('M1','M3','M13','FISHER_MIN')
     if row['mode']=='single':
         assert 1<=row['owner']<=146;return [entries[row['owner']-1]]
     assert row['mode'] in ('bank','insertion') and 1<=row['prefix']<=146
     return entries[:row['prefix']]
 
-def evaluate():
+def evaluate(expected_candidates=584,partitions=3):
     from m3bench_repro.editors.routing import MemoryRouter, decision_as_json
     require_ready()
-    assert c.read(RUN/'private/M13_146_CANDIDATES_FROZEN.json')['candidates'] == 584
+    assert c.read(RUN/'private/M13_146_CANDIDATES_FROZEN.json')['candidates'] == expected_candidates
     part, gpu = int(os.environ['PARTITION']), int(os.environ['GPU'])
     action = os.environ['ACTION']
     rows = c.read(RUN/'private/EVAL_PLAN146.json')
-    assigned = [v for i, v in enumerate(rows) if i % 3 == part and
+    assert partitions in (2,3) and 0<=part<partitions
+    assigned = [v for i, v in enumerate(rows) if i % partitions == part and
                 ((v['mode'] in ('base', 'single')) if action == 'm13_146_single' else (v['mode'] in ('bank', 'insertion')))]
     byid = {t['edit_id']: t for t in tasks()}
     byorder = {t['order']: t for t in tasks()}

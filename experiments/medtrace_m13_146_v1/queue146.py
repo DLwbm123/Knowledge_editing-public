@@ -9,6 +9,8 @@ import time
 import contract
 
 EPOCH='MEDTRACE_M13_NATIVE_FIT146_20261014_V1'
+QUEUE_FOLDER='judge_m13_146_astra_medium'
+BATCH_LEDGER='Astra_m13_146_batches'
 MAX_JUDGE=contract.CAPS['Judge_attempts']
 
 
@@ -85,7 +87,7 @@ def main():
     import astra_queue as a
     from fine_queue import full_identity,selfcheck
     q,run=a.q,a.RUN
-    q.ROOT=run/'private/judge_m13_146_astra_medium';q.BATCH_LEDGER='Astra_m13_146_batches'
+    q.ROOT=run/'private'/QUEUE_FOLDER;q.BATCH_LEDGER=BATCH_LEDGER
     operation=json.loads(os.environ.get('QUEUE_REQUEST','{"action":"status"}'))
     q.ROOT.mkdir(parents=True,exist_ok=True)
     with (q.ROOT/'QUEUE.lock').open('a') as lock:

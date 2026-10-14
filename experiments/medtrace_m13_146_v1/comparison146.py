@@ -6,17 +6,25 @@ import contract
 METHODS=('M13','FISHER_MIN')
 METHOD_CONSUMERS={'M13':7494,'FISHER_MIN':7494,'BASE':2093}
 CONSUMERS=sum(METHOD_CONSUMERS.values())
+original=contract.original
+consumer_id=contract.consumer_id
+PREFIXES=contract.PREFIXES
 # Count reservations only. Wall/GPU limits require a separate execution admission.
 COUNT_RESERVATIONS=dict(updates=146*3*160,backwards=146*(324+324+16004)+1952,
     operator_backwards=146*(160+5120),local_solves=146*7680,
     non_generation_forwards=146*(4000+5000+100000)+128,
     generation_attempts=CONSUMERS,Judge_attempts=CONSUMERS)
+CAPS=dict(COUNT_RESERVATIONS,evaluation_consumers=CONSUMERS)
 
 
 def coverage(packet):
     assert packet['source_recipe']==contract.SOURCE_RECIPE
     assert contract.source_admission(packet)['status']=='PASS'
-    rows=contract.coverage_reservation(packet['original_tasks'],packet['base_mask'])
+    return coverage_reservation(packet['original_tasks'],packet['base_mask'])
+
+
+def coverage_reservation(tasks,base_mask):
+    rows=contract.coverage_reservation(tasks,base_mask)
     selected=[]
     for row in rows:
         if row['method']=='M3':continue

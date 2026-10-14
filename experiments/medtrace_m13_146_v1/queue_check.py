@@ -4,8 +4,9 @@ import json
 import os
 from pathlib import Path
 import tempfile
-import contract
-import queue146 as queue
+import importlib
+queue=importlib.import_module(os.environ.get('M13_CPU_QUEUE_MODULE','queue146'))
+contract=queue.contract
 import astra_queue as a
 from fine_queue import full_identity,selfcheck
 
