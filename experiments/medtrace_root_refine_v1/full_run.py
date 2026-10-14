@@ -103,7 +103,7 @@ def choose(runtime,hook,expert,before,pure,step,sources,losses,cache,budget):
     if original['status']=='ACCEPTED' or original['pure_source_gain']<=0:
         return selected,dict(kind='ORIGINAL_GUARD',original=original)
     radius=r.fm.map_norm(before,pure);pure_gain=original['pure_source_gain']
-    before_loss=sum(w*x for w,x in zip((.25,.25,.5),losses));records=[]
+    before_loss=g.mean_loss(losses);records=[]
     numpy_state=np.random.get_state()
     try:
         with c.diagnostic_scope(hook):
@@ -118,7 +118,7 @@ def choose(runtime,hook,expert,before,pure,step,sources,losses,cache,budget):
                     _,anchor_losses=r.source_gradients(runtime,hook,expert,sources,step,False)
                     anchor=current['G1'].detach().cpu().double().flatten()
                     gradient=expert.G1.grad.detach().cpu().double().flatten()
-                    anchor_gain=before_loss-sum(w*x for w,x in zip((.25,.25,.5),anchor_losses))
+                    anchor_gain=before_loss-g.mean_loss(anchor_losses)
                     if current_gain is not None:j.close(anchor_gain,current_gain)
                     if iteration==0:
                         value,audit=j.jm.solve(rows.numpy(),(transform@original_root).numpy(),center.numpy(),orthogonal,

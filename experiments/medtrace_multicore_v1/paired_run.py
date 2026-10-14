@@ -60,7 +60,7 @@ def trial(runtime,hook,expert,before,pure,step,sources,losses,cache,cpu_cache,bu
     radius=r.fm.map_norm(before,pure)
     chosen=g.source_batches(sources,step)
     pure_gain=g.gain(losses,r.losses_at(runtime,hook,expert,pure,chosen))
-    before_loss=sum(w*x for w,x in zip((.25,.25,.5),losses))
+    before_loss=g.mean_loss(losses)
     proposal=pure if fraction==1 else r.mm.canonicalize(r.q.add(before,
         fraction*(r.q.flatten(pure)-r.q.flatten(before))))[0]
     current=proposal;current_gain=None;attempts=[]
@@ -68,7 +68,7 @@ def trial(runtime,hook,expert,before,pure,step,sources,losses,cache,cpu_cache,bu
         expert.load_state_dict(current)
         _,anchor_losses=r.source_gradients(runtime,hook,expert,sources,step,False)
         gradient={k:v.grad.detach().clone() for k,v in expert.named_parameters()}
-        anchor_gain=before_loss-sum(w*x for w,x in zip((.25,.25,.5),anchor_losses))
+        anchor_gain=before_loss-g.mean_loss(anchor_losses)
         if current_gain is not None:j.close(anchor_gain,current_gain)
         rho=None if iteration==0 else (.25,.125,.0625)[iteration-1]*radius
         required=.9*pure_gain-(1e-6 if iteration==0 else 0.)

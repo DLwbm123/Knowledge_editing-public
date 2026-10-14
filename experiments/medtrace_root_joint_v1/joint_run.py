@@ -90,7 +90,7 @@ def diagnostics(runtime,hook,expert,task,step,before,pure,scalar_before,scalar_a
     pure_gain=old_decision['pure_source_gain'];assert pure_gain>0
     target=r.fm.map_norm(before,pure)
     required=.9*pure_gain-1e-6
-    before_loss=sum(w*x for w,x in zip((.25,.25,.5),losses))
+    before_loss=g.mean_loss(losses)
     records=[]
     with c.diagnostic_scope(hook):
         base_metrics=measure(runtime,hook,expert,before,sources,protection,refs)
@@ -100,7 +100,7 @@ def diagnostics(runtime,hook,expert,task,step,before,pure,scalar_before,scalar_a
             expert.load_state_dict(candidate)
             _,anchor_losses=r.source_gradients(runtime,hook,expert,sources,step,False)
             gradient=expert.G1.grad.detach().cpu().double().flatten()
-            gain_at_proposal=before_loss-sum(w*x for w,x in zip((.25,.25,.5),anchor_losses))
+            gain_at_proposal=before_loss-g.mean_loss(anchor_losses)
             transform,inverse,center,orthogonal=jg.coordinates(before,candidate)
             rows=g.gm.root_rows(candidate,cache)
             root=candidate['G1'].detach().cpu().double().flatten()
