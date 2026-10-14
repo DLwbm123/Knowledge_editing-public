@@ -47,6 +47,11 @@ env.update(RUN_ROOT=str(R),TMPDIR=tmp,PYTHONPATH=str(R/'private/official_llava')
     CUDA_VISIBLE_DEVICES='4',M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES='4',M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES='4',M3BENCH_FORMAL_EXPECTED_GPU_UUID=u,
     ACTION='controller',ARM='X',TASK_FILE=str(R/'private/tools/controller.py'))
 write(R/'private/LAUNCH_ENV.json',env)
+os.environ.update(env);sys.path.insert(0,str(R/'private/source'));sys.path.insert(0,str(R/'private/tools'))
+import queue_revision as queue
+queue.q.ROOT.mkdir(parents=True,exist_ok=True)
+queue.q.write(queue.q.ROOT/'EPOCH_MANIFEST.json',dict(epoch=p['version'],model='gpt-6-astra',reasoning_effort='medium',protocol=queue.q.PROTOCOL,prompt=queue.q.PROMPT,attempts_per_payload=1,workers=4,batch_size=50))
+db=queue.q.connect();queue.ingest(db);db.close()
 fd,entry=tempfile.mkstemp(prefix='e.',suffix='.py',dir=tmp);os.close(fd);Path(entry).write_text("import os,runpy\nrunpy.run_path(os.environ['TASK_FILE'],run_name='__main__')\n")
 child=subprocess.Popen([env['TRAIN_PYTHON'],'-u',entry],env=env,stdout=(R/'logs/controller.log').open('ab'),stderr=subprocess.STDOUT,start_new_session=True)
 argv=subprocess.check_output(['ps','-ww','-p',str(child.pid),'-o','args='],text=True).strip()

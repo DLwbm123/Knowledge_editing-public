@@ -34,6 +34,10 @@ def main():
     if status['active'] or not (status['done'] or status['failed'] or status['scientific_stop'] or status['reviewed']):
         (STATE/'TAIL_REVIEW_REQUIRED.json').write_text(json.dumps(dict(status=status,epoch=time.time())))
         return
+    terminal=json.loads(remote("from pathlib import Path\nimport json\nr=Path("+repr(R)+");print(json.dumps(dict(complete=(r/'private/judge_purew146/ALL_WORKERS_COMPLETE.json').exists())))\n"))
+    if not terminal['complete'] and not status['reviewed']:
+        (STATE/'TAIL_REVIEW_REQUIRED.json').write_text(json.dumps(dict(status=status,scoring_terminal=False,epoch=time.time())))
+        return
     output=remote("import os,runpy\nos.environ['RUN_ROOT']="+repr(R)+"\nrunpy.run_path("+repr(R+'/private/tools/report_revision.py')+",run_name='__main__')\n")
     (STATE/'REPORT_OUTPUT.txt').write_text(output)
     names=['RESULTS.json','REPORT_ZH.md','REAL_VLM_ADMISSION_X.json','REAL_VLM_ADMISSION_Y.json','BASE_IDENTITY_X.json','BASE_IDENTITY_Y.json','NATIVE_RELOAD_X.json','NATIVE_RELOAD_Y.json','CPU_VALIDATION.json']
