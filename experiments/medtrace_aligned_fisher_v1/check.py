@@ -23,7 +23,8 @@ def main():
     shapes=((1,3,2),(2,4,2),(2,5,2),(2,6,1))
     before=cm.mm.canonicalize({k:torch.randn(s,generator=rng,dtype=torch.float64) for k,s in zip(cm.mm.KEYS,shapes)})[0]
     pure={k:v+.001*torch.randn(v.shape,generator=rng,dtype=v.dtype) for k,v in before.items()}
-    radius=module.r.fm.map_norm(before,pure)
+    b,a=cm.mm.factors(before);u,v=cm.mm.factors(pure)
+    delta=[(u,v),(-b,a)];radius=float(cm.inner(delta,delta))**.5
     assert abs(module.alignment(before,pure,pure,radius)-1)<1e-5
     cache=dict(x=torch.randn(7,30,generator=rng,dtype=torch.float64),y=torch.randn(7,3,12,generator=rng,dtype=torch.float64),token_counts=[3,4])
     gradients={k:torch.randn(v.shape,generator=rng,dtype=v.dtype) for k,v in before.items()}
