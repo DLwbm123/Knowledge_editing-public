@@ -17,7 +17,8 @@ def replace_once(source,old,new):
 def package():
     medical=W/'experiments/purew_medical_evidence100_v1'
     files={p.name:p.read_text() for p in HERE.glob('*.py') if p.name not in ('bootstrap.py','deploy.py','finish.py','consumers.py')}
-    for name in ('runtime.py','access.py','curvature.py'):files[name]=(medical/name).read_text()
+    for name in ('runtime.py','access.py','curvature.py'):
+        if name not in files:files[name]=(medical/name).read_text()
     files['base_controller.py']=(medical/'controller.py').read_text()
     files['base_evaluator.py']=(medical/'evaluator.py').read_text()
     s=(medical/'learner.py').read_text();s=replace_once(s,'range(start_owner,101)','range(start_owner,4)')

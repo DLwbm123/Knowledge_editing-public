@@ -10,12 +10,13 @@ spec=importlib.util.spec_from_file_location('frozen_fs_controller',Path(os.envir
 broker=importlib.util.module_from_spec(spec);spec.loader.exec_module(broker)
 provide=broker.provide
 import common as c
+import runtime  # Install the explicitly authorized GPU6 admission route before waiting.
 R=c.RUN
 
 
 def stage(action,arm,role,owner=0):
-    while not __import__('base_run').available(5):c.budget();time.sleep(30)
-    os.environ.update(SOURCE_ROLE=role,SOURCE_OWNER=str(owner),CUDA_VISIBLE_DEVICES='5')
+    while not __import__('base_run').available(6):c.budget();time.sleep(30)
+    os.environ.update(SOURCE_ROLE=role,SOURCE_OWNER=str(owner),CUDA_VISIBLE_DEVICES='6')
     child=launch(action,arm,'source_stage.py')
     assert child.wait()==0,'Retain stage failure; no automatic replay'
 
@@ -33,7 +34,7 @@ def main():
                 packet=window/'current.json'
                 if packet.exists():assert c.read(packet)['task']['order']==owner
                 else:provide(rows[owner-1],tasks[owner-1],owner,window)
-                c.write(R/'public/PROGRESS.json',dict(status='WAITING_SERIAL_GPU_ADMISSION',arm=arm,owner=owner,minimum_free_MiB=45*1024,epoch=time.time()))
+                c.write(R/'public/PROGRESS.json',dict(status='WAITING_SERIAL_GPU_ADMISSION',arm=arm,owner=owner,minimum_free_MiB=45*1024,physical_GPU=6,epoch=time.time()))
                 stage('serial_learn_'+arm+'_'+str(owner),arm,'learn',owner)
                 stage('serial_evaluate_'+arm+'_'+str(owner),arm,'evaluate',owner)
                 c.write(R/'private/units'/arm/(str(owner)+'.json'),dict(status='COMPLETE',slots=160,completed_slots=owner*160))

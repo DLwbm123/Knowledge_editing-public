@@ -33,7 +33,7 @@ panel = old.panel
 
 def evaluate(admission_only=False):
     with lease():
-        runtime, bindings = c.load(5); hooks = track(runtime)
+        runtime, bindings = c.load(6); hooks = track(runtime)
         try:
             tasks = c.read(R/'private/BENCHMARK146_QUEUE.json')['tasks']; ledger = c.read(R/'private/EVAL_LEDGER.json')
             if admission_only:
@@ -65,7 +65,7 @@ def evaluate(admission_only=False):
 
 def reload():
     with lease():
-        runtime,bindings=c.load(5);hooks=track(runtime)
+        runtime,bindings=c.load(6);hooks=track(runtime)
         try:
             saved=torch.load(R/'private/final'/ARM/'native.pt',map_location='cpu',weights_only=True)
             assert b.schema(runtime.model)==saved['schema']
@@ -83,7 +83,7 @@ def reload():
 
 def reference():
     with lease():
-        runtime,bindings=c.load(5);hooks=track(runtime)
+        runtime,bindings=c.load(6);hooks=track(runtime)
         try:
             assert c.read(R/'private/M_REFERENCE_PROOF.json')['first3_reference_W_exact']
             saved=torch.load(R/'private/M_reference_native.pt',map_location='cpu',weights_only=True)

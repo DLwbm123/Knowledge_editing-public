@@ -49,7 +49,7 @@ def evaluator_source():
     import evaluator
     owner=int(os.environ['SOURCE_OWNER'])
     assert 1<=owner<=3 and (R/'private/control'/ARM/'EVALUATE.json').exists()
-    model,bindings=c.load(5);hooks=runtime.track(model)
+    model,bindings=c.load(6);hooks=runtime.track(model)
     try:
         native=torch.load(CONTROL/'native.pt',map_location='cpu',weights_only=True)
         with torch.no_grad():model.get_module(c.LAYER).weight.copy_(native['native'].to(model.device))
@@ -63,9 +63,9 @@ def evaluator_source():
 
 def main():
     # Keep the same 45GiB admission/owned ceiling; reserve caching space while this sole GPU operator runs.
-    assert os.environ.get('CUDA_VISIBLE_DEVICES')=='5'
+    assert os.environ.get('CUDA_VISIBLE_DEVICES')=='6'
     with runtime.lease():
-        gpu=5;assert b.available(gpu)
+        gpu=6;assert b.available(gpu)
         reserve=torch.empty(43*1024**3,dtype=torch.uint8,device='cuda');del reserve
         runtime.lease=lambda:nullcontext()
         # The previous operators clear idle cache at boundaries; retain our admitted cache until process exit.
