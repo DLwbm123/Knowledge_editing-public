@@ -28,6 +28,9 @@ def main():
     workers=json.loads((STATE/'SCORERS.json').read_text())['workers']
     while any(alive(row) for row in workers):time.sleep(30)
     status=json.loads(remote("from pathlib import Path\nimport json\nr=Path("+repr(R)+")\nd=json.loads((r/'RESOURCE_LEDGER.json').read_text())\nprint(json.dumps(dict(active=any(not s.get('ended_epoch') for s in d['gpu_sessions']),done=(r/'private/EXIT_controller.json').exists(),failed=(r/'private/failures/controller.json').exists(),scientific_stop=(r/'public/ADMISSION_REJECTED.json').exists(),reviewed=(r/'private/STOP_REVIEWED.json').exists())))\n"))
+    if status['failed'] and not status['reviewed']:
+        (STATE/'TAIL_REVIEW_REQUIRED.json').write_text(json.dumps(dict(status=status,epoch=time.time(),recovery_review_required=True)))
+        return
     if status['active'] or not (status['done'] or status['failed'] or status['scientific_stop'] or status['reviewed']):
         (STATE/'TAIL_REVIEW_REQUIRED.json').write_text(json.dumps(dict(status=status,epoch=time.time())))
         return

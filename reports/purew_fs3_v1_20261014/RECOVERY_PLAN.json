@@ -1,0 +1,39 @@
+{
+  "status": "FROZEN_ENGINEERING_CONTINUATION",
+  "cause": "External GPU5 memory growth and idle evaluator residency caused OOM before F source2 slot1 update",
+  "verified_boundary": {
+    "arm": "F",
+    "owner": 1,
+    "slot": 160,
+    "completed_slots": 160,
+    "master_native_rng_risk_event_exact": true
+  },
+  "first_source_outputs_reused": 51,
+  "remaining_source_stages": {
+    "F": [
+      2,
+      3
+    ],
+    "S": [
+      1,
+      2,
+      3
+    ]
+  },
+  "serial_train_evaluate": true,
+  "per_stage_cached_GPU_reservation_GiB": 43,
+  "minimum_free_GPU_GiB": 45,
+  "owned_GPU_ceiling_GiB": 45,
+  "memory_allocator": "native, normal numerical precision unchanged",
+  "GPU_inference_parameters_added": 0,
+  "scientific_protocol_changed": false,
+  "loss_layer_seed_order_steps_changed": false,
+  "budget_reset": false,
+  "activation_epoch": 1791969242.962559,
+  "deadline_epoch": 1792055642.962559,
+  "failed_source2_backwards_retained": 2,
+  "prior_partial_report_retained_commit": "804044dae61d981bbfa02f54d32dae5be9401416",
+  "no_committed_update_or_output_or_Judge_replay": true,
+  "prospective_recovery_code_version": true,
+  "automatic_expansion": false
+}
