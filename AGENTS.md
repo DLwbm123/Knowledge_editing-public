@@ -1,3 +1,7 @@
+## 最新执行授权：PM/PU及半小时监测
+
+2026-10-15用户授权启动冻结PM/PU首源20槽对照并每半小时持续监测；pro5000 GPU0–7可用，同时最多两张。当前绑定GPU3，PM→PU仍串行，须生产CPU/存储显存/两臂真实VLM全部通过后正式槽。读reports/purew_projected_objective_first1_v1_20261015的EXECUTION_AUTHORIZATION、MONITORING_AUTHORIZATION、HARDWARE_AUTHORIZATION及原冻结PROTOCOL。仅运维授权取代下文no-launch/no-monitor，科学和预算不变；原146/M暂停、O/L等待、无自动146或新臂。
+
 ## 最新范围：投影统一目标，仅冻结准备
 
 2026-10-15最新用户要求结合已交付SH结果推导KLOD启发目标、解释正证据间隔仍有保护损伤、冻结最小有限对照，明确先不启动。读 reports/purew_projected_objective_first1_v1_20261015/{PROTOCOL.json,THEORY_ZH.md,FINITE_CONTRAST_ZH.md,CHECKPOINT_LIFECYCLE.md}。仅新PM/PU的理论和未来首源20槽协议，复用SH00；无执行器部署、安装、GPU分配、真实VLM、Judge、等待器或新增监测授权。旧GPU3三个臂已交付1f430d2e7ebe0ca9d20a77a4077aa585cf8d16be、监测已暂停，不因下文旧启动授权重跑。原146/M暂停，O/L原屏障等待；无subagent、无自动146、无历史结果/失败成本改写。小型合成数学检查不等生产准入。
