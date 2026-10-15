@@ -43,7 +43,10 @@ def resolved_snapshot(old_path, recovery_path, destination):
 
 
 def main():
-    with (RUN/'private/FINISH_ONCE1').open('x'): pass
+    repair = os.environ.get('RECOVERY_ZERO_WORK_REPAIR') == '1'
+    if repair:
+        assert q.read(RUN/'private/RECOVERY_ZERO_WORK_REPAIR1.json')['status'] == 'PASS_ZERO_ATTEMPTS'
+    with (RUN/'private'/('FINISH_ONCE2' if repair else 'FINISH_ONCE1')).open('x'): pass
     queue = RUN/'private/judge_interim20_recovery1'
     while not ((queue/'ALL_WORKERS_COMPLETE.json').exists() and (queue/'workers/0/SCORER_DONE.json').exists()):
         assert time.time() < q.read(RUN/'RUN_MANIFEST.json')['deadline_epoch']-600
@@ -89,8 +92,9 @@ def main():
 
 if __name__ == '__main__':
     code = 0
+    suffix = '2' if os.environ.get('RECOVERY_ZERO_WORK_REPAIR') == '1' else '1'
     try: main()
     except BaseException as error:
-        code = 1; q.write(RUN/'private/FAILURE_recovery_finish1.json',dict(error=repr(error),traceback=traceback.format_exc(),automatic_retry=False,epoch=time.time()))
+        code = 1; q.write(RUN/'private'/('FAILURE_recovery_finish'+suffix+'.json'),dict(error=repr(error),traceback=traceback.format_exc(),automatic_retry=False,epoch=time.time()))
         raise
-    finally: q.write(RUN/'private/RECOVERY_FINISH_EXIT1.json',dict(exit_code=code,epoch=time.time()))
+    finally: q.write(RUN/'private'/('RECOVERY_FINISH_EXIT'+suffix+'.json'),dict(exit_code=code,epoch=time.time()))

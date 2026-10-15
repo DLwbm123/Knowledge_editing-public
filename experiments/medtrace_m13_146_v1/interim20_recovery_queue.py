@@ -9,7 +9,7 @@ import time
 
 sys.path.insert(0, str(Path(__file__).parent))
 RUN = Path(os.environ['RUN_ROOT'])
-ORIGINAL = Path(os.environ['INTERIM20_ORIGINAL'])
+ORIGINAL = RUN.parent/'run'
 import astra_queue as a
 q = a.q
 q.ROOT = RUN/'private/judge_interim20_recovery1'
