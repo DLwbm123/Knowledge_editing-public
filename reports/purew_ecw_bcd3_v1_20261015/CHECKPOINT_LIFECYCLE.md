@@ -1,6 +1,6 @@
 # B/C/D执行生命周期（2026-10-15授权覆盖）
 
-原PROTOCOL.json保持冻结准备时原文。实际执行、GPU2及有限等待由EXECUTION_AUTHORIZATION.json和GPU2_AUTHORIZATION.json授权；科学配方和预算不变。不创建新周期监测，不恢复原146/M，不启动O/L。
+原PROTOCOL.json保持冻结准备时原文。实际执行、GPU2及有限等待由EXECUTION_AUTHORIZATION.json和GPU2_AUTHORIZATION.json授权；科学配方和预算不变。2026-10-15用户随后明确授权半小时监测，见MONITORING_AUTHORIZATION.json；该授权仅覆盖先前不创建周期监测的运维限制。不恢复原146/M，不启动O/L。
 
 一次安装即激活8 GPU进程小时/24墙钟；有限等待计墙钟，驻留、CPU传输、保存、缓存预留、失败计GPU进程时间，不重置/借额。GPU2 UUID固定，45GiB空闲准入、43GiB缓存预留、45GiB自产上限；预算不足停止，不干预其他任务。
 
