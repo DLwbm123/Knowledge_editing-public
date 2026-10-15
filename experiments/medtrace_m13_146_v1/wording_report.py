@@ -81,6 +81,10 @@ def main():
     result['new_Judge_attempts']=read(run/'RESOURCE_LEDGER.json')['Judge_attempts']-read(run/'private/INHERITED_COST.json')['Judge_attempts']
     result['generation']=protocol.CONSUMERS
     result['new_GPU_seconds']=read(run/'RESOURCE_LEDGER.json')['gpu_seconds_used']-read(run/'private/INHERITED_COST.json')['gpu_seconds_used']
+    prior=read(run/'private/WORDING_ADMISSION1.json').get('prior_failed_cost',{})
+    result['physical_generation_attempts_including_failure']=protocol.CONSUMERS+prior.get('generation_attempts',0)
+    result['prior_failed_GPU_seconds']=prior.get('GPU_seconds',0)
+    result['total_diagnostic_GPU_seconds']=result['new_GPU_seconds']+prior.get('GPU_seconds',0)
     out=run/'public';out.mkdir(exist_ok=True)
     (out/'RESULTS.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     lines=['# 问法配对诊断结果','',result['status'],'','原78条与原评分保留；新问法自由生成，0训练。仅DEV事后提出的固定诊断，无独立确认。','',

@@ -56,6 +56,9 @@ def check(run):
     assert c.digest(read(run/'private/WORDING_SCOPE1.json')) == gate['scope_binding']
     assert c.digest(read(run/'private/EVAL_PLAN146.json')) == gate['plan_binding']
     assert read(run/'private/WORDING_SOURCE1.json')['commit'] == gate['source_commit']
+    # The inherited emitter reads these before the bank layer rewrites its binding.
+    assert read(run/'private/SCOPE_LOCK.json') == read(run/'private/WORDING_SCOPE1.json')
+    assert read(run/'private/GPU_SOURCE_VERSION.json') == read(run/'private/WORDING_SOURCE1.json')
     assert read(parent/'private/SELECTED_PREFILL_RECOVERY_SOURCE1.json')['commit'] == gate['parent_source']
     assert read(run/'private/EVAL_PLAN146.json') == make_plan(
         read(Path(gate['original'])/'private/EVAL_PLAN146.json'), read(run/'private/WORDING_PAIRS.json'))

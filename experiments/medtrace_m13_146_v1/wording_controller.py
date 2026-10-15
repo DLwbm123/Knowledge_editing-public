@@ -33,7 +33,7 @@ def merge(phase):
     gate=read(RUN/'private/WORDING_ADMISSION1.json');parent=Path(gate['parent'])
     own=read(RUN/'RESOURCE_LEDGER.json');prior=read(RUN/'private/INHERITED_COST.json')
     assert all(s.get('ended_epoch') for s in own['gpu_sessions'])
-    key='wording_pair_v1_'+phase+'_merged'
+    key=gate.get('cost_namespace','wording_pair_v1')+'_'+phase+'_merged'
     with (parent/'RESOURCE_LEDGER.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX);ledger=read(parent/'RESOURCE_LEDGER.json')
         if key in ledger:

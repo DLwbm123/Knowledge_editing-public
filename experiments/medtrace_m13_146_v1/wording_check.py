@@ -53,8 +53,23 @@ def main():
         with db:db.executemany("UPDATE payload SET status='MISSING' WHERE key=?",[(v['key'],) for v in first])
         second=q.request(db,dict(action='next'))['rows'];assert len(second)==28
     import wording_runtime
+    # Exercise the real inherited emit/write path with a fake generation result.
+    from types import SimpleNamespace
+    r=wording_runtime.r
+    generate=r.s.fit.short.generate;baseline=r.s.baseline
+    try:
+        r.s.fit.short.generate=lambda *args:(SimpleNamespace(decoded_text='fixture',raw_token_ids=[1]),{})
+        r.s.baseline=lambda *args:run/'private/fixture_base_not_read'
+        with tempfile.TemporaryDirectory(prefix='e.',dir=run/'private') as tmp:
+            out=Path(tmp)/'out.json';counts=dict(forwards=0,generation_attempts=0)
+            row=dict(query_id='fixture',audit_role='EVAL')
+            r._emit(None,None,dict(order=1),'BASE',(row,None,dict(image_sha256='fixture'),None,{}),counts,dest=out)
+            data=read(out)
+            assert counts['generation_attempts']==1 and data['R0']['raw_answer']=='fixture'
+            assert data['execution']==read(run/'private/WORDING_SOURCE1.json')
+    finally:r.s.fit.short.generate=generate;r.s.baseline=baseline
     assert not (run/'private/WORDING_GPU_ONCE_0').exists()
-    result=dict(status='PASS',pairs=78,consumers=234,originals_immutable=True,missing_and_macros_checked=True,synthetic_dedup_payloads=78,CPU_import=True,GPU=False,Judge=0)
+    result=dict(status='PASS',pairs=78,consumers=234,originals_immutable=True,missing_and_macros_checked=True,synthetic_dedup_payloads=78,real_emit_write_mock_checked=True,serial_second_batch_checked=True,CPU_import=True,GPU=False,Judge=0)
     (run/'private/WORDING_CPU_CHECK1.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result))
 
