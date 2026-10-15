@@ -1,0 +1,31 @@
+{
+  "failed_batches": 4,
+  "missing_payloads": 200,
+  "failed_phase": "Request establishment",
+  "failed_durations_seconds": [
+    16.807103,
+    10.290201,
+    11.965306,
+    11.873578
+  ],
+  "failed_usage_available": false,
+  "failed_tool_events": 0,
+  "same_successful_control_cli_and_flags": true,
+  "skill_directory_and_model_refresh_warnings_also_in_success": true,
+  "subcause": "Not distinguishable between intermittent proxy/TLS/upstream admission with retained evidence",
+  "mitigation": [
+    "Explicit proxy TLS check within original isolation before reservation",
+    "One serial scorer instead of four concurrent scorers"
+  ],
+  "preflight_limit": "Reachability is not authenticated inference or lasting network stability",
+  "model": "gpt-6-astra",
+  "reasoning_effort": "medium",
+  "changed_prompt_or_answer": false,
+  "request_max_retries": 0,
+  "stream_max_retries": 0,
+  "new_attempt_cap": 200,
+  "old_valid_scores_not_rejudged": 517,
+  "original_failed_records_preserved": true,
+  "new_GPU_seconds": 0,
+  "new_generation": 0
+}
