@@ -1,0 +1,275 @@
+{
+  "version": "PUREW_OBJECTIVE_SCOPE_FIRST1_V1_20261015",
+  "status": "FROZEN_PREPARATION_ONLY_NOT_LAUNCH_READY",
+  "authorization": {
+    "user_request": "深入看KLOD推导和实现；重新设计统一目标；冻结removed软KL与硬门最小对照；不启动新实验",
+    "execution": false,
+    "monitoring": false,
+    "install": false,
+    "waiter": false
+  },
+  "frozen_at_utc": "2026-10-15T14:07:55.407690+00:00",
+  "upstream": {
+    "paper": "https://arxiv.org/html/2608.27839v1",
+    "official_repository": "https://github.com/Hostoday/KLOD",
+    "reviewed_commit": "f1db53037d4d521cf97fb32104e7e39b8a3f628c",
+    "code_executed": false,
+    "license": "MIT"
+  },
+  "reference": {
+    "SH11": "completed R first-source20, immutable",
+    "report_commit": "ca682ba1b53700e99716253d33011ad47b989fad",
+    "runtime_source_commit": "2fc3f338369c2c8aa2be2eef266701ab5cd24ff4",
+    "consumers": 87,
+    "valid": 69,
+    "permanent_missing": 18,
+    "rerun_regenerate_rejudge": false,
+    "B_not_valid_SH10_reference": true
+  },
+  "design": {
+    "factors": [
+      "removed_soft_KL_coefficient",
+      "current_true_KL_constraint_path"
+    ],
+    "new_arms": [
+      {
+        "id": "SH00",
+        "soft": 0,
+        "hard": 0
+      },
+      {
+        "id": "SH10",
+        "soft": 1,
+        "hard": 0
+      },
+      {
+        "id": "SH01",
+        "soft": 0,
+        "hard": 1
+      }
+    ],
+    "historical_cell": {
+      "id": "SH11",
+      "soft": 1,
+      "hard": 1
+    },
+    "new_arm_order": [
+      "SH00",
+      "SH10",
+      "SH01"
+    ],
+    "source_orders": [
+      1
+    ],
+    "slots_per_arm": 20,
+    "seed": "original per-edit seed unchanged",
+    "reset": "fresh original Base for each arm",
+    "interaction_required": true,
+    "primary_mechanical_outcome": "fixed-slot20 complete weighted native+allFIT CE",
+    "contrasts": [
+      "Y10-Y00",
+      "Y11-Y01",
+      "Y01-Y00",
+      "Y11-Y10",
+      "Y11-Y10-Y01+Y00"
+    ],
+    "effect_scope": "conditional on fixed Base16/removed4 Fisher background; H combines affine direction and actual native hard gate, not post-check-only effect",
+    "no_new_objective_arm": true
+  },
+  "shared": {
+    "training": ".5native CE+.5cyclic originalFIT CE",
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "native": "FP16",
+    "master_gradient": "FP32",
+    "statistics": "FP64",
+    "eta": 0.01,
+    "clip": 5,
+    "scale": 128,
+    "proposal_cap": 0.05,
+    "Gamma": "IDENTITY",
+    "Base_rows": 16,
+    "prewrite_removed_rows": 4,
+    "per_block_risk_cap": 0.01,
+    "maximum_rows_after_qualified_source_end": 38,
+    "preserve_original_source_end_birth_rules": true,
+    "Base_binding": "988b3b5065f93eded1b9453c256eb2d74c45b5bc54be30e72540e58eaa5f9129",
+    "norm_reanchoring": false,
+    "added_inference_parameters": 0,
+    "no_old_case_image_QA_feature_teacher_replay": true,
+    "no_evaluation_training": true,
+    "no_added_sources": true,
+    "numerical_envelopes": "unchanged R/J, no enlarged isotropic quantization bound",
+    "actual_delta": "FP64(candidateFP16-oldFP16)",
+    "master_reject": "rollback, no retained rejected candidate",
+    "reject_consumes_slot": true
+  },
+  "factor_semantics": {
+    "S0": "do not construct soft-KL backward term; current teacher still available for diagnostics/H1",
+    "S1": "original weighted full-vocabulary removed KL coefficient1",
+    "H0": "legacy quadratic solve only; neither five current affine inequalities nor actual KL rejection; read-only actual KL diagnostics retained",
+    "H1": "original R solve_current plus finite active-set fallback, then all five actual candidate KL<=.01",
+    "shared_removed_Fisher_still_present_in_H0": true,
+    "solver_iterations": 48,
+    "solver_linesearch": 8,
+    "candidate_backtracks": 8,
+    "Armijo": 0.0001,
+    "fallback_max_subsets": 32,
+    "risk_thresholds_unchanged": true
+  },
+  "diagnostics": {
+    "per_slot": [
+      "source_CE",
+      "scope_loss",
+      "solver_reason",
+      "KKT",
+      "dual_gap",
+      "candidate_rejection_sets",
+      "five_actual_KLs",
+      "five_affine_native_predictions_when_H1",
+      "Fisher_proxy",
+      "numeric_envelope_fraction",
+      "proposal_native_quantization_path_net",
+      "accepted_rejected_zero"
+    ],
+    "new_arm_full_CE_each_slot": true,
+    "read_only_diagnostics_preserve_rng_and_mode": true,
+    "first_hit_CE_levels": [
+      1,
+      0.5,
+      0.1
+    ],
+    "missing_historical_trajectory_points": "NA, no replay",
+    "terminal_ten_gaps": [
+      "finite",
+      "positive",
+      "zero",
+      "negative",
+      "min",
+      "max"
+    ],
+    "no_intermediate_evaluation": true
+  },
+  "gates": {
+    "fit_CE_strict_below": 0.1,
+    "T0_T1G_all_correct": true,
+    "T2G_difference_vs_SH11_lower_nonnegative": true,
+    "fixed_T2L": 34,
+    "fixed_T1L": 2,
+    "allowed_Base_correct_to_wrong": 0,
+    "unknown_fails": true,
+    "ten_gaps_all_positive_finite": "retain original evidence-sensitivity gate, not clinical diagnosis certificate",
+    "high_loss_frozen": "complete CE>=.1 AND last10 slots zero",
+    "numeric_mechanism_stop": "original five consecutive numeric-only rejections with slot CE>=.1",
+    "scientific_arm_stop_allows_other_registered_arms": true,
+    "shared_safety_or_data_failure_blocks_all": true,
+    "H0_report_label": "HARD_KL_NOT_ENFORCED",
+    "no_floor_subset_tuning_or_extra_slots": true
+  },
+  "evaluation": {
+    "new_consumers_per_arm": 87,
+    "prefix1": 46,
+    "actual_insertion": 5,
+    "fixed_protection": 36,
+    "new_total": 261,
+    "total_including_historical_R": 348,
+    "canaries_per_arm": 3,
+    "fresh_reload_per_arm": 2,
+    "generations_per_arm": 92,
+    "Judge": "gpt-6-astra medium with original Stage17 isolation",
+    "each_payload_attempts": 1,
+    "retry_failed_Judge": false,
+    "old_missing_immutable": true,
+    "shared_binding_reuse": true,
+    "unattempted_is_missing": false,
+    "before_scoring": [
+      "all actual arm trajectories terminal",
+      "fresh native reload",
+      "FINAL_CONSUMED for each actual arm",
+      "all GPU leases closed",
+      "GENERATION_COMPLETE"
+    ],
+    "terminal": [
+      "four workers terminal",
+      "PENDING=0",
+      "RESERVED=0",
+      "all actual new consumers FORMAT_VALID/MISSING",
+      "ALL_WORKERS_COMPLETE",
+      "REPORT_COMPLETE"
+    ],
+    "bounds": "exact shared-payload bounds for pairwise and interaction; no independent-missing assumption",
+    "bootstrap_draws": 10000,
+    "bootstrap_seed": 20260912,
+    "single_source_not_population_inference": true
+  },
+  "budgets": {
+    "activation_epoch": null,
+    "deadline_epoch": null,
+    "GPU_process_hours": 6,
+    "wall_hours": 24,
+    "formal_slots": 60,
+    "native_writes_including_admission": 63,
+    "backwards": 900,
+    "forwards_including_vision": 45000,
+    "generations": 276,
+    "new_Judge": 261,
+    "candidate_checks": 480,
+    "active_set_checks": 1920,
+    "per_new_arm": {
+      "GPU_process_hours": 2,
+      "formal_slots": 20,
+      "native_writes_including_admission": 21,
+      "backwards": 300,
+      "forwards_including_vision": 15000,
+      "generations": 92,
+      "new_Judge": 87,
+      "candidate_checks": 160,
+      "active_set_checks": 640
+    },
+    "cross_arm_transfer": false,
+    "owned_matrix_GiB_including_atomic_temp": 96,
+    "minimum_host_available_GiB": 96,
+    "minimum_disk_free_GiB": 8,
+    "minimum_GPU_free_GiB": 45,
+    "owned_GPU_GiB": 45,
+    "cached_GPU_GiB": 43,
+    "hard_interrupt_replay_allowance": 0,
+    "all_failure_costs_retained": true,
+    "old_budget_borrowing": false,
+    "independent_future_activation_only": true
+  },
+  "hardware": {
+    "candidate_host": "pro5000",
+    "candidate_physical_GPU": 2,
+    "candidate_UUID": "GPU-4b56ab28-a018-652c-b8f6-2d9dc3dc45d2",
+    "allocation_authorized": false,
+    "remote_operations_this_preparation": 0
+  },
+  "new_unified_objective": {
+    "status": "THEORY_ONLY_NOT_IN_FACTORIAL",
+    "form": "current-context minimal KL information projection onto authorized target-probability sets, then KL(projected_target||current); retired accepted behavior full-distribution parameter statistics",
+    "alpha_illustration_only": 0.95,
+    "future_executable_hyperparameters_frozen": false,
+    "no_claim_global_Fisher_coverage_or_clinical_privacy_guarantee": true
+  },
+  "readiness": {
+    "literature_code_audit": "COMPLETE_SOURCE_REVIEW_ONLY",
+    "small_algebra_checks": "PASS_SYNTHETIC_ONLY",
+    "production_executor": "NOT_IMPLEMENTED",
+    "production_CPU": "NOT_RUN",
+    "storage_GPU_admission": "NOT_RUN",
+    "real_VLM": "NOT_RUN",
+    "remote_install": "NOT_STARTED",
+    "scorer_tail": "NOT_STARTED",
+    "requires_new_execution_authorization": true
+  },
+  "lifecycle": {
+    "original146": "PAUSED",
+    "M": "PAUSED",
+    "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+    "old_R_J_FS_ECW_BCD": "IMMUTABLE",
+    "automatic_146": false,
+    "new_monitor": false,
+    "new_run": false,
+    "no_historical_asset_deletion": true
+  }
+}
