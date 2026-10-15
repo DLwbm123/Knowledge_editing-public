@@ -105,7 +105,7 @@ def main():
         owned_matrix_peak_bytes=ledger['weights_observed_peak_bytes'],owned_GPU_peak_MiB=ledger['GPU_memory_observed_peak_MiB'],
         all_GPU_leases_closed=True,generation_barrier_not_overridden=True,C_checkpoint_retained=True,
         B_native_reload='PASS',C_D_final_reload='NOT_RUN',full_68_row_D_peak='NOT_MEASURED_D_NOT_STARTED',
-        failure_cost_included=True,failed_stage_GPU_seconds=sum(s['resident_seconds'] for s in ledger['gpu_sessions'] if s['action']=='learn_C_1'),
+        reporting_engineering_receipts=[c.read(p) for p in (R/'public').glob('ENGINEERING_PUBLICATION_*.json')],failure_cost_included=True,failed_stage_GPU_seconds=sum(s['resident_seconds'] for s in ledger['gpu_sessions'] if s['action']=='learn_C_1'),
         failures=[dict(kind=p.stem,epoch=c.read(p)['epoch']) for p in (R/'private/failures').glob('*.json')],
         unattempted_not_permanent_missing=True,bootstrap_seed=20260912,bootstrap_draws=10000,automatic146=False,
         global_nonlinear_clinical_privacy_certificate=False,original146='PAUSED',M='PAUSED',OL='WAIT_ORIGINAL_FULL_PREDECESSOR')
@@ -113,6 +113,8 @@ def main():
     text='# B/C/D科学准入止步：partial交付\n\nC第1源20槽后，十个概念/提示间隔未能全部有限且严格为正，触发冻结科学止步。具体不合格数与数值未在异常前落盘，不能进一步细分，不重放模型补取。B完成60槽、161输出和新进程2题精确重载；C仅20槽、无评价输出；D未启动。本轮不是完整644消费者实验，不是预算耗尽或可自动绕过的工程故障。\n\n## 同前三项prefix3，仅读历史全绑定评分\n\n|臂|任务|已知正确/分母|未知|微平均界%|\n|---|---|---:|---:|---|\n'
     for p in panels:
         if p['prefix']==3:text+='|'+ '|'.join(map(str,[p['arm'],p['task'],str(p['known_correct'])+'/'+str(p['observations']),p['unknown'],p['micro_bounds']]))+'|\n'
+    text+='\n## 固定36个Base正确保护题\n\n|臂|任务|正确/分母|Base正确→错界|\n|---|---|---:|---|\n'
+    for z in protections:text+='|'+ '|'.join(map(str,[z['arm'],z['task'],str(z['known_correct'])+'/'+str(z['observations']),z['Base_correct_to_wrong_bounds']]))+'|\n'
     text+='\nC/D所有评价指标NA（未生成），不能写为0分或永久missing。B未新请求Judge，只在完整绑定与已有终态payload一致时复用；未知区分永久missing与未尝试，详见RESULTS.json。B-A共享缺分精确界及10000次原seed配对edit/source区间保留；C-B/D-B不可评估。\n\n## 训练诊断\n\n|臂|源|槽|接受|零更新比例|完整源CE|CE依据|过早冻结|\n|---|---:|---:|---:|---:|---:|---|---|\n'
     for a,rs in diagnostics.items():
         for z in rs:text+='|'+ '|'.join(map(str,[a,z['source_position'],z['slots'],z['accepted'],z['zero_fraction'],z['complete_source_CE'],z['CE_origin'],z['high_loss_frozen']]))+'|\n'
