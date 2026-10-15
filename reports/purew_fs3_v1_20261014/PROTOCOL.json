@@ -1,0 +1,171 @@
+{
+  "version": "PUREW_FS3_V1_20261014",
+  "status": "FROZEN_EXECUTION_AUTHORIZED",
+  "epoch": "PUREW_FS3_V1_20261014",
+  "run_root": "/data/bmw/Knowledge_editing/outputs/purew-fs3-v1-20261014/run",
+  "reference_run": "/data/bmw/Knowledge_editing/outputs/purew-original146-v1-20261012/run",
+  "K_reference_run": "/data/bmw/Knowledge_editing/outputs/purew-protect100-v1-20261013/run",
+  "M_reference_run": "/data/bmw/Knowledge_editing/outputs/purew-medical-evidence100-v1-20261014/run",
+  "GPU_UUID": "GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca",
+  "authorization": "2026-10-14 user explicitly authorized cooperative M pause, F/S first-three derivation/freeze/CPU/real-VLM admission/GPU5 execution and startup push",
+  "cohort": {
+    "native_edit_count": 3,
+    "original_order_and_per_edit_seed": true,
+    "original_native_and_four_FITs_only": true,
+    "source_orders": [
+      1,
+      2,
+      3
+    ],
+    "new_training_questions": 0
+  },
+  "qualification": {
+    "parent_protocol": "PUREW_M_MS_ME100_V1_20261014",
+    "parent_source_binding": "a6fd34b231ead882c3f9a2339c4cd90691a59e9f60e20fba190f5700ddc76c8a",
+    "source_only": true,
+    "evaluation_not_provided_to_training": true,
+    "regional_intervention": false
+  },
+  "training": {
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "native": "FP16",
+    "master_and_gradient": "FP32",
+    "statistics": "FP64",
+    "loss_scale": 128,
+    "clip_gradient_norm": 5,
+    "eta": 0.01,
+    "attempt_slots_per_source": 160,
+    "formal_slots_per_new_arm": 480,
+    "zero_or_rejected_slots_not_refilled": true,
+    "objective": ".5 native CE + .5 cyclic original FIT CE",
+    "new_inference_parameters": 0,
+    "new_inference_branches": 0
+  },
+  "curvature": {
+    "metric": "token-mean output-distribution KL local Fisher",
+    "Fisher": "J_z.T @ (diag(p)-p p.T) @ J_z",
+    "probability": "current native model AFTER learning current source; teacher-forced original source-answer prefix",
+    "source_weights": [
+      0.5,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ],
+    "Gaussian_VJP_rows_per_source": 4,
+    "probe_seed": "20260912+source order; separate RNG",
+    "epsilon": 0.01,
+    "epsilon_units": "sum over prior-source token-mean local sampled KL quadratic energies, nats; not probability or clinical damage",
+    "epsilon_calibrated_on_evaluation": false,
+    "epsilon_equal_to_original_M_units": false,
+    "initial_state": "empty B and q/v/rho zero",
+    "birth_center": "current native W; preserve all previous q/v",
+    "F": "rank4 FD PSD completion B.T B + rho I; cumulative q/v plus compression-error envelope",
+    "S": "complete finite sampled covariance; rotate and retain all up to12 parameter-statistic rows, no truncation or isotropic loading",
+    "S_KFAC": false,
+    "S_scalable_to_100_claim": false,
+    "per_case_gradient_rows_or_indices_retained": false,
+    "root_iterations": 48,
+    "native_backtracks": 8,
+    "backtrack_factor": 0.5,
+    "actual_native_risk_and_proximal_checked": true,
+    "discard_master_on_zero_or_reject": true
+  },
+  "evaluation": {
+    "prefixes": [
+      1,
+      3
+    ],
+    "panel_consumers": {
+      "1": 46,
+      "3": 64
+    },
+    "insertion_consumers_per_method": 15,
+    "fixed_protection_consumers": 36,
+    "fixed_protection_mask": "original prefix100 Base-correct, active-target-excluded34 T2L +2 T1L",
+    "consumers_per_method": 161,
+    "methods": [
+      "M",
+      "F",
+      "S"
+    ],
+    "total_consumers": 483,
+    "M_retraining": false,
+    "M_reuse": "original first3 training/insertion/prefix1 outputs; verified paused owner4 step51 W equals post-owner3 W; register fresh prefix3/protection evaluation only",
+    "K_matched_prefix3": "NA; no old weights rebuilt",
+    "fresh_reload_questions_per_new_arm": 2,
+    "Base_canaries_per_new_arm": 3,
+    "Judge": "Stage17 source-agreement isolation/gpt-6-astra medium/one attempt per new payload",
+    "failed_Judge_retry": false,
+    "consecutive_new_transport_failure_stop": 3,
+    "scoring_waits_both_full_trajectories_fresh_reloads_and_all_GPU_leases_closed": true,
+    "shared_missing_exact_bounds": true,
+    "unattempted_not_permanent_missing": true,
+    "paired_bootstrap": 10000,
+    "bootstrap_seed": 20260912,
+    "paired_units": [
+      "edit",
+      "source"
+    ]
+  },
+  "hard_gates": {
+    "individual_zero_Base_damage": "All original34 T2L and2 T1L correct; unknown cannot pass; repairs/means cannot compensate",
+    "native": "all actual insertion and final T0 correct",
+    "T1G": "all original eligible first3 T1G correct",
+    "T2G": "per-edit shared-missing nonregression; report negative/unknown bounds",
+    "full_required_scoring": true,
+    "diagnostic_only": "first3 mechanism result cannot establish full100 or clinical success"
+  },
+  "learner_boundary": {
+    "current_case_only": true,
+    "training_evaluation_separate_processes": true,
+    "evaluator_returns_only_durable_completion": true,
+    "Python_file_audit_guard": true,
+    "adversarial_OS_sandbox": false,
+    "current_input_image_copied_then_retired": true,
+    "no_old_samples_or_features_in_learner_checkpoint": true
+  },
+  "budgets": {
+    "maximum_formal_attempt_slots": 960,
+    "maximum_committed_updates": 962,
+    "maximum_backwards": 2500,
+    "maximum_forward_calls": 100000,
+    "maximum_generations": 432,
+    "maximum_new_Judge": 483,
+    "GPU_process_hours": 12,
+    "wall_hours": 24,
+    "owned_weight_limit_bytes": 21474836480,
+    "minimum_free_bytes": 8589934592,
+    "owned_GPU_memory_limit_MiB": 46080
+  },
+  "lifecycle": {
+    "one_activation": true,
+    "save_every_slots": 20,
+    "cooperative_stop_save": true,
+    "hard_interrupt_no_unaccounted_replay": true,
+    "old_M_resume": false,
+    "original146": "PAUSED_RETAINED_OWNER101_STEP1",
+    "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+    "order": [
+      "F real VLM admission",
+      "S real VLM admission",
+      "both admission PASS before any formal slot",
+      "F",
+      "F fresh reload",
+      "S",
+      "S fresh reload",
+      "read-only M reference evaluation",
+      "full terminal scoring",
+      "report and public delivery"
+    ],
+    "automatic_expansion": false,
+    "recurring_monitor_authorized": false
+  },
+  "limitations": [
+    "F/S compared with M change risk units as well as distribution weighting; not equal-risk magnitude",
+    "S full-support storage is fixed only for the authorized3 sources, not a100-edit solution",
+    "Sampling and nonlinear Taylor remainder unknown; no correctness or privacy guarantee",
+    "S FP64 orthogonal rotation approximates exact-real covariance within disclosed numerical tolerance",
+    "Same observed development order; no independent patient/clinical evidence"
+  ]
+}

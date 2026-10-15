@@ -1,0 +1,23 @@
+{
+  "status": "USER_AUTHORIZED",
+  "automation_id": "w-146",
+  "date": "2026-10-14",
+  "interval_minutes": 30,
+  "authorization": "每半小时监测F/S恢复队列，GPU5满足45GiB准入后按冻结方案自动接续，正常保持安静；工程故障保留现场，只在原预算内且能证明恢复正确时处理。原146/M保持暂停，O/L继续等待，完整评分后保留缺分上下界和逐题保护损伤，push并通知我。",
+  "scope": [
+    "F",
+    "S"
+  ],
+  "existing_recovery_queue_reused": true,
+  "minimum_free_GPU_GiB": 45,
+  "scientific_protocol_changed": false,
+  "budget_reset": false,
+  "original_activation_epoch": 1791969242.962559,
+  "original_deadline_epoch": 1792055642.962559,
+  "prior_monitor_false_superseded_for_operations_only": true,
+  "completion": "Actual full or reviewed necessary partial, terminal scoring, public delivery verified, user notified; then pause automation",
+  "epoch": 1791978456.898535,
+  "later_hardware_authorization": "GPU6_AUTHORIZATION.json",
+  "current_physical_GPU": 6,
+  "current_GPU_UUID": "GPU-ffc224df-661c-5aff-e221-ec361bb4e5d6"
+}
