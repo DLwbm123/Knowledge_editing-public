@@ -1,0 +1,67 @@
+{
+  "evidence": "EXISTING_LOGS_ONLY_NO_NEW_MODEL_CALLS",
+  "reference_run": "purew-ecw-bcd3-v1-20261015",
+  "C": {
+    "slots": 20,
+    "accepted": 3,
+    "zero_fraction": 0.85,
+    "all_dual_multipliers_zero": true,
+    "candidate_count": 147,
+    "actual_weighted_KL_to_same_weighted_proxy": {
+      "min": 6.691025925776944,
+      "median": 7.071389989171121,
+      "max": 14.397799488058357
+    },
+    "actual_max_to_weighted_KL_range": [
+      1.0589759147304931,
+      1.0852674589036797
+    ],
+    "last_accepted": {
+      "proxy": 0.0013149882323111968,
+      "actual_weighted_KL": 0.009238553281694518,
+      "actual_max_KL": 0.009823803873365334
+    },
+    "last_slot_smallest_tested_candidate": {
+      "alpha": 0.0078125,
+      "proxy": 0.0013470316070975348,
+      "actual_weighted_KL": 0.009407375409305594,
+      "actual_max_KL": 0.010085854771929074,
+      "native_changed_elements": 2523446
+    },
+    "rejected_smallest_candidate_maxKL_range": [
+      0.01001004535966685,
+      0.010085854771929074
+    ],
+    "final_CE": 2.8822021497159893,
+    "CE_basis": "Mean of last four cyclic CE logs with unchanged native W",
+    "repeated_FIT_scalar_traces": true,
+    "independent_candidate_samples": false,
+    "invalid_margin_count": "NOT_PERSISTED",
+    "individual_margins": "NOT_PERSISTED",
+    "concept_token_spans_passed_before_training": true,
+    "clinical_region_validation": false,
+    "sampling_nonlinearity_and_low_precision_VJP_not_separately_identified": true
+  },
+  "B": {
+    "slots": 60,
+    "Base_positive_dual_slots": 0,
+    "Base_rejected_candidates": 0,
+    "maximum_Base_bound": 0.001946507595288023,
+    "epsilon": 0.01,
+    "exact_A_B_protected_outputs": 36,
+    "protected_outputs": 36,
+    "A_damage": 4,
+    "B_damage": 4,
+    "A_B_first_two_source_CE_and_native_norm_scalar_traces_exact": true,
+    "A_source3_accepts": 18,
+    "B_source3_accepts": 16,
+    "A_B_source3_max_CE_gap": 0.0004987871497204033,
+    "comparison_numerical_solver_and_CPU_GPU_factor_arithmetic_confound": true,
+    "true_Base_calibration_KL_after_edits": "NOT_LOGGED",
+    "calibration_KG_and_XRay_coverage": 0
+  },
+  "original146": "PAUSED",
+  "M": "PAUSED",
+  "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+  "snapshot_taken_before_new_activation": true
+}
