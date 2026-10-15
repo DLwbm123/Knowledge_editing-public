@@ -1,3 +1,7 @@
+## 最新范围：投影统一目标，仅冻结准备
+
+2026-10-15最新用户要求结合已交付SH结果推导KLOD启发目标、解释正证据间隔仍有保护损伤、冻结最小有限对照，明确先不启动。读 reports/purew_projected_objective_first1_v1_20261015/{PROTOCOL.json,THEORY_ZH.md,FINITE_CONTRAST_ZH.md,CHECKPOINT_LIFECYCLE.md}。仅新PM/PU的理论和未来首源20槽协议，复用SH00；无执行器部署、安装、GPU分配、真实VLM、Judge、等待器或新增监测授权。旧GPU3三个臂已交付1f430d2e7ebe0ca9d20a77a4077aa585cf8d16be、监测已暂停，不因下文旧启动授权重跑。原146/M暂停，O/L原屏障等待；无subagent、无自动146、无历史结果/失败成本改写。小型合成数学检查不等生产准入。
+
 ## 最新运维授权：GPU3半小时监测
 
 2026-10-15用户明确授权当前SH00/SH10/SH01与历史R的每半小时静默健康监测，见 reports/purew_objective_scope_v1_20261015/MONITORING_AUTHORIZATION.json。仅覆盖下文旧禁止新增监测字段；冻结科学、预算、一次安装和GPU3路由不变。故障先留现场，仅证实安全时续接；完整评分与公开交付后通知并暂停监测。原146/M暂停，O/L等待，无自动下一轮。
