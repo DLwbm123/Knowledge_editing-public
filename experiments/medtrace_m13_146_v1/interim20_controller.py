@@ -51,10 +51,7 @@ def merge_cost(phase):
         write(RUN/'private'/('COST_TRANSFER_'+phase+'1.json'),ledger[key])
 
 
-def main():
-    with (RUN/'private/CONTROLLER_ONCE1').open('x'):pass
-    execute('interim20_runtime.py')
-    assert read(RUN/'private/INTERIM20_EXIT1.json')['exit_code']==0
+def finish():
     merge_cost('GPU')
     execute('interim20_queue.py',dict(action='ingest'))
     db=RUN/'private/judge_interim20_astra_medium/queue.sqlite'
@@ -74,6 +71,13 @@ def main():
     execute('interim20_report.py',{})
     assert (RUN/'private/INTERIM20_REPORT_COMPLETE1.json').exists()
     write(RUN/'private/INTERIM20_COMPLETE1.json',dict(status='COMPLETE_PUBLICATION_PENDING',training_modified=False,epoch=time.time()))
+
+
+def main():
+    with (RUN/'private/CONTROLLER_ONCE1').open('x'):pass
+    execute('interim20_runtime.py')
+    assert read(RUN/'private/INTERIM20_EXIT1.json')['exit_code']==0
+    finish()
 
 
 if __name__=='__main__':
