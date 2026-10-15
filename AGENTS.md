@@ -1,3 +1,7 @@
+## 最新运维授权：GPU3半小时监测
+
+2026-10-15用户明确授权当前SH00/SH10/SH01与历史R的每半小时静默健康监测，见 reports/purew_objective_scope_v1_20261015/MONITORING_AUTHORIZATION.json。仅覆盖下文旧禁止新增监测字段；冻结科学、预算、一次安装和GPU3路由不变。故障先留现场，仅证实安全时续接；完整评分与公开交付后通知并暂停监测。原146/M暂停，O/L等待，无自动下一轮。
+
 ## 当前授权：removed软KL/实际硬约束首源有限对照
 
 用户已明确授权在GPU2启动；显存不足时允许同一pro5000其他满足准入的GPU。仅执行 reports/purew_objective_scope_v1_20261015 冻结的SH00/SH10/SH01；SH11复用R。后续EXECUTION_AUTHORIZATION优先于以下旧准备状态。原146/M暂停、O/L等待，不启动新投影目标或146，不新增周期监测。
