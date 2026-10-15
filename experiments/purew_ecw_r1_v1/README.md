@@ -1,16 +1,5 @@
-# R first-source solver preparation
+# R first-source finite execution
 
-`core.py` provides a `Memory` subclass with the same `solve_current()` and restored-state interface used by the immutable J worker. It imports the frozen J core as `legacy_core`; it does not patch the historical J directory. The preparation checker stages that mapping in a disposable CPU-only directory and tests the actual `worker.attempt()` caller. No GPU executor, deployment or scoring launcher is provided here.
+`core.py` adds the frozen finite active-set fallback to immutable `legacy_core.py`. `worker.py` keeps the J loss/native acceptance but exposes independent R identity. `controller.py` executes Base3, native admission, source1 only, 87 evaluation consumers and exact fresh reload. `queue_revision.py` shares full-binding historical J scores/missing and never opens new Judge before the generation barrier. `report_revision.py` reports matched R-J bounds and individual damage; `finish.py` publishes only actual terminal evidence.
 
-Run CPU preparation through a neutral stdin entry from the repository root:
-
-```sh
-python - <<'PY'
-import runpy
-runpy.run_path('experiments/purew_ecw_r1_v1/check.py', run_name='__main__')
-PY
-```
-
-The remote interpreter has a neutral `-c` entry and receives sources through stdin. Failed checks and wall time remain in `.local_run/ecw_r1_preparation_20261015`; success writes the anonymous CPU report. This script creates no experiment RUN, installation, model/GPU allocation, Judge request or recurring monitor. A timeout is retained as uncertain CPU state, not automatically retried.
-
-Frozen scope and uncompleted launch gates are in `reports/purew_ecw_r1_v1_20261015/PROTOCOL.json` and `THEORY_AND_SCOPE_ZH.md`. Do not deploy this adapter into the old J RUN, or substitute it into a live process.
+Run production CPU via a neutral stdin launcher of `production_check.py`. Publish source before the once-only `deploy.py`; inspect INSTALL_ATTEMPT and remote receipts after any uncertainty. No source2, additional seed, threshold relaxation or historical replay.
