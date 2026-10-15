@@ -1,5 +1,5 @@
 """Production singleton-J controller, frozen math, queue/report, and zero-gap counterexample."""
-import contextlib,io,json,os,sys,tempfile,shutil,time
+import contextlib,io,json,os,sys,tempfile,shutil,time,subprocess
 from pathlib import Path
 x=json.loads(sys.stdin.readline());root=Path(tempfile.mkdtemp(prefix='e.',dir='/data/bmw/tmp'));tools=root/'private/tools';tools.mkdir(parents=True)
 parent=Path('/data/bmw/Knowledge_editing/outputs/purew-ecw-bcd3-v1-20261015/run/private')
@@ -8,6 +8,8 @@ shutil.copy2(parent/'tools/partial_report.py',tools/'historical_binding.py')
 for name,text in x['files'].items():(tools/name).write_text(text)
 os.environ.update(RUN_ROOT=str(root),ACTION='CPU_J_ONLY',ARM='J',TMPDIR=str(root));sys.path[:0]=[str(tools),str(parent/'source')]
 (root/'private/FROZEN_PROTOCOL.json').write_text(json.dumps(x['protocol']))
+(root/'private/source').symlink_to((parent/'source').resolve(),target_is_directory=True)
+subprocess.run([sys.executable,'-c',"import runpy;runpy.run_path("+repr(str(tools/'report_revision.py'))+",run_name='production_entry_import_check')"],env=dict(os.environ,PYTHONPATH=''),check=True,capture_output=True,text=True)
 from cpu_check import main as math_check
 result=math_check(x['protocol'])
 import controller,queue_revision,report_revision,worker
@@ -82,5 +84,5 @@ for e in (.1,.01,.001):
     qq=torch.tensor([.5-e,.5+e],dtype=torch.float64);kl=float((p*(p.log()-qq.log())).sum())
     assert qq.argmax()!=p.argmax() and abs(kl+.5*__import__('math').log(1-4*e*e))<1e-14
     regret=float(p.max()-p[qq.argmax()]);assert regret==0 and regret<=(2*kl)**.5
-result.update(J_singleton_calibration_decoupled=True,user_validation_empty_before_busy_cannot_launch=True,user_validation_busy_then60_seconds_idle=True,normalized_calibration_never_called=True,other_arms_never_launched=True,old_cost_counters_preserved=True,production_source1_stop87_and_full161=True,report_B_plus_J248_and322=True,unknown_and_damage_fail=True,prefix1_secondary_not_prefix3=True,zero_gap_no_continuous_singleton_flip_bound=True,regret_bound_no_floor=True,disposable_root=str(root))
+result.update(standalone_report_entry_empty_PYTHONPATH=True,J_singleton_calibration_decoupled=True,user_validation_empty_before_busy_cannot_launch=True,user_validation_busy_then60_seconds_idle=True,normalized_calibration_never_called=True,other_arms_never_launched=True,old_cost_counters_preserved=True,production_source1_stop87_and_full161=True,report_B_plus_J248_and322=True,unknown_and_damage_fail=True,prefix1_secondary_not_prefix3=True,zero_gap_no_continuous_singleton_flip_bound=True,regret_bound_no_floor=True,disposable_root=str(root))
 print(json.dumps(result))

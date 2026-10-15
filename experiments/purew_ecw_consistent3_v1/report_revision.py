@@ -1,7 +1,8 @@
 """Actual terminal cohorts only; historical B unknowns never become new Judge requests."""
 from collections import Counter
-import json,os,sqlite3,time
+import json,os,sqlite3,time,sys
 from pathlib import Path
+sys.path[:0]=[os.environ['RUN_ROOT']+'/private/tools',os.environ['RUN_ROOT']+'/private/source']
 import astra_report as ar
 from panels import protection_ids
 from logic import transitions
