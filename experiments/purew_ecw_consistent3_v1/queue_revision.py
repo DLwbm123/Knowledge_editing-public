@@ -33,7 +33,7 @@ def ingest(db):
     for marker in sorted((R/'private/outputs').glob('*/*/*/*/COMPLETE.json')):
         key='panel:'+str(marker.relative_to(R))
         if db.execute('SELECT 1 FROM done WHERE name=?',(key,)).fetchone():continue
-        receipt=q.read(marker);phase=receipt['phase'];assert phase['arm'] in ('N','J','NJ')
+        receipt=q.read(marker);phase=receipt['phase'];assert phase['arm'] in protocol.get('active_arms',('N','J','NJ'))
         allowed={q.digest(protocol)}
         assert phase['protocol'] in allowed and phase['code']==q.read(R/'private/GPU_SOURCE_VERSION.json')['commit']
         files=[p for p in marker.parent.glob('*.json') if p.name!='COMPLETE.json' and not p.name.endswith('.STARTED.json')]
@@ -44,7 +44,7 @@ def ingest(db):
             db.execute('INSERT INTO consumer VALUES (?,?,?,?,?,?,?,?,?,?)',(q.digest(str(path)),phase['arm'],phase['mode'],phase['prefix'],phase['owner'],
                 'INSERTION' if phase['mode']=='insertion_R0' else 'PANEL',bb['input']['query_id'],str(path),q.digest(d),payload))
         db.execute('INSERT INTO done VALUES (?)',(key,));db.commit()
-    terminals=q.read(R/'private/ARM_TERMINALS.json');assert set(terminals)=={'N','J','NJ'}
+    terminals=q.read(R/'private/ARM_TERMINALS.json');assert set(terminals)==set(protocol.get('active_arms',('N','J','NJ')))
     assert all(db.execute('SELECT count(*) FROM consumer WHERE method=?',(arm,)).fetchone()[0]==t['consumers'] for arm,t in terminals.items())
     assert sum(t['consumers'] for t in terminals.values())==q.read(R/'private/GENERATION_COMPLETE.json')['new_consumers']
     db.execute("INSERT OR IGNORE INTO done VALUES ('generation')");db.commit()

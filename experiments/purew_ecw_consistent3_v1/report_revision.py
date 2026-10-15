@@ -8,7 +8,8 @@ from logic import transitions
 from report_fs import audit_requests
 from historical_binding import binding_key
 R,c,r=ar.RUN,ar.common,ar.r
-ARMS=('B','N','J','NJ');CONTRASTS=(('N','B'),('J','B'),('NJ','J'),('NJ','N'))
+ACTIVE=tuple(c.read(R/'private/FROZEN_PROTOCOL.json').get('active_arms',('N','J','NJ')))
+ARMS=('B',)+ACTIVE;CONTRASTS=tuple((a,b) for a,b in (('N','B'),('J','B'),('NJ','J'),('NJ','N')) if a in ARMS and b in ARMS)
 
 def main():
     marker=R/'private/REPORT_COMPLETE.json'
@@ -52,6 +53,12 @@ def main():
         delta={e:r.combine([ca[e],{k:-v for k,v in cb[e].items()}]) for e in ca}
         bounds=r.score_bounds(r.combine([{k:v/len(delta) for k,v in x.items()} for x in delta.values()]),scores)
         contrasts.append(dict(comparison=a+'-'+b,status='ESTIMATED',delta_macro_bounds_pp=[100*x for x in bounds],negative_edit_bounds=sum(r.score_bounds(x,scores)[0]<-1e-12 for x in delta.values()),**ar.bootstrap(delta,scores,groups)))
+    prefix1=[]
+    for a,b in CONTRASTS:
+        ca,cb=coefs[a,1,'T2G'],coefs[b,1,'T2G'];assert set(ca)==set(cb)
+        delta={e:r.combine([ca[e],{k:-v for k,v in cb[e].items()}]) for e in ca}
+        bounds=r.score_bounds(r.combine([{k:v/len(delta) for k,v in x.items()} for x in delta.values()]),scores)
+        prefix1.append(dict(comparison=a+'-'+b,prefix=1,secondary_only=True,delta_macro_bounds_pp=[100*x for x in bounds],**ar.bootstrap(delta,scores,groups)))
     protection=[];endpoints=[];gates={};diagnostics={}
     for arm in ARMS:
         terminal=3 if arm=='B' else terminals[arm]['prefix'];protected=True
@@ -85,12 +92,19 @@ def main():
             endpoints.append(dict(arm=arm,task=task,comparison='actual-insertion-to-actual-terminal',terminal_prefix=terminal,**transitions(pairs,scores)))
     unknown=sum(sum(v for k,v in x.items() if k in ('MISSING','UNKNOWN_UNATTEMPTED')) for x in coverage.values())
     status='PARTIAL_SCIENTIFIC_STOP' if not gen['full_protocol_complete'] else 'COMPLETE_WITH_UNKNOWN' if unknown else 'COMPLETE'
-    result=dict(status=status,scientific_success=not unknown and gen['full_protocol_complete'] and all(all(gates[a].values()) for a in ARMS[1:]),full_protocol_complete=gen['full_protocol_complete'],actual_new_consumer_count=len(rows),historical_B_external_consumers=161,all_consumers=len(files),coverage={a:dict(v) for a,v in coverage.items()},terminals=terminals,panels=panels,contrasts=contrasts,protection=protection,endpoints=endpoints,gates=gates,diagnostics=diagnostics,unknown_consumers=unknown,new_Judge=cost['Judge_attempts'],GPU_process_hours=cost['gpu_seconds_used']/3600,actual_counts={k:sum(c.read(p).get(k,0) for p in (R/'private/attempts').glob('*.json')) for k in ('forwards','vision_forwards','backwards','committed_updates','attempt_slots','generation_attempts')},owned_matrix_peak_bytes=cost.get('weights_observed_peak_bytes'),owned_GPU_peak_MiB=cost.get('GPU_memory_observed_peak_MiB'),failures=[dict(kind=p.stem,epoch=c.read(p).get('epoch')) for p in (R/'private/failures').glob('*.json')],old_B_not_rejudged=True,automatic146=False,K_matched_first3='NA_NO_REBUILD',nonlinear_clinical_privacy_certificate=False,calibration_coverage='Eight CT/MRI source groups; no KG/XRay; patient independence unknown')
+    result=dict(status=status,scientific_success=not unknown and gen['full_protocol_complete'] and all(all(gates[a].values()) for a in ARMS[1:]),full_protocol_complete=gen['full_protocol_complete'],actual_new_consumer_count=len(rows),historical_B_external_consumers=161,all_consumers=len(files),coverage={a:dict(v) for a,v in coverage.items()},terminals=terminals,panels=panels,contrasts=contrasts,prefix1_secondary=prefix1,deferred_arms={a:'NA_NOT_STARTED_ZERO_GAP_THEORY_PENDING' for a in ('N','NJ') if a not in ACTIVE},protection=protection,endpoints=endpoints,gates=gates,diagnostics=diagnostics,unknown_consumers=unknown,new_Judge=cost['Judge_attempts'],GPU_process_hours=cost['gpu_seconds_used']/3600,actual_counts={k:sum(c.read(p).get(k,0) for p in (R/'private/attempts').glob('*.json')) for k in ('forwards','vision_forwards','backwards','committed_updates','attempt_slots','generation_attempts')},owned_matrix_peak_bytes=cost.get('weights_observed_peak_bytes'),owned_GPU_peak_MiB=cost.get('GPU_memory_observed_peak_MiB'),failures=[dict(kind=p.stem,epoch=c.read(p).get('epoch')) for p in (R/'private/failures').glob('*.json')],old_B_not_rejudged=True,automatic146=False,K_matched_first3='NA_NO_REBUILD',nonlinear_clinical_privacy_certificate=False,calibration_coverage='Eight CT/MRI source groups; no KG/XRay; patient independence unknown')
+    if ACTIVE==('J',):
+        oldC=Path(c.read(R/'private/FROZEN_PROTOCOL.json')['reference_run'])/'private/steps/C/1'
+        es=sorted([c.read(p) for p in oldC.glob('*.json')],key=lambda e:e['slot']);assert len(es)==20
+        result['old_C_source1_training_only']=dict(slots=20,accepted=sum(e['accepted'] for e in es),zero_fraction=sum(e['zero_native'] for e in es)/20,all_dual_multipliers_zero=all(all(v==0 for v in e['multipliers'].values()) for e in es),evaluation='NA_NOT_GENERATED_NO_MODEL_REPLAY')
+        result['execution_revision']='J_ONLY_DECOUPLED_REVISION1'
+        result['completed_scope']='J_ONLY_OR_ITS_ACTUAL_SCIENTIFIC_TERMINAL'
+        result['full_original_N_J_NJ_protocol_complete']=False
     c.write(R/'public/RESULTS.json',result)
-    text='# N/J/NJ前三源有限对照\n\n'+status+'。完整实际消费者评分不代表完整三源或科学成功。\n\n|臂|实际末端|任务|正确/分母|未知|微平均界%|\n|---|---:|---|---:|---:|---|\n'
+    text='# '+('/'.join(ACTIVE))+'前三源有限对照\n\n'+status+'。完整实际消费者评分不代表完整三源或科学成功。\n\n|臂|实际末端|任务|正确/分母|未知|微平均界%|\n|---|---:|---|---:|---:|---|\n'
     for x in panels:
         if x['prefix']==(3 if x['arm']=='B' else terminals[x['arm']]['prefix']):text+='|'+ '|'.join(map(str,[x['arm'],x['prefix'],x['task'],str(x['known_correct'])+'/'+str(x['observations']),x['missing'],x['micro_bounds']]))+'|\n'
-    text+='\n固定34T2L+2T1L逐题保护、共享缺分精确界、10000次原seed配对edit/source区间及实际插入端点见RESULTS.json。科学止步的prefix1不与prefix3冒充配对。B为历史外部只读161输出，未尝试分不单独请求Judge，不混为永久missing。\n\nN改变Base决策风险单位；J使当前真实KL函数参与方向求解，最终原生逐视图.01硬门不变；NJ组合。医学块仅首源既有粗框，不是临床反事实；无旧病例重放。有限Fisher/线性化没有全局非线性证书；八源之外、KG/XRay无覆盖。三源不等146/临床/SOTA/隐私证据。接受拒绝、完整CE、间隔失败计数、路径/量化及全部失败成本保留；未知不通过零损伤。原146/M暂停、O/L等待，无自动后续实验。\n'
+    text+='\n固定34T2L+2T1L逐题保护、共享缺分精确界、10000次原seed配对edit/source区间及实际插入端点见RESULTS.json。科学止步的prefix1不与prefix3冒充配对。B为历史外部只读161输出，未尝试分不单独请求Judge，不混为永久missing。\n\nJ使当前真实KL函数参与方向求解，最终原生逐视图.01硬门不变。N/NJ若待定不生成也不计永久missing；不将其归一化校准门施加于J。医学块仅首源既有粗框，不是临床反事实；无旧病例重放。有限Fisher/线性化没有全局非线性证书；八源之外、KG/XRay无覆盖。三源不等146/临床/SOTA/隐私证据。接受拒绝、完整CE、间隔失败计数、路径/量化及全部失败成本保留；未知不通过零损伤。原146/M暂停、O/L等待，无自动后续实验。\n'
     (R/'public/REPORT_ZH.md').write_text(text);c.write(marker,dict(status=status,epoch=time.time()));print(status)
 
 if __name__=='__main__':main()

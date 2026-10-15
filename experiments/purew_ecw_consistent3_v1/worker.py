@@ -143,7 +143,7 @@ def learner():
             hook.remove();memory=Memory.restore(old_state,model.device);c.restore_rng(old_rng);b.guard(model,weight,shape,frozen)
             c.write(R/'public'/('REAL_VLM_ADMISSION_'+ARM+'.json'),dict(status='PASS',real_native_write=True,upstream_exact=True,parameters_unchanged=True,temporary_updates=1))
             return
-        assert all(c.read(R/'public'/('REAL_VLM_ADMISSION_'+a+'.json'))['status']=='PASS' and c.read(R/'public'/('BASE_IDENTITY_'+a+'.json'))['status']=='PASS' for a in ('N','J','NJ'))
+        assert all(c.read(R/'public'/('REAL_VLM_ADMISSION_'+a+'.json'))['status']=='PASS' and c.read(R/'public'/('BASE_IDENTITY_'+a+'.json'))['status']=='PASS' for a in c.read(R/'private/FROZEN_PROTOCOL.json').get('active_arms',('N','J','NJ')))
         from medical import concept_indices,source_concepts,contrasts,validate_margins
         indices=None
         if ARM in ('J','NJ') and owner==1:
@@ -237,6 +237,7 @@ def evaluate():
 
 def main():
     assert os.environ['CUDA_VISIBLE_DEVICES']=='2'
+    assert ARM in c.read(R/'private/FROZEN_PROTOCOL.json').get('active_arms',('N','J','NJ'))
     with lease():
         assert b.available(2);reserve=torch.empty(43*1024**3,dtype=torch.uint8,device='cuda');del reserve
         runtime.lease=lambda:nullcontext();torch.cuda.empty_cache=lambda:None

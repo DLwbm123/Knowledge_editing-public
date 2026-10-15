@@ -10,7 +10,7 @@ R='/data/bmw/Knowledge_editing/outputs/purew-ecw-consistent3-v1-20261015/run'
 BRANCH='experiment/purew-ecw-v1-20261014'
 
 def start_consumers(startup):
-    state=W/'.local_run/ecw_consistent3_v1_20261015';state.mkdir(parents=True,exist_ok=True)
+    state=Path(os.environ.get('CONTINUATION_STATE',str(W/'.local_run/ecw_consistent3_v1_20261015')));state.mkdir(parents=True,exist_ok=True)
     assert not (state/'SCORERS.json').exists(), 'Consumer launch requires identity review, not duplication'
     (state/'STARTUP.json').write_text(json.dumps(startup,indent=2))
     folder=Path(tempfile.mkdtemp(prefix='e.',dir='/private/tmp'));workers=[]
@@ -29,7 +29,7 @@ def start_consumers(startup):
         workers.append(dict(pid=child.pid,entry=str(entry),identity=identity,worker=i,log=str(leaf/'worker.log')))
         (state/'SCORERS.json').write_text(json.dumps(dict(root=str(folder),workers=workers),indent=2))
     entry=folder/'tail.py';entry.write_text("import os,runpy\nrunpy.run_path(os.environ['TASK_FILE'],run_name='__main__')\n")
-    env=dict(os.environ,WORKSPACE=str(W),GROUP=str(folder),TASK_FILE=str(HERE/'finish.py'),RUN_ROOT=R,BRANCH=BRANCH,
+    env=dict(os.environ,WORKSPACE=str(W),CONTINUATION_STATE=str(state),GROUP=str(folder),TASK_FILE=str(HERE/'finish.py'),RUN_ROOT=R,BRANCH=BRANCH,
              HTTPS_PROXY='http://127.0.0.1:7897',HTTP_PROXY='http://127.0.0.1:7897',ALL_PROXY='http://127.0.0.1:7897',NO_PROXY='',no_proxy='')
     tail=subprocess.Popen([sys.executable,'-u',str(entry)],env=env,stdout=(folder/'tail.log').open('ab'),stderr=subprocess.STDOUT,start_new_session=True)
     identity=subprocess.check_output(['ps','-ww','-p',str(tail.pid),'-o','lstart=,args='],text=True).strip()

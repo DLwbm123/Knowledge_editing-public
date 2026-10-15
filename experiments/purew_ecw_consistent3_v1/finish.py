@@ -7,7 +7,7 @@ import time
 import traceback
 import urllib.request
 
-W=Path(os.environ['WORKSPACE']);R=os.environ['RUN_ROOT'];STATE=W/'.local_run/ecw_consistent3_v1_20261015'
+W=Path(os.environ['WORKSPACE']);R=os.environ['RUN_ROOT'];STATE=Path(os.environ.get('CONTINUATION_STATE',str(W/'.local_run/ecw_consistent3_v1_20261015')))
 
 
 def remote(code):
@@ -42,9 +42,9 @@ def main():
     report_file='report_revision.py'
     output=remote("import os,runpy\nos.environ['RUN_ROOT']="+repr(R)+"\nrunpy.run_path("+repr(R+'/private/tools/'+report_file)+",run_name='__main__')\n")
     (STATE/'REPORT_OUTPUT.txt').write_text(output)
-    names=['SCIENTIFIC_STOP_REVIEW.json','PROTOCOL.json','EXECUTION_AUTHORIZATION.json','GPU2_AUTHORIZATION.json','REAL_VLM_ADMISSION_ALL.json','BASE_CALIBRATION.json',*[f'{kind}_{arm}.json' for arm in ('J','NJ') for kind in ('MARGIN_DIAGNOSTIC','MARGIN_BIRTH','REMOVED_BIRTH')],'RESULTS.json','REPORT_ZH.md',*[f'{kind}_{arm}.json' for arm in ('N','J','NJ') for kind in ('REAL_VLM_ADMISSION','BASE_IDENTITY','NATIVE_RELOAD')],'CPU_VALIDATION.json']
+    names=['J_ONLY_PROTOCOL_AMENDMENT.json','J_PLAIN_BASE_REUSE.json','J_CONTINUATION_CPU.json','SCIENTIFIC_STOP_REVIEW.json','PROTOCOL.json','EXECUTION_AUTHORIZATION.json','GPU2_AUTHORIZATION.json','REAL_VLM_ADMISSION_ALL.json','BASE_CALIBRATION.json',*[f'{kind}_{arm}.json' for arm in ('J','NJ') for kind in ('MARGIN_DIAGNOSTIC','MARGIN_BIRTH','REMOVED_BIRTH')],'RESULTS.json','REPORT_ZH.md',*[f'{kind}_{arm}.json' for arm in ('N','J','NJ') for kind in ('REAL_VLM_ADMISSION','BASE_IDENTITY','NATIVE_RELOAD')],'CPU_VALIDATION.json']
     data=json.loads(remote("from pathlib import Path\nimport json\np=Path("+repr(R+'/public')+")\nprint(json.dumps({n:(p/n).read_text() for n in "+repr(names)+" if (p/n).exists()}))\n"))
-    report=W/'reports/purew_ecw_consistent3_v1_20261015'
+    report=W/'reports/purew_ecw_consistent3_v1_20261015'/os.environ.get('PUBLIC_REPORT_SUBDIR','');report.mkdir(parents=True,exist_ok=True)
     for name,text in data.items():
         assert not any(x in text for x in ('raw_answer','raw_token_ids','opaque_Base_id','image_path','query_id','wangbomin@'))
         (report/name).write_text(text)
@@ -58,7 +58,7 @@ def main():
     assert actual==sha
     os.environ.update({k:env[k] for k in ('HTTPS_PROXY','HTTP_PROXY','ALL_PROXY','NO_PROXY','no_proxy')})
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({'http':env['HTTP_PROXY'],'https':env['HTTPS_PROXY']}))
-    with opener.open('https://raw.githubusercontent.com/DLwbm123/Knowledge_editing-public/'+sha+'/reports/purew_ecw_consistent3_v1_20261015/RESULTS.json',timeout=45) as response:
+    with opener.open('https://raw.githubusercontent.com/DLwbm123/Knowledge_editing-public/'+sha+'/reports/purew_ecw_consistent3_v1_20261015/'+(os.environ['PUBLIC_REPORT_SUBDIR']+'/' if os.environ.get('PUBLIC_REPORT_SUBDIR') else '')+'RESULTS.json',timeout=45) as response:
         assert response.status==200 and json.load(response)['status'] in ('COMPLETE','COMPLETE_WITH_UNKNOWN','PARTIAL_SCIENTIFIC_STOP')
     receipt=dict(status='DELIVERED',commit=sha,remote_match=True,anonymous_status=200,epoch=time.time())
     (STATE/'PUBLICATION_FINAL.json').write_text(json.dumps(receipt,indent=2)+'\n')

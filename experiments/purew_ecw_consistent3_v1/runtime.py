@@ -15,7 +15,11 @@ _original_counts=b.counts
 def counts():
     _original_counts()
     slots=sum(c.read(p).get('attempt_slots',0) for p in (R/'private/attempts').glob('*.json'))
-    assert slots<=c.read(R/'private/FROZEN_PROTOCOL.json')['budgets']['maximum_formal_attempt_slots']
+    protocol=c.read(R/'private/FROZEN_PROTOCOL.json')
+    assert slots<=protocol['budgets']['maximum_formal_attempt_slots']
+    if protocol.get('execution_revision')=='J_ONLY_DECOUPLED_REVISION1':
+        assert slots<=60
+        assert sum(c.read(p).get('committed_updates',0) for p in (R/'private/attempts').glob('*.json'))<=61
 b.counts=counts
 
 

@@ -55,17 +55,49 @@ def calibration():
         retire('CAL');c.write(ctrl/(str(index)+'.RETIRED.json'),dict(source_buffers_retired=True))
     assert child.wait()==0 and c.read(R/'public/BASE_CALIBRATION.json')['status']=='PASS'
 
+def validation_ready(state,apps,free,used):
+    state['observed_validation_occupancy']=state.get('observed_validation_occupancy',False) or bool(apps)
+    idle=not apps and free>=46080 and used<100
+    state['consecutive_idle_samples']=state.get('consecutive_idle_samples',0)+1 if state['observed_validation_occupancy'] and idle else 0
+    return state['consecutive_idle_samples']>=3
+
+
+def wait_user_validation():
+    import subprocess
+    state=dict(observed_validation_occupancy=False,consecutive_idle_samples=0)
+    while True:
+        c.budget()
+        uuid,free,used=subprocess.check_output(['nvidia-smi','-i','2','--query-gpu=uuid,memory.free,memory.used','--format=csv,noheader,nounits'],text=True).strip().split(', ')
+        assert uuid==c.read(R/'PLAN_CONFIG.json')['hardware']['UUIDs']['2']
+        rows=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid','--format=csv,noheader'],text=True).splitlines()
+        apps=[int(row.split(',')[0]) for row in rows if row.split(',')[1].strip()==uuid]
+        ready=validation_ready(state,apps,int(free),int(used))
+        release=R/'private/USER_GPU2_VALIDATION_RELEASED.json'
+        explicitly_released=release.exists() and c.read(release).get('authority')=='DIRECT_USER_RELEASE'
+        ready=ready or explicitly_released and not apps and int(free)>=46080 and int(used)<100
+        receipt=dict(status='GPU2_USER_VALIDATION_RELEASED' if ready else 'WAIT_USER_GPU2_VALIDATION',**state,free_MiB=int(free),used_MiB=int(used),GPU_processes=apps,explicit_user_release=explicitly_released,epoch=time.time())
+        c.write(R/'private/WAIT_USER_GPU2_VALIDATION.json',receipt);c.write(R/'public/PROGRESS.json',receipt)
+        if ready:return
+        time.sleep(30)
+
+
 def main():
     assert c.read(R/'public/CPU_VALIDATION.json')['status']=='PASS'
-    calibration()
+    protocol=c.read(R/'private/FROZEN_PROTOCOL.json');arms=tuple(protocol.get('active_arms',('N','J','NJ')))
+    if protocol.get('execution_revision')=='J_ONLY_DECOUPLED_REVISION1':
+        assert arms==('J',) and c.read(R/'public/J_PLAIN_BASE_REUSE.json')['status']=='PASS'
+        assert c.read(R/'public/J_CONTINUATION_CPU.json')['status']=='PASS'
+        assert (R/'private/calibration/Base_plain.pt').is_file()
+        wait_user_validation()
+    else:calibration()
     tasks=c.read(R/'private/BENCHMARK146_QUEUE.json')['tasks'];source=c.read(R/'private/operator/source.json')['rows'];reviews=c.read(R/'private/operator/review.json')['rows']
-    for arm in ('N','J','NJ'):
+    for arm in arms:
         stage('eval_base_'+arm,arm,0,'base')
         review=reviews[0];provide(source[0],tasks[0],1,arm,review)
         stage('admit_'+arm,arm,1);retire(arm)
-    c.write(R/'public/REAL_VLM_ADMISSION_ALL.json',dict(status='PASS',arms=3,temporary_native_writes=3,formal_slots=0,physical_GPU=2))
+    c.write(R/'public/REAL_VLM_ADMISSION_ALL.json',dict(status='PASS',arms=len(arms),temporary_native_writes=len(arms),formal_slots=0,physical_GPU=2))
     terminals={}
-    for arm in ('N','J','NJ'):
+    for arm in arms:
         for owner in (1,2,3):
             review=reviews[owner-1]
             provide(source[owner-1],tasks[owner-1],owner,arm,review if review['region_status']=='ELIGIBLE_COARSE_BOX' else None)
@@ -83,12 +115,12 @@ def main():
         p.unlink()
     l=c.read(R/'RESOURCE_LEDGER.json');assert all(x.get('ended_epoch') for x in l['gpu_sessions'])
     slots=sum(c.read(p).get('attempt_slots',0) for p in (R/'private/attempts').glob('*.json'))
-    assert slots==sum(t['prefix']*20 for t in terminals.values())<=180
+    assert slots==sum(t['prefix']*20 for t in terminals.values())<=20*3*len(arms)
     full=all(t['status']=='COMPLETE' for t in terminals.values())
     if full:c.write(R/'private/TRAINING_GENERATION_COMPLETE.json',dict(status='COMPLETE',formal_slots=slots))
     c.write(R/'private/ACTUAL_TRAJECTORIES_TERMINAL.json',dict(status='COMPLETE' if full else 'PARTIAL_SCIENTIFIC_STOP',formal_slots=slots,arms=terminals))
     c.write(R/'private/FINAL_CONSUMED.json',dict(status='PASS',arms=list(terminals)))
-    c.write(R/'private/GENERATION_COMPLETE.json',dict(status='ALL_ACTUAL_GENERATION_TERMINAL',new_consumers=sum(t['consumers'] for t in terminals.values()),planned_maximum=483,full_protocol_complete=full,epoch=time.time()))
+    c.write(R/'private/GENERATION_COMPLETE.json',dict(status='ALL_ACTUAL_GENERATION_TERMINAL',new_consumers=sum(t['consumers'] for t in terminals.values()),planned_maximum=161*len(arms),full_protocol_complete=full,epoch=time.time()))
     c.write(R/'private/EXIT_controller.json',dict(exit_code=0,epoch=time.time()))
     c.write(R/'public/PROGRESS.json',dict(status='GENERATION_COMPLETE_WAIT_SCORING',epoch=time.time()))
 
