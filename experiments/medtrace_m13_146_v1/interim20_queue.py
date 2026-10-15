@@ -1,9 +1,11 @@
 """Original sealed Astra queue with fixed first20 coverage and a new epoch."""
 from types import SimpleNamespace
-import contract
 import json
 import os
 from pathlib import Path
+import sys
+sys.path.insert(0,str(Path(__file__).parent))
+import contract
 import interim20 as protocol
 import queue146 as base
 
