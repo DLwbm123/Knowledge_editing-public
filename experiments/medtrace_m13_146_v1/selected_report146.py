@@ -8,11 +8,12 @@ import comparison146 as contract
 import reporting
 
 
-def calculate(tasks,base_mask,records,scores):
-    assert len(records)==len(scores)==contract.CONSUMERS
+def calculate(tasks,base_mask,records,scores,interim20=False):
+    if interim20:assert [t['order'] for t in tasks]==list(range(1,21))
+    assert len(records)==len(scores)==(1077 if interim20 else contract.CONSUMERS)
     assert records.keys()==scores.keys()
     panels={m:{} for m in contract.METHODS};owners={};damage={};damage_owners={};contrasts={}
-    labels=[('single',1)]+[('bank',n) for n in contract.PREFIXES]
+    labels=[('single',1)]+([] if interim20 else [('bank',n) for n in contract.PREFIXES])
     for mode,prefix in labels:
         ts=tasks if mode=='single' else tasks[:prefix];label=f'{mode}_{prefix}'
         for method in contract.METHODS:
@@ -58,15 +59,19 @@ def calculate(tasks,base_mask,records,scores):
         supported=all(damage[m,label]['fresh_Base_correct']>0 and damage[m,label]['missing']==0 for m in contract.METHODS)
         contrasts[label]['FISHER_MIN_damage_no_worse_than_M13_per_owner']=reporting.damage_preserved(
             damage_owners['M13',label],damage_owners['FISHER_MIN',label]) if supported else None
-    for method in contract.METHODS:
-        assert panels[method]['bank_146']['T2L']['observations']==54
-        assert panels[method]['bank_146']['T2L']['edit_units']==31
+    if not interim20:
+        for method in contract.METHODS:
+            assert panels[method]['bank_146']['T2L']['observations']==54
+            assert panels[method]['bank_146']['T2L']['edit_units']==31
     complete=all(v is not None for v in scores.values())
     result=dict(status='SCORING_RESOLVED',complete_no_missing=complete,panels=panels,
         paired_native_FIT160_contrasts=contrasts,protection={m+'_'+l:d for (m,l),d in damage.items()},
         original_M1_fit_T2G_preservation146=None,original_M3_damage_preservation146=None,
         original_joint_scientific_gate_confirmed=False,
-        missing_consumers=sum(v is None for v in scores.values()),original_T2L_probes=54,original_T2L_edits=31,
+        missing_consumers=sum(v is None for v in scores.values()),
+        original_T2L_probes=panels['M13']['single_1']['T2L']['observations'] if interim20 else 54,
+        original_T2L_edits=panels['M13']['single_1']['T2L']['edit_units'] if interim20 else 31,
+        interim_first20_only=interim20,
         unavailable_controls_not_replaced_by_historical_recipe=True,independent_confirmation=False,medical_safety_conclusion=False)
     return result,dict(role_panels={m+'_'+l:v for (m,l),v in owners.items()},
         damage={m+'_'+l:v for (m,l),v in damage_owners.items()})
