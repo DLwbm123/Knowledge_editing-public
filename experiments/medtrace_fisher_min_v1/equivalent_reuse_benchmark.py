@@ -89,6 +89,11 @@ def main():
     assert admission['GPU']==2 and admission['owners']==[3,4] and admission['steps_per_owner']==5
     assert admission['max_resident_GPU_seconds']==3600 and admission['generation']==admission['Judge']==0
     assert PARENT.resolve() != RUN.resolve() and not (RUN/'ONCE').exists()
+    immutable=PARENT/'private/selected_prefill_recovery_tools_d893457'
+    for module in (native, native.original, native.p, native.g, r, r.mm):
+        assert Path(module.__file__).resolve().is_relative_to(immutable.resolve()), module.__file__
+    native.g.SOURCE_WEIGHTS=(.5,.5)
+    assert native.g.source_batches(list(range(5)),1)==[0,1]
     with (RUN/'ONCE').open('x'): pass
     r.GPUS=(2,); native.g.SOURCE_WEIGHTS=(.5,.5)
     r.source_gradients=lambda *args,**kwargs:native.trajectory.source_gradients(r,*args,**kwargs)

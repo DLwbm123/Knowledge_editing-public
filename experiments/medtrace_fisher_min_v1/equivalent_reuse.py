@@ -8,6 +8,7 @@ def equal_state(a, b):
     return a.keys() == b.keys() and all(
         a[k].dtype == b[k].dtype and a[k].device == b[k].device
         and a[k].shape == b[k].shape
+        and a[k].stride() == b[k].stride()
         and torch.equal(a[k].detach().contiguous().reshape(-1).view(torch.uint8),
                         b[k].detach().contiguous().reshape(-1).view(torch.uint8)) for k in a)
 
