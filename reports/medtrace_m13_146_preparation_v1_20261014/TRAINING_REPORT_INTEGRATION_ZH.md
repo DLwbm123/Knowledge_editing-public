@@ -1,0 +1,9 @@
+# M13训练步与报告数学CPU接线
+
+本次新增training_math.step，仅接出原M1/M13规范更新：使用未clip的原循环源梯度，加lambda乘组合算子Fisher梯度、整体clip1、原两组标量RMS、原module_run.match_proposal及规范化。匹配和规范化直接调用冻结实现，不另写优化器。M13的RMS累积总梯度，不加入硬Fisher预算、90%验收、方向半空间、局部求解或跳步搜索。
+
+在服务器现有PyTorch环境、CUDA_VISIBLE_DEVICES为空的独立CPU进程，读取只读历史C BASE/FINAL两种真实7168参数状态，用明确的合成源梯度与小Fisher缓存分别检查M1/M13。四个case的每个核和两组RMS状态对原逐行计算全部精确相同；这只验证实现接线，不是新来源或模型性能验证。旧C未修改，不生成新的专家权重，0VLM/0Judge/0GPU租约。可复核入口integration_check.py只读取环境声明的C参考，测试输出另存；本次私有路径不公开。
+
+reporting.py保持原146的编辑宏平均、missing上下界和原5000次固定种子成对区间算法，加入同支持分母下逐编辑M3损伤比较。单个FIT/T2G退化、M3损伤转移、缺失、任一失败门槛和零区间下界都不能由平均值补偿。原Base无新损伤等门槛保持，不借新增比较降低要求。原31编辑/54探针T2L及真实bank覆盖仍需最终完整输入、实际输出和评分绑定后才能报告。
+
+四case精确parity、旧系数漂移拒绝、宏/微平均区别和逐编辑损伤门槛CPU检查全部PASS，见TRAINING_REPORT_CPU_CHECKS.json。与上一版来源/覆盖准备配合后，训练步和报告数学已经接出；146的数据资格、完整训练调度、真实bank、隔离评分及其真实网络入场仍待完成，training_ready=false。当前ALIGNED进程与算法不改，不启动M13 146，不复用旧评分器或运行旧146入口。

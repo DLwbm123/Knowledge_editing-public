@@ -1,0 +1,98 @@
+{
+  "status": "LOCAL_CONFIGURATION_PREPARATION_ONLY",
+  "scientific_run_created": false,
+  "launch_authorized": false,
+  "training_ready": false,
+  "steps": 160,
+  "parameters": 7168,
+  "methods": [
+    "C",
+    "M1",
+    "M3",
+    "M13"
+  ],
+  "flags": {
+    "M1": [
+      true,
+      false,
+      false
+    ],
+    "M3": [
+      false,
+      false,
+      true
+    ],
+    "M13": [
+      true,
+      false,
+      true
+    ]
+  },
+  "prefixes": [
+    1,
+    50,
+    100,
+    146
+  ],
+  "source_weights": [
+    0.25,
+    0.25,
+    0.5
+  ],
+  "soft_coefficient_fraction": 0.1,
+  "hard_Fisher_budget": false,
+  "source_rejection": false,
+  "counts": {
+    "updates": 93440,
+    "backwards": 282272,
+    "operator_backwards": 46720,
+    "non_generation_forwards": 500000,
+    "local_solves": 0,
+    "evaluation_consumers": 24867,
+    "generation_attempts": 24867,
+    "Judge_attempts": 24867
+  },
+  "hardware": {
+    "host": "pro5000",
+    "physical_GPUs": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      7
+    ],
+    "required_free_GPU_GiB": 45,
+    "maximum_model_workers": 3,
+    "live_UUID_and_free_check_required": true
+  },
+  "storage": {
+    "owned_weight_bytes": 2147483648,
+    "minimum_free_bytes": 8589934592,
+    "real_mount_and_write_probe_required": true
+  },
+  "CPU_checks": {
+    "RUNTIME_CPU_CHECKS.json": "PASS",
+    "REPORT_CPU_CHECKS.json": "PASS",
+    "TRAJECTORY_CPU_CHECKS.json": "PASS",
+    "QUEUE_CPU_CHECKS.json": "PASS"
+  },
+  "pending": [
+    "all146_source_evidence_and_two_bound_images",
+    "same_version_official_runtime_source_and_launch_environment",
+    "exact_original_R0_entries_and_native_bindings",
+    "original_eval_queries_and_heldout_masks",
+    "source_bound_C_prior_calibration",
+    "final_inherited_cost_from_completed_ALIGNED",
+    "ALIGNED_actual_completion_and_public_delivery",
+    "explicit_M13_launch_authorization",
+    "real_model_Base_zero_function_and_GPU_admission"
+  ],
+  "qualified_sources": 7,
+  "missing_sources": 139,
+  "source_gate": "SOURCE_ADMISSION_PENDING",
+  "original_source_metadata_contract": "EXACT",
+  "new_model_calls": 0,
+  "new_GPU": 0,
+  "new_Judge": 0
+}

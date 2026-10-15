@@ -1,0 +1,13 @@
+# M13原146训练、真实库和评分接线
+
+新增runtime146/controller146：独立新RUN检查完整source packet、scope/plan/版本、方法flags和计数上界后，按C146→一次原1952方向Fisher→M1/M3/M13各146的依赖执行。原TT4(seed,8,8)零函数起点，C/M3原Adam+RAW，M1/M13规范总梯度两RMS；按C终态源收益/算子惩罚一次冻结软lambda与160节点步幅，不接GUARD的硬预算、90%收益或方向拒绝。已有同来源系数只有源绑定及C惩罚一致才可继承。训练输入FP16构建后FP32数学，第一源logits在任何更新前验证真实Base。新唯一controller/每worker禁止隐式重跑，20步完整快照及最终save-load保留。
+
+bank146独立调用原MemoryRouter和生成接口：single只装对应专家，真实插入使用当前前缀全部原R0条目，固定前缀1/50/100/146；每条查询先在编辑关闭时提取Base key和FP16 prefill，再装入真正选中的M1/M3/M13最终核，以FP32数学生成。没有激活时仍走Base。记录实际路由、有效专家、原active_target及完整输入/输出/token绑定，不能用单例分数拼真实库。代码沿用既有成熟评测片段但不运行旧REFINE入口。
+
+queue146使用新隔离epoch和完整24867消费者，scorer_start只为新空目录配置四个新中性入口，worker结果目录互相隔离，复用原sealed Astra medium通用客户端；不是旧评分任务复活。一次尝试、全局覆盖、四完成回执和有效/永久缺失精确复用保持。report146复用原报告数学，包含M1/M3/M13的single/逐次插入与所有prefix覆盖、原T2L31编辑54探针、双CI、FIT/T2G逐编辑和M3逐编辑损伤门槛。科学FAIL和缺失不会因为执行完整而变成PASS。controller同时等待全局覆盖和四个完成回执，避免最后一次评分发布先写全局状态导致提前报告；prefix1的逐单编辑数值只留私有审计，公开仅标记该小组已审计，原门槛照常计算。候选权重与Fisher只在source/single/所有真实库/报告最后消费者完成后释放；不删除历史C/D。
+
+admit146只对明确配置的新RUN做CPU运行准入，不启动GPU：需全部原来源、显式用户启动记录、当前ALIGNED真实完成/交付、四CPU报告、物理证据/图像、对原冻结manifest逐值核对key/radius/label/id的R0条目、版本、2GiB/8GiB存储、计数与GPU清单均齐备。任务元数据、同版工具/source快照、LAUNCH_ENV、模型/数据路径、BASIS/heldout、原R0 bindings及ORIGINAL_ROUTER_MANIFEST146、EVAL_QUERIES、PRIOR_CALIBRATIONS、继承成本ledger和硬件UUID由独立RUN配置提供；不复制当前活跃权重，不把CPU快照当实际GPU恢复准入。当前没有创建新科学RUN、写真实READY或运行scorer_start。
+
+CPU已核验146冷初始化，首项对现有真实C BASE逐核一致；实际MemoryRouter完成三方法四前缀共12路由及438插入前缀，未来专家和重复条目拒绝。当前真实139来源缺口阻止worker入场。四scorer配置彼此隔离。完整报告夹具24867消费者验证原31/54掩码、三方法面板、单编辑FIT退化/缺失/零CI正确阻断成功。详见RUNTIME_CPU_CHECKS/REPORT_CPU_CHECKS；早前训练数学/160循环/队列检查也保持。
+
+这些是代码接线与CPU/合成结果检查，不是实际146 VLM训练或完整专家库性能；真实网络/路由输出身份及GPU显存峰值还需数据齐备后检查。原来源仍7合格/139缺口，training_ready=false，新增GPU/VLM/Judge均0，全部DEV。来源执行方案与用户选择见SOURCE_SOLUTION_ZH.md。
