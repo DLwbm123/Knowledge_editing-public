@@ -1,0 +1,85 @@
+{
+  "status": "COMPLETED_READONLY_TEXT_AND_BINDING_REVIEW",
+  "scope": "All 78 eligible first20 T2G probes; existing frozen mask and scores retained",
+  "reviewer": "Assistant post-hoc text review; not independent clinical or Judge validation",
+  "axes": {
+    "T1G": {
+      "total": 77,
+      "same_image": 0,
+      "same_question": 77,
+      "same_reference": 77
+    },
+    "T2G": {
+      "total": 78,
+      "same_image": 78,
+      "same_question": 0,
+      "same_reference": 78
+    }
+  },
+  "reviewed": 78,
+  "exact_FIT_question_overlap": 0,
+  "question_groups": {
+    "capability_uncertainty": {
+      "n": 19,
+      "M13_correct": 2,
+      "FISHER_MIN_correct": 4
+    },
+    "context_clause": {
+      "n": 20,
+      "M13_correct": 17,
+      "FISHER_MIN_correct": 18
+    },
+    "added_cardinality": {
+      "n": 3,
+      "M13_correct": 1,
+      "FISHER_MIN_correct": 2
+    },
+    "other_paraphrase": {
+      "n": 36,
+      "M13_correct": 25,
+      "FISHER_MIN_correct": 29
+    }
+  },
+  "group_metric": "Descriptive micro accuracy, not the registered edit macro; post-hoc groups, no significance tests",
+  "paired_transitions": {
+    "1_to_1": 44,
+    "0_to_0": 24,
+    "0_to_1": 9,
+    "1_to_0": 1
+  },
+  "both_activate_correct_expert": 78,
+  "route_fields_different": {
+    "nearest_distance": 24
+  },
+  "route_max_abs_difference": {
+    "nearest_distance": 0.32531654834747314
+  },
+  "outputs_at_cap": 0,
+  "outputs_at_cap_support": 156,
+  "common_error_groups": {
+    "nonanswer_or_insufficient": 11,
+    "wrong_specifics_or_overexpansion": 12,
+    "missing_qualifier": 1
+  },
+  "priority_semantic_review_count": 3,
+  "unambiguous_answer_reversal_found": 0,
+  "clinical_reference_correctness_verified": false,
+  "all_variant_reference_equivalence_proven": false,
+  "existing_score_changes": 0,
+  "base_exact_string_comparison": {
+    "M13": {
+      "exact_string_equal": 8,
+      "wrong_and_exact_string_equal": 8
+    },
+    "FISHER_MIN": {
+      "exact_string_equal": 7,
+      "wrong_and_exact_string_equal": 7
+    }
+  },
+  "new_GPU": 0,
+  "new_generation": 0,
+  "new_Judge": 0,
+  "training_modified": false,
+  "causal_attribution_established": false,
+  "source": "Existing first20 plan; original tasks/Base mask; resolved SQLite and associated output records"
+}
