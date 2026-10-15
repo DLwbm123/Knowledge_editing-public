@@ -7,7 +7,9 @@ import torch
 def equal_state(a, b):
     return a.keys() == b.keys() and all(
         a[k].dtype == b[k].dtype and a[k].device == b[k].device
-        and torch.equal(a[k], b[k]) for k in a)
+        and a[k].shape == b[k].shape
+        and torch.equal(a[k].detach().contiguous().reshape(-1).view(torch.uint8),
+                        b[k].detach().contiguous().reshape(-1).view(torch.uint8)) for k in a)
 
 
 def snapshot(state):

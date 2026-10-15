@@ -2,10 +2,11 @@
 import random
 from types import SimpleNamespace as NS
 import torch
-from equivalent_reuse import correction_reuse
+from equivalent_reuse import correction_reuse, equal_state
 
 
 def main():
+    assert not equal_state({'x': torch.tensor([0.])}, {'x': torch.tensor([-0.])})
     calls = dict(loss=0, canonical=0, rows=0, penalty=0)
     expert = torch.nn.Module()
     expert.register_parameter('w', torch.nn.Parameter(torch.ones(1, 1)))
