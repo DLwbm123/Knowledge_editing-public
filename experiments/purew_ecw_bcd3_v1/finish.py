@@ -38,9 +38,10 @@ def main():
     if not terminal['complete'] and not status['reviewed']:
         (STATE/'TAIL_REVIEW_REQUIRED.json').write_text(json.dumps(dict(status=status,scoring_terminal=False,epoch=time.time())))
         return
-    output=remote("import os,runpy\nos.environ['RUN_ROOT']="+repr(R)+"\nrunpy.run_path("+repr(R+'/private/tools/report_revision.py')+",run_name='__main__')\n")
+    report_file='partial_report.py' if status['reviewed'] and not terminal['complete'] else 'report_revision.py'
+    output=remote("import os,runpy\nos.environ['RUN_ROOT']="+repr(R)+"\nrunpy.run_path("+repr(R+'/private/tools/'+report_file)+",run_name='__main__')\n")
     (STATE/'REPORT_OUTPUT.txt').write_text(output)
-    names=['PROTOCOL.json','EXECUTION_AUTHORIZATION.json','GPU2_AUTHORIZATION.json','REAL_VLM_ADMISSION_ALL.json','BASE_CALIBRATION.json','C_MARGIN_BIRTH.json','C_REMOVED_BIRTH.json','RESULTS.json','REPORT_ZH.md',*[f'{kind}_{arm}.json' for arm in ('B','C','D') for kind in ('REAL_VLM_ADMISSION','BASE_IDENTITY','NATIVE_RELOAD')],'CPU_VALIDATION.json']
+    names=['SCIENTIFIC_STOP_REVIEW.json','PROTOCOL.json','EXECUTION_AUTHORIZATION.json','GPU2_AUTHORIZATION.json','REAL_VLM_ADMISSION_ALL.json','BASE_CALIBRATION.json','C_MARGIN_BIRTH.json','C_REMOVED_BIRTH.json','RESULTS.json','REPORT_ZH.md',*[f'{kind}_{arm}.json' for arm in ('B','C','D') for kind in ('REAL_VLM_ADMISSION','BASE_IDENTITY','NATIVE_RELOAD')],'CPU_VALIDATION.json']
     data=json.loads(remote("from pathlib import Path\nimport json\np=Path("+repr(R+'/public')+")\nprint(json.dumps({n:(p/n).read_text() for n in "+repr(names)+" if (p/n).exists()}))\n"))
     report=W/'reports/purew_ecw_bcd3_v1_20261015'
     for name,text in data.items():

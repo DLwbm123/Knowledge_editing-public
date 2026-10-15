@@ -15,3 +15,9 @@ B→fresh reload→C→fresh reload→D→fresh reload串行。每源20槽，零
 完整三条轨迹、每臂最后W新进程2题精确重载、所有租约闭合、FINAL_CONSUMED和GENERATION_COMPLETE后才开放新Judge。A旧161只读复用。4评分worker、644终态、PENDING/RESERVED=0、ALL_WORKERS_COMPLETE后有限tail生成匿名报告并push，验证远端SHA及匿名访问。不确定故障先保留、停止，未尝试不作missing，不能声称partial为完整。
 
 CPU生产检查只证明已测有限算子/保存与合成报告路径；尚未测真实68×58720256全因子驻留峰值，需现场执行上限。采样/Taylor/FP16激活非线性误差未知，数值包络不是临床或隐私保证。
+
+## 2026-10-15科学止步审阅
+
+C源1完成20槽后未满足全部十个出生间隔有限严格正的冻结门槛，按原controller串行失败闭合停止；D未启动，不绕过C启动D，不把科学失败当工程可恢复故障。B已完成60槽/161输出及精确重载。保存的C slot20为post-source probes前状态，并非完整源边界；后续探针失败阶段消耗保留，禁止重放。
+
+partial_report.py仅只读输出和已有完全绑定cache，不更新队列、不产生新模型或Judge；未尝试不作missing。A161有效，B159有效+2未尝试，C/D未生成。GENERATION_COMPLETE/ALL_WORKERS_COMPLETE不伪造。经STOP_REVIEWED科学审阅后，有限finish只走partial报告/公开交付；验明真实退出和租约闭合、交付验证并通知后暂停w-146。原预算、截止、阈值、已消费步骤和历史资产不变。
