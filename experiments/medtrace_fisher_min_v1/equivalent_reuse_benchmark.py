@@ -1,0 +1,178 @@
+"""Bounded real-VLM paired replay; isolated RUN and no production launch path."""
+import copy
+from contextlib import nullcontext
+import json
+import os
+from pathlib import Path
+import statistics
+import struct
+import time
+import traceback
+import numpy as np
+import torch
+import native_fmin as native
+from equivalent_reuse import correction_reuse
+
+r, c, RUN = native.r, native.c, native.RUN
+PARENT = Path(os.environ['REUSE_READONLY_PARENT'])
+HOOK_FIELDS = ('enabled', 'token_mask', 'generation_routing', 'generation_boundary',
+               'generation_trace', 'last_generation_trace', 'anchor_reference', 'anchor_loss')
+
+
+def exact(a, b, label='value'):
+    if isinstance(a, torch.Tensor):
+        assert isinstance(b, torch.Tensor) and a.shape == b.shape and a.dtype == b.dtype, label
+        assert torch.equal(a.detach().cpu().contiguous().reshape(-1).view(torch.uint8),
+                           b.detach().cpu().contiguous().reshape(-1).view(torch.uint8)), label
+    elif isinstance(a, np.ndarray):
+        assert a.dtype == b.dtype and a.shape == b.shape and a.tobytes() == b.tobytes(), label
+    elif isinstance(a, dict):
+        assert a.keys() == b.keys(), label
+        for k in a: exact(a[k], b[k], label+'.'+str(k))
+    elif isinstance(a, (list, tuple)):
+        assert type(a) is type(b) and len(a) == len(b), label
+        for i, (x, y) in enumerate(zip(a, b)): exact(x, y, label+'.'+str(i))
+    elif isinstance(a, float):
+        assert isinstance(b, float) and struct.pack('!d', a) == struct.pack('!d', b), label
+    else: assert a == b, label
+
+
+def cpu(state): return {k: v.detach().cpu().clone() for k, v in state.items()}
+def gradients(expert): return {k: None if v.grad is None else v.grad.detach().cpu().clone() for k, v in expert.named_parameters()}
+
+
+def one(runtime, hook, expert, batches, cache, cpu_cache, reference, budget, probe, optimized, trace):
+    expert.load_state_dict(probe['before']); expert.zero_grad(set_to_none=True)
+    for k, v in probe['hook'].items(): setattr(hook, k, copy.deepcopy(v))
+    c.restore_rng(probe['rng']); np.random.set_state(probe['numpy_rng'])
+    step = probe['step']; anchors = []; protection = []
+    source, tangent = r.source_gradients, native.p.cm.tangent
+    def source_trace(*args, **kwargs):
+        result = source(*args, **kwargs)
+        if trace: anchors.append(gradients(expert))
+        return result
+    def tangent_trace(*args, **kwargs):
+        if trace: protection.append(cpu(args[4]))
+        return tangent(*args, **kwargs)
+    r.source_gradients, native.p.cm.tangent = source_trace, tangent_trace
+    try:
+        torch.cuda.synchronize(); started = time.perf_counter()
+        before = r.old.snapshot(expert)
+        _, losses = r.source_gradients(runtime, hook, expert, batches, step, False)
+        raw = gradients(expert) if trace else None
+        norm = torch.nn.utils.clip_grad_norm_(expert.parameters(), 1.); assert torch.isfinite(norm)
+        clipped = gradients(expert) if trace else None
+        pure, scalar = r.mm.canonical_rms_step(before,
+            {k: v.grad.detach() for k, v in expert.named_parameters()}, copy.deepcopy(probe['scalar']))
+        pure = native.g.canonical_match(before, pure, reference['curve'][step-1]['operator_step_norm'])
+        numpy_before = np.random.get_state()
+        with c.diagnostic_scope(hook):
+            with correction_reuse(native.original, pure) if optimized else nullcontext({}) as hits:
+                selected, audit = native.original.correction(runtime, hook, expert, before, pure, step,
+                    batches, losses, cache, cpu_cache, budget, 'FISHER_MIN')
+        np.random.set_state(numpy_before); expert.load_state_dict(selected)
+        torch.cuda.synchronize(); seconds = time.perf_counter()-started
+        return dict(selected=cpu(selected), pure=cpu(pure), scalar=scalar, losses=losses, audit=audit,
+                    raw=raw, clipped=clipped, anchor_gradients=anchors, protection_gradients=protection,
+                    final_gradients=gradients(expert) if trace else None, rng=c.rng(), numpy_rng=np.random.get_state(),
+                    hook={k: copy.deepcopy(getattr(hook, k)) for k in HOOK_FIELDS}, seconds=seconds, hits=dict(hits))
+    finally: r.source_gradients, native.p.cm.tangent = source, tangent
+
+
+def compare(a, b):
+    for key in a.keys()-{'seconds', 'hits'}: exact(a[key], b[key], key)
+
+
+def main():
+    admission = c.read(RUN/'ADMISSION.json')
+    assert admission['status']=='PASS' and admission['production_read_only']
+    assert admission['GPU']==2 and admission['owners']==[3,4] and admission['steps_per_owner']==5
+    assert admission['max_resident_GPU_seconds']==3600 and admission['generation']==admission['Judge']==0
+    assert PARENT.resolve() != RUN.resolve() and not (RUN/'ONCE').exists()
+    with (RUN/'ONCE').open('x'): pass
+    r.GPUS=(2,); native.g.SOURCE_WEIGHTS=(.5,.5)
+    r.source_gradients=lambda *args,**kwargs:native.trajectory.source_gradients(r,*args,**kwargs)
+    started=time.time()
+    def count(*_):
+        c.budget(); assert time.time()-started<3600
+        r.COUNTS['forwards']+=1; r.COUNTS['non_generation_forwards']+=1
+        assert r.COUNTS['forwards']<=16000 and r.COUNTS['backwards']<=10000
+    r.count=count
+    def solve_count():
+        r.COUNTS['local_solves']+=1; assert r.COUNTS['local_solves']<=8000
+    native.p.solve_count=solve_count
+    report=dict(status='RUNNING', scientific_updates=0, generation=0, Judge=0, parity=[], timing=[])
+    fixtures=[]
+    with c.lease(2):
+        runtime, bindings, handle=r.load(2); handle.remove()
+        handle=runtime.model.register_forward_pre_hook(lambda *args:r.count(*args))
+        try:
+            cache={k:v.to(runtime.device) if isinstance(v,torch.Tensor) else v
+                   for k,v in r.p.load_state(PARENT/'private/OPERATOR_FISHER.pt').items()}
+            cpu_cache=native.p.cache_cpu(cache)
+            packet=c.read(PARENT/'private/M13_SOURCE_PACKET.json')
+            for owner in (3,4):
+                task=packet['original_tasks'][owner-1]
+                rows=native.trajectory.source_rows(packet,owner)
+                initial=PARENT/'private/resume146'/f'FISHER_MIN_INITIAL_{owner}.pt'
+                assert initial.is_file() and not initial.is_symlink() and initial.resolve().is_relative_to(PARENT.resolve())
+                saved=torch.load(initial,map_location='cpu',weights_only=False)
+                assert saved['step']==saved['scalar']['step']==0 and saved['binding']['seed']==task['seed']
+                reference=c.read(PARENT/'private/results/C'/f'{owner}.json')
+                history=c.read(PARENT/'private/results/FISHER_MIN'/f'{owner}.json')
+                budget=.1*c.read(PARENT/'private/calibration146'/f'{owner}.json')['C_operator_penalty']
+                r.old.fp32(runtime); runtime.model.half()
+                prepared=r.s.prepare(runtime,bindings,task,rows,True)
+                r.old.fp32(runtime); batches=[r.old.batch_on(runtime,item[1]) for item in prepared]
+                expert=r.p.expert(saved['state'],task['seed'],runtime.device)
+                hook=r.q.scoped.replay.MedTraceLayerHook(runtime.get_module(c.LAYER),expert);hook.attach()
+                try:
+                    before=saved['state'];scalar=saved['scalar'];rng=saved['rng'];numpy_rng=saved['numpy_rng']
+                    for step in range(1,6):
+                        probe=dict(step=step,before=cpu(before),scalar=copy.deepcopy(scalar),rng=copy.deepcopy(rng),
+                            numpy_rng=copy.deepcopy(numpy_rng),hook={k:copy.deepcopy(getattr(hook,k)) for k in HOOK_FIELDS})
+                        a=one(runtime,hook,expert,batches,cache,cpu_cache,reference,budget,probe,False,True)
+                        b=one(runtime,hook,expert,batches,cache,cpu_cache,reference,budget,probe,True,True)
+                        compare(a,b)
+                        exact(a['audit'],history['curve'][step-1]['decision'],'historical_decision')
+                        report['parity'].append(dict(owner_slot=owner-3,step=step,kind=a['audit']['kind'],
+                            all_tensor_float_bits_exact=True,all_source_anchor_protection_gradients=True,hits=b['hits']))
+                        c.write(RUN/'private/PARITY_PROGRESS.json',report)
+                        if step in (2,5):fixtures.append((owner,task,batches,expert,hook,reference,budget,probe))
+                        before,scalar,rng,numpy_rng=a['selected'],a['scalar'],a['rng'],a['numpy_rng']
+                    # Timing fixtures keep their own frozen batches; attach only one hook at a time.
+                finally:hook.detach()
+            report['parity_all_passed']=True; c.write(RUN/'private/PARITY_COMPLETE.json',report)
+            for index,(owner,task,batches,expert,hook,reference,budget,probe) in enumerate(fixtures):
+                hook.attach()
+                try:
+                    for repeat in (0,1):
+                        order=(False,True) if repeat==0 else (True,False)
+                        out={}
+                        for optimized in order:
+                            prior=dict(r.COUNTS)
+                            out[optimized]=one(runtime,hook,expert,batches,cache,cpu_cache,reference,budget,probe,optimized,False)
+                            out[optimized]['counts']={k:r.COUNTS[k]-prior.get(k,0) for k in r.COUNTS}
+                        counts={k:v.pop('counts') for k,v in out.items()}
+                        compare(out[False],out[True])
+                        report['timing'].append(dict(case=index,repeat=repeat,order=['reuse' if x else 'original' for x in order],
+                            original_seconds=out[False]['seconds'],reuse_seconds=out[True]['seconds'],hits=out[True]['hits'],
+                            original_counts=counts[False],reuse_counts=counts[True]))
+                        c.write(RUN/'private/TIMING_PROGRESS.json',report)
+                finally:hook.detach()
+            a=sum(x['original_seconds'] for x in report['timing']);b=sum(x['reuse_seconds'] for x in report['timing'])
+            report.update(status='PASS',paired_elapsed_speedup=a/b,original_seconds=a,reuse_seconds=b,
+                counts=dict(r.COUNTS),all_weights_gradients_two_RMS_RNG_exact=True,
+                decision_audits_exact=True,search_pruning=False,production_deployment=False,
+                generation=0,Judge=0,scientific_updates=0,epoch=time.time())
+            assert r.COUNTS['updates']==r.COUNTS['generation_attempts']==0
+            c.write(RUN/'private/RESULTS.json',report)
+        finally:handle.remove();r.save_counts()
+
+
+if __name__=='__main__':
+    code=0
+    try:main()
+    except BaseException as error:
+        code=1;c.write(RUN/'private/FAILURE.json',dict(error=repr(error),traceback=traceback.format_exc(),automatic_retry=False));raise
+    finally:c.write(RUN/'private/EXIT.json',dict(exit_code=code,epoch=time.time()))
