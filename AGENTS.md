@@ -1,3 +1,7 @@
+## 当前终态：HE完整评分、科学门失败，停止
+
+HE已完成20槽、87/87有效评分及两题精确重载，GPU租约全关闭。CE=0.00705433、T1G=4/4、T2G=3/4；正间隔8/10、保护损伤3/36，AND门失败。608.891932GPU秒包括准入与第7槽拒绝成本，新Judge0（完整binding缓存复用），历史缺分不重试。见reports/purew_hinge_evidence_first1_v1_20261016/{HE_VS_HM_ANALYSIS_ZH.md,CLOSURE_RECEIPT.json,RESULTS.json}。无自动重跑、调参、下一轮或146；下文启动授权已消耗。
+
 ## 当前授权：HE冻结单臂启动与有限完成交付
 
 2026-10-16用户明确要求HE按冻结协议准入后后台运行、评分、分析HM差异并公开交付。读取reports/purew_hinge_evidence_first1_v1_20261016的PROTOCOL、EXECUTION_AUTHORIZATION、HARDWARE_AUTHORIZATION及CHECKPOINT_LIFECYCLE。绑定pro5000 GPU3；源码先推送，存储/显存、Base3和真实VLM准入后才正式20槽；原2GPUh/24wallh与全部通过门不变。全部失败成本保留，一次安装，无自动重启、调参、下一轮或146，无周期监测。下文HE仅准备状态为历史；旧臂保持不变。
