@@ -1,3 +1,7 @@
+## 当前授权：HE–HM 146完整队列诊断，仅准备、不启动
+
+用户于2026-10-16授权冻结HE/HM公平146连续对照并完成代码检查、展示方案，明确暂不启动；另明确接受科学失败继续记账、无合格证据条目两臂H-only、全146不删样本。见reports/purew_he_hm146_v1_20261016/PLAN_ZH.md、PROTOCOL.json、CHECKPOINT_LIFECYCLE.md和PREPARATION_RECEIPT.json。每臂146×20槽，64GPU小时；总128GPU小时/168墙钟小时。E仅在预注册9条启用，不宣称146条证据验证。CPU learner与8246消费者聚合检查PASS；真实模型、GPU、Judge、安装、监测均未授权。全规模内存/实际跨度及软件集成准入未完成，不得将准备PASS当作启动许可。旧146保持暂停，历史结果不变，无subagent、自动扩展或重试。
+
 ## 当前终态：HC完整评分，科学门失败，交付后停止
 
 HC已完成20槽、87/87新评分及696/696合并有效评分，真实重载通过、GPU租约关闭。第15槽切换，最后5槽E-only；CE=0.07676571、正间隔9/10，T0/T1G/T2G为0/1、0/4、0/4，保护损伤4/36，原AND失败。详见reports/purew_ce_guard_evidence_first1_v1_20261016/HC_VS_HE_HM_ANALYSIS_ZH.md及CLOSURE_RECEIPT.json。完成公开交付后暂停hc监测；无重试、调参、下一轮或146。下文启动授权已消耗。

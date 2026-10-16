@@ -1,0 +1,81 @@
+{
+  "status": "PREPARATION_COMPLETE_NOT_LAUNCH_READY",
+  "epoch": 1792143413.73021,
+  "execution_authorized": false,
+  "real_model_calls": 0,
+  "GPU_calls": 0,
+  "Judge_calls": 0,
+  "remote_experiment_installs": 0,
+  "monitors_created": 0,
+  "checks": {
+    "actual_learner_146_both_arms": "PASS",
+    "real_metadata_8246_queue_report": "PASS",
+    "role_isolation": "PASS",
+    "raw_reference_token_spans": "PASS",
+    "historical_cache_no_retry": "PASS",
+    "original_scoring_helpers_reused": "PASS"
+  },
+  "CPU_attempts": [
+    {
+      "file": "CPU_1792142846.json",
+      "returncode": 1,
+      "wall_seconds": 32.81220293045044
+    },
+    {
+      "file": "CPU_1792142684.json",
+      "returncode": 1,
+      "wall_seconds": 1.9911181926727295
+    },
+    {
+      "file": "CPU_1792142518.json",
+      "returncode": 0,
+      "wall_seconds": 59.751688957214355
+    },
+    {
+      "file": "CPU_1792142821.json",
+      "returncode": 1,
+      "wall_seconds": 1.904994010925293
+    },
+    {
+      "file": "INTEGRATION_1792143116.json",
+      "returncode": 0,
+      "wall_seconds": null
+    },
+    {
+      "file": "INTEGRATION_1792142946.json",
+      "returncode": 1,
+      "wall_seconds": null
+    },
+    {
+      "file": "CPU_1792142984.json",
+      "returncode": 0,
+      "wall_seconds": 61.316365003585815
+    },
+    {
+      "file": "INTEGRATION_1792143003.json",
+      "returncode": 0,
+      "wall_seconds": null
+    }
+  ],
+  "failed_CPU_attempt_count": 4,
+  "additional_cache_fixture_failure": "One nonpersisted cache harness attempt missed source import path; fixed only fixture PYTHONPATH, no model/Judge calls",
+  "fixes": [
+    "Removed inherited single-source reference_run/K_reference_run dependency from queue import",
+    "Initialized explicit Judge epoch manifest before queue use",
+    "Corrected CPU fixture assumption: strict failed CE can prevent history births; test retained removed rows separately from over46 support oracle"
+  ],
+  "pending": [
+    "production packaging and full runtime integration admission",
+    "720GiB available host and full-size operator time/memory admission",
+    "real-VLM expanded five-view span/native admission",
+    "explicit user launch approval"
+  ],
+  "no_scientific_results": true,
+  "scientific_protocol_changed_after_results": false,
+  "not_included": [
+    "independent single146 training",
+    "new seeds or order search",
+    "new region annotations or unsupported-concept rewrite",
+    "real model/full-size hardware tests"
+  ]
+}
