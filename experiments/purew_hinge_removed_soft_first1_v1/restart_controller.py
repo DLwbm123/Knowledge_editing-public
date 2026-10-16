@@ -1,5 +1,7 @@
 """One authorized pre-slot restart; reuse admission and retain every prior cost."""
-import traceback,time
+import traceback,time,sys
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 import controller
 c,R=controller.c,controller.R
 original_stage=controller.stage

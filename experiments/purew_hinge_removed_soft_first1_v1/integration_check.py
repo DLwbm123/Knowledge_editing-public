@@ -179,7 +179,7 @@ else:raise AssertionError('Per-arm residency budget transferable')
 db.close();prior.close()
 shutil.rmtree(root)
 print(json.dumps(dict(status='PASS',successful_CPU_sandbox_retired=True,protocol_version=configuration.VERSION,CPU_seconds=time.monotonic()-started,
-    restart_skips_admission_and_preserves_clock=True,formal_learner_20_slots_both_terminal_branches=True,production_HR_loss_and_gradient_oracle=True,removed_full_vocabulary_forward_KL=True,
+    deployed_source_first_import_entry=True,restart_skips_admission_and_preserves_clock=True,formal_learner_20_slots_both_terminal_branches=True,production_HR_loss_and_gradient_oracle=True,removed_full_vocabulary_forward_KL=True,
     no_conditional_or_prefix_gradient=True,HR_candidate_uses_combined_Armijo=True,
     candidate_exception_native_rollback=True,SH00_candidate_path_bitwise=True,
     extreme_logits_finite_no_floor=True,expanded_image_mask_and_corruption_rejection=True,
