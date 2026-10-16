@@ -1,3 +1,7 @@
+## 当前终态：前8条对照部署路径失败，禁止自动重试
+
+2026-10-16监测确认fixed-input-guard8-v1-20261016已在base_U_0因派生图像旧路径PermissionError退出。32条校准及3条U Base身份通过，58次生成、2345 forward、97.788343GPU秒；正式槽/临时准入/权重提交/Judge均0。报告reports/fixed_input_guard8_v1_20261016/launch/FAILURE_ZH.md。保留原运行，不自动修复重启/续跑/重试；监测按终态规则暂停。
+
 ## 当前授权：启动固定16 MiB保护器前8条对照
 
 用户于2026-10-16要求直接开始实验。按已冻结U/P各8条20槽、原生FP16、原容差和既定预算启动；允许训练侧校准、模型准入、编辑与评估，不允许自动重试、调参或扩展146。新部署代码experiments/fixed_input_guard8_v1，启动记录reports/fixed_input_guard8_v1_20261016/launch；旧准备权限文件保留历史。默认不持续监测。
