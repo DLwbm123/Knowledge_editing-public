@@ -1,3 +1,7 @@
+## 当前授权：HE冻结与代码检查，仅准备、不启动
+
+2026-10-16用户授权HM＋直接证据间隔目标的协议、代码与必要检查，明确先不启动实验，不按测试题调参。见reports/purew_hinge_evidence_first1_v1_20261016/{PROTOCOL.json,PROTOCOL_NOTES_ZH.md,CHECKPOINT_LIFECYCLE.md,PRODUCTION_CPU_VALIDATION.json}。HE=HM＋权重1、目标ln(1.01)的两概念证据hinge；原20槽/2GPUh/24wallh及AND门保留。代码和生产CPU检查PASS，真实模型/GPU/Judge/安装/消费者/等待器/监测均未运行且未授权；后续启动须新的明确授权与实际准入。历史HM/HU/HR及结果成本不可改写，无subagent、重跑、测试调参或自动下一轮。下文启动授权均为旧实验历史，不适用于HE。
+
 ## 当前终态：HR 完整评分、科学门失败，交付后停止
 
 HR 20/20槽与87/87有效评分、精确重载均完成；CE=0.333098、T1G=3/4、T2G=1/4、保护损伤3/36，10/10正间隔仍不足以通过AND门。累计577.470260GPU秒含所有失败尝试，原时钟和预算保留；活动统计/teacher已退役，final native保留。见 reports/purew_hinge_removed_soft_first1_v1_20261016/{HR_VS_HM_ANALYSIS_ZH.md,CLOSURE_RECEIPT.json,RESULTS.json}。此前一次恢复授权已使用，不允许再重启、调参、补Judge或自动下一轮。
