@@ -8,7 +8,7 @@ def main():
     from configuration import effective_protocol
     p=json.loads((out/'PROTOCOL.json').read_text());effective=effective_protocol(p)
     files={p.name:p.read_text() for p in here.glob('*.py')}
-    code=(here/'cpu_check.py').read_text()+ '\n'+(here/'integration_check.py').read_text()
+    code=(here/'cpu_check.py').read_text()+ '\n'+"\nimport subprocess\nformal=subprocess.run([sys.executable,'-c',payload['files']['formal_check.py']],env=dict(os.environ,PYTHONPATH=str(tools)+':'+str(parent/'source')),text=True,capture_output=True)\nassert formal.returncode==0,formal.stderr\nassert json.loads(formal.stdout)['status']=='PASS'\n"+(here/'integration_check.py').read_text()
     start=time.time();receipt=dict(epoch=start,action='CPU_PRODUCTION_NO_INSTALL_NO_MODEL_NO_JUDGE')
     try:
         result=subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=12','pro5000',"/data/bmw/envs/v0/bin/python -c 'import sys,json;exec(json.loads(sys.stdin.readline()))'"],input=json.dumps(code)+'\n'+json.dumps(dict(files=files,protocol=effective))+'\n',text=True,capture_output=True,timeout=240)

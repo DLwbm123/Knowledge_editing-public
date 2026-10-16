@@ -42,7 +42,7 @@ def main():
     report_file='report_revision.py'
     output=remote("import os,runpy\nos.environ['RUN_ROOT']="+repr(R)+"\nrunpy.run_path("+repr(R+'/private/tools/'+report_file)+",run_name='__main__')\n")
     (STATE/'REPORT_OUTPUT.txt').write_text(output)
-    names=['HISTORICAL_COMPATIBILITY.json','EXECUTION_AUTHORIZATION.json','HARDWARE_AUTHORIZATION.json','STORAGE_ADMISSION.json','BASE_PARAMETER_REUSE.json','REAL_VLM_ADMISSION_ALL.json','RESULTS.json','REPORT_ZH.md',*[f'{kind}_{arm}.json' for arm in ('HR',) for kind in ('REAL_VLM_ADMISSION','BASE_IDENTITY','NATIVE_RELOAD','MARGIN_DIAGNOSTIC','MARGIN_BIRTH','REMOVED_BIRTH','PROJECTION_MASK','GRADIENT_INITIAL','GRADIENT_FINAL','EVIDENCE_INITIAL','EVIDENCE_FINAL')]]
+    names=['RESTART1_AUTHORIZATION.json','RESTART1_RECEIPT.json','HISTORICAL_COMPATIBILITY.json','EXECUTION_AUTHORIZATION.json','HARDWARE_AUTHORIZATION.json','STORAGE_ADMISSION.json','BASE_PARAMETER_REUSE.json','REAL_VLM_ADMISSION_ALL.json','RESULTS.json','REPORT_ZH.md',*[f'{kind}_{arm}.json' for arm in ('HR',) for kind in ('REAL_VLM_ADMISSION','BASE_IDENTITY','NATIVE_RELOAD','MARGIN_DIAGNOSTIC','MARGIN_BIRTH','REMOVED_BIRTH','PROJECTION_MASK','GRADIENT_INITIAL','GRADIENT_FINAL','EVIDENCE_INITIAL','EVIDENCE_FINAL')]]
     data=json.loads(remote("from pathlib import Path\nimport json\np=Path("+repr(R+'/public')+")\nprint(json.dumps({n:(p/n).read_text() for n in "+repr(names)+" if (p/n).exists()}))\n"))
     report=W/'reports/purew_hinge_removed_soft_first1_v1_20261016'/os.environ.get('PUBLIC_REPORT_SUBDIR','');report.mkdir(parents=True,exist_ok=True)
     for name,text in data.items():

@@ -1,3 +1,7 @@
+## 当前授权：HR 修复后仅一次原预算重启
+
+2026-10-16 用户明确允许修复后重启一次HR，先补足正式学习路径检查；保留全部失败成本、原始激活与deadline，不重置预算或放宽门。见 reports/purew_hinge_removed_soft_first1_v1_20261016/RESTART1_AUTHORIZATION.json。仅执行 restart1，复用已通过的准入，原目录后台学习/评分/分析/GitHub交付；无第二次重启或自动下一轮。下文工程停止是历史状态，不覆盖本次明确授权。
+
 ## 当前状态：HR 首槽前工程停止，禁止自动重跑
 
 2026-10-16 HR 已完成 Base3/真实VLM准入，但 learn_HR_1 在正式槽前因 diagnostic 局部变量遮蔽发生 UnboundLocalError。正式槽0，无active checkpoint/final native；73.24508452415466 GPU秒和全部成本保留。作用域修复及CPU回归PASS仅提交源码，未覆盖部署/重启。按冻结机械失败停止规则和零重放额度保留现场；下文启动授权已消耗，不用于重新安装或重置时钟。见 reports/purew_hinge_removed_soft_first1_v1_20261016/ENGINEERING_STOP_REPORT_ZH.md。无HR科学结果，无自动下一轮。

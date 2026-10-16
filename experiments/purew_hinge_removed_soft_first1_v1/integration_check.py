@@ -58,6 +58,20 @@ for stopped in (False,True):
     assert q.read(root/'private/GENERATION_COMPLETE.json')['full_protocol_complete']==(not stopped)
     assert q.read(root/'private/GENERATION_COMPLETE.json')['new_consumers']==87
     assert not (root/'private/window/HR/teacher.json').exists()
+# Recovery executes only the formal/evaluation stages and keeps the original clock.
+import restart_controller
+calls.clear()
+q.write(root/'public/RESTART1_RECEIPT.json',dict(restart_number=1,formal_slots_before=0,original_manifest=q.read(root/'RUN_MANIFEST.json')))
+original_controller_stage=controller.stage
+with patch.object(restart_controller,'original_stage',stage):restart_controller.main()
+controller.stage=original_controller_stage
+assert [a for a,_ in calls]==['learn_HR_1_restart1','eval_HR_1','eval_reload_HR']
+receipt=q.read(root/'public/RESTART1_RECEIPT.json');receipt['original_manifest']['deadline_epoch']+=1
+q.write(root/'public/RESTART1_RECEIPT.json',receipt)
+with patch.object(restart_controller,'original_stage',side_effect=AssertionError('Must reject before launch')):
+    try:restart_controller.main()
+    except AssertionError:pass
+    else:raise AssertionError('Restart allowed clock replacement')
 # The real R state has an explicit external R identity and immutable internal J coordinates.
 worker.c.rng=lambda:dict(torch_rng=torch.get_rng_state(),python_rng=__import__('random').getstate(),cuda_rng=None)
 q.write(root/'RUN_MANIFEST.json',dict(deadline_epoch=time.time()+600,GPU_seconds_limit=3600,min_free_bytes=0,owned_weight_limit_bytes=1024**3))
@@ -165,7 +179,7 @@ else:raise AssertionError('Per-arm residency budget transferable')
 db.close();prior.close()
 shutil.rmtree(root)
 print(json.dumps(dict(status='PASS',successful_CPU_sandbox_retired=True,protocol_version=configuration.VERSION,CPU_seconds=time.monotonic()-started,
-    production_HR_loss_and_gradient_oracle=True,removed_full_vocabulary_forward_KL=True,
+    restart_skips_admission_and_preserves_clock=True,formal_learner_20_slots_both_terminal_branches=True,production_HR_loss_and_gradient_oracle=True,removed_full_vocabulary_forward_KL=True,
     no_conditional_or_prefix_gradient=True,HR_candidate_uses_combined_Armijo=True,
     candidate_exception_native_rollback=True,SH00_candidate_path_bitwise=True,
     extreme_logits_finite_no_floor=True,expanded_image_mask_and_corruption_rejection=True,
