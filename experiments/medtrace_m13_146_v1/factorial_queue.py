@@ -5,6 +5,8 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 import time
+import sys
+sys.path.insert(0,str(Path(__file__).parent))
 import factorial_protocol as f
 import cm_queue146 as shared
 import queue146 as base
