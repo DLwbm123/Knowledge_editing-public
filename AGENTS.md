@@ -1,3 +1,15 @@
+## 当前授权：HR单臂启动与有限完成交付
+
+2026-10-16用户明确授权冻结HR实验：先推送源码，完成存储/显存、Base3及真实VLM准入后正式20槽，pro5000当前绑定GPU3；原2GPUh/24wallh和全部通过门不变。执行EXECUTION_AUTHORIZATION及HARDWARE_AUTHORIZATION；后台单臂、四评分worker和有限发布tail，完成后评分、分析并公开交付，无周期监测、无自动下一轮或146。既有历史实验不重跑、不补Judge；失败与预算原样保留。此授权取代下文HR仅准备的历史运维状态。
+
+## 当前授权：HR执行器实现和生产路径CPU检查，不启动
+
+2026-10-16用户授权按冻结HR单因素方案实现独立执行器并完成生产路径CPU检查，明确暂不启动GPU实验。实现位于 experiments/purew_hinge_removed_soft_first1_v1/，报告位于 reports/purew_hinge_removed_soft_first1_v1_20261016/。执行器已实现、生产CPU PASS；本轮无GPU/真实模型/Judge调用，无安装/等待器/消费者/监测启动。科学目标、20槽单臂、2GPUh/24wallh及原AND门不变。PROTOCOL readiness和IMPLEMENTATION_RECEIPT反映当前准备状态；EXECUTION_AUTHORIZATION与HARDWARE_AUTHORIZATION仍false。未来启动必须另获用户明确授权并通过真实准入。旧冻结执行器与历史结果不修改，无subagent。
+
+## 当前范围：HR单因素协议冻结，仅准备
+
+2026-10-16用户要求使用已有日志诊断HM/HU证据间隔与外部保护失败，并冻结下一轮最小单因素对照，明确暂不启动。见 reports/purew_hinge_removed_soft_first1_v1_20261016/{MECHANISM_DIAGNOSIS_ZH.md,PROTOCOL.json,PROTOCOL_NOTES_ZH.md,CHECKPOINT_LIFECYCLE.md}。只新增规划HR=HM+权重1的removed完整词表软KL；复用历史HM，不重跑历史。当前execution/install/model_calls/Judge/GPU_allocation/waiter/monitoring全部false；执行器未实现，生产CPU/真实VLM准入未运行。下文旧HM/HU启动授权不适用于HR。旧结果与失败成本不改；原146/M暂停、O/L原屏障；无subagent，无自动146。
+
 ## 当前授权：HM/HU最小目标形状对照
 
 2026-10-16用户要求“好的，请立即开始实验，按照你的最小路线”。执行reports/purew_odds_hinge_first1_v1_20261016冻结的HM→HU首源各20槽；复用SH00/PM/PU，不重跑或补Judge。pro5000 GPU0–7最多同时2张，当前GPU7（GPU2安装前显存准入被拒，未创建run）。全臂CPU/Base3/真实VLM准入后正式槽；一次安装和原预算，后台有限评分及公开交付，无自动146/新臂。原146/M暂停、O/L等待；无subagent。历史协议和结果不覆盖。
