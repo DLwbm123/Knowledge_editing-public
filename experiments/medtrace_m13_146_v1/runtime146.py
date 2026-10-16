@@ -77,7 +77,7 @@ def stage_admission(stage,full):
         'GPU_SOURCE_VERSION.json' if stage=='C' else name+'_SOURCE1.json')
 
 
-def train():
+def train(arms=None,partitions=3):
     from m3bench_repro.editors.llava_runtime import seed_everything
     require_ready();configure();part,gpu=int(os.environ['PARTITION']),int(os.environ['GPU'])
     reference=os.environ['ACTION']=='m13_146_reference'
@@ -88,7 +88,7 @@ def train():
             for k,v in r.p.load_state(RUN/'private/OPERATOR_FISHER.pt').items()}
         try:
             p=packet()
-            for task in tasks()[part::3]:
+            for task in tasks()[part::partitions]:
                 rows=trajectory.source_rows(p,task['order'])
                 runtime.model.half();prepared=r.s.prepare(runtime,bindings,task,rows,True)
                 frozen=[item[1] for item in prepared]
@@ -111,7 +111,7 @@ def train():
                     coefficient=training_math.coefficient(gain,penalty,prior['coefficient'] if prior else None)
                     path=RUN/'private/calibration146'/f"{task['order']}.json";assert not path.exists()
                     c.write(path,dict(C_source_gain=gain,C_operator_penalty=penalty,coefficient=coefficient,heldout_used=False))
-                for arm in ('C',) if reference else ('M1','M3','M13'):
+                for arm in ('C',) if reference else (arms or ('M1','M3','M13')):
                     seed_everything(task['seed']);assert not point(task,arm).exists(),'No trajectory restart'
                     resume=RUN/'private/resume146'/f"{arm}_{task['order']}.pt";assert not resume.exists(),'Interrupted state requires an independent audit'
                     expert=r.p.expert(initial,task['seed'],runtime.device)
@@ -124,7 +124,7 @@ def train():
                         binding=dict(arm=arm,seed=task['seed'],steps=160,parameters=7168,source_recipe=contract.SOURCE_RECIPE,
                             source_order=[v['query_id'] for v in rows],source_binding=c.digest(contract.original.source_binding(rows)),
                             scientific_lock=c.digest(c.read(RUN/'private/SCOPE_LOCK.json')),
-                            source_version=c.read(RUN/'private/GPU_SOURCE_VERSION.json')['commit'],budget_binding=c.digest(contract.CAPS))
+                            source_version=c.read(RUN/'private/GPU_SOURCE_VERSION.json')['commit'],budget_binding=c.digest(c.read(RUN/'PLAN_CONFIG.json')['maximum_counts']))
                         start=dict(r.COUNTS)
                         def checkpoint(saved):c.save(resume,saved);r.save_counts()
                         final=trajectory.run(r,runtime,hook,expert,batches,arm,cache,

@@ -74,7 +74,7 @@ def charge_retry(q,run,db,operation,resume):
         prior=q.read(run/'private/INHERITED_COST.json')['Judge_attempts']
         n=len(batch['keys']);own=ledger['Judge_attempts']-prior
         parent_ledger=q.read(parent/'RESOURCE_LEDGER.json')
-        merged=parent_ledger.get('cm_eval146_v1_Judge_merged',{}).get('increment',0)
+        merged=parent_ledger.get(getattr(protocol,'JUDGE_MERGE_KEY','cm_eval146_v1_Judge_merged'),{}).get('increment',0)
         assert own+n<=gate['new_Judge_cap']
         assert parent_ledger['Judge_attempts']+own-merged+n<=q.read(parent/'RUN_MANIFEST.json')['Judge_limit']
         protocol.project_budget(run)
@@ -125,7 +125,7 @@ def main():
             own=q.read(run/'RESOURCE_LEDGER.json')['Judge_attempts']-q.read(run/'private/INHERITED_COST.json')['Judge_attempts']
             assert own+len(keys)<=gate['new_Judge_cap']
             parent_ledger=q.read(parent/'RESOURCE_LEDGER.json')
-            merged=parent_ledger.get('cm_eval146_v1_Judge_merged',{}).get('increment',0)
+            merged=parent_ledger.get(getattr(protocol,'JUDGE_MERGE_KEY','cm_eval146_v1_Judge_merged'),{}).get('increment',0)
             assert parent_ledger['Judge_attempts']+own-merged+len(keys)<=q.read(parent/'RUN_MANIFEST.json')['Judge_limit']
             protocol.project_budget(run)
         answer=base.coverage(db) if operation['action']=='ingest' else dispatch(a,q,db,operation,workers)
