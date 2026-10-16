@@ -1,5 +1,7 @@
 """Disjoint bank partitions on three GPUs, preserving the running single lane."""
 import os
+import sys
+import inspect
 from pathlib import Path
 import time
 import traceback
@@ -45,20 +47,20 @@ def parity(runtime, bindings):
         actual=c.read(out)
         assert actual['R0']==expected['R0'] and actual['binding']==expected['binding']
     assert r.COUNTS['generation_attempts']==2 and r.COUNTS['forwards']<=4096
-    c.write(RUN/f'private/CM_PARALLEL_ENGINEERING_COUNTS_{part}.json',dict(r.COUNTS))
+    c.write(RUN/f'private/CM_PARALLEL2_ENGINEERING_COUNTS_{part}.json',dict(r.COUNTS))
     for key in r.COUNTS:r.COUNTS[key]=0
     r.save_counts();runtime.model.half()
-    c.write(RUN/f'private/CM_PARALLEL_PARITY_{part}.json',dict(status='PASS',GPU=gpu,exact_tokens_binding_route=True,epoch=time.time()))
-    while not all((RUN/f'private/CM_PARALLEL_PARITY_{p}.json').exists() for p in range(3)):
-        assert not list((RUN/'private').glob('FAILURE_cm_parallel*.json'))
+    c.write(RUN/f'private/CM_PARALLEL2_PARITY_{part}.json',dict(status='PASS',GPU=gpu,exact_tokens_binding_route=True,epoch=time.time()))
+    while not all((RUN/f'private/CM_PARALLEL2_PARITY_{p}.json').exists() for p in range(3)):
+        assert not list((RUN/'private').glob('FAILURE_cm_parallel2*.json'))
         protocol.project_budget(RUN);time.sleep(2)
 
 
 def main():
     gate=protocol.admit(RUN,check_weights=True);part=int(os.environ['PARTITION']);gpu=int(os.environ['GPU'])
     assert part in (0,1,2) and gpu==part+3
-    assert c.read(RUN/'private/CM_PARALLEL_CPU_CHECK1.json')['status']=='PASS'
-    with (RUN/f'private/CM_PARALLEL_GPU_ONCE_{part}').open('x'):pass
+    assert c.read(RUN/'private/CM_PARALLEL2_CPU_CHECK1.json')['status']=='PASS'
+    with (RUN/f'private/CM_PARALLEL2_GPU_ONCE_{part}').open('x'):pass
     rows=c.read(RUN/'private/CM_NEW_PLAN1.json');jobs=assigned(rows,part)
     assert all(not w.worker.dest(row).exists() for row in jobs)
     parent=Path(gate['parent'])
@@ -70,16 +72,19 @@ def main():
         assert r.COUNTS['generation_attempts']<=len(jobs)
         assert r.COUNTS['updates']==r.COUNTS['backwards']==r.COUNTS['operator_backwards']==r.COUNTS['local_solves']==0
     r.count=count
+    sys.path.insert(0,str(Path(__file__).parent))
     import bank146
+    assert Path(bank146.__file__).parent==Path(__file__).parent
+    assert 'runtime_check' in inspect.signature(bank146.evaluate).parameters
     bank146.evaluate(292,3,lambda:protocol.admit(RUN),'CM_FROZEN1.json','CM_SCOPE1.json','CM_SOURCE1.json','CM_NEW_PLAN1.json',parity)
     assert r.COUNTS['generation_attempts']==len(jobs)
-    c.write(RUN/f'private/CM_PARALLEL_COMPLETE_{part}.json',dict(status='COMPLETE',outputs=len(jobs),epoch=time.time()))
+    c.write(RUN/f'private/CM_PARALLEL2_COMPLETE_{part}.json',dict(status='COMPLETE',outputs=len(jobs),epoch=time.time()))
 
 
 if __name__=='__main__':
     code=0;part=os.environ['PARTITION']
     try:main()
     except BaseException as error:
-        code=1;c.write(RUN/f'private/FAILURE_cm_parallel_{part}.json',dict(error=repr(error),traceback=traceback.format_exc(),counts=r.COUNTS,epoch=time.time(),automatic_retry=False));raise
+        code=1;c.write(RUN/f'private/FAILURE_cm_parallel2_{part}.json',dict(error=repr(error),traceback=traceback.format_exc(),counts=r.COUNTS,epoch=time.time(),automatic_retry=False));raise
     finally:
-        r.save_counts();c.write(RUN/f'private/CM_PARALLEL_EXIT_{part}.json',dict(exit_code=code,epoch=time.time()))
+        r.save_counts();c.write(RUN/f'private/CM_PARALLEL2_EXIT_{part}.json',dict(exit_code=code,epoch=time.time()))
