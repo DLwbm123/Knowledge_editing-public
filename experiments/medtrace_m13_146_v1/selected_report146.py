@@ -13,7 +13,7 @@ def calculate(tasks,base_mask,records,scores,interim20=False,methods=None,single
     assert len(methods)==2 and len(set(methods))==2
     left_method,right_method=methods
     if interim20:assert [t['order'] for t in tasks]==list(range(1,21))
-    assert len(records)==len(scores)==(9173 if single_only else 1077 if interim20 else contract.CONSUMERS)
+    assert len(records)==len(scores)==(8005 if single_only else 1077 if interim20 else contract.CONSUMERS)
     assert records.keys()==scores.keys()
     panels={m:{} for m in methods};owners={};damage={};damage_owners={};contrasts={}
     labels=[('single',1)]+([] if interim20 or single_only else [('bank',n) for n in contract.PREFIXES])

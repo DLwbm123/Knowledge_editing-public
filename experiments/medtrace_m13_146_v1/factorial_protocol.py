@@ -7,9 +7,9 @@ EPOCH='MEDTRACE_SINGLE_FACTORIAL146_20261016_V1'
 QUEUE='judge_factorial146_astra_medium'
 JUDGE_MERGE_KEY='factorial146_Judge_merged'
 METHODS=('C','M1','M3','M13')
-METHOD_CONSUMERS={m:3540 for m in METHODS}|{'BASE':2093}
-CONSUMERS=16253
-CAPS=dict(updates=46720,backwards=93448,operator_backwards=23360,local_solves=0,generation_attempts=7080,non_generation_forwards=160000,Judge_attempts=10000)
+METHOD_CONSUMERS={m:2956 for m in METHODS}|{'BASE':2093}
+CONSUMERS=13917
+CAPS=dict(updates=46720,backwards=93448,operator_backwards=23360,local_solves=0,generation_attempts=5912,non_generation_forwards=160000,Judge_attempts=10000)
 
 def read(p):return json.loads(Path(p).read_text())
 

@@ -52,7 +52,7 @@ def main():
         for k,v in read(path).items():
             if k in counts:counts[k]+=v
     assert all(counts[k]<=cap for k,cap in f.CAPS.items())
-    assert counts['updates']==46720 and counts['backwards']==93448 and counts['operator_backwards']==23360 and counts['generation_attempts']==7080
+    assert counts['updates']==46720 and counts['backwards']==93448 and counts['operator_backwards']==23360 and counts['generation_attempts']==5912
     assert len(list((RUN/'private/outputs').glob('*/*/*.json')))==f.CONSUMERS
     write(RUN/'private/FACTORIAL_GENERATION_COMPLETE1.json',dict(status='COMPLETE',counts=counts,consumers=f.CONSUMERS,epoch=time.time()));merge('GPU')
     root=RUN/'private'/f.QUEUE

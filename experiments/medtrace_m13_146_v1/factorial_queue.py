@@ -30,7 +30,7 @@ def main():
             outputs=((p,q.read(p)) for p in sorted((run/'private/outputs').glob('*/*/*.json')))
             with db:summary=base.ingest_generated(q,db,q.read(run/'private/EVAL_PLAN146.json'),outputs,full_identity,judge,q.digest(q.read(run/'private/SCOPE_LOCK.json')),known)
             pending=[v[0] for v in db.execute("SELECT key FROM payload WHERE status='PENDING'")]
-            assert len(pending)<=7080
+            assert len(pending)<=5912
             q.write(q.ROOT/'RETRY_SCOPE.json',dict(pending_keys=pending,model_retry_authorized=True))
             q.write(q.ROOT/'EPOCH_MANIFEST.json',dict(epoch=f.EPOCH,**judge,workers=4,batch_size=50,failed_request_retries_authorized=True,valid_rejudging=False,selfcheck=selfcheck()))
             q.write(q.ROOT/'READY.json',dict(summary,pending=len(pending),epoch=time.time()))
