@@ -1,3 +1,7 @@
+## 当前授权：HC两阶段规则、检查、启动与每半小时监测
+
+2026-10-16用户授权完整CE首次<0.1后下一槽转证据优化、候选完整CE<0.1，冻结原预算与AND门，补齐方向导数和逐概念日志，检查后启动并每30分钟监测/分析。见reports/purew_ce_guard_evidence_first1_v1_20261016的PROTOCOL、EXECUTION_AUTHORIZATION、MONITORING_AUTHORIZATION、CHECKPOINT_LIFECYCLE。新HC独立原Base20槽，2GPUh/24wallh，当前CPU PASS，硬件/真实VLM待准入。无调参、自动重启、下一轮或146；历史HE/HM/HR等保持不变，全部失败成本保留，无subagent。正常监测安静，完成/失败/需选择才通知，完整GitHub交付后暂停监测。
+
 ## 当前终态：HE完整评分、科学门失败，停止
 
 HE已完成20槽、87/87有效评分及两题精确重载，GPU租约全关闭。CE=0.00705433、T1G=4/4、T2G=3/4；正间隔8/10、保护损伤3/36，AND门失败。608.891932GPU秒包括准入与第7槽拒绝成本，新Judge0（完整binding缓存复用），历史缺分不重试。见reports/purew_hinge_evidence_first1_v1_20261016/{HE_VS_HM_ANALYSIS_ZH.md,CLOSURE_RECEIPT.json,RESULTS.json}。无自动重跑、调参、下一轮或146；下文启动授权已消耗。
