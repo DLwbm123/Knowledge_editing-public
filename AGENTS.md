@@ -1,3 +1,7 @@
+## 当前授权：HE冻结单臂启动与有限完成交付
+
+2026-10-16用户明确要求HE按冻结协议准入后后台运行、评分、分析HM差异并公开交付。读取reports/purew_hinge_evidence_first1_v1_20261016的PROTOCOL、EXECUTION_AUTHORIZATION、HARDWARE_AUTHORIZATION及CHECKPOINT_LIFECYCLE。绑定pro5000 GPU3；源码先推送，存储/显存、Base3和真实VLM准入后才正式20槽；原2GPUh/24wallh与全部通过门不变。全部失败成本保留，一次安装，无自动重启、调参、下一轮或146，无周期监测。下文HE仅准备状态为历史；旧臂保持不变。
+
 ## 当前授权：HE冻结与代码检查，仅准备、不启动
 
 2026-10-16用户授权HM＋直接证据间隔目标的协议、代码与必要检查，明确先不启动实验，不按测试题调参。见reports/purew_hinge_evidence_first1_v1_20261016/{PROTOCOL.json,PROTOCOL_NOTES_ZH.md,CHECKPOINT_LIFECYCLE.md,PRODUCTION_CPU_VALIDATION.json}。HE=HM＋权重1、目标ln(1.01)的两概念证据hinge；原20槽/2GPUh/24wallh及AND门保留。代码和生产CPU检查PASS，真实模型/GPU/Judge/安装/消费者/等待器/监测均未运行且未授权；后续启动须新的明确授权与实际准入。历史HM/HU/HR及结果成本不可改写，无subagent、重跑、测试调参或自动下一轮。下文启动授权均为旧实验历史，不适用于HE。

@@ -1,15 +1,15 @@
 {
   "version": "PUREW_HINGE_EVIDENCE_FIRST1_V1_20261016",
-  "status": "FROZEN_PREPARATION_ONLY",
+  "status": "FROZEN_EXECUTION_AUTHORIZED_PENDING_ADMISSION",
   "authorization": {
     "preparation": true,
-    "execution": false,
-    "install": false,
-    "model_calls": false,
-    "Judge": false,
+    "execution": true,
+    "install": true,
+    "model_calls": true,
+    "Judge": true,
     "waiter": false,
     "monitoring": false,
-    "GPU_allocation": false
+    "GPU_allocation": true
   },
   "frozen_at_utc": "2026-10-16T06:48:56.957336+00:00",
   "reference": {
@@ -238,10 +238,10 @@
   },
   "hardware": {
     "host": "pro5000",
-    "GPU": null,
-    "UUID": null,
-    "allocation_authorized": false,
-    "require_future_explicit_binding": true
+    "GPU": 3,
+    "UUID": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+    "allocation_authorized": true,
+    "require_future_explicit_binding": false
   },
   "readiness": {
     "protocol": "FROZEN",
