@@ -10,6 +10,8 @@ import cm_controller146 as controller
 import cm_queue146 as queue
 
 RUN=controller.RUN
+RECOVERY_ID=int(os.environ.get("CM_SCORING_RESUME_ID","1"))
+assert RECOVERY_ID in (1,2)
 
 
 def merge_judge():
@@ -26,7 +28,7 @@ def merge_judge():
         assert ledger['Judge_attempts']<=controller.read(parent/'RUN_MANIFEST.json')['Judge_limit']
         merged.update(increment=own-prior,epoch=time.time())
         controller.write(parent/'RESOURCE_LEDGER.json',ledger)
-        controller.write(RUN/'private/CM_RESUME_COST_TRANSFER_Judge1.json',dict(increment=own-prior-700,cumulative_increment=own-prior,epoch=time.time()))
+        controller.write(RUN/f'private/CM_RESUME_COST_TRANSFER_Judge{RECOVERY_ID}.json',dict(increment=own-(19152 if RECOVERY_ID==1 else 20002),cumulative_increment=own-prior,epoch=time.time()))
 
 
 def verify_preserved(db,resume):
@@ -37,20 +39,20 @@ def verify_preserved(db,resume):
 
 
 def main():
-    resume=queue.recovery(RUN);assert resume is not None
+    resume=queue.recovery(RUN);assert resume is not None and resume.get('recovery_id',1)==RECOVERY_ID
     assert controller.read(RUN/'private/CM_RESUME_CPU_CHECK1.json')['status']=='PASS'
     controller.protocol.admit(RUN);controller.protocol.project_budget(RUN)
-    with (RUN/'private/CM_SCORING_RESUME_ONCE1').open('x'):pass
-    controller.execute('cm_queue146.py','cm_resume_ingest1',operation=dict(action='ingest'))
+    with (RUN/f'private/CM_SCORING_RESUME_ONCE{RECOVERY_ID}').open('x'):pass
+    controller.execute('cm_queue146.py',f'cm_resume_ingest{RECOVERY_ID}',operation=dict(action='ingest'))
     root=RUN/'private'/controller.protocol.QUEUE
     assert queue.all_workers_done(queue.completion_root(root,resume),4)
     with sqlite3.connect('file:'+str(root/'queue.sqlite')+'?mode=ro',uri=True) as db:
         verify_preserved(db,resume)
         assert not db.execute("SELECT 1 FROM payload WHERE status IN ('PENDING','RESERVED')").fetchone()
     merge_judge()
-    controller.execute('cm_report146.py','cm_resume_report1')
+    controller.execute('cm_report146.py',f'cm_resume_report{RECOVERY_ID}')
     assert (RUN/'private/CM_REPORT_COMPLETE1.json').exists()
-    controller.write(RUN/'private/CM_COMPLETE1.json',dict(status='COMPLETE_PUBLICATION_PENDING',recovery=1,epoch=time.time()))
+    controller.write(RUN/'private/CM_COMPLETE1.json',dict(status='COMPLETE_PUBLICATION_PENDING',recovery=RECOVERY_ID,epoch=time.time()))
 
 
 if __name__=='__main__':
@@ -58,10 +60,10 @@ if __name__=='__main__':
     try:main()
     except BaseException as error:
         code=1
-        controller.write(RUN/'private/FAILURE_cm_scoring_resume1.json',dict(error=repr(error),traceback=traceback.format_exc(),automatic_retry=False,epoch=time.time()))
+        controller.write(RUN/f'private/FAILURE_cm_scoring_resume{RECOVERY_ID}.json',dict(error=repr(error),traceback=traceback.format_exc(),automatic_retry=False,epoch=time.time()))
         raise
     finally:
         try:merge_judge()
         except BaseException as error:
-            code=1;controller.write(RUN/'private/CM_RESUME_COST_TRANSFER_ERROR1.json',dict(error=repr(error)))
-        controller.write(RUN/'private/CM_SCORING_RESUME_EXIT1.json',dict(exit_code=code,epoch=time.time()))
+            code=1;controller.write(RUN/f'private/CM_RESUME_COST_TRANSFER_ERROR{RECOVERY_ID}.json',dict(error=repr(error)))
+        controller.write(RUN/f'private/CM_SCORING_RESUME_EXIT{RECOVERY_ID}.json',dict(exit_code=code,epoch=time.time()))

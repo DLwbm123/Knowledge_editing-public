@@ -31,11 +31,13 @@ def all_workers_done(root,workers):
 
 
 def recovery(run):
-    path=run/'private/CM_SCORING_RESUME1.json'
+    path=run/'private/CM_SCORING_RESUME2.json'
+    if not path.exists():path=run/'private/CM_SCORING_RESUME1.json'
     if not path.exists():return None
     data=json.loads(path.read_text())
-    assert data['status']=='ADMITTED' and len(data['pending_keys'])==3603
-    assert len(set(data['pending_keys']))==3603 and len(data['preserved'])==1399
+    expected=(2753,2249) if path.name=='CM_SCORING_RESUME2.json' else (3603,1399)
+    assert data['status']=='ADMITTED' and len(data['pending_keys'])==expected[0]
+    assert len(set(data['pending_keys']))==expected[0] and len(data['preserved'])==expected[1]
     return data
 
 
@@ -46,7 +48,7 @@ def new_failures(run,resume):
 
 
 def completion_root(root,resume):
-    return root/'resume1' if resume is not None else root
+    return root/('resume'+str(resume.get('recovery_id',1))) if resume is not None else root
 
 
 def check_resume_reservation(db,keys,resume):
@@ -54,6 +56,32 @@ def check_resume_reservation(db,keys,resume):
     assert set(keys)<=set(resume['pending_keys']), 'Outside authorized unattempted set'
     assert all(tuple(db.execute('SELECT status,batch FROM payload WHERE key=?',(k,)).fetchone())==('PENDING',None) for k in keys)
 
+
+
+def charge_retry(q,run,db,operation,resume):
+    assert resume is not None and resume.get('model_retry_authorized') is True
+    with q.resources() as ledger:
+        batch=next(b for b in ledger[q.BATCH_LEDGER] if b['id']==operation['batch_id'])
+        assert batch['status']=='RESERVED' and batch.get('worker',0)==operation['worker']
+        assert set(batch['keys'])<=set(resume['pending_keys'])
+        assert all(db.execute('SELECT status FROM payload WHERE key=?',(k,)).fetchone()[0]=='RESERVED' for k in batch['keys'])
+        evidence=operation['evidence']
+        assert evidence['status']=='FAILED_NO_RETRY' and evidence['actual_model']=='gpt-6-astra' and evidence['reasoning_effort']=='medium'
+        assert all(evidence['isolation_checks'].values()) and not evidence.get('tool_event_types')
+        attempts=batch.setdefault('authorized_retries',[])
+        assert operation['attempt']==len(attempts)+1
+        gate=q.read(run/'private/CM_ADMISSION1.json');parent=Path(gate['parent'])
+        prior=q.read(run/'private/INHERITED_COST.json')['Judge_attempts']
+        n=len(batch['keys']);own=ledger['Judge_attempts']-prior
+        parent_ledger=q.read(parent/'RESOURCE_LEDGER.json')
+        merged=parent_ledger.get('cm_eval146_v1_Judge_merged',{}).get('increment',0)
+        assert own+n<=gate['new_Judge_cap']
+        assert parent_ledger['Judge_attempts']+own-merged+n<=q.read(parent/'RUN_MANIFEST.json')['Judge_limit']
+        protocol.project_budget(run)
+        ledger['Judge_attempts']+=n
+        ledger['Judge_failed_payloads']=ledger.get('Judge_failed_payloads',0)+n
+        attempts.append(dict(attempt=operation['attempt'],prior_evidence=evidence,epoch=time.time(),items=n))
+    return dict(status="RETRY_CHARGED",items=n)
 
 def main():
     import astra_queue as a
@@ -70,8 +98,8 @@ def main():
     q.ROOT.mkdir(parents=True,exist_ok=True)
     with (q.ROOT/'QUEUE.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX);db=q.connect();q.ingest=lambda _:None
-        if (new_failures(run,resume) or (resume is not None and list((completed/'workers').glob('*/SCORER_FAILURE.json')))) and operation['action'] in ('next','reserve'):
-            assert operation['action']!='reserve','Own stage failed'
+        if (new_failures(run,resume) or (resume is not None and list((completed/'workers').glob('*/SCORER_FAILURE.json')))) and operation['action'] in ('next','reserve','retry_charge'):
+            assert operation['action']=='next','Own stage failed'
             print(json.dumps(dict(state=dict(status='STOPPED',reason='OWN_STAGE_FAILED'),rows=[])));return
         if (run/'private/CM_GENERATION_COMPLETE1.json').exists():
             gate=protocol.admit(run)
@@ -89,6 +117,8 @@ def main():
                 q.write(q.ROOT/'READY.json',dict(result,new_pending=pending,epoch=time.time()))
                 assert pending<=gate['new_Judge_cap'],'Scoring exceeds remaining budget; preserve queue without partial selection'
         else:assert operation['action'] in ('status','next','reserved')
+        if operation['action']=='retry_charge':
+            print(json.dumps(charge_retry(q,run,db,operation,resume)));return
         if operation['action']=='reserve':
             keys=operation['keys'];check_resume_reservation(db,keys,resume);assert 0<len(keys)<=50 and len(keys)==len(set(keys))
             gate=q.read(run/'private/CM_ADMISSION1.json');parent=Path(gate['parent'])
