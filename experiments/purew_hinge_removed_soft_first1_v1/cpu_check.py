@@ -19,6 +19,11 @@ assert not torch.cuda.is_initialized()
 assert not any(x in Path('/proc/self/cmdline').read_bytes().decode() for x in ('wangbomin','Knowledge_editing','purew','ecw'))
 import worker,source_loss,core,runtime,medical
 from core import Memory
+# Regression: the learner calls the module context manager before terminal margin reporting.
+import symtable
+learner_scope=next(x for x in symtable.symtable(payload['files']['worker.py'],'worker.py','exec').get_children() if x.get_name()=='learner')
+assert learner_scope.lookup('diagnostic').is_global(), 'Learner shadows diagnostic context manager'
+assert learner_scope.lookup('margin_diagnostic').is_local()
 def exact(a,b):
     if isinstance(a,torch.Tensor):return isinstance(b,torch.Tensor) and torch.equal(a,b)
     if isinstance(a,dict):return isinstance(b,dict) and a.keys()==b.keys() and all(exact(a[k],b[k]) for k in a)

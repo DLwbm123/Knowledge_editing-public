@@ -1,3 +1,7 @@
+## 当前状态：HR 首槽前工程停止，禁止自动重跑
+
+2026-10-16 HR 已完成 Base3/真实VLM准入，但 learn_HR_1 在正式槽前因 diagnostic 局部变量遮蔽发生 UnboundLocalError。正式槽0，无active checkpoint/final native；73.24508452415466 GPU秒和全部成本保留。作用域修复及CPU回归PASS仅提交源码，未覆盖部署/重启。按冻结机械失败停止规则和零重放额度保留现场；下文启动授权已消耗，不用于重新安装或重置时钟。见 reports/purew_hinge_removed_soft_first1_v1_20261016/ENGINEERING_STOP_REPORT_ZH.md。无HR科学结果，无自动下一轮。
+
 ## 当前授权：HR单臂启动与有限完成交付
 
 2026-10-16用户明确授权冻结HR实验：先推送源码，完成存储/显存、Base3及真实VLM准入后正式20槽，pro5000当前绑定GPU3；原2GPUh/24wallh和全部通过门不变。执行EXECUTION_AUTHORIZATION及HARDWARE_AUTHORIZATION；后台单臂、四评分worker和有限发布tail，完成后评分、分析并公开交付，无周期监测、无自动下一轮或146。既有历史实验不重跑、不补Judge；失败与预算原样保留。此授权取代下文HR仅准备的历史运维状态。

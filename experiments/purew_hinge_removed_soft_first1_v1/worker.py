@@ -210,8 +210,8 @@ def learner():
             c.write(R/'public'/('EVIDENCE_FINAL_'+ARM+'.json'),details)
             values=[row['margin'] for row in details['values']]
             finite=[v for v in values if math.isfinite(v)]
-            diagnostic=dict(count=len(values),finite=len(finite),positive=sum(v>0 for v in finite),zero=sum(v==0 for v in finite),negative=sum(v<0 for v in finite),minimum=min(finite) if finite else None,maximum=max(finite) if finite else None,complete_source_CE=final['weighted_all_FIT_CE'])
-            c.write(R/'public'/('MARGIN_DIAGNOSTIC_'+ARM+'.json'),diagnostic)
+            margin_diagnostic=dict(count=len(values),finite=len(finite),positive=sum(v>0 for v in finite),zero=sum(v==0 for v in finite),negative=sum(v<0 for v in finite),minimum=min(finite) if finite else None,maximum=max(finite) if finite else None,complete_source_CE=final['weighted_all_FIT_CE'])
+            c.write(R/'public'/('MARGIN_DIAGNOSTIC_'+ARM+'.json'),margin_diagnostic)
             if stop_reason:pass
             elif final['weighted_all_FIT_CE']>=.1:stop_reason='EDIT_NOT_FIT'
             elif len(finite)!=10 or not all(v>0 for v in finite):stop_reason='EVIDENCE_MARGIN_NOT_ADMITTED'
