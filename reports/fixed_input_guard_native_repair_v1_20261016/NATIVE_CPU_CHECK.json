@@ -1,0 +1,144 @@
+{
+  "status": "PASS",
+  "scope": "CPU_SYNTHETIC_NO_MODEL",
+  "shape": [
+    4096,
+    14336
+  ],
+  "full_shape_cases": [
+    {
+      "accepted": true,
+      "reason": "ACCEPTED",
+      "residual": 9.000772952246774e-07,
+      "limit": 0.0007639317430825614,
+      "update_norm": 763.8317430825615,
+      "relative_residual": 1.1783711574911456e-09,
+      "ideal_residual": 2.924285533724421e-13,
+      "initial_native_residual": 0.13076070647680302,
+      "relative_direction_distortion": 0.007289965144802938,
+      "repair": {
+        "corrected_rows": 4096,
+        "reason": "BOUNDED_TWO_BANK_REPAIR"
+      },
+      "seed": 1616,
+      "weight_scale": 1.0,
+      "update_ratio": 0.1,
+      "seconds": 7.619156209053472,
+      "independent_residual": 9.000772952246774e-07,
+      "independent_distortion": 0.007289965144802938,
+      "native_dtype_after": "torch.float16",
+      "nonzero_native_elements": 58588286
+    },
+    {
+      "accepted": true,
+      "reason": "ACCEPTED",
+      "residual": 1.3505397938169177e-05,
+      "limit": 0.0007639610845540674,
+      "update_norm": 763.8610845540675,
+      "relative_residual": 1.7680437204172353e-08,
+      "ideal_residual": 2.9333961102186593e-13,
+      "initial_native_residual": 1.0476344797074049,
+      "relative_direction_distortion": 0.01983878318874216,
+      "repair": {
+        "corrected_rows": 4096,
+        "reason": "BOUNDED_TWO_BANK_REPAIR"
+      },
+      "seed": 1616,
+      "weight_scale": 1.0,
+      "update_ratio": 0.1,
+      "seconds": 7.408520083874464,
+      "independent_residual": 1.3505397938169177e-05,
+      "independent_distortion": 0.01983878318874216,
+      "native_dtype_after": "torch.bfloat16",
+      "nonzero_native_elements": 57665620
+    },
+    {
+      "accepted": true,
+      "reason": "ACCEPTED",
+      "residual": 8.956413583428875e-07,
+      "limit": 7.738202875929509e-06,
+      "update_norm": 7.638202875929509,
+      "relative_residual": 1.1725812640632369e-07,
+      "ideal_residual": 2.9251013618273828e-15,
+      "initial_native_residual": 0.00260467745759632,
+      "relative_direction_distortion": 0.014521433606698162,
+      "repair": {
+        "corrected_rows": 4096,
+        "reason": "BOUNDED_TWO_BANK_REPAIR"
+      },
+      "seed": 2026,
+      "weight_scale": 0.02,
+      "update_ratio": 0.05,
+      "seconds": 6.541310249827802,
+      "independent_residual": 8.956413583428875e-07,
+      "independent_distortion": 0.014521433606698162,
+      "native_dtype_after": "torch.float16",
+      "nonzero_native_elements": 58455457
+    },
+    {
+      "accepted": true,
+      "reason": "ACCEPTED",
+      "residual": 2.8333147648928963e-07,
+      "limit": 7.742794899437417e-06,
+      "update_norm": 7.642794899437417,
+      "relative_residual": 3.707171005074931e-08,
+      "ideal_residual": 2.936577070362012e-15,
+      "initial_native_residual": 0.020853192416799615,
+      "relative_direction_distortion": 0.039483463643517916,
+      "repair": {
+        "corrected_rows": 4096,
+        "reason": "BOUNDED_TWO_BANK_REPAIR"
+      },
+      "seed": 2026,
+      "weight_scale": 0.02,
+      "update_ratio": 0.05,
+      "seconds": 6.640591874951497,
+      "independent_residual": 2.8333147648928963e-07,
+      "independent_distortion": 0.039483463643517916,
+      "native_dtype_after": "torch.bfloat16",
+      "nonzero_native_elements": 56611058
+    }
+  ],
+  "tiny_update_rejected": {
+    "accepted": false,
+    "reason": "ZERO_NATIVE",
+    "residual": 0.0,
+    "limit": 1e-07,
+    "update_norm": 0.0,
+    "relative_residual": 0.0,
+    "ideal_residual": 1.0317729288994823e-19,
+    "initial_native_residual": 0.0,
+    "relative_direction_distortion": 1.0,
+    "repair": {
+      "corrected_rows": 0,
+      "reason": "NOT_NEEDED"
+    }
+  },
+  "restored_repair": {
+    "accepted": true,
+    "reason": "ACCEPTED",
+    "residual": 5.886847016799762e-07,
+    "limit": 3.408899299096738e-05,
+    "update_norm": 33.98899299096738,
+    "relative_residual": 1.7319862987303563e-08,
+    "ideal_residual": 1.3399518014712144e-14,
+    "initial_native_residual": 0.04692646101769313,
+    "relative_direction_distortion": 0.01971904083275635,
+    "repair": {
+      "corrected_rows": 8,
+      "reason": "BOUNDED_TWO_BANK_REPAIR"
+    },
+    "independent_residual": 5.886847016799762e-07,
+    "independent_distortion": 0.01971904083275635,
+    "native_dtype_after": "torch.bfloat16",
+    "nonzero_native_elements": 112586
+  },
+  "persistent_tensor_bytes": 12845096,
+  "checkpoint_bytes": 12847116,
+  "elapsed_seconds": 34.58396229194477,
+  "projection_atol": 1e-07,
+  "projection_rtol": 1e-06,
+  "max_relative_direction_distortion": 0.05,
+  "experiment_started": false,
+  "real_model_readiness": "NOT_VALIDATED"
+}

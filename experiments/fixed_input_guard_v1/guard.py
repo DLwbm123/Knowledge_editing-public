@@ -6,6 +6,8 @@ CAP_BYTES = 16 * 1024**2
 BASE_RANK, HISTORY_RANK, SKETCH_ROWS, MAX_INPUTS = 32, 64, 128, 32
 ATOL, RTOL = 1e-7, 1e-6
 RANK_ATOL = 1e-6
+REPAIR_FINE, REPAIR_COARSE, REPAIR_ROWS, REPAIR_STEPS = 128, 512, 32, 4
+MAX_RELATIVE_DISTORTION = .05
 
 
 def finite_cpu(x, ndim):
@@ -43,6 +45,40 @@ def select_inputs(views):
         indices = torch.linspace(0, len(view)-1, min(quota, len(view))).round().long()
         selected.append(view.detach()[indices].float())
     return torch.cat(selected)
+
+
+@torch.no_grad()
+def repair_native(candidate, before, projected, q):
+    """Two bounded native correction banks; no persistent compensation parameters."""
+    columns = REPAIR_FINE + REPAIR_COARSE
+    corrected_rows = 0
+    if candidate.shape[1] < columns:
+        return dict(corrected_rows=0, reason='INSUFFICIENT_CORRECTION_COLUMNS')
+    for first in range(0, len(candidate), REPAIR_ROWS):
+        x = candidate[first:first+REPAIR_ROWS]
+        residual = (x.double()-before[first:first+REPAIR_ROWS].double()) @ q
+        goal = .5 * (ATOL / math.sqrt(len(candidate)) + RTOL * projected[first:first+REPAIR_ROWS].norm(dim=1))
+        if (residual.norm(dim=1) <= goal).all():
+            continue
+        indices = x.abs().float().topk(columns, largest=False, dim=1).indices
+        directions = q[indices]
+        values = x.gather(1, indices).double()
+        # Free the finest bank near zero, then compensate its displacement with the coarse bank.
+        residual -= (values[:, :REPAIR_FINE].unsqueeze(1) @ directions[:, :REPAIR_FINE]).squeeze(1)
+        values[:, :REPAIR_FINE] = 0
+        for bank in (slice(REPAIR_FINE, None), slice(None, REPAIR_FINE)):
+            a = directions[:, bank]
+            inverse = torch.linalg.pinv(a.transpose(1, 2) @ a, hermitian=True, rtol=1e-10)
+            for _ in range(REPAIR_STEPS):
+                correction = (a @ (inverse @ -residual.unsqueeze(-1))).squeeze(-1)
+                trial = (values[:, bank]+correction).to(x.dtype).double()
+                trial_residual = residual + ((trial-values[:, bank]).unsqueeze(1) @ a).squeeze(1)
+                better = torch.isfinite(trial).all(1) & (trial_residual.norm(dim=1) < residual.norm(dim=1))
+                values[:, bank] = torch.where(better[:, None], trial, values[:, bank])
+                residual = torch.where(better[:, None], trial_residual, residual)
+        x.scatter_(1, indices, values.to(x.dtype))
+        corrected_rows += len(x)
+    return dict(corrected_rows=corrected_rows, reason='BOUNDED_TWO_BANK_REPAIR')
 
 
 class InputGuard:
@@ -156,17 +192,27 @@ class InputGuard:
         candidate = (before.double() + projected).to(weight.dtype)
         if not torch.isfinite(candidate).all():
             return dict(accepted=False, reason='NONFINITE_NATIVE', residual=None)
+        initial = candidate.double()-before.double()
+        initial_residual = float((initial @ q).norm())
+        repair = dict(corrected_rows=0, reason='NOT_NEEDED')
+        if weight.dtype in (torch.float16, torch.bfloat16) and initial_residual > ATOL + RTOL * float(initial.norm()):
+            repair = repair_native(candidate, before, projected, q)
+        del initial
         try:
             weight.copy_(candidate)
             actual = weight.double() - before.double()
             norm = float(actual.norm())
             residual = float((actual @ q).norm())
             limit = ATOL + RTOL * norm
-            accepted = norm > 0 and math.isfinite(residual) and residual <= limit
-            result = dict(accepted=accepted, reason='ACCEPTED' if accepted else 'ZERO_NATIVE' if norm == 0 else 'NATIVE_PROJECTION_REJECTED',
+            projected_norm = float(projected.norm())
+            distortion = float((actual-projected).norm()) / projected_norm if projected_norm else (0. if norm == 0 else math.inf)
+            accepted = norm > 0 and math.isfinite(residual) and residual <= limit and distortion <= MAX_RELATIVE_DISTORTION
+            result = dict(accepted=accepted, reason='ACCEPTED' if accepted else 'ZERO_NATIVE' if norm == 0 else 'NATIVE_PROJECTION_REJECTED' if residual > limit else 'DIRECTION_DISTORTION_REJECTED',
                           residual=residual, limit=limit, update_norm=norm,
                           relative_residual=residual / norm if norm else 0.,
-                          ideal_residual=float((projected @ q).norm()))
+                          ideal_residual=float((projected @ q).norm()),
+                          initial_native_residual=initial_residual,
+                          relative_direction_distortion=distortion, repair=repair)
             if not accepted:
                 weight.copy_(before)
             return result

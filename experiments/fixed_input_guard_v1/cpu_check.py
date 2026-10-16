@@ -98,8 +98,11 @@ def run():
         general = guard.write(w, torch.randn(16, 128) * .1)
         if dtype == torch.float32:
             assert general['accepted']
+        elif general['accepted']:
+            actual = w.double()-old.double()
+            assert float((actual @ guard.basis()).norm()) <= ATOL + RTOL * float(actual.norm())
         else:
-            assert not general['accepted'] and torch.equal(w, old)
+            assert torch.equal(w, old)
         checks['native_dtypes'][str(dtype)] = {'aligned_nonzero_write': passed, 'general_subspace': general}
     old = w.clone()
     assert not guard.write(w, torch.zeros_like(w))['accepted']
@@ -146,17 +149,20 @@ def run():
     proposal.normal_().mul_(.1)
     before = large_w.clone()
     general_half = large.write(large_w, proposal)
-    assert not general_half['accepted'] and torch.equal(large_w, before)
+    assert general_half['accepted'] and not torch.equal(large_w, before)
+    actual = large_w.double()-before.double()
+    assert float((actual @ large.basis()).norm()) <= ATOL + RTOL * float(actual.norm())
+    del actual
     del before
     full_float = large.write(large_w.float(), proposal)
     assert full_float['accepted']
     checks['full_dimensions'] = {'shape': [4096, 14336], 'tensor_bytes': initial,
                                  'checkpoint_bytes': stream.tell(), 'native_fp16_write': full_receipt,
-                                 'general_fp16_rejected': general_half, 'general_fp32_accepted': full_float,
+                                 'general_fp16_accepted': general_half, 'general_fp32_accepted': full_float,
                                  'sketch_compressed': float(large.discarded) > 0}
     assert checks['full_dimensions']['sketch_compressed']
     result.update(status='PASS', elapsed_seconds=time.monotonic()-start,
-                  practical_low_precision_readiness='BLOCKED_GENERAL_SUBSPACE_QUANTIZATION',
+                  practical_low_precision_readiness='CPU_SYNTHETIC_ONLY_REAL_MODEL_PENDING',
                   experiment_started=False)
     return result
 
