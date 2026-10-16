@@ -1,0 +1,157 @@
+{
+  "status": "COMPLETE_VALID",
+  "methods": {
+    "BASE": {
+      "valid": 78,
+      "missing": 0,
+      "old_correct": 0,
+      "new_correct": 2,
+      "paired_transitions": {
+        "0->0": 76,
+        "0->1": 2
+      },
+      "delta_missing_bounds_pp": [
+        2.5,
+        2.5
+      ],
+      "old_nonanswer_marker": 1,
+      "new_nonanswer_marker": 0,
+      "activation_or_expert_changes": 0,
+      "primary": {
+        "edit_macro_pp": 2.5,
+        "CI99_pp": [
+          0.0,
+          7.5
+        ],
+        "edits": 20,
+        "probes": 78
+      },
+      "sensitivity75": {
+        "edit_macro_pp": 2.9166666666666665,
+        "CI99_pp": [
+          0.0,
+          9.166666666666664
+        ],
+        "edits": 20,
+        "probes": 75
+      },
+      "material_wording_signal": false
+    },
+    "M13": {
+      "valid": 78,
+      "missing": 0,
+      "old_correct": 45,
+      "new_correct": 49,
+      "paired_transitions": {
+        "1->0": 12,
+        "0->0": 17,
+        "1->1": 33,
+        "0->1": 16
+      },
+      "delta_missing_bounds_pp": [
+        5.0,
+        5.0
+      ],
+      "old_nonanswer_marker": 1,
+      "new_nonanswer_marker": 0,
+      "activation_or_expert_changes": 0,
+      "primary": {
+        "edit_macro_pp": 5.0,
+        "CI99_pp": [
+          -11.25,
+          22.5
+        ],
+        "edits": 20,
+        "probes": 78
+      },
+      "sensitivity75": {
+        "edit_macro_pp": 5.0,
+        "CI99_pp": [
+          -11.25,
+          22.5
+        ],
+        "edits": 20,
+        "probes": 75
+      },
+      "material_wording_signal": false
+    },
+    "FISHER_MIN": {
+      "valid": 78,
+      "missing": 0,
+      "old_correct": 53,
+      "new_correct": 59,
+      "paired_transitions": {
+        "1->0": 10,
+        "0->0": 9,
+        "1->1": 43,
+        "0->1": 16
+      },
+      "delta_missing_bounds_pp": [
+        7.5,
+        7.5
+      ],
+      "old_nonanswer_marker": 1,
+      "new_nonanswer_marker": 0,
+      "activation_or_expert_changes": 0,
+      "primary": {
+        "edit_macro_pp": 7.5,
+        "CI99_pp": [
+          -7.5,
+          23.75
+        ],
+        "edits": 20,
+        "probes": 78
+      },
+      "sensitivity75": {
+        "edit_macro_pp": 7.916666666666666,
+        "CI99_pp": [
+          -7.5,
+          23.752083333332997
+        ],
+        "edits": 20,
+        "probes": 75
+      },
+      "material_wording_signal": false
+    }
+  },
+  "change_contrasts": {
+    "M13_minus_BASE_change": {
+      "edit_macro_pp": 2.5,
+      "CI99_pp": [
+        -13.750000000000002,
+        20.0
+      ],
+      "edits": 20,
+      "probes": 78
+    },
+    "FISHER_MIN_minus_BASE_change": {
+      "edit_macro_pp": 5.0,
+      "CI99_pp": [
+        -8.75,
+        20.0
+      ],
+      "edits": 20,
+      "probes": 78
+    }
+  },
+  "main_denominator": 78,
+  "main_edit_denominator": 20,
+  "sensitivity_denominator": 75,
+  "family": "3 within-method changes and 2 changes versus BASE",
+  "interval": "Paired edit bootstrap 10000, seed20261015; 99% marginal intervals, Bonferroni nominal family95%; small DEV, not exact coverage",
+  "meaningful_gain_threshold_pp": 10,
+  "verdict": "EVALUABLE_DESCRIPTIVE_DIAGNOSTIC",
+  "semantic_review": "Operator exposed to prior results; three reference-scope concerns retained",
+  "Base_selection": "Original mask selected Base failures; do not generalize Base gain or difference-in-change to an unselected population",
+  "causal_claim": false,
+  "original_scores_modified": false,
+  "original_generation_repeated": false,
+  "new_training": 0,
+  "new_M1_M3": false,
+  "new_Judge_attempts": 177,
+  "generation": 234,
+  "new_GPU_seconds": 547.3816583156586,
+  "physical_generation_attempts_including_failure": 235,
+  "prior_failed_GPU_seconds": 30.0226891040802,
+  "total_diagnostic_GPU_seconds": 577.4043474197388
+}

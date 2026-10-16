@@ -9,26 +9,31 @@ from runtime146 import r,c,RUN,tasks,point,dest,require_ready
 
 def bank_entries(entries,row):
     assert len(entries)==146 and len({e['logical_edit_id'] for e in entries})==146
-    assert row['method'] in ('M1','M3','M13')
+    assert row['method'] in ('C','M1','M3','M13','FISHER_MIN')
     if row['mode']=='single':
         assert 1<=row['owner']<=146;return [entries[row['owner']-1]]
     assert row['mode'] in ('bank','insertion') and 1<=row['prefix']<=146
     return entries[:row['prefix']]
 
-def evaluate():
+def evaluate(expected_candidates=584,partitions=3,admit=require_ready,
+        frozen_file='M13_146_CANDIDATES_FROZEN.json',scope_file='SCOPE_LOCK.json',source_file='GPU_SOURCE_VERSION.json',
+    plan_file='EVAL_PLAN146.json', runtime_check=None):
     from m3bench_repro.editors.routing import MemoryRouter, decision_as_json
-    require_ready()
-    assert c.read(RUN/'private/M13_146_CANDIDATES_FROZEN.json')['candidates'] == 584
+    admit()
+    assert c.read(RUN/'private'/frozen_file)['candidates'] == expected_candidates
     part, gpu = int(os.environ['PARTITION']), int(os.environ['GPU'])
     action = os.environ['ACTION']
-    rows = c.read(RUN/'private/EVAL_PLAN146.json')
-    assigned = [v for i, v in enumerate(rows) if i % 3 == part and
+    rows = c.read(RUN/'private'/plan_file)
+    assert partitions in (2,3) and 0<=part<partitions
+    assigned = [v for i, v in enumerate(rows) if i % partitions == part and
                 ((v['mode'] in ('base', 'single')) if action == 'm13_146_single' else (v['mode'] in ('bank', 'insertion')))]
     byid = {t['edit_id']: t for t in tasks()}
     byorder = {t['order']: t for t in tasks()}
     with r.p.lease(gpu):
         runtime, bindings, handle = r.load(gpu)
         assert all(v.dtype == torch.float16 for v in runtime.model.parameters() if v.is_floating_point()), 'Original FP16 prefill parameters must survive chunk conversion exactly'
+        if runtime_check is not None:
+            runtime_check(runtime, bindings)
         route_layer = runtime.target_lock['balancedit']['targets'][0]
         entries = []
         for task in tasks():
@@ -78,6 +83,7 @@ def evaluate():
                     data.update(method=row['method'], mode=row['mode'], prefix=row['prefix'],
                         owner=row['owner'], eval_owner=row['owner'], consumer_id=contract.consumer_id(row),
                         effective_expert=selected, original_router=True,
+                        lock=c.digest(c.read(RUN/'private'/scope_file)),execution=c.read(RUN/'private'/source_file),
                         active_target=row['mode'] in ('bank', 'insertion') and
                             (query.get('image_sha256'), query['question']) in active)
                     c.write(dest(row), data)

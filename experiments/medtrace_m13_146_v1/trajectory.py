@@ -7,15 +7,39 @@ import training_math
 
 
 def source_rows(packet,owner):
+    assert packet['source_recipe']==contract.SOURCE_RECIPE
     admission=contract.source_admission(packet)
     assert owner in admission['qualified_owners'],'Original-version source evidence missing'
     task=packet['original_tasks'][owner-1]
-    rows=[dict(task['native'],query_id=f'edit_{owner}_{i}',question=question,
+    rows=[dict(task['native'],image_path=packet['native_fit_image_paths'][task['native']['image_path']],query_id=f'edit_{owner}_{i}',question=question,
         audit_role='NATIVE' if i==0 else 'FIT')
         for i,question in enumerate([task['native']['question']]+task['fit_questions'])]
-    rows += [dict(row,audit_role='GFIT') for row in packet['reviews']['qualified_anchors'] if row['owner']==owner]
-    assert len(rows)==7 and len({row['query_id'] for row in rows})==7
+    assert len(rows)==contract.SOURCE_COUNT and len({row['query_id'] for row in rows})==contract.SOURCE_COUNT
     return rows
+
+
+def source_gradients(r,runtime,hook,expert,batches,step,individual=False):
+    assert len(batches)==contract.SOURCE_COUNT and step>=1
+    chosen=((0,.5),(1+(step-1)%4,.5))
+    expert.zero_grad(set_to_none=True)
+    if not individual:
+        losses=[]
+        for index,weight in chosen:
+            hook.set_teacher_routing(batches[index].labels)
+            loss=runtime.compute_loss(batches[index]);assert torch.isfinite(loss)
+            (weight*loss).backward();r.COUNTS['backwards']+=1
+            losses.append(float(loss.detach()))
+        return None,losses
+    params=[dict(expert.named_parameters())[key] for key in r.mm.KEYS]
+    rows=[];losses=[]
+    for batch in batches:
+        hook.set_teacher_routing(batch.labels);loss=runtime.compute_loss(batch)
+        assert torch.isfinite(loss)
+        gradient=torch.autograd.grad(loss,params);r.COUNTS['backwards']+=1
+        rows.append(torch.cat([v.detach().cpu().double().flatten() for v in gradient]))
+        losses.append(float(loss.detach()))
+    matrix=torch.stack(rows);r.set_gradient(expert,sum(w*matrix[i] for i,w in chosen))
+    return -matrix,losses
 
 
 def snapshot(r,expert,optimizer,scalar,step,curve,binding):
@@ -31,7 +55,7 @@ def validate_snapshot(r,saved,binding):
     assert all(torch.isfinite(v).all() for v in saved['state'].values())
     assert all(k in saved['rng'] for k in ('torch_rng','python_rng','cuda_rng')) and len(saved['numpy_rng'])==5
     assert all(v>=0 for v in saved['counts'].values())
-    assert saved['counts']['updates']>=saved['step'] and saved['counts']['backwards']>=3*saved['step']
+    assert saved['counts']['updates']>=saved['step'] and saved['counts']['backwards']>=contract.BACKWARDS_PER_STEP*saved['step']
     if binding['arm'] in ('M3','M13'):assert saved['counts']['operator_backwards']>=saved['step']
     if binding['arm'] in ('M1','M13'):
         assert saved['optimizer'] is None and saved['scalar']['step']==saved['step']
@@ -51,8 +75,9 @@ def validate_snapshot(r,saved,binding):
 
 
 def run(r,runtime,hook,expert,batches,arm,cache,regularization,targets,binding,save_checkpoint):
-    assert arm in contract.METHODS and binding['arm']==arm and len(batches)==7
-    assert len(binding['source_order'])==len(set(binding['source_order']))==7
+    assert arm in contract.METHODS and binding['arm']==arm and len(batches)==contract.SOURCE_COUNT
+    assert len(binding['source_order'])==len(set(binding['source_order']))==contract.SOURCE_COUNT
+    assert binding['source_recipe']==contract.SOURCE_RECIPE
     assert binding['steps']==160 and binding['parameters']==7168
     assert all(binding.get(k) for k in ('source_binding','scientific_lock','source_version','budget_binding'))
     assert type(binding['seed']) is int
@@ -71,7 +96,7 @@ def run(r,runtime,hook,expert,batches,arm,cache,regularization,targets,binding,s
     for step in range(1,161):
         r.c.budget()
         before=r.old.snapshot(expert)
-        _,losses=r.source_gradients(runtime,hook,expert,batches,step,False)
+        _,losses=source_gradients(r,runtime,hook,expert,batches,step,False)
         gradients={k:v.grad.detach().clone() for k,v in expert.named_parameters()}
         if canonical:
             selected,scalar,audit=training_math.step(r,before,gradients,cache,regularization,scalar,targets[step-1],arm)
@@ -80,7 +105,7 @@ def run(r,runtime,hook,expert,batches,arm,cache,regularization,targets,binding,s
             selected,audit=training_math.raw_step(r,expert,optimizer,gradients,cache,regularization,
                 None if arm=='C' else targets[step-1],arm)
         r.COUNTS['operator_backwards']+=audit['operator_backwards'];r.COUNTS['updates']+=1
-        assert r.COUNTS['backwards']-start['backwards']==3*step
+        assert r.COUNTS['backwards']-start['backwards']==contract.BACKWARDS_PER_STEP*step
         assert r.COUNTS['operator_backwards']-start['operator_backwards']==step*int(arm in ('M3','M13'))
         curve.append(dict(step=step,source_NLL=losses,operator_step_norm=r.fm.map_norm(before,selected),**audit))
         if step%20==0:

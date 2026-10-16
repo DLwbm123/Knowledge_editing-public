@@ -8,7 +8,12 @@ import sqlite3
 import time
 import contract
 
-EPOCH='MEDTRACE_M13_ORIGINAL146_20261014_V1'
+EPOCH='MEDTRACE_M13_NATIVE_FIT146_20261014_V1'
+QUEUE_FOLDER='judge_m13_146_astra_medium'
+BATCH_LEDGER='Astra_m13_146_batches'
+ADMISSION_FILE='M13_146_RUNTIME_ADMISSION.json'
+SCOPE_FILE='SCOPE_LOCK.json'
+GENERATION_FILE='M13_146_GENERATION_COMPLETE.json'
 MAX_JUDGE=contract.CAPS['Judge_attempts']
 
 
@@ -30,7 +35,7 @@ def known_scores(q,paths,judge):
 def ingest_generated(q,db,plan,outputs,identity,judge,scope_lock,known):
     expected={contract.original.consumer_id(row):row for row in plan}
     assert len(expected)==len(plan)==MAX_JUDGE
-    assert collections.Counter(row['method'] for row in plan)==dict(M1=7494,M3=7494,M13=7494,BASE=2385)
+    assert collections.Counter(row['method'] for row in plan)==contract.METHOD_CONSUMERS
     assert not any(row['query'].get('unfilled_source_slot') for row in plan)
     assert not db.execute('SELECT 1 FROM consumer LIMIT 1').fetchone()
     actual=set()
@@ -68,7 +73,8 @@ def coverage(db):
 
 def request(a,q,run,db,operation):
     action=operation['action']
-    if action in ('next','reserve') and list((run/'private').glob('FAILURE_m13_146*.json')):
+    failed=list((run/'private').glob('FAILURE_m13_146*.json'))+list((run/'private').glob('FAILURE_selected*.json'))
+    if action in ('next','reserve') and failed:
         assert action!='reserve','Own stage failed; no new Judge attempt'
         return dict(state=dict(status='STOPPED',reason='OWN_STAGE_FAILED'),rows=[])
     if action=='reserve':
@@ -85,17 +91,17 @@ def main():
     import astra_queue as a
     from fine_queue import full_identity,selfcheck
     q,run=a.q,a.RUN
-    q.ROOT=run/'private/judge_m13_146_astra_medium';q.BATCH_LEDGER='Astra_m13_146_batches'
+    q.ROOT=run/'private'/QUEUE_FOLDER;q.BATCH_LEDGER=BATCH_LEDGER
     operation=json.loads(os.environ.get('QUEUE_REQUEST','{"action":"status"}'))
     q.ROOT.mkdir(parents=True,exist_ok=True)
     with (q.ROOT/'QUEUE.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX);db=q.connect();q.ingest=lambda _:None
-        generated=(run/'private/M13_146_GENERATION_COMPLETE.json').exists()
+        generated=(run/'private'/GENERATION_FILE).exists()
         if generated:
-            assert q.read(run/'private/M13_146_RUNTIME_ADMISSION.json')['status']=='PASS'
+            assert q.read(run/'private'/ADMISSION_FILE)['status']=='PASS'
             assert q.read(run/'private/SOURCE_ADMISSION146.json')['status']=='PASS'
             judge=dict(model='gpt-6-astra',reasoning_effort='medium',protocol=q.PROTOCOL,prompt=q.PROMPT)
-            epoch=dict(epoch=EPOCH,**judge,scientific_lock=q.digest(q.read(run/'private/SCOPE_LOCK.json')),
+            epoch=dict(epoch=EPOCH,**judge,scientific_lock=q.digest(q.read(run/'private'/SCOPE_FILE)),
                 workers=4,batch_size=50,attempts_per_payload=1,maximum_new_Judge=MAX_JUDGE,selfcheck=selfcheck())
             receipt=q.ROOT/'EPOCH_MANIFEST.json'
             if receipt.exists():assert q.read(receipt)==epoch

@@ -10,17 +10,22 @@ if not original_path.exists():original_path=Path(__file__).with_name('original14
 spec=importlib.util.spec_from_file_location('original146_contract',original_path)
 original=importlib.util.module_from_spec(spec);spec.loader.exec_module(original)
 METHODS=('C','M1','M3','M13')
+SOURCE_RECIPE='ORIGINAL146_NATIVE_FIT5_V1'
+SOURCE_WEIGHTS=(.5,.5)
+SOURCE_COUNT=5
+BACKWARDS_PER_STEP=2
+METHOD_CONSUMERS=dict(M1=7494,M3=7494,M13=7494,BASE=2093)
 FLAGS={'M1':(True,False,False),'M3':(False,False,True),'M13':(True,False,True)}
 PREFIXES=original.PREFIXES
 consumer_id=original.consumer_id
 fit_rows=original.fit_rows
 # Upper reservations, including one Fisher reconstruction if no lawful cache survives.
-CAPS=dict(updates=93440,backwards=282272,operator_backwards=46720,
+CAPS=dict(updates=93440,backwards=188832,operator_backwards=46720,
           non_generation_forwards=500000,local_solves=0,
-          evaluation_consumers=24867,generation_attempts=24867,Judge_attempts=24867)
+          evaluation_consumers=24575,generation_attempts=24575,Judge_attempts=24575)
 
 
-def source_admission(packet):
+def cross_source_admission(packet):
     tasks=packet['original_tasks'];review=packet['reviews'];errors=[]
     assert len(tasks)==146 and [t['order'] for t in tasks]==list(range(1,147))
     assert all(len(t['fit_questions'])==4 for t in tasks)
@@ -59,30 +64,56 @@ def source_admission(packet):
         reason='Source evidence and a separate executable runtime admission are both required')
 
 
+def source_admission(packet):
+    if packet.get('source_recipe')!=SOURCE_RECIPE:
+        return cross_source_admission(packet) # Historical seven-source evidence remains auditable.
+    tasks=packet['original_tasks'];prior=packet['native_fit_original_task_bindings']
+    assert len(tasks)==len(prior)==146
+    assert [t['order'] for t in tasks]==list(range(1,147))
+    assert len({t['edit_id'] for t in tasks})==146
+    assert packet['native_fit_authorization']['original_questions_unchanged'] is True
+    assert packet['native_fit_authorization']['cross_image_training'] is False
+    assert packet['source_weights']==list(SOURCE_WEIGHTS)
+    missing=[]
+    for task,old in zip(tasks,prior):
+        assert original.task_binding(task)==old,'Original native/FIT/seed changed'
+        assert len(task['fit_questions'])==4 and all(task['fit_questions'])
+        assert all(task['native'].get(k) for k in ('question','reference','image_path'))
+        image=task['native']['image_path']
+        if not packet['native_fit_image_paths'].get(image) or not packet['native_fit_availability'].get(image):
+            missing.append(task['order'])
+    return dict(status='PASS' if not missing else 'SOURCE_ADMISSION_PENDING',
+        qualified_owners=[i for i in range(1,147) if i not in missing],missing_owners=missing,
+        exhausted_owners=[],qualified_anchor_count=0,original_edits=146,
+        source_recipe=SOURCE_RECIPE,source_recipe_unchanged=False,old146_training_material_reused=True,
+        training_ready=False,reason='Native/FIT data only; independent runtime admission still required')
+
+
 def coverage_reservation(tasks,base_mask):
-    """Missing GFIT entries are explicit reserved slots, never admitted data."""
+    """Original evaluation coverage plus FIT; cross-image training slots are excluded."""
     queries={q:{'query_id':q} for q in original.ids(tasks)}
     slots=[dict(owner=t['order'],query_id=f"RESERVED_GFIT_{t['order']}_{i}",unfilled_source_slot=True)
            for t in tasks for i in range(2)]
     rows=original.evaluation_plan(tasks,queries,slots,base_mask)
+    rows=[row for row in rows if row['query'].get('audit_role')!='GFIT']
     for row in rows:
         if row['method']=='REFINE':row['method']='M13'
     rows += [dict(row,method='M3') for row in rows if row['method']=='M1']
     ids=[original.consumer_id(row) for row in rows]
     assert len(set(ids))==len(rows)==CAPS['evaluation_consumers']
-    assert collections.Counter(r['method'] for r in rows)==dict(M1=7494,M3=7494,M13=7494,BASE=2385)
+    assert collections.Counter(r['method'] for r in rows)==METHOD_CONSUMERS
     return rows
 
 
 def evaluation_plan(packet,queries):
     assert source_admission(packet)['status']=='PASS'
-    tasks=packet['original_tasks'];anchors=packet['reviews']['qualified_anchors']
+    assert packet['source_recipe']==SOURCE_RECIPE
+    tasks=packet['original_tasks']
     assert original.ids(tasks)<=queries.keys()
     assert all(all(k in queries[q] for k in ('question','reference','image_path')) for q in original.ids(tasks))
-    rows=original.evaluation_plan(tasks,queries,anchors,packet['base_mask'])
+    rows=coverage_reservation(tasks,packet['base_mask'])
     for row in rows:
-        if row['method']=='REFINE':row['method']='M13'
-    rows += [dict(row,method='M3') for row in rows if row['method']=='M1']
+        if row['query']['query_id'] in queries:row['query']=queries[row['query']['query_id']]
     assert len({consumer_id(row) for row in rows})==len(rows)==CAPS['evaluation_consumers']
     return rows
 
@@ -90,9 +121,9 @@ def evaluation_plan(packet,queries):
 def selfcheck():
     assert FLAGS['M13']==(True,False,True) and all(not f[1] for f in FLAGS.values())
     assert CAPS['updates']==146*160*len(METHODS)
-    assert CAPS['backwards']==3*CAPS['updates']+61*32
+    assert CAPS['backwards']==BACKWARDS_PER_STEP*CAPS['updates']+61*32
     assert CAPS['operator_backwards']==2*146*160
-    assert CAPS['evaluation_consumers']==3*7494+2385
+    assert CAPS['evaluation_consumers']==sum(METHOD_CONSUMERS.values())
     assert CAPS['local_solves']==0
     return dict(status='PASS',M13_original_flags=True,soft_Fisher_not_a_hard_budget=True,
         no_90percent_or_direction_gate=True,bounded_counts=True,training_launcher_implemented=True,training_ready=False)

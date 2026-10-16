@@ -1,5 +1,6 @@
 """New M13 original146 worker; explicit admissions precede every GPU load."""
 import os
+from contextlib import contextmanager
 from pathlib import Path
 import time
 import traceback
@@ -24,34 +25,56 @@ def require_ready():
     assert admission['status']=='PASS' and admission['launch_authorized'] is True
     assert admission['source_commit']==c.read(RUN/'private/GPU_SOURCE_VERSION.json')['commit']
     p=packet();assert contract.source_admission(p)['status']=='PASS'
+    assert p['source_recipe']==contract.SOURCE_RECIPE
     assert admission['packet_binding']==c.digest(p)
     assert admission['scope_binding']==c.digest(c.read(RUN/'private/SCOPE_LOCK.json'))
     assert admission['plan_binding']==c.digest(c.read(RUN/'private/EVAL_PLAN146.json'))
     scope=c.read(RUN/'private/SCOPE_LOCK.json')
     assert scope['method_flags']=={k:list(v) for k,v in contract.FLAGS.items()}
-    assert scope['source_weights']==[.25,.25,.5] and scope['steps']==160 and scope['parameters']==7168
+    assert scope['source_recipe']==contract.SOURCE_RECIPE
+    assert scope['source_weights']==list(contract.SOURCE_WEIGHTS) and scope['steps']==160 and scope['parameters']==7168
     assert c.read(RUN/'PLAN_CONFIG.json')['maximum_counts']==contract.CAPS
     assert admission['physical_source_paths_checked'] and admission['cold_initialization_exact']
     assert admission['original_R0_bindings_checked'] and admission['storage_write_read']
     assert c.read(RUN/'private/SOURCE_ADMISSION146.json')['status']=='PASS'
     for task in tasks():
         for row in trajectory.source_rows(p,task['order']):assert Path(row['image_path']).is_file()
-    for rows in p['reviews']['owners'].values():
-        for row in rows:
-            if row.get('admitted'):
-                assert row.get('source_evidence') and all(Path(v['path']).is_file() for v in row['source_evidence'])
 
 
 def configure():
     r.s.tasks=tasks;r.s.source=lambda task:trajectory.source_rows(packet(),task['order']);r.s.point=point
     r.s.baseline=lambda task,row:base_path(row)
     r.GPUS=(int(os.environ.get('GPU','0')),)
-    r.COUNTS['local_solves']=0
+    r.COUNTS.setdefault('local_solves',0)
+    r.source_gradients=lambda *args,**kwargs:trajectory.source_gradients(r,*args,**kwargs)
     def count(*_):
         c.budget();r.COUNTS['forwards']+=1
         if not r.GENERATING:r.COUNTS['non_generation_forwards']+=1
-        assert r.COUNTS['non_generation_forwards']<=contract.CAPS['non_generation_forwards']
+        assert r.COUNTS['non_generation_forwards']<=getattr(r,'NATIVE_FORWARD_CAP',contract.CAPS['non_generation_forwards'])
     r.count=count
+
+
+@contextmanager
+def network(gpu,loaded=None):
+    # A full-lane worker owns one lease/model; each task still gets a fresh expert.
+    if loaded is not None:
+        yield loaded
+        return
+    with r.p.lease(gpu):
+        runtime,bindings,handle=r.load(gpu)
+        try:yield runtime,bindings
+        finally:handle.remove()
+
+
+def stage_admission(stage,full):
+    if full:
+        from selected_training146 import require_admission,source_file
+        return require_admission(), 'SELECTED_SCOPE1.json', source_file()
+    names={'C':'NATIVE_CALIBRATION','M13':'NATIVE_FOLLOWUP','FISHER_MIN':'NATIVE_FMIN'}
+    name=names[stage]
+    return c.read(RUN/'private'/f'{name}_ADMISSION1.json'), (
+        'SCOPE_LOCK.json' if stage=='C' else name+'_SCOPE1.json'), (
+        'GPU_SOURCE_VERSION.json' if stage=='C' else name+'_SOURCE1.json')
 
 
 def train():
@@ -78,7 +101,8 @@ def train():
                     saved=r.p.load_state(point(task,'C'))['states']
                     assert all(torch.equal(initial[k],saved['BASE'][k]) for k in initial),'Cold seed/init changed'
                     targets=[v['operator_step_norm'] for v in ref['curve']]
-                    gain=-.25*ref['values'][0]['NLL_change']-.0625*sum(v['NLL_change'] for v in ref['values'][1:5])-.25*sum(v['NLL_change'] for v in ref['values'][5:])
+                    assert len(ref['values'])==contract.SOURCE_COUNT
+                    gain=-.5*ref['values'][0]['NLL_change']-.125*sum(v['NLL_change'] for v in ref['values'][1:])
                     penalty=float(r.mm.operator_penalty({k:v.to(runtime.device) for k,v in saved['FINAL'].items()},cache))
                     prior=c.read(RUN/'private/PRIOR_CALIBRATIONS.json').get(str(task['order']))
                     if prior:
@@ -97,7 +121,7 @@ def train():
                     try:
                         refs=[r.q.logits(runtime,hook,b,verify_base=i==0) for i,b in enumerate(batches)]
                         expert.load_state_dict(initial)
-                        binding=dict(arm=arm,seed=task['seed'],steps=160,parameters=7168,
+                        binding=dict(arm=arm,seed=task['seed'],steps=160,parameters=7168,source_recipe=contract.SOURCE_RECIPE,
                             source_order=[v['query_id'] for v in rows],source_binding=c.digest(contract.original.source_binding(rows)),
                             scientific_lock=c.digest(c.read(RUN/'private/SCOPE_LOCK.json')),
                             source_version=c.read(RUN/'private/GPU_SOURCE_VERSION.json')['commit'],budget_binding=c.digest(contract.CAPS))

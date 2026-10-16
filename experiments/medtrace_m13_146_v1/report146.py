@@ -54,7 +54,7 @@ def main():
         key = (data['method'], data['mode'], data['prefix'], data['eval_owner'], data['binding']['input']['query_id'])
         assert key not in records
         records[key] = data; scores[key] = correct if status == 'FORMAT_VALID' else None
-    assert len(records) == 24867
+    assert len(records) == contract.CAPS['evaluation_consumers']
     tasks = q.read(RUN/'private/ORIGINAL146_TASKS.json')
     base_mask = q.read(RUN/'private/ORIGINAL_BASE_MASK146.json')
     def keys(method, mode, prefix, task, role):
@@ -129,7 +129,7 @@ def main():
     cost = dict(new_GPU_process_hours=(ledger['gpu_seconds_used']-inherited['gpu_seconds_used'])/3600,
         cumulative_GPU_process_hours=ledger['gpu_seconds_used']/3600,
         new_Judge=ledger['Judge_attempts']-inherited['Judge_attempts'], cumulative_Judge=ledger['Judge_attempts'])
-    assert cost['new_Judge'] <= 24867
+    assert cost['new_Judge'] <= contract.CAPS['Judge_attempts']
     result = dict(status='COMPLETE', decision='COMPATIBLE146_DEVELOPMENT_SIGNAL' if reporting.success(gates) else '146_COMPATIBILITY_NOT_ESTABLISHED',
         gates=gates, panels=panels, T2L=dict(original_mask_probes=54, original_mask_edits=31,
             delta_macro_pp=None if any(v is None for v in delta) else 100*sum(delta)/len(delta),

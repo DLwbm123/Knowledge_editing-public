@@ -14,7 +14,6 @@ import contract
 import runtime146 as worker
 import bank146
 import scorer_start
-import source_workplan
 import admit146
 from m3bench_repro.editors.routing import MemoryRouter
 
@@ -61,16 +60,17 @@ def main():
         admission=dict(status='PASS',launch_authorized=True,source_commit='fixture')
         (worker.RUN/'private/M13_146_RUNTIME_ADMISSION.json').write_text(json.dumps(admission))
         (worker.RUN/'private/GPU_SOURCE_VERSION.json').write_text(json.dumps(dict(commit='fixture')))
-        rejected(worker.require_ready) # Actual139 missing, before any GPU loading.
+        rejected(worker.require_ready) # Complete data alone cannot bypass the executable admission.
         worker.RUN=original_run
         cfg=scorer_start.configs(Path(tmp),'fixture remote','fixture source','fixture generic scorer')
         assert {c['JUDGE_WORKER'] for c in cfg}=={'0','1','2','3'}
         assert len({c['JUDGE_RESULT_FOLDER'] for c in cfg})==4 and all(c['JUDGE_EFFORT']=='medium' for c in cfg)
-    plan=source_workplan.build(packet)['public']
-    assert (plan['qualified'],plan['bounded_review_required'],plan['exhausted_waiting_original_evidence'])==(7,138,1)
+    plan=contract.source_admission(packet)
+    assert len(plan['qualified_owners'])==146 and plan['qualified_anchor_count']==0
     result=dict(status='PASS',cold_initializers=146,original_C_BASE_exact=True,
         actual_R0_CPU_routes=routes,all_438_insertion_prefixes=True,no_future_expert_or_duplicate_bank=True,
-        actual_source_gap_blocks_worker=True,four_new_isolated_scorer_configs=True,source_plan=plan,
+        data_alone_does_not_bypass_worker_admission=True,four_new_isolated_scorer_configs=True,
+        source_plan=dict(status=plan['status'],qualified=146,cross_image_training=False),
         original_router_key_and_radius_changes_rejected=True,
         new_GPU_leases=0,new_VLM_calls=0,new_Judge=0,training_ready=False,
         live_network_and_operational_admission_pending=True)

@@ -52,8 +52,17 @@ def canonical_match(before, proposed, target):
     return proposed
 
 
+SOURCE_WEIGHTS=(.25,.25,.5)
+
+
+def mean_loss(losses):
+    assert len(losses)==len(SOURCE_WEIGHTS)
+    return sum(w*x for w,x in zip(SOURCE_WEIGHTS,losses))
+
+
 def gain(losses, after):
-    return sum(w*(a-b) for w,a,b in zip((.25,.25,.5), losses, after))
+    assert len(losses)==len(after)==len(SOURCE_WEIGHTS)
+    return sum(w*(a-b) for w,a,b in zip(SOURCE_WEIGHTS, losses, after))
 
 
 def select_guard(runtime, hook, expert, before, pure, chosen, before_losses, cache, budget):
@@ -80,6 +89,10 @@ def select_guard(runtime, hook, expert, before, pure, chosen, before_losses, cac
 
 
 def source_batches(batches, step):
+    if len(batches)==5:
+        assert SOURCE_WEIGHTS==(.5,.5)
+        return [batches[0],batches[1+(step-1)%4]]
+    assert len(batches)==7 and SOURCE_WEIGHTS==(.25,.25,.5)
     return [batches[0], batches[1+(step-1)%4], batches[5+(step-1)%2]]
 
 

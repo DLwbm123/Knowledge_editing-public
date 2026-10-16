@@ -1,0 +1,254 @@
+{
+  "status": "COMPLETE_READONLY_POSTHOC_ANALYSIS",
+  "probes": 78,
+  "edits": 20,
+  "answers_reviewed": 312,
+  "incorrect_answer_instances_labelled": 106,
+  "state_definition": {
+    "00": "both_wrong",
+    "01": "repaired",
+    "10": "regressed",
+    "11": "both_correct"
+  },
+  "cross_matrix_rows_M13_columns_FISHER_MIN": {
+    "00": {
+      "00": 9,
+      "01": 3,
+      "10": 1,
+      "11": 4
+    },
+    "01": {
+      "00": 0,
+      "01": 12,
+      "10": 0,
+      "11": 4
+    },
+    "10": {
+      "00": 0,
+      "01": 0,
+      "10": 9,
+      "11": 3
+    },
+    "11": {
+      "00": 0,
+      "01": 1,
+      "10": 0,
+      "11": 32
+    }
+  },
+  "overlaps": {
+    "00": {
+      "M13": 17,
+      "FISHER_MIN": 9,
+      "intersection": 9,
+      "M13_only": 8,
+      "FISHER_MIN_only": 0,
+      "union": 17,
+      "Jaccard": 0.5294117647058824
+    },
+    "01": {
+      "M13": 16,
+      "FISHER_MIN": 16,
+      "intersection": 12,
+      "M13_only": 4,
+      "FISHER_MIN_only": 4,
+      "union": 20,
+      "Jaccard": 0.6
+    },
+    "10": {
+      "M13": 12,
+      "FISHER_MIN": 10,
+      "intersection": 9,
+      "M13_only": 3,
+      "FISHER_MIN_only": 1,
+      "union": 13,
+      "Jaccard": 0.6923076923076923
+    },
+    "11": {
+      "M13": 33,
+      "FISHER_MIN": 43,
+      "intersection": 32,
+      "M13_only": 1,
+      "FISHER_MIN_only": 11,
+      "union": 44,
+      "Jaccard": 0.7272727272727273
+    }
+  },
+  "concentration": {
+    "M13": {
+      "total_flips": 28,
+      "affected_edits": 16,
+      "flip_count_histogram": {
+        "2": 8,
+        "1": 6,
+        "0": 4,
+        "3": 2
+      },
+      "max_flips_per_edit": 3,
+      "top3_flip_count": 8,
+      "top5_flip_count": 12,
+      "edits_with_repairs": 12,
+      "edits_with_regressions": 10,
+      "edits_with_both": 6
+    },
+    "FISHER_MIN": {
+      "total_flips": 26,
+      "affected_edits": 16,
+      "flip_count_histogram": {
+        "2": 8,
+        "0": 4,
+        "1": 7,
+        "3": 1
+      },
+      "max_flips_per_edit": 3,
+      "top3_flip_count": 7,
+      "top5_flip_count": 11,
+      "edits_with_repairs": 13,
+      "edits_with_regressions": 9,
+      "edits_with_both": 6
+    }
+  },
+  "same_direction_flip_probes": 21,
+  "opposite_direction_flip_probes": 0,
+  "stable_correct_advantage_per_edit_histogram": {
+    "0": 14,
+    "1": 3,
+    "2": 2,
+    "3": 1
+  },
+  "FISHER_MIN_unique_stable_M13_error_label_sets": {
+    "C": 6,
+    "L": 2,
+    "O": 2,
+    "C+O": 1
+  },
+  "diagnostic_label_definitions": {
+    "N": "Non-answer / generic deferral rather than the requested target",
+    "C": "Concrete target/entity/content substitution relative to frozen reference",
+    "L": "Explicit side or comparative-relation mismatch",
+    "O": "Missing target component or required qualifier",
+    "E": "Target present with reference-external additions",
+    "D": "Degenerate repeated output, with missing target components"
+  },
+  "diagnostic_counts": {
+    "M13": {
+      "old": {
+        "N": 10,
+        "E": 2,
+        "C": 12,
+        "O": 5,
+        "L": 4
+      },
+      "new": {
+        "C": 17,
+        "N": 1,
+        "E": 1,
+        "L": 5,
+        "O": 4,
+        "D": 1
+      }
+    },
+    "FISHER_MIN": {
+      "old": {
+        "N": 11,
+        "E": 1,
+        "C": 10,
+        "L": 1,
+        "O": 2
+      },
+      "new": {
+        "C": 11,
+        "N": 1,
+        "E": 1,
+        "O": 4,
+        "L": 1,
+        "D": 1
+      }
+    }
+  },
+  "error_labels_by_transition": {
+    "M13": {
+      "00": {
+        "old": {
+          "N": 4,
+          "E": 1,
+          "C": 6,
+          "O": 2,
+          "L": 4
+        },
+        "new": {
+          "C": 9,
+          "N": 1,
+          "E": 1,
+          "L": 5,
+          "O": 1
+        }
+      },
+      "01": {
+        "old": {
+          "C": 6,
+          "N": 6,
+          "E": 1,
+          "O": 3
+        },
+        "new": {}
+      },
+      "10": {
+        "old": {},
+        "new": {
+          "C": 8,
+          "O": 3,
+          "D": 1
+        }
+      },
+      "11": {
+        "old": {},
+        "new": {}
+      }
+    },
+    "FISHER_MIN": {
+      "00": {
+        "old": {
+          "N": 3,
+          "E": 1,
+          "C": 4,
+          "L": 1
+        },
+        "new": {
+          "C": 5,
+          "N": 1,
+          "O": 2,
+          "L": 1
+        }
+      },
+      "01": {
+        "old": {
+          "N": 8,
+          "C": 6,
+          "O": 2
+        },
+        "new": {}
+      },
+      "10": {
+        "old": {},
+        "new": {
+          "C": 6,
+          "E": 1,
+          "O": 2,
+          "D": 1
+        }
+      },
+      "11": {
+        "old": {},
+        "new": {}
+      }
+    }
+  },
+  "reference_scope_uncertain_probes": 3,
+  "rubric_boundary_review_probes": 1,
+  "score_changes": 0,
+  "new_training": 0,
+  "new_generation": 0,
+  "new_Judge": 0,
+  "limitation": "Single exposed operator; labels describe reference-relative output failures, not clinical truth or causal mechanisms; original scores unchanged."
+}

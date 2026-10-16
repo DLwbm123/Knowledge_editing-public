@@ -8,6 +8,7 @@ import contract
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('packet',type=Path);parser.add_argument('output',type=Path)
     args=parser.parse_args();packet=json.loads(args.packet.read_text());contract.selfcheck()
+    assert packet['source_recipe']==contract.SOURCE_RECIPE
     gate=contract.source_admission(packet)
     rows=contract.coverage_reservation(packet['original_tasks'],packet['base_mask'])
     import collections
@@ -21,7 +22,8 @@ def main():
         reserved_consumers=len(rows),consumer_counts=dict(collections.Counter(r['method'] for r in rows)),
         historical_T2L_eligible_edits=sum(bool(v) for v in supported.values()),
         historical_T2L_eligible_probes=sum(map(len,supported.values())),
-        coverage_is_reservation_not_admitted_source=True,proposed_caps=contract.CAPS,
+        coverage_is_reservation_not_scientific_output=True,source_recipe=contract.SOURCE_RECIPE,
+        source_weights=contract.SOURCE_WEIGHTS,source_material_admission=gate['status']=='PASS',proposed_caps=contract.CAPS,
         actual_full_training_and_bank_integration=False,training_ready=False,
         new_model_calls=0,new_Judge=0,new_downloads=0)
     args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
