@@ -1,3 +1,7 @@
+## 当前终态：HR 完整评分、科学门失败，交付后停止
+
+HR 20/20槽与87/87有效评分、精确重载均完成；CE=0.333098、T1G=3/4、T2G=1/4、保护损伤3/36，10/10正间隔仍不足以通过AND门。累计577.470260GPU秒含所有失败尝试，原时钟和预算保留；活动统计/teacher已退役，final native保留。见 reports/purew_hinge_removed_soft_first1_v1_20261016/{HR_VS_HM_ANALYSIS_ZH.md,CLOSURE_RECEIPT.json,RESULTS.json}。此前一次恢复授权已使用，不允许再重启、调参、补Judge或自动下一轮。
+
 ## 当前授权：HR 修复后仅一次原预算重启
 
 2026-10-16 用户明确允许修复后重启一次HR，先补足正式学习路径检查；保留全部失败成本、原始激活与deadline，不重置预算或放宽门。见 reports/purew_hinge_removed_soft_first1_v1_20261016/RESTART1_AUTHORIZATION.json。仅执行 restart1，复用已通过的准入，原目录后台学习/评分/分析/GitHub交付；无第二次重启或自动下一轮。下文工程停止是历史状态，不覆盖本次明确授权。
