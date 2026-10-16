@@ -55,6 +55,9 @@ def main():
     assert counts['updates']==46720 and counts['backwards']==93448 and counts['operator_backwards']==23360 and counts['generation_attempts']==5912
     assert len(list((RUN/'private/outputs').glob('*/*/*.json')))==f.CONSUMERS
     write(RUN/'private/FACTORIAL_GENERATION_COMPLETE1.json',dict(status='COMPLETE',counts=counts,consumers=f.CONSUMERS,epoch=time.time()));merge('GPU')
+    finish()
+
+def finish():
     root=RUN/'private'/f.QUEUE
     while not (root/'ALL_WORKERS_COMPLETE.json').exists():
         f.project_budget(RUN)

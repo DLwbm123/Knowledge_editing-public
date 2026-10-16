@@ -27,6 +27,10 @@ def main():
             assert op['action'] in ('next','status','reserved')
             print(json.dumps([] if op['action']=='reserved' else dict(state=dict(status='GENERATING'),rows=[])));return
         judge=dict(model='gpt-6-astra',reasoning_effort='medium',protocol=q.PROTOCOL,prompt=q.PROMPT)
+        epoch=dict(epoch=f.EPOCH,**judge,workers=4,batch_size=50,failed_request_retries_authorized=True,valid_rejudging=False,selfcheck=selfcheck())
+        manifest=q.ROOT/'EPOCH_MANIFEST.json'
+        if manifest.exists():assert q.read(manifest)==epoch
+        else:q.write(manifest,epoch)
         if not db.execute("SELECT 1 FROM done WHERE name='generation'").fetchone():
             known=base.known_scores(q,q.read(run/'private/M13_146_REUSE_QUEUES.json'),judge)
             outputs=((p,q.read(p)) for p in sorted((run/'private/outputs').glob('*/*/*.json')))
@@ -34,7 +38,6 @@ def main():
             pending=[v[0] for v in db.execute("SELECT key FROM payload WHERE status='PENDING'")]
             assert len(pending)<=5912
             q.write(q.ROOT/'RETRY_SCOPE.json',dict(pending_keys=pending,model_retry_authorized=True))
-            q.write(q.ROOT/'EPOCH_MANIFEST.json',dict(epoch=f.EPOCH,**judge,workers=4,batch_size=50,failed_request_retries_authorized=True,valid_rejudging=False,selfcheck=selfcheck()))
             q.write(q.ROOT/'READY.json',dict(summary,pending=len(pending),epoch=time.time()))
         if op['action']=='retry_charge':
             answer=shared.charge_retry(q,run,db,op,q.read(q.ROOT/'RETRY_SCOPE.json'))
