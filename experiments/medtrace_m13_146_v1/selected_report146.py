@@ -8,15 +8,18 @@ import comparison146 as contract
 import reporting
 
 
-def calculate(tasks,base_mask,records,scores,interim20=False):
+def calculate(tasks,base_mask,records,scores,interim20=False,methods=None):
+    methods=tuple(methods or contract.METHODS)
+    assert len(methods)==2 and len(set(methods))==2
+    left_method,right_method=methods
     if interim20:assert [t['order'] for t in tasks]==list(range(1,21))
     assert len(records)==len(scores)==(1077 if interim20 else contract.CONSUMERS)
     assert records.keys()==scores.keys()
-    panels={m:{} for m in contract.METHODS};owners={};damage={};damage_owners={};contrasts={}
+    panels={m:{} for m in methods};owners={};damage={};damage_owners={};contrasts={}
     labels=[('single',1)]+([] if interim20 else [('bank',n) for n in contract.PREFIXES])
     for mode,prefix in labels:
         ts=tasks if mode=='single' else tasks[:prefix];label=f'{mode}_{prefix}'
-        for method in contract.METHODS:
+        for method in methods:
             panels[method][label]={};per_role={};protected={}
             for role in ('T0','FIT','T1G','T2G','T1L','T2L'):
                 values={}
@@ -45,22 +48,22 @@ def calculate(tasks,base_mask,records,scores,interim20=False):
                 missing=sum(b is None or s is None for (owner,q),(b,s) in protected.items() if owner==t['order'])) for t in ts}
         contrasts[label]={}
         for role in ('FIT','T2G','T2L'):
-            left=owners['M13',label][role];right=owners['FISHER_MIN',label][role]
+            left=owners[left_method,label][role];right=owners[right_method,label][role]
             delta=[];groups=[]
             for task in ts:
                 a,b=left[task['order']],right[task['order']];assert len(a)==len(b)
                 if a:
                     delta.append(None if any(v is None for v in a+b) else (sum(b)-sum(a))/len(a))
                     groups.append(task['native']['source_group'])
-            contrasts[label][role]=dict(FISHER_MIN_minus_M13_macro_pp=100*sum(delta)/len(delta) if delta and all(v is not None for v in delta) else None,
+            contrasts[label][role]=dict(**{right_method+'_minus_'+left_method+'_macro_pp':100*sum(delta)/len(delta) if delta and all(v is not None for v in delta) else None},
                 edit_CI_pp=reporting.interval(delta),source_CI_pp=reporting.interval(delta,groups),
                 source_unit='Original source groups; not independently verified patients',
-                FISHER_MIN_preserves_each_M13_owner=reporting.preserved(left,right))
-        supported=all(damage[m,label]['fresh_Base_correct']>0 and damage[m,label]['missing']==0 for m in contract.METHODS)
-        contrasts[label]['FISHER_MIN_damage_no_worse_than_M13_per_owner']=reporting.damage_preserved(
-            damage_owners['M13',label],damage_owners['FISHER_MIN',label]) if supported else None
+                **{right_method+'_preserves_each_'+left_method+'_owner':reporting.preserved(left,right)})
+        supported=all(damage[m,label]['fresh_Base_correct']>0 and damage[m,label]['missing']==0 for m in methods)
+        contrasts[label][right_method+'_damage_no_worse_than_'+left_method+'_per_owner']=reporting.damage_preserved(
+            damage_owners[left_method,label],damage_owners[right_method,label]) if supported else None
     if not interim20:
-        for method in contract.METHODS:
+        for method in methods:
             assert panels[method]['bank_146']['T2L']['observations']==54
             assert panels[method]['bank_146']['T2L']['edit_units']==31
     complete=all(v is not None for v in scores.values())
@@ -69,8 +72,8 @@ def calculate(tasks,base_mask,records,scores,interim20=False):
         original_M1_fit_T2G_preservation146=None,original_M3_damage_preservation146=None,
         original_joint_scientific_gate_confirmed=False,
         missing_consumers=sum(v is None for v in scores.values()),
-        original_T2L_probes=panels['M13']['single_1']['T2L']['observations'] if interim20 else 54,
-        original_T2L_edits=panels['M13']['single_1']['T2L']['edit_units'] if interim20 else 31,
+        original_T2L_probes=panels[left_method]['single_1']['T2L']['observations'] if interim20 else 54,
+        original_T2L_edits=panels[left_method]['single_1']['T2L']['edit_units'] if interim20 else 31,
         interim_first20_only=interim20,
         unavailable_controls_not_replaced_by_historical_recipe=True,independent_confirmation=False,medical_safety_conclusion=False)
     return result,dict(role_panels={m+'_'+l:v for (m,l),v in owners.items()},
