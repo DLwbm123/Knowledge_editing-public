@@ -84,6 +84,7 @@ def admit_current(runtime, arm, calibration, record, fits, folder):
     try:
         editor.prepare_source(record, fits, 1)
         event = editor.attempt(1, admission=True)
+        atomic_json(Path(folder)/'ADMISSION_ATTEMPT.json', event)
         if not event['accepted'] or event.get('native_roundtrip') != 'PASS':
             raise ValueError('Real native admission failed; no formal slots authorized')
         if not torch.equal(editor.weight.detach().cpu(), original) or editor.optimizer.state:
