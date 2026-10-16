@@ -1,3 +1,7 @@
+## 当前授权：固定16 MiB输入保护器，仅实现与CPU检查
+
+用户于2026-10-16要求固定小存储方案实现和CPU离线检查，不启动实验。独立代码experiments/fixed_input_guard_v1，报告reports/fixed_input_guard_v1_20261016。CPU存储/写回拒绝逻辑PASS，一般FP16/BF16量化后投影超限并回滚；真实模型接线未完成，禁止将工程PASS视为低精度可用。旧146完整梯度方案不启动；历史授权不适用于此新方法。无GPU/真实模型/Judge/远程安装/监测/自动下一轮。
+
 ## 当前授权：HE–HM 146完整队列诊断，仅准备、不启动
 
 用户于2026-10-16授权冻结HE/HM公平146连续对照并完成代码检查、展示方案，明确暂不启动；另明确接受科学失败继续记账、无合格证据条目两臂H-only、全146不删样本。见reports/purew_he_hm146_v1_20261016/PLAN_ZH.md、PROTOCOL.json、CHECKPOINT_LIFECYCLE.md和PREPARATION_RECEIPT.json。每臂146×20槽，64GPU小时；总128GPU小时/168墙钟小时。E仅在预注册9条启用，不宣称146条证据验证。CPU learner与8246消费者聚合检查PASS；真实模型、GPU、Judge、安装、监测均未授权。全规模内存/实际跨度及软件集成准入未完成，不得将准备PASS当作启动许可。旧146保持暂停，历史结果不变，无subagent、自动扩展或重试。
