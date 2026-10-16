@@ -1,0 +1,20 @@
+{
+  "host": "pro5000",
+  "physical_GPU": 2,
+  "GPU_UUID": "GPU-4b56ab28-a018-652c-b8f6-2d9dc3dc45d2",
+  "user_allowed_physical_GPUs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "maximum_simultaneous_GPUs": 2,
+  "execution_order": "HM then HU serial on one GPU",
+  "future_rebinding": "Only safe boundary with retained state/cost and explicit receipt; no restart healthy jobs",
+  "recorded_at_utc": "2026-10-16T02:16:32.981297+00:00",
+  "reason": "GPU3 currently below45GiB; GPU2 above45GiB under existing GPU0-7 authority"
+}

@@ -1,0 +1,303 @@
+{
+  "version": "PUREW_ODDS_HINGE_FIRST1_V1_20261016",
+  "status": "FROZEN_EXECUTION_AUTHORIZED_PENDING_ADMISSION",
+  "authorization": {
+    "user_request": "好的，请立即开始实验，按照你的最小路线",
+    "execution": true,
+    "install": true,
+    "waiter": false,
+    "monitoring": false,
+    "model_calls": true,
+    "Judge": true
+  },
+  "reference": {
+    "arm": "SH00",
+    "report_commit": "1f430d2e7ebe0ca9d20a77a4077aa585cf8d16be",
+    "runtime_commit": "7f38464f007b113b69329edaa4354ff7bf320b37",
+    "report_directory": "reports/purew_objective_scope_v1_20261015",
+    "consumers": 87,
+    "valid": 87,
+    "permanent_missing": 0,
+    "rerun": false,
+    "regenerate": false,
+    "rejudge": false,
+    "required_compatibility": "exact source/seed/tokenization/native/optimizer/quadratic-risk/candidate-clock controls; mismatch makes historical causal contrast NON_IDENTICAL_BACKGROUND; no automatic baseline rerun"
+  },
+  "upstream": {
+    "paper": "https://arxiv.org/html/2608.27839v1",
+    "official_repository": "https://github.com/Hostoday/KLOD",
+    "reviewed_commit": "f1db53037d4d521cf97fb32104e7e39b8a3f628c",
+    "official_training_executed": false,
+    "not_exact_KLOD_reproduction": true
+  },
+  "design": {
+    "new_arms": [
+      "HM",
+      "HU"
+    ],
+    "order": [
+      "HM",
+      "HU"
+    ],
+    "source_orders": [
+      1
+    ],
+    "slots_per_arm": 20,
+    "seed": "original per-edit seed",
+    "reset": "fresh original Base each arm",
+    "primary_contrast": "HU-HM",
+    "other_contrasts": [
+      "HM-SH00",
+      "HU-SH00",
+      "PU-PM"
+    ],
+    "primary_joint_endpoints": [
+      "fixed-slot20 complete native+allFIT CE",
+      "fixed36 per-item protection",
+      "T2G complete denominator4"
+    ],
+    "single_source_only": true,
+    "protection_policy_factor": "answer conditional distribution plus language prefix together; not individually identifiable",
+    "no_new_medical_view_or_data": true,
+    "target_shape_contrasts": [
+      "HM-PM",
+      "HU-PU"
+    ],
+    "interaction": "(HU-HM)-(PU-PM); descriptive single-source fixed-panel only",
+    "target_shape_is_unit_scale_policy": true
+  },
+  "objective": {
+    "alpha": 0.95,
+    "alpha_sweep": false,
+    "alpha_is_not_acceptance_threshold": true,
+    "teacher": "current source-birth native FP16 original Base; same original native and four FIT views; frozen teacher-forced prefixes",
+    "target": "a_star=max(p0(y),alpha); o_star=log(a_star)-log(1-a_star) from stable teacher log masses",
+    "projection_definition": "argmin_p KL(p||p0) subject to p(y)>=alpha",
+    "conditional_coefficient": "exact induced (1-a_star), no rescaling or sweep",
+    "prefix_class_weight": 1,
+    "view_loss": ".5 native + .5 cyclic original FIT",
+    "answer_mask": "original processor-aligned causal shifted answer labels != ignore; original EOS retained",
+    "prefix_mask": "valid shifted ordinary language system/user/prompt next-token positions; exclude answer/padding/image placeholder/patch/all non-language special positions",
+    "masks_must_be_disjoint_nonempty_and_verified": true,
+    "stable_computation": "log_softmax and masked logsumexp; no probability floor, 1-p cancellation, or target smoothing",
+    "current_cache_only": true,
+    "no_history_case_QA_feature_logits_replay": true,
+    "actual_removed_KL": "read-only diagnostics; no soft backward, no affine constraints and no actual KL rejection",
+    "HM": "mean_answer ReLU(o_star-(log_a_current-log_rest_current))",
+    "HU": "HM + mean_answer (1-a_star)*KL(q0||q_current) + mean_language_prefix KL(p0||p_current)",
+    "boundary_subgradient": 0,
+    "hinge_coefficient": 1,
+    "comparison_includes_gradient_scale": true,
+    "coefficient_sweep": false
+  },
+  "shared": {
+    "baseline": "SH00 S0H0 background",
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "native": "FP16",
+    "master_gradient": "FP32",
+    "statistics": "FP64",
+    "eta": 0.01,
+    "clip": 5,
+    "scale": 128,
+    "proposal_cap": 0.05,
+    "Gamma": "IDENTITY",
+    "Base_rows": 16,
+    "prewrite_removed_rows": 4,
+    "per_block_risk_cap": 0.01,
+    "Base_binding": "988b3b5065f93eded1b9453c256eb2d74c45b5bc54be30e72540e58eaa5f9129",
+    "maximum_qualified_source_end_rows": 38,
+    "source_end_birth_rules": "unchanged SH00; all qualification gates required",
+    "solver_iterations": 48,
+    "solver_linesearch": 8,
+    "candidate_backtracks": 8,
+    "Armijo": 0.0001,
+    "fallback_active_set": false,
+    "actual_delta": "FP64(candidateFP16-oldFP16)",
+    "reanchor": false,
+    "large_isotropic_quantization_envelope": false,
+    "rejected_candidate_master_native": "rollback and discard",
+    "reject_consumes_slot": true,
+    "added_inference_parameters": 0,
+    "evaluation_training": false,
+    "no_added_data": true,
+    "HARD_KL_NOT_ENFORCED": true
+  },
+  "gates": {
+    "complete_CE_strict_below": 0.1,
+    "T0_T1G_all_correct": true,
+    "all_ten_evidence_gaps_strict_positive_finite": true,
+    "evidence_gap_interpretation": "source sensitivity qualification only, not external protection/clinical correctness",
+    "Base_correct_T2L": 34,
+    "Base_correct_T1L": 2,
+    "allowed_individual_damage": 0,
+    "unknown_fails": true,
+    "required_lower_min": 0,
+    "high_loss_frozen": "CE>=.1 AND final10 slots all zero",
+    "numeric_mechanism_failure": "5 consecutive numeric-only high-CE rejections",
+    "all_failure_costs_preserved": true,
+    "scientific_arm_stop_allows_next_registered_arm": true,
+    "shared_mechanical_data_failure_blocks_chain": true,
+    "early_terminal_slot20": "NA",
+    "no_tuning_or_extra_slots": true,
+    "automatic_next_experiment": false,
+    "HU_T2G_per_edit_delta_lower_vs": [
+      "SH00",
+      "HM",
+      "PU"
+    ]
+  },
+  "diagnostics": {
+    "every_slot": [
+      "complete_CE",
+      "marginal_KL",
+      "conditional_KL_weighted_and_unweighted",
+      "prefix_KL",
+      "a_minus_a_star_and_overshoot",
+      "five_removed_actual_KL",
+      "per_block_risk_and_numeric_envelope",
+      "accept_reject_zero_reason",
+      "KKT",
+      "proposal_native_quantization_path_net"
+    ],
+    "initial_and_terminal": "current training-view marginal/conditional/prefix parameter-gradient norms and cosines, counted; no evaluation gradients",
+    "source_end": [
+      "complete_CE",
+      "ten_gap_finite_positive_zero_negative_min_max"
+    ],
+    "first_CE_hits": [
+      1,
+      0.5,
+      0.1
+    ],
+    "diagnostic_rng_mode_unchanged": true,
+    "historical_unmeasured_points": "NA, no replay",
+    "gap_names": {
+      "target_gap_min_legacy": "weighted mean of per-view minima, not global minimum",
+      "target_gap_view_min_weighted": "same statistic with correct name",
+      "target_gap_global_min": "minimum across all five views and answer positions; new arms only"
+    },
+    "attainment": {
+      "alpha_pass_fraction": "weighted fraction a>=.95",
+      "target_pass_fraction": "weighted fraction log_a>=log_a_star; new arms only"
+    }
+  },
+  "evaluation": {
+    "consumers_per_new_arm": 87,
+    "prefix1": 46,
+    "insertion": 5,
+    "fixed_protection": 36,
+    "new_total": 174,
+    "canaries_per_arm": 3,
+    "fresh_reload_per_arm": 2,
+    "generations_per_arm": 92,
+    "Judge": "gpt-6-astra medium, original Stage17 isolation",
+    "new_payload_max_attempts": 1,
+    "failed_Judge_retry": false,
+    "shared_complete_binding_reuse": true,
+    "unknown_bounds": "combine same payload variables before exact paired bounds",
+    "unattempted_is_missing": false,
+    "bootstrap_draws": 10000,
+    "bootstrap_seed": 20260912,
+    "single_source_not_population_evidence": true,
+    "before_scoring": [
+      "all actual trajectories terminal",
+      "each final native fresh reload2 exact",
+      "FINAL_CONSUMED each arm",
+      "all GPU leases closed",
+      "GENERATION_COMPLETE"
+    ],
+    "completion": [
+      "4 workers terminal",
+      "PENDING=0",
+      "RESERVED=0",
+      "all actual new consumers FORMAT_VALID/MISSING",
+      "ALL_WORKERS_COMPLETE",
+      "REPORT_COMPLETE",
+      "publication SHA and anonymous access verified"
+    ],
+    "total_with_historical_SH00_PM_PU": 435,
+    "population_confidence_interval": "NA_SINGLE_SOURCE",
+    "cross_arm_T2G_transitions": true
+  },
+  "budgets": {
+    "activation_epoch": null,
+    "deadline_epoch": null,
+    "wall_hours": 24,
+    "GPU_process_hours": 4,
+    "formal_slots": 40,
+    "native_writes_including_admission": 42,
+    "backwards": 600,
+    "forwards_including_vision": 30000,
+    "generations": 184,
+    "new_Judge": 174,
+    "candidate_checks": 320,
+    "active_set_checks": 0,
+    "per_new_arm": {
+      "GPU_process_hours": 2,
+      "formal_slots": 20,
+      "native_writes_including_admission": 21,
+      "backwards": 300,
+      "forwards_including_vision": 15000,
+      "generations": 92,
+      "new_Judge": 87,
+      "candidate_checks": 160,
+      "active_set_checks": 0
+    },
+    "cross_arm_transfer": false,
+    "old_budget_borrowing": false,
+    "owned_matrix_GiB_including_atomic_temp_and_teacher": 96,
+    "minimum_host_available_GiB": 96,
+    "minimum_disk_free_GiB": 8,
+    "minimum_GPU_free_GiB": 45,
+    "cached_GPU_GiB": 43,
+    "owned_GPU_GiB": 45,
+    "hard_interrupt_replay_allowance": 0,
+    "include_teacher_diagnostics_admission_residence_save_failure": true
+  },
+  "hardware": {
+    "host": "pro5000",
+    "GPU": 2,
+    "UUID": "GPU-4b56ab28-a018-652c-b8f6-2d9dc3dc45d2",
+    "allocation_authorized": true,
+    "require_future_explicit_binding": false
+  },
+  "readiness": {
+    "math": "PASS_PRODUCTION_CPU",
+    "production_executor": "IMPLEMENTED",
+    "production_CPU": "PASS",
+    "storage_GPU": "NOT_RUN",
+    "real_VLM": "NOT_RUN",
+    "scorer_tail": "NOT_STARTED",
+    "installation": "NOT_STARTED"
+  },
+  "lifecycle": {
+    "original146": "PAUSED",
+    "M": "PAUSED",
+    "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+    "old_results": "IMMUTABLE",
+    "old_monitor": "REMAIN_PAUSED_UNLESS_EXISTING_CONTINUOUS_AUTHORIZATION_APPLIES",
+    "new_monitor": false,
+    "automatic146": false,
+    "historical_asset_deletion": false
+  },
+  "documents": {
+    "theory": "PROTOCOL_NOTES_ZH.md",
+    "finite_design": "PROTOCOL_NOTES_ZH.md",
+    "lifecycle": "CHECKPOINT_LIFECYCLE.md",
+    "validation": "PRODUCTION_CPU_VALIDATION.json"
+  },
+  "frozen_at_utc": "2026-10-16T02:16:32.981297+00:00",
+  "historical_projection": {
+    "arms": [
+      "PM",
+      "PU"
+    ],
+    "report_commit": "b89cb94449f4baf565c81022086b6a80f0010255",
+    "runtime_commit": "a7e58aba32b99861eb7ae2c959f320c72181c3cf",
+    "report_directory": "reports/purew_projected_objective_first1_v1_20261015",
+    "consumers": 174,
+    "rerun": false,
+    "regenerate": false,
+    "rejudge": false
+  }
+}

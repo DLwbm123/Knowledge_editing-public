@@ -1,3 +1,7 @@
+## 当前授权：HM/HU最小目标形状对照
+
+2026-10-16用户要求“好的，请立即开始实验，按照你的最小路线”。执行reports/purew_odds_hinge_first1_v1_20261016冻结的HM→HU首源各20槽；复用SH00/PM/PU，不重跑或补Judge。pro5000 GPU0–7最多同时2张，当前GPU2。全臂CPU/Base3/真实VLM准入后正式槽；一次安装和原预算，后台有限评分及公开交付，无自动146/新臂。原146/M暂停、O/L等待；无subagent。历史协议和结果不覆盖。
+
 ## 最新执行授权：PM/PU及半小时监测
 
 2026-10-15用户授权启动冻结PM/PU首源20槽对照并每半小时持续监测；pro5000 GPU0–7可用，同时最多两张。当前绑定GPU3，PM→PU仍串行，须生产CPU/存储显存/两臂真实VLM全部通过后正式槽。读reports/purew_projected_objective_first1_v1_20261015的EXECUTION_AUTHORIZATION、MONITORING_AUTHORIZATION、HARDWARE_AUTHORIZATION及原冻结PROTOCOL。仅运维授权取代下文no-launch/no-monitor，科学和预算不变；原146/M暂停、O/L等待、无自动146或新臂。
