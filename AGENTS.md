@@ -1,3 +1,7 @@
+## 当前终态：HC完整评分，科学门失败，交付后停止
+
+HC已完成20槽、87/87新评分及696/696合并有效评分，真实重载通过、GPU租约关闭。第15槽切换，最后5槽E-only；CE=0.07676571、正间隔9/10，T0/T1G/T2G为0/1、0/4、0/4，保护损伤4/36，原AND失败。详见reports/purew_ce_guard_evidence_first1_v1_20261016/HC_VS_HE_HM_ANALYSIS_ZH.md及CLOSURE_RECEIPT.json。完成公开交付后暂停hc监测；无重试、调参、下一轮或146。下文启动授权已消耗。
+
 ## 当前授权：HC两阶段规则、检查、启动与每半小时监测
 
 2026-10-16用户授权完整CE首次<0.1后下一槽转证据优化、候选完整CE<0.1，冻结原预算与AND门，补齐方向导数和逐概念日志，检查后启动并每30分钟监测/分析。见reports/purew_ce_guard_evidence_first1_v1_20261016的PROTOCOL、EXECUTION_AUTHORIZATION、MONITORING_AUTHORIZATION、CHECKPOINT_LIFECYCLE。新HC独立原Base20槽，2GPUh/24wallh，当前CPU PASS，硬件/真实VLM待准入。无调参、自动重启、下一轮或146；历史HE/HM/HR等保持不变，全部失败成本保留，无subagent。正常监测安静，完成/失败/需选择才通知，完整GitHub交付后暂停监测。
