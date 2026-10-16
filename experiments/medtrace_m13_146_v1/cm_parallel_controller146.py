@@ -9,6 +9,7 @@ import traceback
 import cm_controller146 as original
 
 RUN=original.RUN
+original.TOOLS=Path(__file__).parent
 read,write=original.read,original.write
 
 
