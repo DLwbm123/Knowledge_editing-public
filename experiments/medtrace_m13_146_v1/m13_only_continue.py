@@ -1,6 +1,8 @@
 """Finish the unstarted C/M13 suffix while the original Fisher process stays stopped."""
 import json
 import os
+import sys
+import inspect
 from pathlib import Path
 import time
 import traceback
@@ -44,15 +46,21 @@ def stopped(pid, ticks, argv):
 def main():
     import runtime146 as worker
     import selected_training146 as training
+    # Legacy imports prepend their own directories; restore the frozen lane first.
+    source = Path(training.__file__).resolve().parent
+    sys.path.insert(0, str(source))
     import native_calibration
     import native_followup
+    for module, fn in ((native_calibration, native_calibration.main), (native_followup, native_followup.train)):
+        assert Path(module.__file__).resolve().parent == source
+        inspect.signature(fn).bind(full=True, loaded=(None, None))
     r, c, run = worker.r, worker.c, worker.RUN
-    gate = c.read(run / 'private/M13_ONLY_ADMISSION1.json')
+    gate = c.read(run / 'private/M13_ONLY_ADMISSION2.json')
     assert gate['status'] == 'PASS' and gate['owners'] == list(range(43, 147))
     assert gate['GPU'] == 1 and os.environ['GPU'] == '1'
-    assert os.environ['ACTION'] == 'm13_only_continue1' and os.environ['PARTITION'] == '1'
+    assert os.environ['ACTION'] == 'm13_only_continue2' and os.environ['PARTITION'] == '1'
     assert gate['scientific_source'] == c.read(run / 'private/SELECTED_PREFILL_RECOVERY_SOURCE1.json')['commit']
-    assert gate['scheduler_source'] == c.read(run / 'private/M13_ONLY_SOURCE1.json')['commit']
+    assert gate['scheduler_source'] == c.read(run / 'private/M13_ONLY_SOURCE2.json')['commit']
     training.require_admission()
     todo = plan(run)
     assert len(gate['paused_processes']) == 2
@@ -61,7 +69,7 @@ def main():
     old = Path('/proc') / str(gate['finished_worker_pid'])
     assert not old.exists() or (old / 'stat').read_text().split()[2] == 'Z'
     assert all(value == 0 for value in r.COUNTS.values()), 'New namespace must not inherit counters'
-    with (run / 'private/M13_ONLY_ONCE1').open('x'):
+    with (run / 'private/M13_ONLY_ONCE2').open('x'):
         pass
     original_budget = c.budget
 
@@ -90,7 +98,7 @@ def main():
                     stopped(**process)
                 budget(); training.check_counts()
                 os.environ['OWNER'] = str(owner)
-                c.write(run / 'private/M13_ONLY_PROGRESS1.json', dict(owner=owner, arm=arm, epoch=time.time()))
+                c.write(run / 'private/M13_ONLY_PROGRESS2.json', dict(owner=owner, arm=arm, epoch=time.time()))
                 fn = native_calibration.main if arm == 'C' else native_followup.train
                 fn(full=True, loaded=(runtime, bindings))
                 complete(run, arm, owner)
@@ -102,7 +110,7 @@ def main():
     for owner in range(1, 147):
         for arm in ('C', 'M13'):
             complete(run, arm, owner)
-    c.write(run / 'private/M13_ONLY_COMPLETE1.json', dict(status='TRAINING_COMPLETE',
+    c.write(run / 'private/M13_ONLY_COMPLETE2.json', dict(status='TRAINING_COMPLETE',
         C=146, M13=146, Fisher_paused=True, full146_complete=False,
         generation=0, Judge=0, counts=r.COUNTS, epoch=time.time()))
 
@@ -149,9 +157,9 @@ if __name__ == '__main__':
             code = 1
             import runtime146 as worker
             worker.r.save_counts()
-            worker.c.write(worker.RUN / 'private/M13_ONLY_FAILURE1.json', dict(
+            worker.c.write(worker.RUN / 'private/M13_ONLY_FAILURE2.json', dict(
                 error=repr(error), traceback=traceback.format_exc(), automatic_retry=False, epoch=time.time()))
             raise
         finally:
             import runtime146 as worker
-            worker.c.write(worker.RUN / 'private/M13_ONLY_EXIT1.json', dict(exit_code=code, epoch=time.time()))
+            worker.c.write(worker.RUN / 'private/M13_ONLY_EXIT2.json', dict(exit_code=code, epoch=time.time()))
