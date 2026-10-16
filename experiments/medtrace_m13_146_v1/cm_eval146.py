@@ -39,7 +39,11 @@ def admit(run,check_weights=False):
     assert scope['methods']==list(METHODS) and scope['steps']==160 and scope['new_training']==0
     assert read(run/'private/SCOPE_LOCK.json')==scope
     assert read(run/'private/GPU_SOURCE_VERSION.json')==read(run/'private/CM_SOURCE1.json')
-    assert read(run/'RUN_MANIFEST.json')['physical_GPUs']==[1]
+    devices=read(run/'RUN_MANIFEST.json')['physical_GPUs']
+    if devices!=[1]:
+        parallel=read(run/'private/CM_PARALLEL_ADMISSION1.json')
+        assert devices==[1,3,4,5] and parallel['status']=='PASS'
+        assert parallel['generation_GPUs']==[3,4,5] and parallel['original_controller_stopped']
     assert gate['new_Judge_cap']==15987 and gate['new_generation_cap']==16375
     assert read(parent/'private/M13_ONLY_EXIT3.json')['exit_code']==0
     assert read(parent/'private/M13_ONLY_COMPLETE3.json')['status']=='TRAINING_COMPLETE'

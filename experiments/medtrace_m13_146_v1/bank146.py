@@ -17,7 +17,7 @@ def bank_entries(entries,row):
 
 def evaluate(expected_candidates=584,partitions=3,admit=require_ready,
         frozen_file='M13_146_CANDIDATES_FROZEN.json',scope_file='SCOPE_LOCK.json',source_file='GPU_SOURCE_VERSION.json',
-        plan_file='EVAL_PLAN146.json'):
+    plan_file='EVAL_PLAN146.json', runtime_check=None):
     from m3bench_repro.editors.routing import MemoryRouter, decision_as_json
     admit()
     assert c.read(RUN/'private'/frozen_file)['candidates'] == expected_candidates
@@ -32,6 +32,8 @@ def evaluate(expected_candidates=584,partitions=3,admit=require_ready,
     with r.p.lease(gpu):
         runtime, bindings, handle = r.load(gpu)
         assert all(v.dtype == torch.float16 for v in runtime.model.parameters() if v.is_floating_point()), 'Original FP16 prefill parameters must survive chunk conversion exactly'
+        if runtime_check is not None:
+            runtime_check(runtime, bindings)
         route_layer = runtime.target_lock['balancedit']['targets'][0]
         entries = []
         for task in tasks():

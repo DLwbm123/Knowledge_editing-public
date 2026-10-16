@@ -52,6 +52,10 @@ def main():
     with (RUN/'private/CM_CONTROLLER_ONCE1').open('x'):pass
     for action in ('m13_146_single','m13_146_bank'):
         for part in (0,1):execute('cm_runtime146.py',action,part)
+    finish()
+
+
+def finish():
     counts=collections.Counter()
     for path in (RUN/'private').glob('COUNTS_*.json'):counts.update(read(path))
     assert counts['generation_attempts']==16375 and counts['non_generation_forwards']<=protocol.NON_GENERATION_FORWARDS
