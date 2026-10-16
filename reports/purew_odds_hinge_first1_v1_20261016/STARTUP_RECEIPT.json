@@ -1,0 +1,65 @@
+{
+  "status": "STARTED_ADMISSION_IN_PROGRESS",
+  "run_id": "purew-odds-hinge-first1-v1-20261016",
+  "runtime_commit": "348519d2963a0110128713b43a71d0638070b99a",
+  "physical_GPU": 7,
+  "GPU_UUID": "GPU-578b486c-6eae-13b0-23be-353ed09220ec",
+  "activation_epoch": 1792117420.3644602,
+  "deadline_epoch": 1792203820.3644602,
+  "local_consumers": [
+    {
+      "role": "scorer",
+      "alive": true,
+      "neutral_argv": true
+    },
+    {
+      "role": "scorer",
+      "alive": true,
+      "neutral_argv": true
+    },
+    {
+      "role": "scorer",
+      "alive": true,
+      "neutral_argv": true
+    },
+    {
+      "role": "scorer",
+      "alive": true,
+      "neutral_argv": true
+    },
+    {
+      "role": "finite_publication_tail",
+      "alive": true,
+      "neutral_argv": true
+    }
+  ],
+  "observed": {
+    "checked_epoch": 1792117519.461138,
+    "controller_alive": true,
+    "neutral_controller_argv": true,
+    "processes": [
+      {
+        "action": "admit_HM",
+        "arm": "HM",
+        "pid": 2237792,
+        "argv": "/data/bmw/envs/v0/bin/python -u /data/bmw/tmp/e.s_jq_e7h/e.mjm8fb2c.py",
+        "gpu_rows": [
+          "2237792, GPU-578b486c-6eae-13b0-23be-353ed09220ec, 44442, /data/bmw/envs/v0/bin/python"
+        ]
+      }
+    ],
+    "failures": [],
+    "counts": {
+      "attempt_slots": 0,
+      "committed_updates": 0,
+      "forwards": 89,
+      "backwards": 0,
+      "generation_attempts": 3
+    },
+    "storage": "PASS",
+    "historical_compatibility": "PASS",
+    "real_VLM_admissions": [],
+    "progress": null
+  },
+  "scientific_result": "PENDING"
+}
