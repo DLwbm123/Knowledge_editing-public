@@ -8,15 +8,15 @@ import comparison146 as contract
 import reporting
 
 
-def calculate(tasks,base_mask,records,scores,interim20=False,methods=None):
+def calculate(tasks,base_mask,records,scores,interim20=False,methods=None,single_only=False):
     methods=tuple(methods or contract.METHODS)
     assert len(methods)==2 and len(set(methods))==2
     left_method,right_method=methods
     if interim20:assert [t['order'] for t in tasks]==list(range(1,21))
-    assert len(records)==len(scores)==(1077 if interim20 else contract.CONSUMERS)
+    assert len(records)==len(scores)==(9173 if single_only else 1077 if interim20 else contract.CONSUMERS)
     assert records.keys()==scores.keys()
     panels={m:{} for m in methods};owners={};damage={};damage_owners={};contrasts={}
-    labels=[('single',1)]+([] if interim20 else [('bank',n) for n in contract.PREFIXES])
+    labels=[('single',1)]+([] if interim20 or single_only else [('bank',n) for n in contract.PREFIXES])
     for mode,prefix in labels:
         ts=tasks if mode=='single' else tasks[:prefix];label=f'{mode}_{prefix}'
         for method in methods:
@@ -62,7 +62,7 @@ def calculate(tasks,base_mask,records,scores,interim20=False,methods=None):
         supported=all(damage[m,label]['fresh_Base_correct']>0 and damage[m,label]['missing']==0 for m in methods)
         contrasts[label][right_method+'_damage_no_worse_than_'+left_method+'_per_owner']=reporting.damage_preserved(
             damage_owners[left_method,label],damage_owners[right_method,label]) if supported else None
-    if not interim20:
+    if not interim20 and not single_only:
         for method in methods:
             assert panels[method]['bank_146']['T2L']['observations']==54
             assert panels[method]['bank_146']['T2L']['edit_units']==31
