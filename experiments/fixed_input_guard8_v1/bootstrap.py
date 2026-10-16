@@ -69,7 +69,7 @@ def install(payload):
     probe.write_bytes(b'guard8')
     assert probe.read_bytes() == b'guard8'
     probe.unlink()
-    for name in ('source', 'official_llava', 'cpu_gate', 'learner_gate'):
+    for name in ('source', 'official_llava', 'cpu_gate', 'learner_gate', 'derived_inputs'):
         (root/'private'/name).symlink_to((parent/'private'/name).resolve(), target_is_directory=True)
     for name in ('BENCHMARK146_QUEUE.json', 'EVAL_LEDGER.json', 'EVAL_BINDINGS.json', 'SOURCE_COMMIT.json'):
         shutil.copy2(parent/'private'/name, root/'private'/name)

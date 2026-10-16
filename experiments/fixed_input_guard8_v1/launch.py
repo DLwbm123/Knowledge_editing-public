@@ -58,10 +58,8 @@ def install_budget(arm):
 
 
 def image_path(path):
-    text = str(path)
-    if '/DataP/' in text:
-        return Path(os.environ['DATA_ROOT'])/text.split('/DataP/', 1)[1]
-    return Path(text)
+    c, _ = helpers()
+    return Path(c.local_path(path))
 
 
 def provide(owner, arm):
@@ -89,7 +87,20 @@ def provide(owner, arm):
 def generate(runtime, bindings, row, destination, phase, budget):
     import torch
     c, root = helpers()
-    if destination.exists() or destination.with_suffix('.STARTED.json').exists():
+    marker = destination.with_suffix('.STARTED.json')
+    if destination.exists():
+        recovery = c.read(root/'private/RECOVERY1.json')
+        assert recovery['authorized'] and os.environ.get('RECOVERY_ID') == '1'
+        assert phase['arm'] == 'U' and (phase.get('stage') == 'BASE_IDENTITY' or (phase.get('mode'), phase.get('prefix')) == ('base', 0))
+        old = c.read(destination)
+        prior = dict(phase)
+        if 'code' in prior:
+            prior['code'] = recovery['previous_commit']
+        assert old['binding'] == dict(input=row, judge_input=bindings[row['opaque_Base_id']], phase=prior)
+        assert marker.exists() and c.read(marker)['phase'] == prior
+        assert isinstance(old['R0']['raw_answer'], str) and all(type(t) is int for t in old['R0']['raw_token_ids'])
+        return old
+    if marker.exists():
         raise FileExistsError('Generation cannot be replayed')
     raw = runtime.adapter.prepare_inputs(image_path(row['image_path']), row['question'], None)
     bound = bindings[row['opaque_Base_id']]
@@ -193,17 +204,27 @@ def child():
 def controller():
     c, root = helpers()
     try:
+        resume_from = os.environ.get('RESUME_FROM')
+        if resume_from:
+            assert resume_from == 'base_U_0' and os.environ.get('RECOVERY_ID') == '1'
+            assert c.read(root/'private/RECOVERY1.json')['authorized']
+            assert c.read(root/'public/CALIBRATION_COMPLETE.json')['status'] == 'PASS'
+        reached = not resume_from
         for arm, action, owner in plan():
+            label = action+'_'+arm+'_'+str(owner)
+            reached = reached or label == resume_from
+            if not reached:
+                continue
             c.budget()
             if action in ('admit', 'learn'):
                 provide(owner, arm)
-            label = action+'_'+arm+'_'+str(owner)
             env = dict(os.environ, ARM=arm, ACTION=label, ACTION_KIND=action, OWNER=str(owner), ENTRY_MODE='child')
             c.write(root/'public/PROGRESS.json', dict(stage=label, status='RUNNING', epoch=time.time()))
             with (root/'logs'/(label+'.log')).open('ab') as log:
                 process = subprocess.Popen([env['TRAIN_PYTHON'], '-u', env['NEUTRAL_ENTRY']], env=env,
                                            stdout=log, stderr=subprocess.STDOUT)
-                c.write(root/'private/control'/(label+'.json'), dict(pid=process.pid, started_epoch=time.time()))
+                suffix = '.recovery1' if os.environ.get('RECOVERY_ID') == '1' else ''
+                c.write(root/'private/control'/(label+suffix+'.json'), dict(pid=process.pid, started_epoch=time.time()))
                 try:
                     code = process.wait(timeout=max(1, c.read(root/'RUN_MANIFEST.json')['deadline_epoch']-time.time()))
                 except subprocess.TimeoutExpired:
@@ -227,7 +248,8 @@ def controller():
         c.write(root/'private/GENERATION_COMPLETE.json', dict(status='PASS', scoring_pending=True))
         c.write(root/'public/PROGRESS.json', dict(status='GENERATION_COMPLETE_SCORING_PENDING', epoch=time.time()))
     except BaseException:
-        c.write(root/'private/failures/controller.json', dict(traceback=traceback.format_exc(), epoch=time.time()))
+        suffix = '.recovery1' if os.environ.get('RECOVERY_ID') == '1' else ''
+        c.write(root/'private/failures'/('controller'+suffix+'.json'), dict(traceback=traceback.format_exc(), epoch=time.time()))
         c.write(root/'public/PROGRESS.json', dict(status='STOPPED_FAILURE_NO_RETRY', epoch=time.time()))
         raise
 
