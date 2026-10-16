@@ -20,7 +20,8 @@ def main():
     import astra_queue as a
     q,run=a.q,a.RUN;queue=run/'private'/protocol.QUEUE
     protocol.admit(run)
-    assert (queue/'ALL_WORKERS_COMPLETE.json').exists() and (queue/'workers/0/SCORER_DONE.json').exists()
+    from cm_queue146 import recovery,completion_root,all_workers_done
+    assert (queue/'ALL_WORKERS_COMPLETE.json').exists() and all_workers_done(completion_root(queue,recovery(run)),4 if (run/'private/CM_PARALLEL_SCORING1.json').exists() else 1)
     with sqlite3.connect('file:'+str(queue/'queue.sqlite')+'?mode=ro',uri=True) as db:
         assert not db.execute("SELECT 1 FROM payload WHERE status IN ('PENDING','RESERVED')").fetchone()
         records={};scores={}
