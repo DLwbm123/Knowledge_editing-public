@@ -56,8 +56,8 @@ def validate_snapshot(r,saved,binding):
     assert all(k in saved['rng'] for k in ('torch_rng','python_rng','cuda_rng')) and len(saved['numpy_rng'])==5
     assert all(v>=0 for v in saved['counts'].values())
     assert saved['counts']['updates']>=saved['step'] and saved['counts']['backwards']>=contract.BACKWARDS_PER_STEP*saved['step']
-    if binding['arm'] in ('M3','M13','M13B'):assert saved['counts']['operator_backwards']>=saved['step']
-    if binding['arm'] in ('M1','M13','M13B'):
+    if binding['arm'] in ('M3','M13','M13B','M13P'):assert saved['counts']['operator_backwards']>=saved['step']
+    if binding['arm'] in ('M1','M13','M13B','M13P'):
         assert saved['optimizer'] is None and saved['scalar']['step']==saved['step']
         assert len(saved['scalar']['second_moments'])==2 and all(np.isfinite(v) and v>=0 for v in saved['scalar']['second_moments'])
     else:
@@ -75,7 +75,7 @@ def validate_snapshot(r,saved,binding):
 
 
 def run(r,runtime,hook,expert,batches,arm,cache,regularization,targets,binding,save_checkpoint):
-    assert arm in (*contract.METHODS,"M13B") and binding['arm']==arm and len(batches)==contract.SOURCE_COUNT
+    assert arm in (*contract.METHODS,"M13B","M13P") and binding['arm']==arm and len(batches)==contract.SOURCE_COUNT
     assert len(binding['source_order'])==len(set(binding['source_order']))==contract.SOURCE_COUNT
     assert binding['source_recipe']==contract.SOURCE_RECIPE
     assert binding['steps']==160 and binding['parameters']==7168
@@ -84,12 +84,12 @@ def run(r,runtime,hook,expert,batches,arm,cache,regularization,targets,binding,s
     initial=r.old.snapshot(expert)
     assert sum(v.numel() for v in initial.values())==7168 and torch.count_nonzero(initial['G1'])==0
     assert all(torch.count_nonzero(initial[k])>0 for k in r.mm.KEYS[1:])
-    canonical=arm in ('M1','M13','M13B')
+    canonical=arm in ('M1','M13','M13B','M13P')
     if canonical:
         expert.load_state_dict(r.mm.canonicalize(initial)[0])
     assert (arm=='C' and targets is None and regularization==0) or (
         arm!='C' and len(targets)==160 and all(np.isfinite(v) and v>=0 for v in targets))
-    assert (arm in ('C','M1') and regularization==0) or (arm in ('M3','M13','M13B') and np.isfinite(regularization) and regularization>0)
+    assert (arm in ('C','M1') and regularization==0) or (arm in ('M3','M13','M13B','M13P') and np.isfinite(regularization) and regularization>0)
     optimizer=None if canonical else r.p.optimizer(expert,runtime.model)
     scalar=dict(step=0,second_moments=[0.,0.]) if canonical else None
     start=copy.deepcopy(r.COUNTS);curve=[]
@@ -106,7 +106,7 @@ def run(r,runtime,hook,expert,batches,arm,cache,regularization,targets,binding,s
                 None if arm=='C' else targets[step-1],arm)
         r.COUNTS['operator_backwards']+=audit['operator_backwards'];r.COUNTS['updates']+=1
         assert r.COUNTS['backwards']-start['backwards']==contract.BACKWARDS_PER_STEP*step
-        assert r.COUNTS['operator_backwards']-start['operator_backwards']==step*int(arm in ('M3','M13','M13B'))
+        assert r.COUNTS['operator_backwards']-start['operator_backwards']==step*int(arm in ('M3','M13','M13B','M13P'))
         curve.append(dict(step=step,source_NLL=losses,operator_step_norm=r.fm.map_norm(before,selected),**audit))
         if step%20==0:
             saved=snapshot(r,expert,optimizer,scalar,step,curve,binding)

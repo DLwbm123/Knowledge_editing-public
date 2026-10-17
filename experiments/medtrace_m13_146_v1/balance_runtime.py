@@ -37,22 +37,23 @@ def main():
                     assert a==b and all(torch.equal(grad[k],v.grad) for k,v in expert.named_parameters())
                 expert.load_state_dict(before);c.restore_rng(rng);checked=True
                 c.write(RUN/'private'/f'BALANCE_PARITY_{part}.json',dict(status='PASS',duplicate_source_gradients=True,epoch=time.time()))
-            # Fixed endpoint diagnostic on the immutable M13 state; no heldout inputs.
-            before=r.old.snapshot(expert);rng=c.rng()
-            owner=next(t['order'] for t in w.tasks() if w.trajectory.source_rows(w.packet(),t['order'])[0]['query_id']==args[9]['source_order'][0])
-            state=r.p.load_state(w.point({'order':owner},'M13'))['states']['FINAL']
-            expert.load_state_dict(state)
-            with c.diagnostic_scope(hook):
-                _,losses=w.trajectory.source_gradients(r,runtime,hook,expert,batches,160)
-                source={k:v.grad.detach().clone() for k,v in expert.named_parameters()}
-                params={k:v.detach().clone().requires_grad_(True) for k,v in expert.named_parameters()}
-                penalty=r.mm.operator_penalty(params,args[6])
-                fish=dict(zip(params,torch.autograd.grad(args[7]*penalty,tuple(params.values()))))
-                r.COUNTS['operator_backwards']+=1
-                from balanced_fisher import cap_gradient
-                _,audit=cap_gradient(source,fish,r.mm.GROUPS)
-            c.write(RUN/'private/baseline_gradient_diagnostics'/f'{owner}.json',dict(audit,source_NLL=losses,penalty=float(penalty),step=160))
-            expert.load_state_dict(before);c.restore_rng(rng)
+            if f.DIAGNOSE_ENDPOINT:
+                # Fixed endpoint diagnostic on the immutable M13 state; no heldout inputs.
+                before=r.old.snapshot(expert);rng=c.rng()
+                owner=next(t['order'] for t in w.tasks() if w.trajectory.source_rows(w.packet(),t['order'])[0]['query_id']==args[9]['source_order'][0])
+                state=r.p.load_state(w.point({'order':owner},'M13'))['states']['FINAL']
+                expert.load_state_dict(state)
+                with c.diagnostic_scope(hook):
+                    _,losses=w.trajectory.source_gradients(r,runtime,hook,expert,batches,160)
+                    source={k:v.grad.detach().clone() for k,v in expert.named_parameters()}
+                    params={k:v.detach().clone().requires_grad_(True) for k,v in expert.named_parameters()}
+                    penalty=r.mm.operator_penalty(params,args[6])
+                    fish=dict(zip(params,torch.autograd.grad(args[7]*penalty,tuple(params.values()))))
+                    r.COUNTS['operator_backwards']+=1
+                    from balanced_fisher import cap_gradient
+                    _,audit=cap_gradient(source,fish,r.mm.GROUPS)
+                c.write(RUN/'private/baseline_gradient_diagnostics'/f'{owner}.json',dict(audit,source_NLL=losses,penalty=float(penalty),step=160))
+                expert.load_state_dict(before);c.restore_rng(rng)
             with PrefixCache(runtime,batches) as cache:
                 result=original(*args,**kwargs)
                 assert cache.hits==315 and cache.misses==5
@@ -63,8 +64,8 @@ def main():
         def math_load(gpu):
             runtime,bindings,handle=load(gpu);r.old.fp32(runtime);return runtime,bindings,handle
         r.load=math_load
-        w.train(arms=('M13B',),partitions=2)
-        n=len(w.tasks()[part::2]);assert r.COUNTS['updates']==n*160 and r.COUNTS['backwards']==n*322+4 and r.COUNTS['operator_backwards']==n*161
+        w.train(arms=(f.CANDIDATE,),partitions=2)
+        n=len(w.tasks()[part::2]);assert r.COUNTS['updates']==n*160 and r.COUNTS['backwards']==n*(322 if f.DIAGNOSE_ENDPOINT else 320)+4 and r.COUNTS['operator_backwards']==n*(161 if f.DIAGNOSE_ENDPOINT else 160)
     else:
         assert action=='m13_146_single'
         sys.path.insert(0,str(Path(__file__).parent));import bank146

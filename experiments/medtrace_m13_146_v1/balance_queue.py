@@ -14,7 +14,7 @@ import queue146 as base
 def main():
     import astra_queue as a
     from fine_queue import full_identity,selfcheck
-    q,run=a.q,a.RUN;q.ROOT=run/'private'/f.QUEUE;q.BATCH_LEDGER='Astra_balance146_batches';q.EFFORT='medium';shared.protocol=f
+    q,run=a.q,a.RUN;q.ROOT=run/'private'/f.QUEUE;q.BATCH_LEDGER=f.BATCH_LEDGER;q.EFFORT='medium';shared.protocol=f
     base.MAX_JUDGE=f.CONSUMERS;base.contract=SimpleNamespace(original=shared.contract.original,METHOD_CONSUMERS=f.METHOD_CONSUMERS)
     op=json.loads(os.environ['QUEUE_REQUEST']);q.ROOT.mkdir(parents=True,exist_ok=True)
     with (q.ROOT/'QUEUE.lock').open('a') as lock:
@@ -47,7 +47,7 @@ def main():
                 gate=q.read(run/'private/CM_ADMISSION1.json');parent=Path(gate['parent'])
                 ledger=q.read(run/'RESOURCE_LEDGER.json');prior=q.read(run/'private/INHERITED_COST.json');p=q.read(parent/'RESOURCE_LEDGER.json')
                 own=ledger['Judge_attempts']-prior['Judge_attempts'];assert own+len(op['keys'])<=5000
-                assert p['Judge_attempts']+own-p.get('balance146_Judge_merged',{}).get('increment',0)+len(op['keys'])<=q.read(parent/'RUN_MANIFEST.json')['Judge_limit']
+                assert p['Judge_attempts']+own-p.get(f.JUDGE_MERGE_KEY,{}).get('increment',0)+len(op['keys'])<=q.read(parent/'RUN_MANIFEST.json')['Judge_limit']
             answer=base.coverage(db) if op['action']=='ingest' else shared.dispatch(a,q,db,op,4)
         coverage=base.coverage(db)
         if coverage['all_attempts_resolved'] and shared.all_workers_done(q.ROOT,4):q.write(q.ROOT/'ALL_WORKERS_COMPLETE.json',dict(coverage,workers=4,epoch=time.time()))
