@@ -21,18 +21,20 @@ def paired(before,after):
 
 def main():
     r=Path(os.environ['RUN_ROOT']);read=lambda p:json.loads(p.read_text())
+    arms=('P',) if read(r/'private/config.json').get('source6_diagnostic',False) else ('U','P')
+    consumers=382*len(arms)
     db=sqlite3.connect('file:'+str(r/'private/judge_fixed8/queue.sqlite')+'?mode=ro',uri=True);db.row_factory=sqlite3.Row
     assert not db.execute("SELECT 1 FROM payload WHERE status IN ('PENDING','RESERVED')").fetchone(),'Scoring not terminal'
-    assert db.execute('SELECT count(*) FROM consumer').fetchone()[0]==764
+    assert db.execute('SELECT count(*) FROM consumer').fetchone()[0]==consumers
     tasks=read(r/'private/BENCHMARK146_QUEUE.json')['tasks'][:8];protect=read(r/'private/protection_ids.json')
     rows=db.execute('SELECT c.*,p.status,p.correct FROM consumer c JOIN payload p ON c.payload_key=p.key').fetchall()
-    data={(x['method'],x['mode'],x['prefix'],x['query_id']):x['correct'] for x in rows};assert len(data)==764
+    data={(x['method'],x['mode'],x['prefix'],x['query_id']):x['correct'] for x in rows};assert len(data)==consumers
     def get(a,mode,prefix,ids):return [data[a,mode,prefix,q] for q in ids]
     def ids(t,group):return [t['edit_id']] if group=='T0' else [q for e in t['events'] if e['task']==group for q in e['all_probe_query_ids']]
     result=dict(status='COMPLETE_WITH_MISSING' if any(x['correct'] is None for x in rows) else 'COMPLETE',
-                consumers=764,consumer_status=dict(db.execute('SELECT p.status,count(*) FROM consumer c JOIN payload p ON c.payload_key=p.key GROUP BY p.status')),
+                consumers=consumers,consumer_status=dict(db.execute('SELECT p.status,count(*) FROM consumer c JOIN payload p ON c.payload_key=p.key GROUP BY p.status')),
                 payload_status=dict(db.execute('SELECT status,count(*) FROM payload GROUP BY status')),ingest=read(r/'private/judge_fixed8/INGEST.json'),arms={})
-    for a in ('U','P'):
+    for a in arms:
         assert read(r/'private'/('FINAL_CONSUMED_'+a+'.json'))['status']=='PASS'
         summaries=[read(r/'private/fixed8'/a/'sources'/f'{i}.json') for i in range(1,9)]
         steps=[read(p) for p in (r/'private/fixed8'/a/'steps').rglob('*.json')];assert len(steps)==160
@@ -52,8 +54,9 @@ def main():
         result['arms'][a]=arm
     result['common_insert_correct_old1to7']={}
     for g in ('T0','T2G'):
-        common=[q for t in tasks[:7] for q in ids(t,g) if all(data[a,'insertion',t['order'],q]==1 for a in ('U','P'))]
-        result['common_insert_correct_old1to7'][g]={a:rate(get(a,'prefix',8,common)) for a in ('U','P')}
+        common=[q for t in tasks[:7] for q in ids(t,g) if all(data[a,'insertion',t['order'],q]==1 for a in arms)]
+        result['common_insert_correct_old1to7'][g]={a:rate(get(a,'prefix',8,common)) for a in arms}
+    if len(arms)==1:result.pop('common_insert_correct_old1to7')
     resources=read(r/'RESOURCE_LEDGER.json');assert all(s.get('ended_epoch') for s in resources['gpu_sessions'])
     result['cost']=dict(GPU_seconds=sum(s['ended_epoch']-s['started_epoch'] for s in resources['gpu_sessions']),new_Judge_payload_attempts=resources['Judge_attempts'])
     print(json.dumps(result,indent=2))
