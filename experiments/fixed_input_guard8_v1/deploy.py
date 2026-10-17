@@ -6,10 +6,11 @@ import subprocess
 import time
 
 
-def main():
+def main(*, diagnostic=False):
     workspace = Path(__file__).resolve().parents[2]
-    report = workspace/'reports/fixed_input_context_pin8_v3_20261017'
-    state = workspace/'.local_run/fixed_input_context_pin8_v3_20261017'
+    name = 'fixed_input_source6_diagnostic_v1_20261017' if diagnostic else 'fixed_input_context_pin8_v3_20261017'
+    report = workspace/'reports'/name
+    state = workspace/'.local_run'/name
     state.mkdir(parents=True, exist_ok=True)
     assert not subprocess.check_output(['git','status','--porcelain'], cwd=workspace, text=True).strip()
     sha = subprocess.check_output(['git','rev-parse','HEAD'], cwd=workspace, text=True).strip()
@@ -17,7 +18,7 @@ def main():
     paths += [workspace/'experiments'/p for p in ('fixed_input_guard_v1/guard.py', 'purew_original146_v1/common.py',
                                                 'purew_original146_v1/contract.py', 'purew_medical_evidence100_v1/access.py')]
     paths.append(workspace/'experiments/medtrace_full_method_comparison_v2_20261003/judge_queue.py')
-    payload = dict(commit=sha, gpu=7, uuid='GPU-578b486c-6eae-13b0-23be-353ed09220ec',
+    payload = dict(diagnostic=diagnostic, commit=sha, gpu=7, uuid='GPU-578b486c-6eae-13b0-23be-353ed09220ec',
                    authorization=json.loads((report/'launch/AUTHORIZATION.json').read_text()),
                    protocol=json.loads((report/'PROTOCOL.json').read_text()), cpu=json.loads((report/'CPU_CHECK.json').read_text()),
                    files={str(p.relative_to(workspace)):p.read_text() for p in paths})

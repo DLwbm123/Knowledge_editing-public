@@ -1,3 +1,7 @@
+## 当前授权：V3 P臂第6条逐接受更新诊断并立即启动
+
+2026-10-17用户要求补齐诊断、CPU检查、源码推送后立即实验。新目录fixed-input-source6-diagnostic-v1-20261017，P-only原Base1—8/160槽；不改V3损失/步长/投影容差/种子。只写接受权重快照，独立评估第6条token间隔、完整上下文ΔWh和重复生成，不向训练或接受门反馈。至多41额外生成，旧运行不变，无重试/扩展/U/新监测。协议和生命周期见reports/fixed_input_source6_diagnostic_v1_20261017。
+
 ## 当前终态：V3完成，保护集局部改善、第6条遗忘未改善
 
 U/P各160槽、重载和210新Judge通过，758/764消费者有效，6历史缺分保留。V3对V2：P保护损伤50→32/54，但最终T0 6→5/8、T1G24→20/32、T2G18→17/32；P第6条插入1/1与4/4最终全错，9/9达到1024token。GPU4009.222127秒，active optimizer退役，native保留。完整三版U/P报告reports/fixed_input_context_pin8_v3_20261017/completion/REPORT_ZH.md；公开交付后暂停监测，无自动下一轮。

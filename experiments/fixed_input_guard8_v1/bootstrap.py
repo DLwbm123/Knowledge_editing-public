@@ -10,10 +10,15 @@ import time
 
 
 def install(payload):
-    root = Path('/data/bmw/Knowledge_editing/outputs/fixed-input-context-pin8-v3-20261017/run')
+    diagnostic = payload.get('diagnostic', False)
+    run_name = 'fixed-input-source6-diagnostic-v1-20261017' if diagnostic else 'fixed-input-context-pin8-v3-20261017'
+    root = Path('/data/bmw/Knowledge_editing/outputs')/run_name/'run'
     parent = Path('/data/bmw/Knowledge_editing/outputs/purew-odds-hinge-first1-v1-20261016/run')
     assert not root.exists(), 'Inspect existing installation; never replay'
     assert payload['authorization']['execution'] is True
+    if diagnostic:
+        assert payload['protocol']['diagnostic']['training_feedback'] is False
+        assert payload['protocol']['arms'] == {'P': 'H_ONLY_CONTEXT_FIXED_NATIVE_PINS'}
     assert payload['cpu']['status'] == 'PASS'
     gpu = payload['gpu']
     uuid, free = subprocess.check_output(['nvidia-smi', '-i', str(gpu), '--query-gpu=uuid,memory.free',
@@ -99,11 +104,11 @@ def install(payload):
                                               host_available_bytes=memory, read_write_probe=True))
     now = time.time()
     write('RUN_MANIFEST.json', dict(starting_epoch=now, deadline_epoch=None, GPU_seconds_limit=None,
-                                   min_free_bytes=8*1024**3, owned_weight_limit_bytes=3*1024**3))
+                                   min_free_bytes=8*1024**3, owned_weight_limit_bytes=(8 if diagnostic else 3)*1024**3))
     write('STAGE_CAP.json', dict(GPU_seconds_limit=None))
     write('RESOURCE_LEDGER.json', dict(gpu_seconds_used=0, gpu_sessions=[], Judge_attempts=0))
     write('PLAN_CONFIG.json', dict(hardware=dict(allowed_GPUs=[gpu], UUIDs={str(gpu):uuid})))
-    write('private/config.json', dict(version=payload['protocol']['version'], authorization=payload['authorization'],
+    write('private/config.json', dict(version=payload['protocol']['version'], source6_diagnostic=diagnostic, authorization=payload['authorization'],
                                     admission={k:'PASS' for k in ('calibration_disjoint','source_order','storage','hardware','runtime_binding')},
                                     calibration_manifest=manifest, calibration_inputs=str(root/'private/calibration_inputs.pt'),
                                     layer='model.layers.21.mlp.down_proj', native_dtype='float16',

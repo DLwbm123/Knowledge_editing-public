@@ -13,7 +13,7 @@ class CooperativeStop(RuntimeError):
     pass
 
 
-def run_current(runtime, arm, calibration, record, fits, owner, folder, seed=None, resume=False, stop_requested=None):
+def run_current(runtime, arm, calibration, record, fits, owner, folder, seed=None, resume=False, stop_requested=None, diagnostic=False):
     folder = Path(folder)
     budget = Budget(folder/'budget.json')
     editor = Editor(runtime, arm, calibration, budget)
@@ -48,9 +48,15 @@ def run_current(runtime, arm, calibration, record, fits, owner, folder, seed=Non
             event = editor.attempt(slot)
             atomic_json(folder/'steps'/str(owner)/(str(slot)+'.json'), event)
             events.append(event)
+            if diagnostic and owner in (7, 8) and event['accepted']:
+                from .diagnostic import save_snapshot
+                save_snapshot(editor.weight, folder, owner, slot)
             if stop_requested is not None and stop_requested():
                 editor.save(checkpoint)
                 raise CooperativeStop('Exact slot checkpoint saved; explicit resume required')
+        if diagnostic and owner == 6:
+            from .diagnostic import save_snapshot
+            save_snapshot(editor.weight, folder, owner, SLOTS)
         summary = editor.finish_source()
         editor.save(checkpoint)
         atomic_json(folder/'sources'/(str(owner)+'.json'), summary)
@@ -212,7 +218,8 @@ def main(config):
             try:
                 return run_current(runtime, config['arm'], calibration['inputs'], record, packet['fit_questions'],
                                    packet['order'], config['arm_folder'], packet['seed'],
-                                   resume=config.get('resume', False), stop_requested=lambda: stop[0])
+                                   resume=config.get('resume', False), stop_requested=lambda: stop[0],
+                                   diagnostic=config.get('source6_diagnostic', False))
             finally:
                 for sig, handler in previous.items():
                     signal.signal(sig, handler)

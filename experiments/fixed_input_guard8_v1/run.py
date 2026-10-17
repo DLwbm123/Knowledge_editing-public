@@ -12,6 +12,9 @@ def main():
     assert config['authorization']['execution'] and config['authorization']['resource_gate_waiver']
     assert c.read(root/'public/RESOURCE_GATE_WAIVER.json')['authorized'] is True
     remove_resource_gates()
+    if config.get('source6_diagnostic'):
+        from .diagnostic import install
+        install()
     (launch.child if os.environ['ENTRY_MODE'] == 'child' else launch.controller)()
 
 
