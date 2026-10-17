@@ -26,7 +26,7 @@ def admit(run):
     a=read(run/'private/BALANCE_ADMISSION1.json');assert a['status']=='PASS'
     assert a['owners']==list(range(1,147)) and a['new_methods']==['M13B']
     assert read(run/'PLAN_CONFIG.json')['maximum_counts']==CAPS
-    assert read(run/'private/GPU_SOURCE_VERSION.json')['commit']!='NOT_LAUNCHED'
+    assert a['source_commit']==read(run/'private/GPU_SOURCE_VERSION.json')['commit']!='NOT_LAUNCHED'
     for proc in a['paused_processes']:stopped(**proc)
     assert read(Path(a['parent'])/'private/FISHER_RELEASE_USER_20261016.json')['status']=='RELEASED_BY_USER'
     project_budget(run);return a
