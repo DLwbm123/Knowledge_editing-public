@@ -1,0 +1,26 @@
+{
+  "status": "AUTHORIZED_ACTIVE",
+  "authority": "DIRECT_USER",
+  "user_instruction": "每半小时监测GPU3这三个对照臂，正常保持安静；故障保留现场，只在冻结预算内安全续接。完整评分后对比SH00/SH10/SH01与R，保留缺分上下界和逐题损伤，push并通知。",
+  "recorded_at": "2026-10-15T14:48:32.394463+00:00",
+  "automation_id": "r-gpu2",
+  "automation_name": "GPU3软KL与硬约束有限对照监测",
+  "interval_minutes": 30,
+  "physical_GPU": 3,
+  "GPU_UUID": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+  "operational_override": "Supersedes prior preparation and execution no-monitor flags only",
+  "scientific_protocol_and_budgets_unchanged": true,
+  "quiet_when_healthy": true,
+  "notifications": [
+    "meaningful_stage",
+    "engineering_failure_and_repair",
+    "verified_public_delivery",
+    "required_user_action"
+  ],
+  "recovery": "Only within frozen budgets with proven state/cost continuity and no repeated committed update, generation or Judge",
+  "completion": "All actual terminal consumers scored, shared missing bounds and individual protection damage, verified public push, notify, then pause monitor",
+  "original146": "PAUSED",
+  "M": "PAUSED",
+  "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+  "automatic_next_experiment": false
+}

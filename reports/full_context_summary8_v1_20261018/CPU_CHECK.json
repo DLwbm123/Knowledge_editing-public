@@ -1,0 +1,113 @@
+{
+  "status": "PASS",
+  "scope": "CPU_SYNTHETIC_NOT_SCIENTIFIC_EVIDENCE",
+  "checks": {
+    "flat65_zero_and_nearflat65_scale_loss": {
+      "delta": 1.0,
+      "tail_loss": 1.0,
+      "shrink_loss": 64.0,
+      "before_energy": 65.1280699874269,
+      "after_energy": 0.1280699874268976,
+      "nonzero_rank": 64
+    },
+    "zero_spectrum_no_arbitrary_basis_and_restore": true,
+    "energy_zero_small_nonzero_fallback_shuffle_and_mean_cancellation": true,
+    "nonlinear_per_token_VJP_finite_difference": true,
+    "actual_five_arm_worker_save_reload_200_slots": [
+      {
+        "arm": "B",
+        "slots": 40,
+        "qualified": 2,
+        "counters": {
+          "attempt_slots": 40,
+          "admission_slots": 0,
+          "backwards": 40,
+          "candidate_checks": 40,
+          "committed_updates": 7,
+          "forwards": 192,
+          "generation_attempts": 0,
+          "new_Judge": 0,
+          "summary_forwards": 10,
+          "summary_vjps": 0
+        },
+        "protection_bytes": 66060352
+      },
+      {
+        "arm": "C",
+        "slots": 40,
+        "qualified": 2,
+        "counters": {
+          "attempt_slots": 40,
+          "admission_slots": 0,
+          "backwards": 40,
+          "candidate_checks": 40,
+          "committed_updates": 7,
+          "forwards": 192,
+          "generation_attempts": 0,
+          "new_Judge": 0,
+          "summary_forwards": 10,
+          "summary_vjps": 0
+        },
+        "protection_bytes": 66060352
+      },
+      {
+        "arm": "N",
+        "slots": 40,
+        "qualified": 2,
+        "counters": {
+          "attempt_slots": 40,
+          "admission_slots": 0,
+          "backwards": 40,
+          "candidate_checks": 40,
+          "committed_updates": 7,
+          "forwards": 192,
+          "generation_attempts": 0,
+          "new_Judge": 0,
+          "summary_forwards": 10,
+          "summary_vjps": 0
+        },
+        "protection_bytes": 66060352
+      },
+      {
+        "arm": "D",
+        "slots": 40,
+        "qualified": 2,
+        "counters": {
+          "attempt_slots": 40,
+          "admission_slots": 0,
+          "backwards": 40,
+          "candidate_checks": 40,
+          "committed_updates": 7,
+          "forwards": 192,
+          "generation_attempts": 0,
+          "new_Judge": 0,
+          "summary_forwards": 10,
+          "summary_vjps": 30
+        },
+        "protection_bytes": 66060352
+      },
+      {
+        "arm": "E",
+        "slots": 40,
+        "qualified": 2,
+        "counters": {
+          "attempt_slots": 40,
+          "admission_slots": 0,
+          "backwards": 40,
+          "candidate_checks": 40,
+          "committed_updates": 7,
+          "forwards": 192,
+          "generation_attempts": 0,
+          "new_Judge": 0,
+          "summary_forwards": 10,
+          "summary_vjps": 30
+        },
+        "protection_bytes": 66060352
+      }
+    ],
+    "summary_does_not_mutate_training_state_and_admission": true,
+    "independent_three_stage_diagnostic_and_weight_retirement": true
+  },
+  "persistent_protection_bytes": 66060352,
+  "elapsed_seconds": 16.821918549016118
+}

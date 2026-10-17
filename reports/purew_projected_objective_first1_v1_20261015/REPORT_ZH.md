@@ -1,0 +1,33 @@
+# 投影统一目标：PM / PU 与历史SH00首源对照
+
+PARTIAL_SCIENTIFIC_STOP。完整评分不等科学成功；固定36保护与prefix1任务面板分开。
+
+|臂|任务|正确/分母|未知|微平均界%|
+|---|---|---:|---:|---|
+|SH00|T0|1/1|0|[100.0, 100.0]|
+|SH00|T1G|4/4|0|[100.0, 100.0]|
+|SH00|T2G|3/4|0|[75.0, 75.0]|
+|SH00|T1L|0/0|0|None|
+|SH00|T2L|0/0|0|None|
+|PM|T0|1/1|0|[100.0, 100.0]|
+|PM|T1G|4/4|0|[100.0, 100.0]|
+|PM|T2G|3/4|0|[75.0, 75.0]|
+|PM|T1L|0/0|0|None|
+|PM|T2L|0/0|0|None|
+|PU|T0|1/1|0|[100.0, 100.0]|
+|PU|T1G|4/4|0|[100.0, 100.0]|
+|PU|T2G|2/4|0|[50.0, 50.0]|
+|PU|T1L|0/0|0|None|
+|PU|T2L|0/0|0|None|
+
+固定保护：[{"arm": "SH00", "terminal_prefix": 1, "task": "T1L", "observations": 2, "known_correct": 2, "missing": 0, "Base_correct_to_wrong_bounds": [0, 0]}, {"arm": "SH00", "terminal_prefix": 1, "task": "T2L", "observations": 34, "known_correct": 31, "missing": 0, "Base_correct_to_wrong_bounds": [3, 3]}, {"arm": "PM", "terminal_prefix": 1, "task": "T1L", "observations": 2, "known_correct": 2, "missing": 0, "Base_correct_to_wrong_bounds": [0, 0]}, {"arm": "PM", "terminal_prefix": 1, "task": "T2L", "observations": 34, "known_correct": 31, "missing": 0, "Base_correct_to_wrong_bounds": [3, 3]}, {"arm": "PU", "terminal_prefix": 1, "task": "T1L", "observations": 2, "known_correct": 2, "missing": 0, "Base_correct_to_wrong_bounds": [0, 0]}, {"arm": "PU", "terminal_prefix": 1, "task": "T2L", "observations": 34, "known_correct": 31, "missing": 0, "Base_correct_to_wrong_bounds": [3, 3]}]
+
+逐题新增损伤/修复及实际插入端点：[{"arm": "SH00", "task": "T0", "comparison": "actual-insertion-to-actual-terminal", "terminal_prefix": 1, "pairs": 1, "shared_unknown_payloads": 0, "known_transitions": {"11": 1}, "unresolved_pairs": 0, "count_bounds": {"11": [1, 1], "10": [0, 0], "01": [0, 0], "00": [0, 0]}}, {"arm": "SH00", "task": "T2G", "comparison": "actual-insertion-to-actual-terminal", "terminal_prefix": 1, "pairs": 4, "shared_unknown_payloads": 0, "known_transitions": {"11": 3, "00": 1}, "unresolved_pairs": 0, "count_bounds": {"11": [3, 3], "10": [0, 0], "01": [0, 0], "00": [1, 1]}}, {"task": "T1L", "comparison": "SH00-to-PM", "matched_terminal_prefix": 1, "pairs": 2, "shared_unknown_payloads": 0, "known_transitions": {"11": 2}, "unresolved_pairs": 0, "count_bounds": {"11": [2, 2], "10": [0, 0], "01": [0, 0], "00": [0, 0]}}, {"task": "T2L", "comparison": "SH00-to-PM", "matched_terminal_prefix": 1, "pairs": 34, "shared_unknown_payloads": 0, "known_transitions": {"11": 31, "00": 3}, "unresolved_pairs": 0, "count_bounds": {"11": [31, 31], "10": [0, 0], "01": [0, 0], "00": [3, 3]}}, {"arm": "PM", "task": "T0", "comparison": "actual-insertion-to-actual-terminal", "terminal_prefix": 1, "pairs": 1, "shared_unknown_payloads": 0, "known_transitions": {"11": 1}, "unresolved_pairs": 0, "count_bounds": {"11": [1, 1], "10": [0, 0], "01": [0, 0], "00": [0, 0]}}, {"arm": "PM", "task": "T2G", "comparison": "actual-insertion-to-actual-terminal", "terminal_prefix": 1, "pairs": 4, "shared_unknown_payloads": 0, "known_transitions": {"11": 3, "00": 1}, "unresolved_pairs": 0, "count_bounds": {"11": [3, 3], "10": [0, 0], "01": [0, 0], "00": [1, 1]}}, {"task": "T1L", "comparison": "PM-to-PU", "matched_terminal_prefix": 1, "pairs": 2, "shared_unknown_payloads": 0, "known_transitions": {"11": 2}, "unresolved_pairs": 0, "count_bounds": {"11": [2, 2], "10": [0, 0], "01": [0, 0], "00": [0, 0]}}, {"task": "T1L", "comparison": "SH00-to-PU", "matched_terminal_prefix": 1, "pairs": 2, "shared_unknown_payloads": 0, "known_transitions": {"11": 2}, "unresolved_pairs": 0, "count_bounds": {"11": [2, 2], "10": [0, 0], "01": [0, 0], "00": [0, 0]}}, {"task": "T2L", "comparison": "PM-to-PU", "matched_terminal_prefix": 1, "pairs": 34, "shared_unknown_payloads": 0, "known_transitions": {"11": 31, "00": 3}, "unresolved_pairs": 0, "count_bounds": {"11": [31, 31], "10": [0, 0], "01": [0, 0], "00": [3, 3]}}, {"task": "T2L", "comparison": "SH00-to-PU", "matched_terminal_prefix": 1, "pairs": 34, "shared_unknown_payloads": 0, "known_transitions": {"11": 31, "00": 3}, "unresolved_pairs": 0, "count_bounds": {"11": [31, 31], "10": [0, 0], "01": [0, 0], "00": [3, 3]}}, {"arm": "PU", "task": "T0", "comparison": "actual-insertion-to-actual-terminal", "terminal_prefix": 1, "pairs": 1, "shared_unknown_payloads": 0, "known_transitions": {"11": 1}, "unresolved_pairs": 0, "count_bounds": {"11": [1, 1], "10": [0, 0], "01": [0, 0], "00": [0, 0]}}, {"arm": "PU", "task": "T2G", "comparison": "actual-insertion-to-actual-terminal", "terminal_prefix": 1, "pairs": 4, "shared_unknown_payloads": 0, "known_transitions": {"11": 2, "00": 2}, "unresolved_pairs": 0, "count_bounds": {"11": [2, 2], "10": [0, 0], "01": [0, 0], "00": [2, 2]}}]
+
+共同完整CE/接受拒绝zero：{"SH00": {"final_complete_CE": 0.01851115074300988, "last_available_CE": 0.01851115074300988, "slots": 20, "accepted": 20, "rejected": 0, "zero_fraction": 0.0, "first_hit_CE": {"1": 6, "0.5": 9, "0.1": 13}}, "PM": {"final_complete_CE": 0.050279184696154264, "last_available_CE": 0.050279184696154264, "slots": 20, "accepted": 20, "rejected": 0, "zero_fraction": 0.0, "first_hit_CE": {"1": 6, "0.5": 8, "0.1": 14}}, "PU": {"final_complete_CE": 0.08350528323755106, "last_available_CE": 0.08350528323755106, "slots": 20, "accepted": 20, "rejected": 0, "zero_fraction": 0.0, "first_hit_CE": {"1": 7, "0.5": 9, "0.1": 16}}}
+
+T2G共享缺分界：[{"comparison": "PU-PM", "prefix": 1, "secondary_only": false, "status": "ESTIMATED", "negative_edit_bounds": 1, "delta_macro_bounds_pp": [-25.0, -25.0], "edit_ci": [-25.0, -25.0], "source_ci": [-25.0, -25.0], "source_groups": 1, "interpretation": "Development uncertainty only; missing scores bounded, not dropped"}, {"comparison": "PM-SH00", "prefix": 1, "secondary_only": false, "status": "ESTIMATED", "negative_edit_bounds": 0, "delta_macro_bounds_pp": [0.0, 0.0], "edit_ci": [0.0, 0.0], "source_ci": [0.0, 0.0], "source_groups": 1, "interpretation": "Development uncertainty only; missing scores bounded, not dropped"}, {"comparison": "PU-SH00", "prefix": 1, "secondary_only": false, "status": "ESTIMATED", "negative_edit_bounds": 1, "delta_macro_bounds_pp": [-25.0, -25.0], "edit_ci": [-25.0, -25.0], "source_ci": [-25.0, -25.0], "source_groups": 1, "interpretation": "Development uncertainty only; missing scores bounded, not dropped"}]
+
+PU-PM检验条件分布和prefix的整体保护政策，不能分开归因。PM-SH00包含目标形状和梯度尺度变化。alpha=.95不等于实际拟合保证；正证据间隔和低q/prefix KL不保证跨病例零损伤。固定Base16/removed4 Fisher，无真实removed硬门，HARD_KL_NOT_ENFORCED。单源不等146/临床/SOTA/隐私证据，无自动下一轮。原146/M暂停、O/L等待。
+
+实际成本：{"forwards": 7134, "vision_forwards": 224, "backwards": 142, "committed_updates": 42, "attempt_slots": 40, "generation_attempts": 184, "active_set_checks": 0, "candidate_checks": 69}；GPU进程小时=0.47289759086238015；新Judge=17。旧SH00不重跑不补Judge，永久缺分/未生成/未尝试分开。

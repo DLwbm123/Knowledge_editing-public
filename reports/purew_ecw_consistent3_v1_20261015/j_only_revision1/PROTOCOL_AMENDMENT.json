@@ -1,0 +1,88 @@
+{
+  "revision": "J_ONLY_DECOUPLED_REVISION1",
+  "user_authorization": "2026-10-15 direct user: decouple J calibration from N/NJ, validate frozen true-KL direction onGPU2; derive zero-gap theory without floor/source deletion/threshold relaxation; monitor30min",
+  "active_arms": [
+    "J"
+  ],
+  "deferred_arms": {
+    "N": "THEORY_ONLY_ZERO_GAP_NOT_ADMITTED",
+    "NJ": "THEORY_ONLY_ZERO_GAP_NOT_ADMITTED"
+  },
+  "run_root": "/data/bmw/Knowledge_editing/outputs/purew-ecw-consistent3-v1-20261015/run",
+  "new_installation": false,
+  "activation_epoch": 1792037583.8461373,
+  "deadline_epoch": 1792123983.8461373,
+  "budgets_unchanged": {
+    "maximum_formal_attempt_slots": 180,
+    "maximum_committed_updates": 183,
+    "maximum_backwards": 1500,
+    "maximum_generations": 506,
+    "maximum_new_Judge": 483,
+    "GPU_process_hours": 8,
+    "wall_hours": 24,
+    "owned_matrix_limit_bytes": 103079215104,
+    "minimum_free_bytes": 8589934592,
+    "owned_GPU_memory_limit_MiB": 46080,
+    "minimum_free_GPU_MiB": 46080,
+    "cached_reservation_GiB": 43,
+    "largest_factor_rows": 46,
+    "parameter_dimension_reference": 58720256,
+    "largest_factor_FP64_bytes": 21609054208,
+    "planning_host_RAM_minimum_GiB": 96,
+    "activation_epoch": null,
+    "deadline_epoch": null,
+    "activation_begins_only_after_new_explicit_launch_authorization": false,
+    "old_budget_borrowing": false,
+    "maximum_forward_calls": 200000,
+    "forward_count_convention": "forward counter includes vision forwards; do not double count vision subset",
+    "maximum_ephemeral_current_KL_gradients": 5,
+    "calibration_two_initial_factors": true
+  },
+  "J_maximum_slots": 60,
+  "J_maximum_native_writes_including_admission": 61,
+  "maximum_new_consumers": 161,
+  "source1_stop_consumers": 87,
+  "no_refill_or_budget_transfer": true,
+  "calibration": {
+    "mode": "REUSE_VERIFIED_PLAIN_PARAMETER_FACTOR_ONLY",
+    "origin_run": "/data/bmw/Knowledge_editing/outputs/purew-ecw-bcd3-v1-20261015/run",
+    "path": "private/calibration/Base.pt",
+    "rows": 16,
+    "original_source_binding": "988b3b5065f93eded1b9453c256eb2d74c45b5bc54be30e72540e58eaa5f9129",
+    "same_Gaussian_seed_scaling_and_Birth_Base": true,
+    "new_case_calibration_or_generation": false,
+    "required_current_Base3_exact_and_real_native_write": true,
+    "normalized_mu_gate_not_called_by_J": true
+  },
+  "J_science_unchanged": true,
+  "old_failures_and_publication_retained": true,
+  "scoring": {
+    "new_queue_actual_J_only": true,
+    "historical_B_external161": true,
+    "unattempted_B_not_rejudged": true,
+    "primary": "J-B matchedprefix3 only",
+    "source1_secondary": "J-B prefix1 plus oldC20-slot training diagnostics only",
+    "fixed36_zero_new_damage": true,
+    "unknown_fails": true,
+    "bootstrap_seed": 20260912,
+    "bootstrap_draws": 10000
+  },
+  "hardware": {
+    "physical_GPU": 2,
+    "GPU_UUID": "GPU-4b56ab28-a018-652c-b8f6-2d9dc3dc45d2",
+    "minimum_free_MiB": 46080,
+    "cached_GiB": 43,
+    "owned_max_MiB": 46080
+  },
+  "no_automatic146": true,
+  "original146": "PAUSED",
+  "M": "PAUSED",
+  "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+  "later_user_GPU2_hold": {
+    "authority": "2026-10-15 direct user: do not useGPU2 now; wait untilGPU2 free while user validates",
+    "no_GPU_allocation_while_waiting": true,
+    "release_rule": "observe external GPU2 occupancy first, then3 empty samples30s apart with memory_used<100MiB and free>=45GiB; or later explicit direct user release plus idle GPU2",
+    "empty_before_validation_is_not_release": true,
+    "same_wall_deadline": true
+  }
+}

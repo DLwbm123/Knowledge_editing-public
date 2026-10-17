@@ -1,0 +1,144 @@
+{
+  "status": "PASS",
+  "scope": "CPU_SYNTHETIC_ACTUAL_EXECUTOR",
+  "checks": {
+    "context_and_pinned_state": {
+      "status": "PASS",
+      "persistent_bytes": 14680120,
+      "pin_capacity": 32,
+      "production_quota_positions": {
+        "6": [
+          0,
+          10,
+          585,
+          608,
+          609,
+          628
+        ],
+        "7": [
+          0,
+          10,
+          298,
+          585,
+          608,
+          609,
+          628
+        ],
+        "32": [
+          0,
+          3,
+          6,
+          10,
+          68,
+          125,
+          182,
+          240,
+          298,
+          355,
+          412,
+          470,
+          528,
+          585,
+          586,
+          589,
+          592,
+          595,
+          598,
+          602,
+          605,
+          608,
+          609,
+          611,
+          613,
+          615,
+          617,
+          620,
+          622,
+          624,
+          626,
+          628
+        ]
+      },
+      "five_view_total": 32,
+      "short_strata_redistribution": true,
+      "covered_strata": [
+        "visual",
+        "prompt",
+        "answer_predictors",
+        "final_target_predictor"
+      ],
+      "compression_retains_first_native_anchors": true,
+      "corrupt_restore_rejected": true
+    },
+    "original_H_value_and_gradient": true,
+    "entry_denied_before_runtime_import": true,
+    "actual_activation_hook_and_calibration_separation": true,
+    "native_admission_roundtrip_restores_original_optimizer_and_weight": true,
+    "eight_edit_real_worker_path": [
+      {
+        "arm": "U",
+        "dtype": "torch.float16",
+        "slots": 160,
+        "accepted": 37,
+        "qualified_sources": 8,
+        "checkpoint_bytes": 16534835,
+        "protection_bytes": 14680120,
+        "exact_reload_logits": 2
+      },
+      {
+        "arm": "P",
+        "dtype": "torch.float16",
+        "slots": 160,
+        "accepted": 37,
+        "qualified_sources": 8,
+        "checkpoint_bytes": 16534835,
+        "protection_bytes": 14680120,
+        "exact_reload_logits": 2
+      },
+      {
+        "arm": "U",
+        "dtype": "torch.bfloat16",
+        "slots": 160,
+        "accepted": 7,
+        "qualified_sources": 2,
+        "checkpoint_bytes": 16534835,
+        "protection_bytes": 14680120,
+        "exact_reload_logits": 2
+      },
+      {
+        "arm": "P",
+        "dtype": "torch.bfloat16",
+        "slots": 160,
+        "accepted": 3,
+        "qualified_sources": 1,
+        "checkpoint_bytes": 16534835,
+        "protection_bytes": 14680120,
+        "exact_reload_logits": 2
+      }
+    ],
+    "H_teacher_uses_original_Base_after_trajectory_restore": true,
+    "production_worker_cooperative_stop_and_resume_no_replay": true,
+    "consumer_barrier_prevents_next_edit": true,
+    "rejected_candidate_rolls_back_adam_native_master_rng_not_cost": true,
+    "post_native_write_exception_rolls_back_transaction": true,
+    "native_certificate_rejection_rolls_back_optimizer": true,
+    "partially_mutated_optimizer_exception_is_atomic": true,
+    "mid_source_resume_exact_next_update": true,
+    "atomic_save_failure_preserves_previous_checkpoint": true,
+    "corrupt_restore_has_no_partial_mutation": true,
+    "fixed_schedule_and_panel_upper_bounds": {
+      "0": 126,
+      "4": 90,
+      "8": 126
+    }
+  },
+  "elapsed_seconds": 46.93940195895266,
+  "model_experiment_started": false,
+  "native_dtypes": [
+    "float16",
+    "bfloat16"
+  ],
+  "formal_slots_exercised": 640,
+  "old_sampler_regression_failure": "Stratum endpoints lost",
+  "cuda_visible_devices": ""
+}

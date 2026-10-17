@@ -1,0 +1,62 @@
+{
+  "status": "BACKGROUND_RUNNING_NOT_COMPLETE",
+  "runtime_commit": "ffa58df63341741011f82a527d906c49f0a5d7ff",
+  "physical_GPU": 3,
+  "GPU_UUID": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+  "activation_epoch": 1792134011.4409497,
+  "deadline_epoch": 1792220411.4409497,
+  "startup_check_epoch": 1792134148.6006284,
+  "storage": {
+    "status": "PASS",
+    "mount": {
+      "target": "/data",
+      "source": "/dev/sdc1",
+      "fstype": "ext4",
+      "options": "rw,relatime"
+    },
+    "disk_free_bytes": 15702329929728,
+    "host": {
+      "MemTotal": 810323419136,
+      "MemAvailable": 630293520384
+    },
+    "read_write_probe": true,
+    "largest_factor_bytes": 17850957824,
+    "full_factor_live_measured": false,
+    "CPU_streamed_FP64": true
+  },
+  "Base": {
+    "status": "PASS",
+    "outputs": 3
+  },
+  "real_VLM": {
+    "status": "PASS",
+    "real_native_write": true,
+    "upstream_exact": true,
+    "parameters_unchanged": true,
+    "temporary_updates": 1
+  },
+  "formal_progress": {
+    "status": "CONSISTENT_TRAINING",
+    "arm": "HE",
+    "owner": 1,
+    "slot": 2,
+    "accepted": true,
+    "epoch": 1792134139.6983714
+  },
+  "formal_slots_observed": 2,
+  "active_learner_PID": 3803113,
+  "controller_PID": 3796146,
+  "owned_GPU_MiB_observed": 44526,
+  "neutral_ps_and_nvidia_verified": true,
+  "failures_observed": 0,
+  "closed_GPU_seconds_at_check": 50.511459827423096,
+  "running_GPU_residency_additional": true,
+  "Judge_attempts_at_check": 0,
+  "scorers": 4,
+  "finite_analysis_and_publication_tail": true,
+  "periodic_monitor": false,
+  "science_and_budgets_unchanged": true,
+  "all_failure_costs_preserved": true,
+  "tuning": false,
+  "automatic_next": false
+}

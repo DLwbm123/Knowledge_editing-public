@@ -1,0 +1,280 @@
+{
+  "version": "PUREW_HINGE_EVIDENCE_FIRST1_V1_20261016",
+  "status": "FROZEN_EXECUTION_AUTHORIZED_PENDING_ADMISSION",
+  "authorization": {
+    "preparation": true,
+    "execution": true,
+    "install": true,
+    "model_calls": true,
+    "Judge": true,
+    "waiter": false,
+    "monitoring": false,
+    "GPU_allocation": true
+  },
+  "frozen_at_utc": "2026-10-16T06:48:56.957336+00:00",
+  "reference": {
+    "arm": "HM",
+    "report_commit": "8faabf02492dbcfd2ce980fb1ac51378c5d141f0",
+    "runtime_commit": "348519d2963a0110128713b43a71d0638070b99a",
+    "protocol": "../purew_odds_hinge_first1_v1_20261016/PROTOCOL.json",
+    "rerun": false,
+    "regenerate": false,
+    "rejudge": false,
+    "consumers": 87,
+    "compatibility": "Exact original Base, source/seed, tokenization, five views, removed transform, masks, Base16/removed4, optimizer, precision and candidate clock; mismatch stops admission, no automatic baseline rerun"
+  },
+  "design": {
+    "new_arms": [
+      "HE"
+    ],
+    "order": [
+      "HE"
+    ],
+    "source_orders": [
+      1
+    ],
+    "slots_per_arm": 20,
+    "reset": "original Base, never HM final",
+    "seed": "original per-edit seed",
+    "primary_contrast": "HE-HM",
+    "single_factor": "direct concept evidence hinge coefficient 0 -> 1; target log(1.01)",
+    "secondary_descriptive": [],
+    "historical_arms": [
+      "SH00",
+      "SH10",
+      "PM",
+      "PU",
+      "HM",
+      "HU"
+    ],
+    "no_historical_rerun": true,
+    "no_new_data": true,
+    "single_source_development_only": true,
+    "historical_HR": "retained immutable; not a rerun or new training input"
+  },
+  "objective": {
+    "HE": "0.5*(H_0 + E_0) + 0.5*(H_k + E_k), k=1+(slot-1)%4",
+    "H": "mean_answer ReLU(logit(a_star)-logit(a)), a_star=max(p0_full(y),0.95), stable log masses",
+    "E": "mean over two concepts ReLU(log(1.01) - mean concept tokens [log p_full(y) - log p_removed(y)])",
+    "hinge_weight": 1,
+    "evidence_weight": 1,
+    "evidence_target_ratio": 1.01,
+    "evidence_target_log": "log(1.01)",
+    "concept_reduction": "equal mean of two concepts after per-concept token mean; subtraction before mean exactly as original gate",
+    "alpha": 0.95,
+    "removed_KL_weight": 0,
+    "conditional_KL_weight": 0,
+    "language_prefix_KL_weight": 0,
+    "boundary_subgradient": 0,
+    "probability_floor": false,
+    "coefficient_sweep": false,
+    "hard_removed": false,
+    "contrast_margin_loss": true,
+    "stop_gradient_full": false,
+    "stop_gradient_removed": false,
+    "view_weights_reporting": [
+      0.5,
+      0.125,
+      0.125,
+      0.125,
+      0.125
+    ],
+    "candidate_Armijo": "same two-view H+E objective for gradient and every native candidate",
+    "recipe": "ODDS_HINGE_ALPHA_095_EVIDENCE_LOG101_WEIGHT1_V1",
+    "coefficient_rationale": "unit coefficient on two mean log-scale deficits; no gradient balancing or tuning",
+    "margin_rationale": "predeclared 1 percent geometric-mean probability ratio above equality; engineering target not clinical threshold; not fitted to prior score items",
+    "no_CE_loss_or_new_CE_candidate_gate": true
+  },
+  "shared": {
+    "baseline": "SH00 S0H0 background",
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "native": "FP16",
+    "master_gradient": "FP32",
+    "statistics": "FP64",
+    "eta": 0.01,
+    "clip": 5,
+    "scale": 128,
+    "proposal_cap": 0.05,
+    "Gamma": "IDENTITY",
+    "Base_rows": 16,
+    "prewrite_removed_rows": 4,
+    "per_block_risk_cap": 0.01,
+    "Base_binding": "988b3b5065f93eded1b9453c256eb2d74c45b5bc54be30e72540e58eaa5f9129",
+    "maximum_qualified_source_end_rows": 38,
+    "source_end_birth_rules": "unchanged SH00; all qualification gates required",
+    "solver_iterations": 48,
+    "solver_linesearch": 8,
+    "candidate_backtracks": 8,
+    "Armijo": 0.0001,
+    "fallback_active_set": false,
+    "actual_delta": "FP64(candidateFP16-oldFP16)",
+    "reanchor": false,
+    "large_isotropic_quantization_envelope": false,
+    "rejected_candidate_master_native": "rollback and discard",
+    "reject_consumes_slot": true,
+    "added_inference_parameters": 0,
+    "evaluation_training": false,
+    "no_added_data": true,
+    "HARD_KL_NOT_ENFORCED": true
+  },
+  "gates": {
+    "complete_CE_strict_below": 0.1,
+    "T0_T1G_all_correct": true,
+    "all_ten_evidence_gaps_strict_positive_finite": true,
+    "evidence_gap_interpretation": "source sensitivity qualification only, not external protection/clinical correctness",
+    "Base_correct_T2L": 34,
+    "Base_correct_T1L": 2,
+    "allowed_individual_damage": 0,
+    "unknown_fails": true,
+    "required_lower_min": 0,
+    "high_loss_frozen": "CE>=.1 AND final10 slots all zero",
+    "numeric_mechanism_failure": "5 consecutive numeric-only high-CE rejections",
+    "all_failure_costs_preserved": true,
+    "scientific_arm_stop_allows_next_registered_arm": false,
+    "shared_mechanical_data_failure_blocks_chain": true,
+    "early_terminal_slot20": "NA",
+    "no_tuning_or_extra_slots": true,
+    "automatic_next_experiment": false,
+    "HE_T2G_per_edit_delta_lower_vs": [
+      "HM",
+      "SH00"
+    ]
+  },
+  "mechanism_endpoints": {
+    "primary": [
+      "complete CE <0.1 AND ten finite strictly positive margins",
+      "T0/T1G all correct AND original T2G nondegradation AND zero individual damage AND full scoring"
+    ],
+    "secondary": [
+      "per-concept full and removed logp initial/final and each slot; split margin change",
+      "evidence training target attained count at log(1.01), descriptive only",
+      "actual removed KL, accepted/rejected/zero and gradient cosine"
+    ],
+    "interpretation": "Positive gap may arise by lowering removed confidence. Always show both sides. No unique mechanism claim, no causal/clinical/population inference. Training target is not a replacement acceptance threshold."
+  },
+  "diagnostics": {
+    "every_slot": [
+      "complete_CE",
+      "marginal_KL",
+      "conditional_KL_weighted_and_unweighted",
+      "prefix_KL",
+      "a_minus_a_star_and_overshoot",
+      "five_removed_actual_KL",
+      "per_block_risk_and_numeric_envelope",
+      "accept_reject_zero_reason",
+      "KKT",
+      "proposal_native_quantization_path_net",
+      "ten scalar full_logp/removed_logp/margin, evidence deficit and target attainment; no new labels"
+    ],
+    "initial_and_final": [
+      "separate hinge and direct evidence parameter-gradient norms and cosine; ten counted backwards",
+      "ten per-view/concept mean logp(full), mean logp(removed), margin and finite flag; scalar only"
+    ],
+    "reuse_current_forwards_when_available": true,
+    "new_costs_counted": true,
+    "historical_missing_diagnostics": "NA; no replay",
+    "evaluation_gradients": false
+  },
+  "evaluation": {
+    "consumers_per_new_arm": 87,
+    "prefix1": 46,
+    "insertion": 5,
+    "fixed_protection": 36,
+    "new_total": 87,
+    "canaries_per_arm": 3,
+    "fresh_reload_per_arm": 2,
+    "generations_per_arm": 92,
+    "Judge": "gpt-6-astra medium, original Stage17 isolation",
+    "new_payload_max_attempts": 1,
+    "failed_Judge_retry": false,
+    "shared_complete_binding_reuse": true,
+    "unknown_bounds": "combine same payload variables before exact paired bounds",
+    "unattempted_is_missing": false,
+    "bootstrap_draws": 10000,
+    "bootstrap_seed": 20260912,
+    "single_source_not_population_evidence": true,
+    "before_scoring": [
+      "all actual trajectories terminal",
+      "each final native fresh reload2 exact",
+      "FINAL_CONSUMED each arm",
+      "all GPU leases closed",
+      "GENERATION_COMPLETE"
+    ],
+    "completion": [
+      "4 workers terminal",
+      "PENDING=0",
+      "RESERVED=0",
+      "all actual new consumers FORMAT_VALID/MISSING",
+      "ALL_WORKERS_COMPLETE",
+      "REPORT_COMPLETE",
+      "publication SHA and anonymous access verified"
+    ],
+    "population_confidence_interval": "NA_SINGLE_SOURCE",
+    "cross_arm_T2G_transitions": true,
+    "total_with_all_six_historical": 609
+  },
+  "budgets": {
+    "GPU_process_hours": 2,
+    "formal_slots": 20,
+    "native_writes_including_admission": 21,
+    "backwards": 300,
+    "forwards_including_vision": 15000,
+    "generations": 92,
+    "new_Judge": 87,
+    "candidate_checks": 160,
+    "active_set_checks": 0,
+    "wall_hours": 24,
+    "activation_epoch": null,
+    "deadline_epoch": null,
+    "old_budget_borrowing": false,
+    "hard_interrupt_replay_allowance": 0,
+    "owned_matrix_GiB_including_atomic_temp_and_teacher": 96,
+    "minimum_host_available_GiB": 96,
+    "minimum_disk_free_GiB": 8,
+    "minimum_GPU_free_GiB": 45,
+    "cached_GPU_GiB": 43,
+    "owned_GPU_GiB": 45,
+    "include_teacher_diagnostics_admission_residence_save_failure": true
+  },
+  "hardware": {
+    "host": "pro5000",
+    "GPU": 3,
+    "UUID": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+    "allocation_authorized": true,
+    "require_future_explicit_binding": false
+  },
+  "readiness": {
+    "protocol": "FROZEN",
+    "executor": "IMPLEMENTED",
+    "production_CPU": "PASS",
+    "storage_GPU": "NOT_RUN",
+    "real_VLM": "NOT_RUN",
+    "installation": "NOT_STARTED",
+    "scorer_tail": "NOT_STARTED"
+  },
+  "lifecycle": {
+    "original146": "PAUSED",
+    "M": "PAUSED",
+    "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+    "old_results": "IMMUTABLE",
+    "old_monitor": "REMAIN_PAUSED_UNLESS_EXISTING_CONTINUOUS_AUTHORIZATION_APPLIES",
+    "new_monitor": false,
+    "automatic146": false,
+    "historical_asset_deletion": false
+  },
+  "decision_rules": {
+    "unchanged_gates_pass": "eligible only for separately authorized independent validation; stop",
+    "fit_margin_pass_protection_fail": "source objective insufficient for external protection; stop, never train on test failures",
+    "margin_pass_fit_fail": "evidence-fit tradeoff; stop without coefficient sweep",
+    "margin_fail": "fixed direct evidence policy insufficient within budget; stop",
+    "mechanical_or_data_failure": "retain all costs and evidence; no automatic retry or reinstall"
+  },
+  "prelaunch_requirements": [
+    "separate explicit user execution authorization",
+    "separate executor snapshot; never edit frozen HM/HU",
+    "production CPU objective/gradient oracle, native rollback, formal20-slot path, state recipe, counters, report and no-launch guards",
+    "historical compatibility; storage and GPU admission; Base3 and real-VLM admission before slots",
+    "neutral process command lines and ps/nvidia-smi checks at future launch",
+    "no failed Judge retry; no budget reset; no unknown-state replay"
+  ]
+}

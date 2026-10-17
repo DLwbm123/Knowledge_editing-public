@@ -1,0 +1,72 @@
+{
+  "status": "EVALUATION_AND_SCORING_COMPLETE_SCIENTIFIC_GATES_FAILED",
+  "snapshot_epoch": 1792130903.7653363,
+  "barriers": {
+    "EXIT_controller.json": {
+      "exit_code": 0,
+      "epoch": 1792130312.3805182
+    },
+    "GENERATION_COMPLETE.json": {
+      "status": "ALL_ACTUAL_GENERATION_TERMINAL",
+      "new_consumers": 87,
+      "planned_maximum": 87,
+      "full_protocol_complete": false,
+      "epoch": 1792130312.3803446
+    },
+    "FINAL_CONSUMED.json": {
+      "status": "PASS",
+      "arms": [
+        "HR"
+      ]
+    },
+    "REPORT_COMPLETE.json": {
+      "status": "PARTIAL_SCIENTIFIC_STOP",
+      "epoch": 1792130391.277333
+    },
+    "judge_purew146/ALL_WORKERS_COMPLETE.json": {
+      "status": "SCORING_TERMINAL",
+      "epoch": 1792130379.2809367
+    },
+    "control/HR/STATISTICS_RETIRED.json": {
+      "reason": "All source1 outputs and fresh reload consumed",
+      "bytes": 11172232135
+    }
+  },
+  "native_reload": {
+    "status": "PASS",
+    "two_outputs_exact": true
+  },
+  "queue": {
+    "consumers": 87,
+    "unresolved": 0
+  },
+  "active_GPU_leases": 0,
+  "retained_failures": {
+    "controller.json": true,
+    "learn_HR_1_3258301.json": true,
+    "CONTROLLER_IMPORT_REPAIR.json": true
+  },
+  "failure_list_semantics": "RESULTS.failures lists only unresolved active failure markers; resolved failures remain in private/restart1 and public engineering/restart receipts; all attempt costs are included",
+  "GPU_seconds": 577.4702596664429,
+  "new_Judge": 25,
+  "counts": {
+    "forwards": 4583,
+    "vision_forwards": 122,
+    "backwards": 81,
+    "committed_updates": 21,
+    "attempt_slots": 20,
+    "generation_attempts": 92,
+    "active_set_checks": 0,
+    "candidate_checks": 42
+  },
+  "initial_attempt_GPU_seconds": 73.24508452415466,
+  "initial_failed_learner_GPU_seconds": 28.031818389892578,
+  "controller_import_failure_new_GPU_seconds": 0,
+  "original_activation_epoch": 1792128293.5797498,
+  "original_deadline_epoch": 1792214693.5797498,
+  "active_statistics_retired": true,
+  "current_teacher_retired": true,
+  "final_native_retained": true,
+  "automatic_next_experiment": false,
+  "publication_tail_issue": "Result push completed; final anonymous verification hit SSL EOF; retain failure log and verify delivery separately"
+}

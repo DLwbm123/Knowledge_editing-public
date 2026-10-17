@@ -1,0 +1,65 @@
+{
+  "status": "RUNNING_AFTER_ALL_ADMISSIONS",
+  "runtime_commit": "a7e58aba32b99861eb7ae2c959f320c72181c3cf",
+  "activation_epoch": 1792079872.7508802,
+  "deadline_epoch": 1792166272.7508802,
+  "verification_epoch": 1792080150.6217408,
+  "physical_GPU": 3,
+  "GPU_UUID": "GPU-9ea1d4ae-e403-cb3b-29b3-c63b083bf8ff",
+  "simultaneous_GPU_count": 1,
+  "user_maximum_GPUs": 2,
+  "formal_order": [
+    "PM",
+    "PU"
+  ],
+  "arms": {
+    "PM": {
+      "slots": 4,
+      "accepted": 4,
+      "zero": 0,
+      "latest": {
+        "slot": 4,
+        "actual_native_norm": 0.025692487815259697,
+        "complete_source_after_slot": {
+          "marginal_KL": 1.269533369125479,
+          "conditional_KL": 0.010200776728426493,
+          "unweighted_conditional_KL": 0.21012360651646317,
+          "prefix_KL": 0.00333491122171747,
+          "CE": 1.448347946607534,
+          "target_gap_mean": -0.3469610823203709,
+          "target_gap_min": -0.9498766809429386,
+          "overshoot_fraction": 0.3333333333333333,
+          "alpha_pass_fraction": 0.3333333333333333,
+          "weighted_all_FIT_CE": 1.448347946607534,
+          "scope_KL": 0.38404417236129007
+        }
+      }
+    },
+    "PU": {
+      "slots": 0,
+      "accepted": 0,
+      "zero": 0,
+      "latest": null
+    }
+  },
+  "counts": {
+    "forwards": 448,
+    "vision_forwards": 36,
+    "backwards": 42,
+    "committed_updates": 6,
+    "generation_attempts": 6,
+    "attempt_slots": 4,
+    "candidate_checks": 7,
+    "active_set_checks": 0
+  },
+  "new_Judge": 0,
+  "unhandled_failures": 0,
+  "controller_and_stage_identity_verified": true,
+  "local_four_scorers_and_tail_verified": true,
+  "CPU": "PASS",
+  "storage_admission": "PASS",
+  "real_VLM_all": "PASS",
+  "original146_and_M": "PAUSED",
+  "OL": "WAITING_ORIGINAL_COMPLETE_PREDECESSOR",
+  "scientific_result": "PENDING_COMPLETE_SCORING"
+}

@@ -1,0 +1,42 @@
+{
+  "status": "RESOLVED_BEFORE_INSTALL",
+  "retained_failures": [
+    {
+      "stage": "production_KKT_check",
+      "reason": "Dual convergence alone left a 1.046e-10 primal overshoot; strict feasibility rejected it",
+      "repair": "Analytic same-ray quadratic feasibility retraction, unchanged epsilon .01, finite48/8 solver caps",
+      "GPU_updates": 0,
+      "model_calls": 0,
+      "Judge_calls": 0
+    },
+    {
+      "stage": "queue_report_CPU_fixture",
+      "reason": "Synthetic fixture lacked EPOCH_MANIFEST; production bootstrap already creates it",
+      "repair": "Use the real epoch manifest contract in fixture",
+      "GPU_updates": 0,
+      "model_calls": 0,
+      "Judge_calls": 0
+    },
+    {
+      "stage": "queue_report_CPU_expected_value",
+      "reason": "Fixture incorrectly attributed all four historical protection damages to T2L instead of combined36",
+      "repair": "Compare total damage across both protection tasks; no old scores changed",
+      "GPU_updates": 0,
+      "model_calls": 0,
+      "Judge_calls": 0
+    },
+    {
+      "stage": "hard_KL_CPU_fixture",
+      "reason": "Fixture expected a hard-KL flag even when FP16 backtracking produced a zero candidate before the model check",
+      "repair": "Require hard-KL rejection of nonzero candidates and retain ZERO_NATIVE separately",
+      "GPU_updates": 0,
+      "model_calls": 0,
+      "Judge_calls": 0
+    }
+  ],
+  "model_or_Judge_replayed": false,
+  "original_failure_receipts_private": true,
+  "pre_activation_CPU_failure_duration_seconds": "NA_NOT_CAPTURED",
+  "pre_activation_real_GPU_seconds": 0,
+  "pre_activation_real_model_calls": 0
+}

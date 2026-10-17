@@ -1,0 +1,281 @@
+{
+  "source_commit": "1f430d2e7ebe0ca9d20a77a4077aa585cf8d16be",
+  "source_file": "reports/purew_objective_scope_v1_20261015/RESULTS.json",
+  "scientific_success": false,
+  "mechanical": {
+    "SH11": {
+      "final_complete_CE": 2.3723029944461094,
+      "last_available_CE": 2.3723029944461094,
+      "slots": 20,
+      "accepted": 13,
+      "rejected": 7,
+      "zero_fraction": 0.35,
+      "first_hit_CE": "NA_HISTORICAL_NOT_MEASURED"
+    },
+    "SH00": {
+      "final_complete_CE": 0.01851115074300988,
+      "last_available_CE": 0.01851115074300988,
+      "slots": 20,
+      "accepted": 20,
+      "rejected": 0,
+      "zero_fraction": 0.0,
+      "first_hit_CE": {
+        "1": 6,
+        "0.5": 9,
+        "0.1": 13
+      }
+    },
+    "SH10": {
+      "final_complete_CE": 0.5192088006322929,
+      "last_available_CE": 0.5192088006322929,
+      "slots": 20,
+      "accepted": 20,
+      "rejected": 0,
+      "zero_fraction": 0.0,
+      "first_hit_CE": {
+        "1": 7,
+        "0.5": 17,
+        "0.1": null
+      }
+    },
+    "SH01": {
+      "final_complete_CE": 2.375626972471239,
+      "last_available_CE": 2.375626972471239,
+      "slots": 20,
+      "accepted": 10,
+      "rejected": 10,
+      "zero_fraction": 0.5,
+      "first_hit_CE": {
+        "1": null,
+        "0.5": null,
+        "0.1": null
+      }
+    }
+  },
+  "protection": [
+    {
+      "arm": "SH11",
+      "terminal_prefix": 1,
+      "task": "T1L",
+      "observations": 2,
+      "known_correct": 2,
+      "missing": 0,
+      "Base_correct_to_wrong_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "SH11",
+      "terminal_prefix": 1,
+      "task": "T2L",
+      "observations": 34,
+      "known_correct": 31,
+      "missing": 1,
+      "Base_correct_to_wrong_bounds": [
+        2,
+        3
+      ]
+    },
+    {
+      "arm": "SH00",
+      "terminal_prefix": 1,
+      "task": "T1L",
+      "observations": 2,
+      "known_correct": 2,
+      "missing": 0,
+      "Base_correct_to_wrong_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "SH00",
+      "terminal_prefix": 1,
+      "task": "T2L",
+      "observations": 34,
+      "known_correct": 31,
+      "missing": 0,
+      "Base_correct_to_wrong_bounds": [
+        3,
+        3
+      ]
+    },
+    {
+      "arm": "SH10",
+      "terminal_prefix": 1,
+      "task": "T1L",
+      "observations": 2,
+      "known_correct": 2,
+      "missing": 0,
+      "Base_correct_to_wrong_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "SH10",
+      "terminal_prefix": 1,
+      "task": "T2L",
+      "observations": 34,
+      "known_correct": 31,
+      "missing": 0,
+      "Base_correct_to_wrong_bounds": [
+        3,
+        3
+      ]
+    },
+    {
+      "arm": "SH01",
+      "terminal_prefix": 1,
+      "task": "T1L",
+      "observations": 2,
+      "known_correct": 2,
+      "missing": 0,
+      "Base_correct_to_wrong_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "SH01",
+      "terminal_prefix": 1,
+      "task": "T2L",
+      "observations": 34,
+      "known_correct": 31,
+      "missing": 1,
+      "Base_correct_to_wrong_bounds": [
+        2,
+        3
+      ]
+    }
+  ],
+  "protection_factorial": [
+    {
+      "task": "T1L",
+      "comparison": "SH10-SH00",
+      "damage_count_difference_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "T1L",
+      "comparison": "SH11-SH01",
+      "damage_count_difference_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "T1L",
+      "comparison": "SH01-SH00",
+      "damage_count_difference_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "T1L",
+      "comparison": "SH11-SH10",
+      "damage_count_difference_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "T1L",
+      "comparison": "SH11-SH10-SH01+SH00",
+      "damage_count_difference_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "T2L",
+      "comparison": "SH10-SH00",
+      "damage_count_difference_bounds": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "task": "T2L",
+      "comparison": "SH11-SH01",
+      "damage_count_difference_bounds": [
+        0,
+        0
+      ]
+    },
+    {
+      "task": "T2L",
+      "comparison": "SH01-SH00",
+      "damage_count_difference_bounds": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "task": "T2L",
+      "comparison": "SH11-SH10",
+      "damage_count_difference_bounds": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "task": "T2L",
+      "comparison": "SH11-SH10-SH01+SH00",
+      "damage_count_difference_bounds": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "actual_counts": {
+    "forwards": 13648,
+    "vision_forwards": 336,
+    "backwards": 223,
+    "committed_updates": 53,
+    "attempt_slots": 60,
+    "generation_attempts": 276,
+    "active_set_checks": 0,
+    "candidate_checks": 191
+  },
+  "GPU_process_hours": 0.4817956217130025,
+  "source_margin_diagnostics": {
+    "SH00": {
+      "count": 10,
+      "finite": 10,
+      "positive": 9,
+      "zero": 0,
+      "negative": 1,
+      "minimum": -3.3672365508797164e-05,
+      "maximum": 0.005510907701258232,
+      "complete_source_CE": 0.01851115074300988
+    },
+    "SH10": {
+      "count": 10,
+      "finite": 10,
+      "positive": 10,
+      "zero": 0,
+      "negative": 0,
+      "minimum": 0.01800311716167924,
+      "maximum": 0.18277363718106487,
+      "complete_source_CE": 0.5192088006322929
+    },
+    "SH01": {
+      "count": 10,
+      "finite": 10,
+      "positive": 3,
+      "zero": 0,
+      "negative": 7,
+      "minimum": -0.03431328031846659,
+      "maximum": 0.011805273221210963,
+      "complete_source_CE": 2.375626972471239
+    }
+  },
+  "new_model_calls": 0,
+  "new_Judge": 0,
+  "historical_results_unchanged": true
+}
