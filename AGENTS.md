@@ -1,3 +1,7 @@
+## 当前授权：取消时间显存准入限制，完成剩余重载评分报告
+
+用户2026-10-17明确取消本任务任何时间和显存gate。只执行未执行的P最终重载，然后Judge评分/报告/公开交付；既有消耗与原manifest保留，不重训不重复生成，不改变科学门和次数上限。使用completion独立入口，保留GPU身份/租约、手动STOP和磁盘保护。监测半小时正常安静。
+
 ## 当前终态：P最终重载前GPU准入拒绝
 
 2026-10-16 23:30:24，fixed-input-guard8-v1-20261016两臂各160槽及全部插入/前缀生成完成，U重载通过，P在模型加载前Idle GPU admission failed，未执行重载。正式接受U37/P27，CE合格U7/8 P6/8；Judge0，旧编辑保留率NA。P active与两臂native保留，不自动重试或再次恢复。详见reports/fixed_input_guard8_v1_20261016/recovery1/TERMINAL_ZH.md。监测按终态规则暂停。
