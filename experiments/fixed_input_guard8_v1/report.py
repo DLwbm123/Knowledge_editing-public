@@ -50,6 +50,10 @@ def main():
             arm['per_source'].append(dict(order=t['order'],final={g:rate(get(a,'prefix',8,ids(t,g))) for g in ('T0','T1G','T2G')},insertion={g:rate(get(a,'insertion',t['order'],ids(t,g))) for g in ('T0','T2G')}))
         arm['evaluation_counts']=read(r/'private/fixed8'/a/'evaluation-budget.json')['counts']
         result['arms'][a]=arm
+    result['common_insert_correct_old1to7']={}
+    for g in ('T0','T2G'):
+        common=[q for t in tasks[:7] for q in ids(t,g) if all(data[a,'insertion',t['order'],q]==1 for a in ('U','P'))]
+        result['common_insert_correct_old1to7'][g]={a:rate(get(a,'prefix',8,common)) for a in ('U','P')}
     resources=read(r/'RESOURCE_LEDGER.json');assert all(s.get('ended_epoch') for s in resources['gpu_sessions'])
     result['cost']=dict(GPU_seconds=sum(s['ended_epoch']-s['started_epoch'] for s in resources['gpu_sessions']),new_Judge_payload_attempts=resources['Judge_attempts'])
     print(json.dumps(result,indent=2))
