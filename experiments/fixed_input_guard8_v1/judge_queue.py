@@ -11,7 +11,7 @@ R=Path(os.environ['RUN_ROOT'])
 spec=importlib.util.spec_from_file_location('queue_base',R/'private/tools/queue_base.py')
 q=importlib.util.module_from_spec(spec);spec.loader.exec_module(q)
 q.ROOT=R/'private/judge_fixed8';q.EFFORT='medium';q.BATCH_LEDGER='Fixed8_Judge_batches'
-EPOCH='FIXED_INPUT_CONTEXT_PIN8_V2_20261017'
+EPOCH='FIXED_INPUT_CONTEXT_PIN8_V3_20261017'
 
 
 def ingest(db):
@@ -39,7 +39,7 @@ def ingest(db):
                 key=q.payload(db,b['input'],b['judge_input'],d['R0'])
                 db.execute('INSERT INTO consumer VALUES (?,?,?,?,?,?,?,?,?,?)',(q.digest(str(p)),arm,phase['mode'],phase['prefix'],phase['owner'],'PANEL',p.stem,str(p),q.digest(d),key))
         assert db.execute('SELECT count(*) FROM consumer WHERE method=?',(arm,)).fetchone()[0]==382
-    old_path=R.parent.parent/'fixed-input-guard8-v1-20261016/run/private/judge_fixed8/queue.sqlite'
+    old_path=R.parent.parent/'fixed-input-context-pin8-v2-20261017/run/private/judge_fixed8/queue.sqlite'
     old=sqlite3.connect('file:'+str(old_path)+'?mode=ro',uri=True);old.row_factory=sqlite3.Row;reused=0
     for row in db.execute('SELECT key,binding FROM payload').fetchall():
         prior=old.execute('SELECT * FROM payload WHERE key=?',(row['key'],)).fetchone()

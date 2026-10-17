@@ -8,8 +8,8 @@ import time
 
 def main():
     workspace = Path(__file__).resolve().parents[2]
-    report = workspace/'reports/fixed_input_context_pin8_v2_20261017'
-    state = workspace/'.local_run/fixed_input_context_pin8_v2_20261017'
+    report = workspace/'reports/fixed_input_context_pin8_v3_20261017'
+    state = workspace/'.local_run/fixed_input_context_pin8_v3_20261017'
     state.mkdir(parents=True, exist_ok=True)
     assert not subprocess.check_output(['git','status','--porcelain'], cwd=workspace, text=True).strip()
     sha = subprocess.check_output(['git','rev-parse','HEAD'], cwd=workspace, text=True).strip()

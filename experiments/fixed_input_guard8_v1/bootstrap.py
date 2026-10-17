@@ -10,7 +10,7 @@ import time
 
 
 def install(payload):
-    root = Path('/data/bmw/Knowledge_editing/outputs/fixed-input-context-pin8-v2-20261017/run')
+    root = Path('/data/bmw/Knowledge_editing/outputs/fixed-input-context-pin8-v3-20261017/run')
     parent = Path('/data/bmw/Knowledge_editing/outputs/purew-odds-hinge-first1-v1-20261016/run')
     assert not root.exists(), 'Inspect existing installation; never replay'
     assert payload['authorization']['execution'] is True

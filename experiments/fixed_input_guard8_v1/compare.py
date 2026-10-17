@@ -46,12 +46,14 @@ def main():
     current = Path(os.environ['RUN_ROOT'])
     old = current.parent.parent/'fixed-input-guard8-v1-20261016/run'
     assert current != old and current.name == 'run'
+    previous = current.parent.parent/'fixed-input-context-pin8-v2-20261017/run'
     stdout = io.StringIO()
     with contextlib.redirect_stdout(stdout):report.main()
     new_results = json.loads(stdout.getvalue())
     old_results = json.loads((old/'public/completion/RESULTS.json').read_text())
     print(json.dumps(dict(status='TERMINAL_COMPARISON',old=old_results,new=new_results,
-                          long_outputs=dict(old=long_outputs(old),new=long_outputs(current)),
+                          previous_context=json.loads((previous/'public/completion/RESULTS.json').read_text()),
+                          long_outputs=dict(old=long_outputs(old),new=long_outputs(current),previous_context=long_outputs(previous)),
                           definitions=dict(long_output='raw token count reaches bound max_new_tokens; no EOS-cause claim',
                                            source6_forgetting='insertion versus final T0/T2G; T1G final only',
                                            missing='unknown; never replaced with zero or retried')),

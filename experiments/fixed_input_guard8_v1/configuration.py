@@ -1,5 +1,5 @@
 """Preparation-only eight-edit contrast; no implicit launch or budget borrowing."""
-VERSION = 'FIXED_INPUT_CONTEXT_PIN8_V2_20261017'
+VERSION = 'FIXED_INPUT_CONTEXT_PIN8_V3_20261017'
 ARMS = ('U', 'P')
 ORDERS = tuple(range(1, 9))
 SEEDS = (1442709718, 39524989, 4278467101, 2255805473, 225034559, 173959200, 958324087, 1907321266)
