@@ -11,19 +11,21 @@ R=Path(os.environ['RUN_ROOT'])
 spec=importlib.util.spec_from_file_location('queue_base',R/'private/tools/queue_base.py')
 q=importlib.util.module_from_spec(spec);spec.loader.exec_module(q)
 q.ROOT=R/'private/judge_fixed8';q.EFFORT='medium';q.BATCH_LEDGER='Fixed8_Judge_batches'
-EPOCH='FIXED_INPUT_CONTEXT_PIN8_V3_20261017'
+DIAGNOSTIC=q.read(R/'private/config.json').get('source6_diagnostic',False)
+ARMS=('P',) if DIAGNOSTIC else ('U','P')
+EPOCH='FIXED_INPUT_SOURCE6_DIAGNOSTIC_V1_20261017' if DIAGNOSTIC else 'FIXED_INPUT_CONTEXT_PIN8_V3_20261017'
 
 
 def ingest(db):
     if db.execute("SELECT 1 FROM done WHERE name='generation'").fetchone():return
     assert q.read(R/'private/GENERATION_COMPLETE.json')['status']=='PASS'
-    assert all(q.read(R/'private'/('FINAL_CONSUMED_'+a+'.json'))['status']=='PASS' for a in ('U','P'))
+    assert all(q.read(R/'private'/('FINAL_CONSUMED_'+a+'.json'))['status']=='PASS' for a in ARMS)
     assert not any(not s.get('ended_epoch') for s in q.read(R/'RESOURCE_LEDGER.json')['gpu_sessions'])
     assert db.execute('SELECT count(*) FROM consumer').fetchone()[0]==0
     lock=dict(epoch=EPOCH,model='gpt-6-astra',reasoning_effort='medium',protocol=q.PROTOCOL,prompt=q.PROMPT,attempts_per_payload=1,batch_size=50)
     q.write(q.ROOT/'EPOCH_MANIFEST.json',lock)
     ledger=q.read(R/'private/EVAL_LEDGER.json')['queries']
-    for arm in ('U','P'):
+    for arm in ARMS:
         for marker in sorted((R/'private/outputs'/arm).rglob('COMPLETE.json')):
             m=q.read(marker);phase=m['phase']
             if phase['mode']=='reload':continue
@@ -39,7 +41,8 @@ def ingest(db):
                 key=q.payload(db,b['input'],b['judge_input'],d['R0'])
                 db.execute('INSERT INTO consumer VALUES (?,?,?,?,?,?,?,?,?,?)',(q.digest(str(p)),arm,phase['mode'],phase['prefix'],phase['owner'],'PANEL',p.stem,str(p),q.digest(d),key))
         assert db.execute('SELECT count(*) FROM consumer WHERE method=?',(arm,)).fetchone()[0]==382
-    old_path=R.parent.parent/'fixed-input-context-pin8-v2-20261017/run/private/judge_fixed8/queue.sqlite'
+    prior_run='fixed-input-context-pin8-v3-20261017' if DIAGNOSTIC else 'fixed-input-context-pin8-v2-20261017'
+    old_path=R.parent.parent/prior_run/'run/private/judge_fixed8/queue.sqlite'
     old=sqlite3.connect('file:'+str(old_path)+'?mode=ro',uri=True);old.row_factory=sqlite3.Row;reused=0
     for row in db.execute('SELECT key,binding FROM payload').fetchall():
         prior=old.execute('SELECT * FROM payload WHERE key=?',(row['key'],)).fetchone()
@@ -47,7 +50,7 @@ def ingest(db):
             assert json.loads(prior['binding'])==json.loads(row['binding'])
             db.execute('UPDATE payload SET status=?,correct=?,batch=? WHERE key=?',(prior['status'],prior['correct'],'HISTORICAL_EXACT:'+str(prior['batch']),row['key']));reused+=1
     old.close();db.execute("INSERT INTO done VALUES ('generation')");db.commit()
-    q.write(q.ROOT/'INGEST.json',dict(consumers=764,payloads=db.execute('SELECT count(*) FROM payload').fetchone()[0],historical_exact_reused=reused))
+    q.write(q.ROOT/'INGEST.json',dict(consumers=382*len(ARMS),payloads=db.execute('SELECT count(*) FROM payload').fetchone()[0],historical_exact_reused=reused))
 
 
 def status(db):
@@ -65,11 +68,11 @@ def request(db,op):
         for k in keys:
             row=db.execute('SELECT rowid,status FROM payload WHERE key=?',(k,)).fetchone()
             assert row['status']=='PENDING' and ((row['rowid']-1)//50)%4==worker
-        charges={a:sum(bool(db.execute('SELECT 1 FROM consumer WHERE method=? AND payload_key=?',(a,k)).fetchone()) for k in keys) for a in ('U','P')}
-        budgets={a:q.read(R/'private/fixed8'/a/'evaluation-budget.json') for a in ('U','P')}
+        charges={a:sum(bool(db.execute('SELECT 1 FROM consumer WHERE method=? AND payload_key=?',(a,k)).fetchone()) for k in keys) for a in ARMS}
+        budgets={a:q.read(R/'private/fixed8'/a/'evaluation-budget.json') for a in ARMS}
         assert all(budgets[a]['counts']['new_Judge']+charges[a]<=512 for a in charges)
         with q.resources() as ledger:
-            assert ledger['Judge_attempts']+len(keys)<=1024
+            assert ledger['Judge_attempts']+len(keys)<=512*len(ARMS)
             attempts=ledger.setdefault(q.BATCH_LEDGER,[])
             consecutive=0
             for a in reversed(attempts):
