@@ -1,0 +1,54 @@
+{
+  "version": "FIXED_INPUT_CONTEXT_PIN8_V2_20261017",
+  "status": "CPU_IMPLEMENTATION_ONLY",
+  "authorization": {
+    "experiment": false,
+    "model_load": false,
+    "GPU": false,
+    "Judge": false,
+    "monitor": false
+  },
+  "sampling": {
+    "source": "training_calibration_and_current_native_FIT_only",
+    "calibration": "32 training records; up to32 stratified positions each; rank32 basis",
+    "historical": "32 positions total over native plus4 FIT; image/prompt/answer strata; first and final target predictors mandatory",
+    "native_pins": "up to4 independent directions per qualified native source: first/final target predictors plus image/prompt representatives"
+  },
+  "storage": {
+    "base_columns": 32,
+    "history_columns": 64,
+    "sketch_rows": 128,
+    "pinned_columns": 32,
+    "input_width": 14336,
+    "dtype": "float32",
+    "persistent_bytes": 14680120,
+    "limit_bytes": 16777216,
+    "scope": "protection tensors and counters; temporary extraction/SVD/model/optimizer memory excluded"
+  },
+  "capacity": {
+    "qualified_native_sources": 8,
+    "on_overflow": "reject; never evict fixed anchors"
+  },
+  "unchanged": [
+    "Adam learning rate and moments",
+    "source H loss and teacher",
+    "projection atol1e-7 rtol1e-6",
+    "direction distortion cap0.05",
+    "native repair implementation",
+    "CE admission0.1",
+    "slot counts and source order"
+  ],
+  "diagnostics": [
+    "sampled context and native uncovered normalized energy before/after admission",
+    "retained sketch and previous pinned direction coverage before/after compression",
+    "basis rank and sketch discarded energy",
+    "proposal/projected/actual update norms"
+  ],
+  "restore": "new explicit version; legacy state rejected; pinned tensors/counters restored with shape/orthogonality/capacity validation",
+  "limitations": [
+    "Stratified full-context sampling does not retain every token",
+    "Coverage measurements refer to sampled inputs and retained sketch, not all historical tokens",
+    "No live model or semantic retention validation",
+    "Fixed32 anchor bank supports current8-source scope only"
+  ]
+}

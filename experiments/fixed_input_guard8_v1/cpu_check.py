@@ -74,7 +74,7 @@ class Runtime:
         x = source[None, None].repeat(1, 4, 1)+torch.randn((1, 4, 14336), generator=noise)*.0001
         x = x.to(self.model.layer.weight.dtype)
         labels = torch.tensor([[-100, int(record.target), int(record.target), int(record.target)]])
-        return SimpleNamespace(labels=labels, forward_kwargs=lambda: dict(inputs_embeds=x))
+        return SimpleNamespace(labels=labels, image_token_start=0, image_token_end=1, forward_kwargs=lambda: dict(inputs_embeds=x))
 
 
 def run():
@@ -84,7 +84,8 @@ def run():
     def forbidden(*a, **k):
         raise AssertionError('No GPU/model-loader call authorized')
     torch.cuda.init = torch.cuda._lazy_init = forbidden
-    checks = {}
+    from .context_cpu_check import run as context_check
+    checks = dict(context_and_pinned_state=context_check())
     old = ROOT/'experiments/purew_he_hm146_v1/source_loss.py'
     names = ('split_logits', 'teacher', 'components')
     nodes = [n for n in ast.parse(old.read_text()).body if isinstance(n, ast.FunctionDef) and n.name in names]

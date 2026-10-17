@@ -33,6 +33,13 @@ class RuntimeAdapter:
             handle.remove()
         self.handles.clear()
 
+    def pack(self, prepared):
+        labels = prepared.labels.detach().cpu()
+        kwargs = {k: v.detach().cpu() if isinstance(v, torch.Tensor) else v
+                  for k, v in prepared.forward_kwargs().items()}
+        span = (int(prepared.image_token_start), int(prepared.image_token_end))
+        return kwargs, labels, span
+
     def views(self, record, fits):
         if len(fits) != 4:
             raise ValueError('Exactly four original FIT questions required')
@@ -46,11 +53,11 @@ class RuntimeAdapter:
                 raise ValueError('Invalid single-source answer positions')
             if any(isinstance(v, torch.Tensor) and v.is_floating_point() and v.dtype != self.weight.dtype for v in kwargs.values()):
                 raise ValueError('Prepared inputs changed native dtype')
-            batches.append((kwargs, labels))
+            batches.append(self.pack(prepared))
         return batches
 
     def logits(self, batch):
-        kwargs, labels = batch
+        kwargs, labels = batch[:2]
         kwargs = {k: v.to(self.weight.device) if isinstance(v, torch.Tensor) else v for k, v in kwargs.items()}
         labels = labels.to(self.weight.device)[:, 1:]
         mask = labels != -100
@@ -83,16 +90,14 @@ class RuntimeAdapter:
         return value
 
     @torch.no_grad()
-    def inputs(self, views):
+    def inputs(self, views, *, anchors=False):
         selected = []
-        for i, batch in enumerate(views):
-            positions = (batch[1][0, 1:] != -100).nonzero().flatten()
-            quota = 32//len(views) + (i < 32 % len(views))
-            positions = positions[torch.linspace(0, len(positions)-1, min(quota, len(positions))).round().long()]
+        for i, batch in enumerate(views[:1] if anchors else views):
+            positions = context_positions(batch, 4 if anchors else 32//len(views)+(i < 32 % len(views)), anchors=anchors)
             captured = []
             def capture(module, args):
                 h = args[0]
-                if h.ndim != 3 or h.shape[0] != 1:
+                if h.ndim != 3 or h.shape[0] != 1 or h.shape[1] != batch[1].shape[1]:
                     raise ValueError('Unexpected edited-layer inputs')
                 captured.append(h[0, positions.to(h.device)].detach().float().cpu())
             handle = self.layer.register_forward_pre_hook(capture)
@@ -104,6 +109,37 @@ class RuntimeAdapter:
                 raise ValueError('Edited layer must be reached exactly once')
             selected.extend(captured)
         result = torch.cat(selected)
-        if not 1 <= len(result) <= 32:
-            raise ValueError('Input summary exceeds 32 vectors')
+        if not 1 <= len(result) <= (4 if anchors else 32):
+            raise ValueError('Input summary exceeds fixed capacity')
         return result
+
+
+def context_positions(batch, quota, *, anchors=False):
+    """Bounded stratified full-context sampling; no evaluation inputs or RNG."""
+    kwargs, labels, (start, end) = batch
+    valid = kwargs.get('attention_mask', torch.ones_like(labels))[0].bool().cpu()
+    if labels.ndim != 2 or labels.shape[0] != 1 or not 0 <= start < end <= labels.shape[1]:
+        raise ValueError('Invalid expanded image span')
+    answer = ((labels[0, 1:] != -100) & valid[1:] & valid[:-1]).nonzero().flatten().tolist()
+    if not answer or end > answer[0]+1 or not valid[start:end].all():
+        raise ValueError('Invalid answer/image layout')
+    visual = list(range(start, end))
+    prompt = [p for p in range(answer[0]+1) if valid[p] and not start <= p < end]
+    chosen = list(dict.fromkeys([answer[0], answer[-1]]))
+    if anchors:
+        for group in (visual, prompt):
+            candidates = [p for p in group if p not in chosen]
+            if candidates:chosen.append(candidates[len(candidates)//2])
+        return torch.tensor(chosen, dtype=torch.long)
+    groups = [visual, prompt, answer]
+    # Equal interleaving prevents long image spans from crowding out text/answers.
+    ordered = []
+    for group in groups:
+        n = min(quota, len(group))
+        indices = torch.linspace(0, len(group)-1, n).round().long().tolist() if n else []
+        ordered.append([group[j] for j in indices])
+    for j in range(quota):
+        for group in ordered:
+            if j < len(group) and group[j] not in chosen and len(chosen) < quota:
+                chosen.append(group[j])
+    return torch.tensor(sorted(chosen), dtype=torch.long)

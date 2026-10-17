@@ -117,10 +117,12 @@ def calibration_inputs(runtime, records, manifest, budget):
         rows = []
         for record in records:
             prepared = runtime.build_edit_batch(record)
-            batch = ({k: v.detach().cpu() if isinstance(v, torch.Tensor) else v
-                      for k, v in prepared.forward_kwargs().items()}, prepared.labels.detach().cpu())
-            rows.append(adapter.inputs([batch])[:1])
-        return torch.cat(rows)
+            rows.append(adapter.inputs([adapter.pack(prepared)]))
+        from experiments.fixed_input_guard_v1.guard import right_basis, normalized_rows
+        basis = right_basis(normalized_rows(torch.cat(rows)), 32).T
+        result = torch.zeros((32, basis.shape[1]), dtype=torch.float32)
+        result[:len(basis)] = basis
+        return result
     finally:
         adapter.close()
 

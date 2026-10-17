@@ -9,7 +9,8 @@ from dataclasses import asdict
 from pathlib import Path
 import numpy as np
 import torch
-from experiments.fixed_input_guard_v1.guard import InputGuard, ATOL, RTOL, MAX_RELATIVE_DISTORTION
+from experiments.fixed_input_guard_v1.guard import ATOL, RTOL, MAX_RELATIVE_DISTORTION
+from .context_guard import InputGuard
 from .configuration import VERSION, ARMS, SLOTS, OPTIMIZER, CAPS, CHECKPOINT_BYTES, WALL_SECONDS
 from .adapter import RuntimeAdapter
 
@@ -158,7 +159,8 @@ class Editor:
             self.budget.consume('candidate_checks')
             candidate = native.clone()
             certificate = self.guard.write(candidate, proposal)
-            event.update(certificate=certificate, source_loss_before=float(baseline.detach()))
+            event.update(certificate=certificate, source_loss_before=float(baseline.detach()),
+                         proposal_norm=float(proposal.double().norm()))
             if not certificate['accepted']:
                 event['reason'] = certificate['reason']
             else:
@@ -170,7 +172,8 @@ class Editor:
                 norm = float(actual.norm())
                 residual = float((actual @ q).norm())
                 distortion = float((actual-projected).norm()/projected.norm()) if projected.norm() else math.inf
-                event['device_readback'] = dict(norm=norm, residual=residual, limit=ATOL+RTOL*norm, distortion=distortion)
+                event['device_readback'] = dict(norm=norm, residual=residual, limit=ATOL+RTOL*norm, distortion=distortion,
+                                              projected_norm=float(projected.norm()), basis_rank=q.shape[1])
                 if not (norm > 0 and math.isfinite(residual) and residual <= ATOL+RTOL*norm and distortion <= MAX_RELATIVE_DISTORTION):
                     event['reason'] = 'DEVICE_READBACK_REJECTED'
                 else:
@@ -222,16 +225,26 @@ class Editor:
         try:
             ce = self.adapter.measure(self.views)
             inputs = self.adapter.inputs(self.views)
+            anchors = self.adapter.inputs(self.views, anchors=True)
         finally:
             restore_rng(rng)
         qualified = math.isfinite(ce) and ce < .1
+        old_rows = self.guard.sketch[:int(self.guard.counts[2])].clone()
+        old_pins = self.guard.pinned[:, :int(self.guard.pin_count)].T.clone()
+        coverage = dict(context_before=self.guard.coverage(inputs), native_before=self.guard.coverage(anchors))
+        for name, rows in (('retained_sketch', old_rows), ('previous_native_anchors', old_pins)):
+            coverage[name+'_before'] = self.guard.coverage(rows) if len(rows) else None
         if self.arm == 'P':
-            self.guard.admit(inputs, successful=qualified)
+            self.guard.admit(inputs, successful=qualified, anchors=anchors)
+        coverage.update(context_after=self.guard.coverage(inputs), native_after=self.guard.coverage(anchors))
+        for name, rows in (('retained_sketch', old_rows), ('previous_native_anchors', old_pins)):
+            coverage[name+'_after'] = self.guard.coverage(rows) if len(rows) else None
         self.views = self.anchors = None
         self.source_labels = self.source_binding = None
         self.boundary = True
         return dict(owner=self.owner, CE=ce, qualified=qualified, continue_queue=True,
-                    inputs_selected=len(inputs), protection_bytes=self.guard.check_storage())
+                    inputs_selected=len(inputs), native_anchors_selected=len(anchors), coverage=coverage,
+                    protection_bytes=self.guard.check_storage())
 
     def state(self):
         if not torch.equal(self.master.detach(), self.weight.detach().cpu().float()):
