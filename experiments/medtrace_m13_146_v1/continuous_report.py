@@ -51,16 +51,18 @@ def main():
         assert not db.execute("select 1 from payload where status in ('PENDING','RESERVED')").fetchone()
         for path,binding,status,score in db.execute('select c.path,c.output_binding,p.status,p.correct from consumer c join payload p on p.key=c.payload_key'):
             d=q.read(Path(path));assert q.digest(d)==binding
-            k=tuple(d[x] for x in ('method','mode','prefix','owner'))+(d['binding']['input']['query_id'],);assert k not in records
+            # Normalize the selected arm only inside the existing one-bank aggregation helper.
+            method='M13P' if d['method']==f.SELECTED else d['method']
+            k=(method,d['mode'],d['prefix'],d['owner'],d['binding']['input']['query_id']);assert k not in records
             records[k]=d;scores[k]=score if status=='FORMAT_VALID' else None
     result,owners=calculate(q.read(run/'private/ORIGINAL146_TASKS.json'),q.read(run/'private/ORIGINAL_BASE_MASK146.json'),records,scores)
-    result.update(scope='Original146 actual cumulative expert bank; exposed DEV, not shared-weight sequential training',historical_baselines=q.read(run/'private/HISTORICAL_BASELINES.json'),comparison_limit='Historical Astra high adapted baselines vs current Astra medium; no matched-epoch superiority or independent confirmation claim')
+    result.update(selected_method=f.SELECTED,selection=q.read(run/'private/CONTINUOUS_SELECTION.json'),scope='Original146 actual cumulative expert bank; exposed DEV, not shared-weight sequential training',historical_baselines=q.read(run/'private/HISTORICAL_BASELINES.json'),comparison_limit='Historical Astra high adapted baselines vs current Astra medium; no matched-epoch superiority or independent confirmation claim')
     q.write(run/'private/CONTINUOUS_FULL_RESULT.json',dict(result,owner_panels=owners))
     result['panels']['bank_1']={'status':'PRIVATE_SMALL_GROUP_AUDIT_ONLY'};result['protection']['bank_1']={'status':'PRIVATE_SMALL_GROUP_AUDIT_ONLY'}
     q.write(run/'public/CONTINUOUS_RESULTS.json',result)
-    lines=['# M13P旧课程：146次持续编辑','','| 方法 | T0 | T1G | T2G | T1L | T2L |','|---|---:|---:|---:|---:|---:|']
+    lines=['# '+f.SELECTED+'旧课程：146次持续编辑','','| 方法 | T0 | T1G | T2G | T1L | T2L |','|---|---:|---:|---:|---:|---:|']
     roles=('T0','T1G','T2G','T1L','T2L');p=result['panels']['bank_146']
-    lines.append('| M13P_540 | '+' | '.join(str(p[k]['macro']) for k in roles)+' |')
+    lines.append('| '+f.SELECTED+'_540 | '+' | '.join(str(p[k]['macro']) for k in roles)+' |')
     for method in ('BalancEdit_locked_adaptation','BELoRA_V2_effect_repaired'):
         rows=[v for v in result['historical_baselines'] if v['method']==method and v['mode']=='sequential' and int(v['prefix'])==146]
         lines.append('| '+method+' | '+' | '.join(next(v['macro_percent_display'] for v in rows if v['task']==k) for k in roles)+' |')
