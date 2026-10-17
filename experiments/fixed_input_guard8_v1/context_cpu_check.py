@@ -17,6 +17,31 @@ def run():
     assert any(3 <= p < 23 for p in positions) and any(p < 3 or 23 <= p < 29 for p in positions)
     assert 29 in positions and 34 in positions and 29 in pins and 34 in pins and len(pins) == 4
     assert positions == context_positions(batch, 32).tolist()
+    # Production uses 7/7/6/6/6 positions, not 32 positions per view.
+    long_labels = torch.full((1, 640), -100)
+    long_labels[0, 610:630] = 1
+    mask = torch.ones_like(long_labels); mask[0, 630:] = 0
+    long_batch = ({'attention_mask': mask}, long_labels, (10, 586))
+    coverage_positions = {}
+    for quota in (6, 7, 32):
+        selected = context_positions(long_batch, quota).tolist()
+        assert len(selected) == len(set(selected)) == quota
+        assert all(mask[0, p] for p in selected)
+        assert {0, 10, 585, 608, 609, 628} <= set(selected), 'Stratum endpoints lost'
+        assert selected == context_positions(long_batch, quota).tolist()
+        coverage_positions[str(quota)] = selected
+    assert sum(len(context_positions(long_batch, q)) for q in (7, 7, 6, 6, 6)) == 32
+    assert context_positions(long_batch, 4, anchors=True).tolist() == [609, 628, 298, 592]
+    # A short answer frees positions for the other strata; padding remains excluded.
+    short_labels = long_labels.clone(); short_labels[0, 611:] = -100
+    short_batch = ({'attention_mask': mask}, short_labels, (10, 586))
+    for quota in (6, 7):
+        selected = context_positions(short_batch, quota).tolist()
+        assert len(selected) == len(set(selected)) == quota
+        assert {0, 10, 585, 608, 609} <= set(selected)
+    tiny_labels = torch.tensor([[-100, -100, -100, 1, -100]])
+    tiny = ({'attention_mask': torch.tensor([[1, 1, 1, 1, 0]])}, tiny_labels, (1, 2))
+    assert context_positions(tiny, 7).tolist() == [0, 1, 2]
     d = 256
     g = InputGuard(torch.randn(32,d)); first = None
     for i in range(8):
@@ -61,6 +86,7 @@ def run():
         assert not torch.equal(native,before)
     assert InputGuard.restore(full.state()).check_storage() == full.check_storage()
     assert full.check_storage() == 14680120 and full.check_storage() < 16*1024**2
-    return dict(status='PASS',persistent_bytes=full.check_storage(),pin_capacity=32,
+    return dict(status='PASS',persistent_bytes=full.check_storage(),pin_capacity=32, production_quota_positions=coverage_positions,
+                five_view_total=32, short_strata_redistribution=True,
                 covered_strata=['visual','prompt','answer_predictors','final_target_predictor'],
                 compression_retains_first_native_anchors=True, corrupt_restore_rejected=True)

@@ -131,15 +131,22 @@ def context_positions(batch, quota, *, anchors=False):
             candidates = [p for p in group if p not in chosen]
             if candidates:chosen.append(candidates[len(candidates)//2])
         return torch.tensor(chosen, dtype=torch.long)
-    groups = [visual, prompt, answer]
-    # Equal interleaving prevents long image spans from crowding out text/answers.
-    ordered = []
-    for group in groups:
-        n = min(quota, len(group))
-        indices = torch.linspace(0, len(group)-1, n).round().long().tolist() if n else []
-        ordered.append([group[j] for j in indices])
-    for j in range(quota):
-        for group in ordered:
-            if j < len(group) and group[j] not in chosen and len(chosen) < quota:
-                chosen.append(group[j])
+    groups = [[p for p in visual if p not in answer],
+              [p for p in prompt if p not in answer], answer]
+    counts = [0, 0, len(chosen)]
+    if quota < sum(counts):
+        raise ValueError('Quota cannot retain answer endpoints')
+    # Allocate final stratum counts first; truncating sampled lists biases toward their starts.
+    while sum(counts) < quota:
+        available = [i for i, group in enumerate(groups) if counts[i] < len(group)]
+        if not available:
+            break
+        i = min(available, key=lambda i: counts[i])
+        counts[i] += 1
+    chosen = []
+    for group, count in zip(groups, counts):
+        if count:
+            indices = ([len(group)//2] if count == 1 else
+                       torch.linspace(0, len(group)-1, count).round().long().tolist())
+            chosen.extend(group[j] for j in indices)
     return torch.tensor(sorted(chosen), dtype=torch.long)
