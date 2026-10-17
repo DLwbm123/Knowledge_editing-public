@@ -9,7 +9,7 @@ from runtime146 import r,c,RUN,tasks,point,dest,require_ready
 
 def bank_entries(entries,row):
     assert len(entries)==146 and len({e['logical_edit_id'] for e in entries})==146
-    assert row['method'] in ('C','M1','M3','M13','FISHER_MIN')
+    assert row['method'] in ('C','M1','M3','M13','M13B','FISHER_MIN')
     if row['mode']=='single':
         assert 1<=row['owner']<=146;return [entries[row['owner']-1]]
     assert row['mode'] in ('bank','insertion') and 1<=row['prefix']<=146
