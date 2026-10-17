@@ -1,0 +1,84 @@
+{
+  "status": "COMPLETE_WITH_HISTORICAL_MISSING",
+  "scientific_protection_success": false,
+  "implementation_commit": "475596b0a85169564cb9e3c354c10361af37dab5",
+  "calibration": {
+    "status": "PASS",
+    "records": 32,
+    "shape": [
+      32,
+      14336
+    ]
+  },
+  "arms": {
+    "U": {
+      "admission": "PASS",
+      "budget": {
+        "start_epoch": 1792222333.6557584,
+        "counts": {
+          "attempt_slots": 160,
+          "admission_slots": 1,
+          "backwards": 161,
+          "candidate_checks": 161,
+          "committed_updates": 38,
+          "forwards": 824,
+          "generation_attempts": 0,
+          "new_Judge": 0
+        }
+      },
+      "reload": {
+        "status": "PASS",
+        "two_outputs_exact": true
+      },
+      "retired": {
+        "bytes": 954224240,
+        "reason": "All insertion/prefix/native-reload consumers durable",
+        "retained": "current native export",
+        "regeneration_requires_training": true
+      }
+    },
+    "P": {
+      "admission": "PASS",
+      "budget": {
+        "start_epoch": 1792222093.3436925,
+        "counts": {
+          "attempt_slots": 160,
+          "admission_slots": 1,
+          "backwards": 161,
+          "candidate_checks": 161,
+          "committed_updates": 29,
+          "forwards": 888,
+          "generation_attempts": 0,
+          "new_Judge": 0
+        }
+      },
+      "reload": {
+        "status": "PASS",
+        "two_outputs_exact": true
+      },
+      "retired": {
+        "bytes": 954224240,
+        "reason": "All insertion/prefix/native-reload consumers durable",
+        "retained": "current native export",
+        "regeneration_requires_training": true
+      }
+    }
+  },
+  "gpu_sessions_closed": 43,
+  "gpu_seconds_ledger": 4009.2221274375916,
+  "gpu_seconds_timestamp_sum": 4009.2221171855927,
+  "judge_new_payloads": 210,
+  "queue_terminal": {
+    "FORMAT_VALID": 554,
+    "MISSING": 3
+  },
+  "worker_done": 4,
+  "batch_archives": 6,
+  "consumers": 764,
+  "consumer_valid": 758,
+  "consumer_missing": 6,
+  "historical_reuse_valid": 344,
+  "historical_missing": 3,
+  "old_runs_unchanged": true,
+  "next_experiment": false
+}
