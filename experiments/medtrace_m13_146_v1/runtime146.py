@@ -115,7 +115,7 @@ def train(arms=None,partitions=3):
                     seed_everything(task['seed']);assert not point(task,arm).exists(),'No trajectory restart'
                     resume=RUN/'private/resume146'/f"{arm}_{task['order']}.pt";assert not resume.exists(),'Interrupted state requires an independent audit'
                     expert=r.p.expert(initial,task['seed'],runtime.device)
-                    base=r.mm.canonicalize(initial)[0] if arm in ('M1','M13') else initial
+                    base=r.mm.canonicalize(initial)[0] if arm in ('M1','M13','M13B') else initial
                     expert.load_state_dict(base)
                     hook=r.q.scoped.replay.MedTraceLayerHook(runtime.get_module(c.LAYER),expert);hook.attach()
                     try:
@@ -128,9 +128,9 @@ def train(arms=None,partitions=3):
                         start=dict(r.COUNTS)
                         def checkpoint(saved):c.save(resume,saved);r.save_counts()
                         final=trajectory.run(r,runtime,hook,expert,batches,arm,cache,
-                            coefficient if arm in ('M3','M13') else 0.,targets,binding,checkpoint)
+                            coefficient if arm in ('M3','M13','M13B') else 0.,targets,binding,checkpoint)
                         r.finish_candidate(runtime,hook,expert,task,arm,base,batches,refs,final['curve'],start,final['scalar'],
-                            mechanism=dict(coefficient=coefficient if arm in ('M3','M13') else 0.,source_binding=binding['source_binding']))
+                            mechanism=dict(coefficient=coefficient if arm in ('M3','M13','M13B') else 0.,source_binding=binding['source_binding']))
                         c.write(RUN/'private/retired146'/f"{arm}_{task['order']}.json",dict(bytes=resume.stat().st_size,last_consumer='160 final/save-load and durable diagnostics'))
                         resume.unlink()
                     finally:hook.detach()
