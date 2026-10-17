@@ -1,0 +1,1177 @@
+{
+  "status": "COMPLETE_WITH_MISSING",
+  "consumers": 764,
+  "consumer_status": {
+    "FORMAT_VALID": 758,
+    "MISSING": 6
+  },
+  "payload_status": {
+    "FORMAT_VALID": 532,
+    "MISSING": 3
+  },
+  "ingest": {
+    "consumers": 764,
+    "payloads": 535,
+    "historical_exact_reused": 375
+  },
+  "arms": {
+    "U": {
+      "formal_slots": 160,
+      "formal_accepted": 37,
+      "qualified": 7,
+      "sources": [
+        {
+          "owner": 1,
+          "CE": 0.006193220097399421,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 2,
+          "CE": 0.01079643132743542,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 3,
+          "CE": 0.23004049467540777,
+          "qualified": false,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 4,
+          "CE": 0.0004138009564077489,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 5,
+          "CE": 0.0073373017082602136,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 6,
+          "CE": 0.0012995105168273112,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 7,
+          "CE": 0.00021091933568246393,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 8,
+          "CE": 0.004159411957161322,
+          "qualified": true,
+          "protection_bytes": 14680120
+        }
+      ],
+      "reload": "PASS",
+      "prefixes": {
+        "0": {
+          "T0": {
+            "correct": 0,
+            "total": 8,
+            "missing": 0,
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "T1G": {
+            "correct": 3,
+            "total": 32,
+            "missing": 0,
+            "lower": 0.09375,
+            "upper": 0.09375
+          },
+          "T2G": {
+            "correct": 0,
+            "total": 32,
+            "missing": 3,
+            "lower": 0.0,
+            "upper": 0.09375
+          },
+          "protection": {
+            "correct": 54,
+            "total": 54,
+            "missing": 0,
+            "lower": 1.0,
+            "upper": 1.0,
+            "known_wrong": 0
+          }
+        },
+        "4": {
+          "T0": {
+            "correct": 4,
+            "total": 4,
+            "missing": 0,
+            "lower": 1.0,
+            "upper": 1.0
+          },
+          "T1G": {
+            "correct": 16,
+            "total": 16,
+            "missing": 0,
+            "lower": 1.0,
+            "upper": 1.0
+          },
+          "T2G": {
+            "correct": 7,
+            "total": 16,
+            "missing": 0,
+            "lower": 0.4375,
+            "upper": 0.4375
+          },
+          "protection": {
+            "correct": 0,
+            "total": 54,
+            "missing": 0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "known_wrong": 54
+          }
+        },
+        "8": {
+          "T0": {
+            "correct": 6,
+            "total": 8,
+            "missing": 0,
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "T1G": {
+            "correct": 22,
+            "total": 32,
+            "missing": 0,
+            "lower": 0.6875,
+            "upper": 0.6875
+          },
+          "T2G": {
+            "correct": 15,
+            "total": 32,
+            "missing": 0,
+            "lower": 0.46875,
+            "upper": 0.46875
+          },
+          "protection": {
+            "correct": 0,
+            "total": 54,
+            "missing": 0,
+            "lower": 0.0,
+            "upper": 0.0,
+            "known_wrong": 54
+          }
+        }
+      },
+      "old1to7": {
+        "T0": {
+          "before": {
+            "correct": 6,
+            "total": 7,
+            "missing": 0,
+            "lower": 0.8571428571428571,
+            "upper": 0.8571428571428571
+          },
+          "after": {
+            "correct": 5,
+            "total": 7,
+            "missing": 0,
+            "lower": 0.7142857142857143,
+            "upper": 0.7142857142857143
+          },
+          "retention_among_known_insert_correct": {
+            "correct": 5,
+            "total": 6,
+            "missing": 0,
+            "lower": 0.8333333333333334,
+            "upper": 0.8333333333333334
+          },
+          "correct_to_wrong": 1,
+          "wrong_to_correct": 0,
+          "pairs_with_unknown": 0
+        },
+        "T2G": {
+          "before": {
+            "correct": 21,
+            "total": 28,
+            "missing": 0,
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "after": {
+            "correct": 13,
+            "total": 28,
+            "missing": 0,
+            "lower": 0.4642857142857143,
+            "upper": 0.4642857142857143
+          },
+          "retention_among_known_insert_correct": {
+            "correct": 11,
+            "total": 21,
+            "missing": 0,
+            "lower": 0.5238095238095238,
+            "upper": 0.5238095238095238
+          },
+          "correct_to_wrong": 10,
+          "wrong_to_correct": 2,
+          "pairs_with_unknown": 0
+        },
+        "T1G_final": {
+          "correct": 18,
+          "total": 28,
+          "missing": 0,
+          "lower": 0.6428571428571429,
+          "upper": 0.6428571428571429
+        }
+      },
+      "per_source": [
+        {
+          "order": 1,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 2,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.5,
+              "upper": 0.5
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          }
+        },
+        {
+          "order": 2,
+          "final": {
+            "T0": {
+              "correct": 0,
+              "total": 1,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T1G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          }
+        },
+        {
+          "order": 3,
+          "final": {
+            "T0": {
+              "correct": 0,
+              "total": 1,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T1G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 0,
+              "total": 1,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          }
+        },
+        {
+          "order": 4,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 3,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.75,
+              "upper": 0.75
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          }
+        },
+        {
+          "order": 5,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 3,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.75,
+              "upper": 0.75
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 2,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.5,
+              "upper": 0.5
+            }
+          }
+        },
+        {
+          "order": 6,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          }
+        },
+        {
+          "order": 7,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 3,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.75,
+              "upper": 0.75
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 3,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.75,
+              "upper": 0.75
+            }
+          }
+        },
+        {
+          "order": 8,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 2,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.5,
+              "upper": 0.5
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 2,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.5,
+              "upper": 0.5
+            }
+          }
+        }
+      ],
+      "evaluation_counts": {
+        "attempt_slots": 0,
+        "admission_slots": 0,
+        "backwards": 0,
+        "candidate_checks": 0,
+        "committed_updates": 0,
+        "forwards": 13095,
+        "generation_attempts": 387,
+        "new_Judge": 18
+      }
+    },
+    "P": {
+      "formal_slots": 160,
+      "formal_accepted": 26,
+      "qualified": 6,
+      "sources": [
+        {
+          "owner": 1,
+          "CE": 0.007824093904841633,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 2,
+          "CE": 0.27769537457237403,
+          "qualified": false,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 3,
+          "CE": 0.421779755388715,
+          "qualified": false,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 4,
+          "CE": 0.003919326082671237,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 5,
+          "CE": 0.001928550666376074,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 6,
+          "CE": 0.05684225854235759,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 7,
+          "CE": 0.0003359886258008919,
+          "qualified": true,
+          "protection_bytes": 14680120
+        },
+        {
+          "owner": 8,
+          "CE": 0.009590103247541235,
+          "qualified": true,
+          "protection_bytes": 14680120
+        }
+      ],
+      "reload": "PASS",
+      "prefixes": {
+        "0": {
+          "T0": {
+            "correct": 0,
+            "total": 8,
+            "missing": 0,
+            "lower": 0.0,
+            "upper": 0.0
+          },
+          "T1G": {
+            "correct": 3,
+            "total": 32,
+            "missing": 0,
+            "lower": 0.09375,
+            "upper": 0.09375
+          },
+          "T2G": {
+            "correct": 0,
+            "total": 32,
+            "missing": 3,
+            "lower": 0.0,
+            "upper": 0.09375
+          },
+          "protection": {
+            "correct": 54,
+            "total": 54,
+            "missing": 0,
+            "lower": 1.0,
+            "upper": 1.0,
+            "known_wrong": 0
+          }
+        },
+        "4": {
+          "T0": {
+            "correct": 3,
+            "total": 4,
+            "missing": 0,
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "T1G": {
+            "correct": 12,
+            "total": 16,
+            "missing": 0,
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "T2G": {
+            "correct": 10,
+            "total": 16,
+            "missing": 0,
+            "lower": 0.625,
+            "upper": 0.625
+          },
+          "protection": {
+            "correct": 32,
+            "total": 54,
+            "missing": 0,
+            "lower": 0.5925925925925926,
+            "upper": 0.5925925925925926,
+            "known_wrong": 22
+          }
+        },
+        "8": {
+          "T0": {
+            "correct": 6,
+            "total": 8,
+            "missing": 0,
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "T1G": {
+            "correct": 24,
+            "total": 32,
+            "missing": 0,
+            "lower": 0.75,
+            "upper": 0.75
+          },
+          "T2G": {
+            "correct": 18,
+            "total": 32,
+            "missing": 0,
+            "lower": 0.5625,
+            "upper": 0.5625
+          },
+          "protection": {
+            "correct": 4,
+            "total": 54,
+            "missing": 0,
+            "lower": 0.07407407407407407,
+            "upper": 0.07407407407407407,
+            "known_wrong": 50
+          }
+        }
+      },
+      "old1to7": {
+        "T0": {
+          "before": {
+            "correct": 5,
+            "total": 7,
+            "missing": 0,
+            "lower": 0.7142857142857143,
+            "upper": 0.7142857142857143
+          },
+          "after": {
+            "correct": 5,
+            "total": 7,
+            "missing": 0,
+            "lower": 0.7142857142857143,
+            "upper": 0.7142857142857143
+          },
+          "retention_among_known_insert_correct": {
+            "correct": 4,
+            "total": 5,
+            "missing": 0,
+            "lower": 0.8,
+            "upper": 0.8
+          },
+          "correct_to_wrong": 1,
+          "wrong_to_correct": 1,
+          "pairs_with_unknown": 0
+        },
+        "T2G": {
+          "before": {
+            "correct": 18,
+            "total": 28,
+            "missing": 0,
+            "lower": 0.6428571428571429,
+            "upper": 0.6428571428571429
+          },
+          "after": {
+            "correct": 16,
+            "total": 28,
+            "missing": 0,
+            "lower": 0.5714285714285714,
+            "upper": 0.5714285714285714
+          },
+          "retention_among_known_insert_correct": {
+            "correct": 12,
+            "total": 18,
+            "missing": 0,
+            "lower": 0.6666666666666666,
+            "upper": 0.6666666666666666
+          },
+          "correct_to_wrong": 6,
+          "wrong_to_correct": 4,
+          "pairs_with_unknown": 0
+        },
+        "T1G_final": {
+          "correct": 20,
+          "total": 28,
+          "missing": 0,
+          "lower": 0.7142857142857143,
+          "upper": 0.7142857142857143
+        }
+      },
+      "per_source": [
+        {
+          "order": 1,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 1,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.25,
+              "upper": 0.25
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          }
+        },
+        {
+          "order": 2,
+          "final": {
+            "T0": {
+              "correct": 0,
+              "total": 1,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T1G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 0,
+              "total": 1,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          }
+        },
+        {
+          "order": 3,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 0,
+              "total": 1,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          }
+        },
+        {
+          "order": 4,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          }
+        },
+        {
+          "order": 5,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 3,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.75,
+              "upper": 0.75
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 3,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.75,
+              "upper": 0.75
+            }
+          }
+        },
+        {
+          "order": 6,
+          "final": {
+            "T0": {
+              "correct": 0,
+              "total": 1,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T1G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            },
+            "T2G": {
+              "correct": 0,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.0,
+              "upper": 0.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 3,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.75,
+              "upper": 0.75
+            }
+          }
+        },
+        {
+          "order": 7,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            }
+          }
+        },
+        {
+          "order": 8,
+          "final": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T1G": {
+              "correct": 4,
+              "total": 4,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 2,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.5,
+              "upper": 0.5
+            }
+          },
+          "insertion": {
+            "T0": {
+              "correct": 1,
+              "total": 1,
+              "missing": 0,
+              "lower": 1.0,
+              "upper": 1.0
+            },
+            "T2G": {
+              "correct": 2,
+              "total": 4,
+              "missing": 0,
+              "lower": 0.5,
+              "upper": 0.5
+            }
+          }
+        }
+      ],
+      "evaluation_counts": {
+        "attempt_slots": 0,
+        "admission_slots": 0,
+        "backwards": 0,
+        "candidate_checks": 0,
+        "committed_updates": 0,
+        "forwards": 36494,
+        "generation_attempts": 387,
+        "new_Judge": 142
+      }
+    }
+  },
+  "common_insert_correct_old1to7": {
+    "T0": {
+      "U": {
+        "correct": 5,
+        "total": 5,
+        "missing": 0,
+        "lower": 1.0,
+        "upper": 1.0
+      },
+      "P": {
+        "correct": 4,
+        "total": 5,
+        "missing": 0,
+        "lower": 0.8,
+        "upper": 0.8
+      }
+    },
+    "T2G": {
+      "U": {
+        "correct": 10,
+        "total": 16,
+        "missing": 0,
+        "lower": 0.625,
+        "upper": 0.625
+      },
+      "P": {
+        "correct": 10,
+        "total": 16,
+        "missing": 0,
+        "lower": 0.625,
+        "upper": 0.625
+      }
+    }
+  },
+  "cost": {
+    "GPU_seconds": 4502.084810256958,
+    "new_Judge_payload_attempts": 160
+  }
+}
