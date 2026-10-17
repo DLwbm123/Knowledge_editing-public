@@ -10,7 +10,7 @@ import time
 
 
 def install(payload):
-    root = Path('/data/bmw/Knowledge_editing/outputs/fixed-input-guard8-v1-20261016/run')
+    root = Path('/data/bmw/Knowledge_editing/outputs/fixed-input-context-pin8-v2-20261017/run')
     parent = Path('/data/bmw/Knowledge_editing/outputs/purew-odds-hinge-first1-v1-20261016/run')
     assert not root.exists(), 'Inspect existing installation; never replay'
     assert payload['authorization']['execution'] is True
@@ -18,7 +18,8 @@ def install(payload):
     gpu = payload['gpu']
     uuid, free = subprocess.check_output(['nvidia-smi', '-i', str(gpu), '--query-gpu=uuid,memory.free',
                                         '--format=csv,noheader,nounits'], text=True).strip().split(', ')
-    assert uuid == payload['uuid'] and int(free) >= 60000
+    assert uuid == payload['uuid']
+    assert payload['authorization']['resource_gate_waiver'] is True
     mount = json.loads(subprocess.check_output(['findmnt', '-J', '-T', str(parent)], text=True))['filesystems'][0]
     assert mount['target'] == '/data' and shutil.disk_usage(parent).free >= 24*1024**3
     memory = next(int(x.split()[1])*1024 for x in Path('/proc/meminfo').read_text().splitlines() if x.startswith('MemAvailable:'))
@@ -55,6 +56,9 @@ def install(payload):
     manifest = dict(role='CALIBRATION_TRAIN', calibration_ids=[r['record_id'] for r in records],
                     calibration_source_groups=groups, edit_and_eval_ids=list(ledger['queries']),
                     edit_and_eval_source_groups=sorted(excluded), selection='qid ascending, first English item per disjoint training image')
+    old = root.parent.parent/'fixed-input-guard8-v1-20261016/run'
+    assert manifest == read(old/'private/calibration_manifest.json'), 'Calibration records/order changed'
+    assert read(old/'private/GENERATION_COMPLETE.json')['status'] == 'PASS'
     source_commit = read(parent/'private/SOURCE_COMMIT.json')['commit']
     assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=parent/'private/source', text=True).strip() == source_commit
     assert not subprocess.check_output(['git', 'status', '--porcelain'], cwd=parent/'private/source', text=True).strip()
@@ -79,23 +83,27 @@ def install(payload):
         path.parent.mkdir(parents=True, exist_ok=True)
         compile(content, name, 'exec')
         path.write_text(content)
+    (root/'private/tools').mkdir()
+    for name, source in [('judge_queue.py','fixed_input_guard8_v1/judge_queue.py'), ('queue_base.py','medtrace_full_method_comparison_v2_20261003/judge_queue.py')]:
+        shutil.copy2(root/'private/implementation/experiments'/source, root/'private/tools'/name)
     write('private/calibration_records.json', records)
     write('private/protection_ids.json', protected)
     write('private/calibration_manifest.json', manifest)
     write('public/PROTOCOL.json', payload['protocol'])
     write('public/EXECUTION_AUTHORIZATION.json', payload['authorization'])
     write('public/CPU_VALIDATION.json', payload['cpu'])
+    write('public/RESOURCE_GATE_WAIVER.json', dict(authorized=True, wall_clock=False, GPU_seconds=False, VRAM=False, GPU_idle=False, count_caps_preserved=True))
     write('public/DATA_ADMISSION.json', dict(status='PASS', training_records=32, distinct_training_source_groups=32,
                                            no_eval_group_overlap=True, protection_count=54, original_order_and_seeds=True))
     write('public/STORAGE_ADMISSION.json', dict(status='PASS', mount=mount, free_bytes=shutil.disk_usage(root).free,
                                               host_available_bytes=memory, read_write_probe=True))
     now = time.time()
-    write('RUN_MANIFEST.json', dict(starting_epoch=now, deadline_epoch=now+12*3600, GPU_seconds_limit=6*3600,
+    write('RUN_MANIFEST.json', dict(starting_epoch=now, deadline_epoch=None, GPU_seconds_limit=None,
                                    min_free_bytes=8*1024**3, owned_weight_limit_bytes=3*1024**3))
-    write('STAGE_CAP.json', dict(GPU_seconds_limit=6*3600))
+    write('STAGE_CAP.json', dict(GPU_seconds_limit=None))
     write('RESOURCE_LEDGER.json', dict(gpu_seconds_used=0, gpu_sessions=[], Judge_attempts=0))
     write('PLAN_CONFIG.json', dict(hardware=dict(allowed_GPUs=[gpu], UUIDs={str(gpu):uuid})))
-    write('private/config.json', dict(version='FIXED_INPUT_GUARD8_V1_20261016', authorization=payload['authorization'],
+    write('private/config.json', dict(version=payload['protocol']['version'], authorization=payload['authorization'],
                                     admission={k:'PASS' for k in ('calibration_disjoint','source_order','storage','hardware','runtime_binding')},
                                     calibration_manifest=manifest, calibration_inputs=str(root/'private/calibration_inputs.pt'),
                                     layer='model.layers.21.mlp.down_proj', native_dtype='float16',
@@ -104,7 +112,7 @@ def install(payload):
                                     source_image_root='/data/bmw/DataP/knowledge_editing/data/m3bench'))
     temporary = Path(tempfile.mkdtemp(prefix='e.', dir='/data/bmw/tmp'))
     entry = temporary/'e.py'
-    entry.write_text("import runpy\nrunpy.run_module('experiments.fixed_input_guard8_v1.launch',run_name='__main__')\n")
+    entry.write_text("import runpy\nrunpy.run_module('experiments.fixed_input_guard8_v1.run',run_name='__main__')\n")
     env = dict(os.environ, **read(parent/'private/LAUNCH_ENV.json'))
     env.update(RUN_ROOT=str(root), TMPDIR=str(temporary), ENTRY_MODE='controller', NEUTRAL_ENTRY=str(entry),
                PYTHONPATH=str(root/'private/implementation')+':'+str(root/'private/official_llava')+':'+str(root/'private/source'),
@@ -113,6 +121,8 @@ def install(payload):
                M3BENCH_LLAVA_SOURCE=str(root/'private/official_llava'), M3BENCH_EXPECTED_LLAVA_SOURCE=str(root/'private/official_llava'),
                ACTION='controller', ARM='CONTROLLER', OMP_NUM_THREADS='8', MKL_NUM_THREADS='8',
                OPENBLAS_NUM_THREADS='8', PYTHONDONTWRITEBYTECODE='1')
+    for key in ('RESUME_FROM', 'RECOVERY_ID'):
+        env.pop(key, None)
     write('private/LAUNCH_ENV.json', env)
     with (root/'logs/controller.log').open('ab') as log:
         process = subprocess.Popen([env['TRAIN_PYTHON'], '-u', str(entry)], env=env, stdout=log,

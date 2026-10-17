@@ -226,7 +226,8 @@ def controller():
                 suffix = '.recovery1' if os.environ.get('RECOVERY_ID') == '1' else ''
                 c.write(root/'private/control'/(label+suffix+'.json'), dict(pid=process.pid, started_epoch=time.time()))
                 try:
-                    code = process.wait(timeout=max(1, c.read(root/'RUN_MANIFEST.json')['deadline_epoch']-time.time()))
+                    deadline = c.read(root/'RUN_MANIFEST.json')['deadline_epoch']
+                    code = process.wait(timeout=None if deadline is None else max(1, deadline-time.time()))
                 except subprocess.TimeoutExpired:
                     process.terminate()
                     try:

@@ -29,7 +29,8 @@ def remove_resource_gates():
             raise ValueError('GPU identity changed')
         return True
     Budget.check = check
-    launch.GPU_SECONDS = float('inf')
+    from . import worker
+    launch.GPU_SECONDS = worker.GPU_SECONDS = float('inf')
     c.budget, c.available = budget, available
 
 
