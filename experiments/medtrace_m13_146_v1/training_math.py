@@ -18,20 +18,24 @@ def coefficient(C_source_gain,C_penalty,prior=None):
 
 def step(r,before,source_gradients,cache,regularization,scalar,target,arm='M13'):
     """source_gradients must be the un-clipped frozen source-recipe aggregate."""
-    assert arm in ('M1','M13','M13B') and scalar['step']>=0 and len(scalar['second_moments'])==2
+    assert arm in ('M1','M13','M13B','M13P') and scalar['step']>=0 and len(scalar['second_moments'])==2
     assert math.isfinite(target) and target>=0 and math.isfinite(regularization) and regularization>=0
     assert arm!='M1' or regularization==0
     params={k:v.detach().clone().requires_grad_(True) for k,v in before.items()}
     penalty=None;extra={k:torch.zeros_like(v) for k,v in params.items()}
-    if arm in ('M13','M13B'):
+    if arm in ('M13','M13B','M13P'):
         assert regularization>0
         penalty=r.mm.operator_penalty(params,cache)
         assert torch.isfinite(penalty)
         extra=dict(zip(params,torch.autograd.grad(regularization*penalty,tuple(params.values()))))
     balance=None
-    if arm=='M13B':
+    if arm in ('M13B','M13P'):
         from balanced_fisher import cap_gradient
         extra,balance=cap_gradient(source_gradients,extra,r.mm.GROUPS)
+    direction=None
+    if arm=='M13P':
+        from balanced_fisher import remove_opposing
+        extra,direction=remove_opposing(source_gradients,extra,r.mm.GROUPS)
     for k,v in params.items():v.grad=source_gradients[k].detach().to(v)+extra[k].detach()
     norm=torch.nn.utils.clip_grad_norm_(list(params.values()),1.)
     assert torch.isfinite(norm) and all(torch.isfinite(v.grad).all() for v in params.values())
@@ -47,7 +51,7 @@ def step(r,before,source_gradients,cache,regularization,scalar,target,arm='M13')
     return selected,updated,dict(gradient_norm=float(norm),matching=matching,projection=None,
         finite=dict(status='NOT_APPLICABLE',fraction=1.,checks=[]),
         penalty_before=float(penalty.detach()) if penalty is not None else None,
-        **({'balance':balance} if arm=='M13B' else {}),operator_backwards=int(arm in ('M13','M13B')),source_RMS_steps=1)
+        **({'balance':balance} if arm in ('M13B','M13P') else {}),**({'anti_parallel':direction} if arm=='M13P' else {}),operator_backwards=int(arm in ('M13','M13B','M13P')),source_RMS_steps=1)
 
 
 def raw_step(r,expert,optimizer,source_gradients,cache,regularization,target,arm):
