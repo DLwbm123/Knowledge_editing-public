@@ -12,8 +12,9 @@ spec=importlib.util.spec_from_file_location('queue_base',R/'private/tools/queue_
 q=importlib.util.module_from_spec(spec);spec.loader.exec_module(q)
 q.ROOT=R/'private/judge_fixed8';q.EFFORT='medium';q.BATCH_LEDGER='Fixed8_Judge_batches'
 DIAGNOSTIC=q.read(R/'private/config.json').get('source6_diagnostic',False)
-ARMS=('P',) if DIAGNOSTIC else ('U','P')
-EPOCH='FIXED_INPUT_SOURCE6_DIAGNOSTIC_V1_20261017' if DIAGNOSTIC else 'FIXED_INPUT_CONTEXT_PIN8_V3_20261017'
+SUMMARY=q.read(R/'private/config.json').get('full_context_summary',False)
+ARMS=('B','C','N','D','E') if SUMMARY else ('P',) if DIAGNOSTIC else ('U','P')
+EPOCH='FULL_CONTEXT_SUMMARY8_V1_20261018' if SUMMARY else 'FIXED_INPUT_SOURCE6_DIAGNOSTIC_V1_20261017' if DIAGNOSTIC else 'FIXED_INPUT_CONTEXT_PIN8_V3_20261017'
 
 
 def ingest(db):
@@ -41,7 +42,7 @@ def ingest(db):
                 key=q.payload(db,b['input'],b['judge_input'],d['R0'])
                 db.execute('INSERT INTO consumer VALUES (?,?,?,?,?,?,?,?,?,?)',(q.digest(str(p)),arm,phase['mode'],phase['prefix'],phase['owner'],'PANEL',p.stem,str(p),q.digest(d),key))
         assert db.execute('SELECT count(*) FROM consumer WHERE method=?',(arm,)).fetchone()[0]==382
-    prior_run='fixed-input-context-pin8-v3-20261017' if DIAGNOSTIC else 'fixed-input-context-pin8-v2-20261017'
+    prior_run='fixed-input-source6-diagnostic-v1-20261017' if SUMMARY else 'fixed-input-context-pin8-v3-20261017' if DIAGNOSTIC else 'fixed-input-context-pin8-v2-20261017'
     old_path=R.parent.parent/prior_run/'run/private/judge_fixed8/queue.sqlite'
     old=sqlite3.connect('file:'+str(old_path)+'?mode=ro',uri=True);old.row_factory=sqlite3.Row;reused=0
     for row in db.execute('SELECT key,binding FROM payload').fetchall():

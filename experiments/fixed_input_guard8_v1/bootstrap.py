@@ -11,7 +11,8 @@ import time
 
 def install(payload):
     diagnostic = payload.get('diagnostic', False)
-    run_name = 'fixed-input-source6-diagnostic-v1-20261017' if diagnostic else 'fixed-input-context-pin8-v3-20261017'
+    summary = payload.get('summary', False)
+    run_name = 'full-context-summary8-v1-20261018' if summary else 'fixed-input-source6-diagnostic-v1-20261017' if diagnostic else 'fixed-input-context-pin8-v3-20261017'
     root = Path('/data/bmw/Knowledge_editing/outputs')/run_name/'run'
     parent = Path('/data/bmw/Knowledge_editing/outputs/purew-odds-hinge-first1-v1-20261016/run')
     assert not root.exists(), 'Inspect existing installation; never replay'
@@ -20,6 +21,9 @@ def install(payload):
         assert payload['protocol']['diagnostic']['training_feedback'] is False
         assert payload['protocol']['arms'] == {'P': 'H_ONLY_CONTEXT_FIXED_NATIVE_PINS'}
     assert payload['cpu']['status'] == 'PASS'
+    if summary:
+        assert payload['protocol']['arms'] == ['B','C','N','D','E']
+        assert payload['protocol']['storage_limit_bytes'] == 9_000_000_000
     gpu = payload['gpu']
     uuid, free = subprocess.check_output(['nvidia-smi', '-i', str(gpu), '--query-gpu=uuid,memory.free',
                                         '--format=csv,noheader,nounits'], text=True).strip().split(', ')
@@ -104,11 +108,11 @@ def install(payload):
                                               host_available_bytes=memory, read_write_probe=True))
     now = time.time()
     write('RUN_MANIFEST.json', dict(starting_epoch=now, deadline_epoch=None, GPU_seconds_limit=None,
-                                   min_free_bytes=8*1024**3, owned_weight_limit_bytes=(8 if diagnostic else 3)*1024**3))
+                                   min_free_bytes=8*1024**3, owned_weight_limit_bytes=9_000_000_000 if summary else (8 if diagnostic else 3)*1024**3))
     write('STAGE_CAP.json', dict(GPU_seconds_limit=None))
     write('RESOURCE_LEDGER.json', dict(gpu_seconds_used=0, gpu_sessions=[], Judge_attempts=0))
     write('PLAN_CONFIG.json', dict(hardware=dict(allowed_GPUs=[gpu], UUIDs={str(gpu):uuid})))
-    write('private/config.json', dict(version=payload['protocol']['version'], source6_diagnostic=diagnostic, authorization=payload['authorization'],
+    write('private/config.json', dict(version=payload['protocol']['version'], full_context_summary=summary, source6_diagnostic=diagnostic or summary, authorization=payload['authorization'],
                                     admission={k:'PASS' for k in ('calibration_disjoint','source_order','storage','hardware','runtime_binding')},
                                     calibration_manifest=manifest, calibration_inputs=str(root/'private/calibration_inputs.pt'),
                                     layer='model.layers.21.mlp.down_proj', native_dtype='float16',
@@ -117,7 +121,8 @@ def install(payload):
                                     source_image_root='/data/bmw/DataP/knowledge_editing/data/m3bench'))
     temporary = Path(tempfile.mkdtemp(prefix='e.', dir='/data/bmw/tmp'))
     entry = temporary/'e.py'
-    entry.write_text("import runpy\nrunpy.run_module('experiments.fixed_input_guard8_v1.run',run_name='__main__')\n")
+    module = 'experiments.full_context_summary8_v1.run' if summary else 'experiments.fixed_input_guard8_v1.run'
+    entry.write_text("import runpy\nrunpy.run_module("+repr(module)+",run_name='__main__')\n")
     env = dict(os.environ, **read(parent/'private/LAUNCH_ENV.json'))
     env.update(RUN_ROOT=str(root), TMPDIR=str(temporary), ENTRY_MODE='controller', NEUTRAL_ENTRY=str(entry),
                PYTHONPATH=str(root/'private/implementation')+':'+str(root/'private/official_llava')+':'+str(root/'private/source'),

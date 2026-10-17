@@ -17,7 +17,7 @@ def lengths(rows):
                 cap_hits_correct=sum(x['tokens']>=x['cap'] and x['correct']==1 for x in rows))
 
 
-def long_outputs(root):
+def long_outputs(root, arms=('U','P')):
     read = lambda p:json.loads(p.read_text())
     sixth = read(root/'private/BENCHMARK146_QUEUE.json')['tasks'][5]
     protection = set(read(root/'private/protection_ids.json'))
@@ -26,7 +26,7 @@ def long_outputs(root):
     db.row_factory = sqlite3.Row
     rows = db.execute('SELECT c.*,p.correct FROM consumer c JOIN payload p ON c.payload_key=p.key').fetchall()
     output = {}
-    for arm in ('U','P'):
+    for arm in arms:
         output[arm] = {}
         for mode, prefix in [('base',0),('prefix',4),('prefix',8),('insertion',6)]:
             stage = {}

@@ -21,7 +21,8 @@ def paired(before,after):
 
 def main():
     r=Path(os.environ['RUN_ROOT']);read=lambda p:json.loads(p.read_text())
-    arms=('P',) if read(r/'private/config.json').get('source6_diagnostic',False) else ('U','P')
+    config=read(r/'private/config.json')
+    arms=('B','C','N','D','E') if config.get('full_context_summary',False) else ('P',) if config.get('source6_diagnostic',False) else ('U','P')
     consumers=382*len(arms)
     db=sqlite3.connect('file:'+str(r/'private/judge_fixed8/queue.sqlite')+'?mode=ro',uri=True);db.row_factory=sqlite3.Row
     assert not db.execute("SELECT 1 FROM payload WHERE status IN ('PENDING','RESERVED')").fetchone(),'Scoring not terminal'
