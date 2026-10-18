@@ -33,3 +33,7 @@ ABC8已公开交付640c20e并核验。第四阶段解析割线8点局部诊断�
 ## 17:54启动更新
 
 完整割线16步attempt2已在GPU5启动PID2182562/实现da568e6，CPU与实时准入PASS。原run仅CPU测试助手问题（无GPU/模型更新）保留。最新读reports/vigor_secant_stress16_v1_20261018/STATE_ZH.md。
+
+## 18:22更新
+
+割线完整16步仍0/8，总接受49→97，出现FP32主候选上升和近1一阶效力下的native null残差。准备最后一次7个有修正拒绝点ABC，之后不再追加新优化规则。最新读reports/vigor_secant_stress16_v1_20261018/STATE_ZH.md。累计驻留757.895756秒。

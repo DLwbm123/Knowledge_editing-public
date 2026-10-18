@@ -1,0 +1,2152 @@
+{
+  "sample": "S03",
+  "status": "EVALUATED",
+  "joint_pass": false,
+  "phase": "DONE",
+  "baseline": {
+    "native": [
+      4.87589693069458,
+      4.468581199645996
+    ],
+    "fp32": [
+      4.874164581298828,
+      4.466132164001465
+    ],
+    "anchor": {
+      "visual_nll": 4.874164581298828,
+      "null_nll": 4.466132164001465,
+      "E": 62427527361.62659
+    },
+    "repeats": [
+      {
+        "visual_nll": 4.874164581298828,
+        "null_nll": 4.466132164001465,
+        "E": 62427527361.62659
+      },
+      {
+        "visual_nll": 4.874164581298828,
+        "null_nll": 4.466132164001465,
+        "E": 62427527361.62659
+      }
+    ],
+    "E_relative_difference": 0.0,
+    "NLL_absolute_differences": {
+      "visual_nll": 0.0,
+      "null_nll": 0.0
+    },
+    "status": "PASS"
+  },
+  "reference": {
+    "requested_reduction": 1.2278760051727295,
+    "effective_reduction": 1.2278760051727295,
+    "clipped": false,
+    "E": 62427527361.62659,
+    "native_before": [
+      4.87589693069458,
+      4.468581199645996
+    ],
+    "native_after": [
+      4.461966514587402,
+      4.599553108215332
+    ],
+    "fp32_before": [
+      4.874164581298828,
+      4.466132164001465
+    ],
+    "fp32_after": [
+      4.464235305786133,
+      4.599638938903809
+    ],
+    "fp32_update": {
+      "fisher_cost": 1.2075438728733282e-11,
+      "visual_linear_change": -1.227876036524102,
+      "null_linear_change": 1.467096897092568e-09,
+      "normalized_null_residual": 9.54374316900285e-10
+    },
+    "native_update": {
+      "fisher_cost": 1.2101890180420213e-11,
+      "visual_linear_change": -1.2273992962706914,
+      "null_linear_change": 0.00012092260548275321,
+      "normalized_null_residual": 7.857643060087294e-05
+    },
+    "quantization": {
+      "absolute_rounding_l2": 0.004551817197352648,
+      "relative_rounding_l2": 0.026374125243630635,
+      "delta_cosine": 0.9996523857116699,
+      "changed_elements": 52332755,
+      "fp32_delta_l2": 0.17258647084236145,
+      "native_delta_l2": 0.17264330387115479
+    },
+    "native_gain": 0.41393041610717773,
+    "native_gain_ratio": 0.337110925177619,
+    "native_null_change": 0.13097190856933594,
+    "fp32_gain_ratio": 0.3338523383352777,
+    "fp32_null_change": 0.13350677490234375
+  },
+  "historical_checks": [
+    {
+      "field": "baseline.native",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "baseline.fp32",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "anchor.E",
+      "relative_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.native_before",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.native_after",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.fp32_before",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.fp32_after",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.E",
+      "relative_difference": 0.0,
+      "tolerance": 1e-05
+    }
+  ],
+  "reference_diagnostics": {
+    "available": true,
+    "fp32_cumulative_null_change": 0.13350677490234375,
+    "native_cumulative_null_change": 0.13097190856933594,
+    "fp32_null_within_budget": false,
+    "native_null_within_budget": false,
+    "null_budget_decision_flip": false
+  },
+  "reference_improved_visual": true,
+  "method": {
+    "status": "STOPPED_REJECTED",
+    "baseline": [
+      4.87589693069458,
+      4.468581199645996
+    ],
+    "steps": [
+      {
+        "step": 1,
+        "start_native_nll": [
+          4.87589693069458,
+          4.468581199645996
+        ],
+        "status": "ACCEPTED",
+        "correction": null,
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 62427527361.62659,
+          "native_before": [
+            4.87589693069458,
+            4.468581199645996
+          ],
+          "native_after": [
+            4.569253921508789,
+            4.4684553146362305
+          ],
+          "fp32_before": [
+            4.874164581298828,
+            4.466132164001465
+          ],
+          "fp32_after": [
+            4.56797456741333,
+            4.465493679046631
+          ],
+          "fp32_update": {
+            "fisher_cost": 7.547149391403435e-13,
+            "visual_linear_change": -0.30696901167326585,
+            "null_linear_change": 1.4098221110502018e-09,
+            "normalized_null_residual": 3.6684638902198027e-09
+          },
+          "native_update": {
+            "fisher_cost": 7.653427631795308e-13,
+            "visual_linear_change": -0.30454328207190007,
+            "null_linear_change": 0.0005769269704961372,
+            "normalized_null_residual": 0.0014907480720946957
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.004235847853124142,
+            "relative_rounding_l2": 0.09817334655375433,
+            "delta_cosine": 0.9952066540718079,
+            "changed_elements": 40808912,
+            "fp32_delta_l2": 0.04314661771059036,
+            "native_delta_l2": 0.0433114655315876
+          },
+          "native_gain": 0.306643009185791,
+          "native_gain_ratio": 0.9989380292276482,
+          "native_null_change": -0.000125885009765625,
+          "fp32_gain_ratio": 0.9974623254973543,
+          "fp32_null_change": -0.0006384849548339844
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            4.569253921508789,
+            4.4684553146362305
+          ],
+          "cumulative_null_change": -0.000125885009765625,
+          "combined_native_fisher_cost": 7.653427631795308e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.0006384849548339844,
+          "native_cumulative_null_change": -0.000125885009765625,
+          "fp32_null_within_budget": true,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": false
+        },
+        "final_verdict": {
+          "native_nll": [
+            4.569253921508789,
+            4.4684553146362305
+          ],
+          "cumulative_null_change": -0.000125885009765625,
+          "combined_native_fisher_cost": 7.653427631795308e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 2,
+        "start_native_nll": [
+          4.569253921508789,
+          4.4684553146362305
+        ],
+        "status": "ACCEPTED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": 0.03196907043457031,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            4.294597625732422,
+            4.500550270080566
+          ],
+          "native_after": [
+            4.298274040222168,
+            4.469559669494629
+          ],
+          "fp32_before": [
+            4.297929763793945,
+            4.499481201171875
+          ],
+          "fp32_after": [
+            4.296256065368652,
+            4.46350622177124
+          ],
+          "null_correction_energy": 106601886092.02493,
+          "protected_visual_directional_derivative": 537.1663976311684,
+          "fp32_update": {
+            "fisher_cost": 7.28250764950462e-15,
+            "visual_linear_change": 2.3314996045858396e-09,
+            "null_linear_change": -0.03940377546010025,
+            "normalized_null_residual": 0.9577933017225326
+          },
+          "native_update": {
+            "fisher_cost": 6.765308546006456e-15,
+            "visual_linear_change": 0.00031377783998533834,
+            "null_linear_change": -0.03194704643082433,
+            "normalized_null_residual": 0.8056777005050743
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0020651991944760084,
+            "relative_rounding_l2": 0.4315890962720181,
+            "delta_cosine": 0.9070391654968262,
+            "fp32_delta_l2": 0.004785105120390654,
+            "native_delta_l2": 0.004793957341462374,
+            "changed_elements": 10902024
+          },
+          "compensation": {
+            "rho": 0.7684070843143553,
+            "original_fp32_update": {
+              "fisher_cost": 4.793637292468261e-15,
+              "visual_linear_change": 4.6772323770115365e-09,
+              "null_linear_change": -0.03196906317871273,
+              "normalized_null_residual": 0.9577932220354731
+            },
+            "original_native_update": {
+              "fisher_cost": 4.2884441063330834e-15,
+              "visual_linear_change": 0.0002684370506416054,
+              "null_linear_change": -0.024565260200868435,
+              "normalized_null_residual": 0.7781188320594521
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0018563405610620975,
+              "relative_rounding_l2": 0.4781609126467692,
+              "delta_cosine": 0.8849318027496338,
+              "fp32_delta_l2": 0.0038822507485747337,
+              "native_delta_l2": 0.0038562107365578413,
+              "changed_elements": 9237178
+            },
+            "multiplier": 1.2325594874749142,
+            "realized_effect_ratio_after": 0.9993110840119339,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.7684070843143553,
+              "second_scale": 1.301393519676219,
+              "second_effect": 1.0685479418147552,
+              "multiplier": 1.2325594874749142,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 1.301393519676219
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 94148419294.18149,
+          "native_before": [
+            4.569253921508789,
+            4.4684553146362305
+          ],
+          "native_after": [
+            4.294597625732422,
+            4.500550270080566
+          ],
+          "fp32_before": [
+            4.568268775939941,
+            4.465292453765869
+          ],
+          "fp32_after": [
+            4.293759346008301,
+            4.500503063201904
+          ],
+          "fp32_update": {
+            "fisher_cost": 5.004330648124047e-13,
+            "visual_linear_change": -0.3069689885853719,
+            "null_linear_change": 9.632208337960035e-09,
+            "normalized_null_residual": 2.6964459490114144e-08
+          },
+          "native_update": {
+            "fisher_cost": 5.078399261570463e-13,
+            "visual_linear_change": -0.30362706982721865,
+            "null_linear_change": 0.0004256567640721019,
+            "normalized_null_residual": 0.0011828644189595592
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.004083171021193266,
+            "relative_rounding_l2": 0.11148709540497163,
+            "delta_cosine": 0.9938238859176636,
+            "changed_elements": 37367364,
+            "fp32_delta_l2": 0.03662460669875145,
+            "native_delta_l2": 0.036791734397411346
+          },
+          "native_gain": 0.2746562957763672,
+          "native_gain_ratio": 0.8947362587730684,
+          "native_null_change": 0.03209495544433594,
+          "fp32_gain_ratio": 0.8942578200899836,
+          "fp32_null_change": 0.035210609436035156
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            4.294597625732422,
+            4.500550270080566
+          ],
+          "cumulative_null_change": 0.03196907043457031,
+          "combined_native_fisher_cost": 5.078399261570463e-13,
+          "gates": {
+            "null": false,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.03437089920043945,
+          "native_cumulative_null_change": 0.03196907043457031,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.0026259422302246094,
+          "native_cumulative_null_change": 0.0009784698486328125,
+          "fp32_null_within_budget": true,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": false
+        },
+        "final_verdict": {
+          "native_nll": [
+            4.298274040222168,
+            4.469559669494629
+          ],
+          "cumulative_null_change": 0.0009784698486328125,
+          "combined_native_fisher_cost": 4.731515620364508e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 3,
+        "start_native_nll": [
+          4.298274040222168,
+          4.469559669494629
+        ],
+        "status": "ACCEPTED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": 0.034476280212402344,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            4.037053108215332,
+            4.503057479858398
+          ],
+          "native_after": [
+            4.037135601043701,
+            4.468903541564941
+          ],
+          "fp32_before": [
+            4.037741184234619,
+            4.503786087036133
+          ],
+          "fp32_after": [
+            4.038760185241699,
+            4.4597272872924805
+          ],
+          "null_correction_energy": 183907016367.64334,
+          "protected_visual_directional_derivative": -266.41525788605213,
+          "fp32_update": {
+            "fisher_cost": 5.208997667296619e-15,
+            "visual_linear_change": 1.994108582476135e-09,
+            "null_linear_change": -0.04377147110245844,
+            "normalized_null_residual": 0.979749434892614
+          },
+          "native_update": {
+            "fisher_cost": 4.737267736040573e-15,
+            "visual_linear_change": 0.00026128117919587703,
+            "null_linear_change": -0.03444756767661802,
+            "normalized_null_residual": 0.8085289169490694
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0018705379916355014,
+            "relative_rounding_l2": 0.4606226097091333,
+            "delta_cosine": 0.8935533761978149,
+            "fp32_delta_l2": 0.0040608905255794525,
+            "native_delta_l2": 0.004046929534524679,
+            "changed_elements": 9285299
+          },
+          "compensation": {
+            "rho": 0.7346284208805762,
+            "original_fp32_update": {
+              "fisher_cost": 3.231562046258067e-15,
+              "visual_linear_change": 2.80743356882875e-09,
+              "null_linear_change": -0.03447627023322661,
+              "normalized_null_residual": 0.9797493565699964
+            },
+            "original_native_update": {
+              "fisher_cost": 2.793233597900625e-15,
+              "visual_linear_change": 0.00021521249042414018,
+              "null_linear_change": -0.025327255290273392,
+              "normalized_null_residual": 0.7741684342153601
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0016449525719508529,
+              "relative_rounding_l2": 0.5142839183780669,
+              "delta_cosine": 0.8657116889953613,
+              "fp32_delta_l2": 0.0031985300593078136,
+              "native_delta_l2": 0.0031467119697481394,
+              "changed_elements": 7620652
+            },
+            "multiplier": 1.2696114616605734,
+            "realized_effect_ratio_after": 0.9991671799971623,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.7346284208805762,
+              "second_scale": 1.3612323884792412,
+              "second_effect": 1.090180105402435,
+              "multiplier": 1.2696114616605734,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 1.3612323884792412
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 85874791542.78992,
+          "native_before": [
+            4.298274040222168,
+            4.469559669494629
+          ],
+          "native_after": [
+            4.037053108215332,
+            4.503057479858398
+          ],
+          "fp32_before": [
+            4.294712543487549,
+            4.4680280685424805
+          ],
+          "fp32_after": [
+            4.032627582550049,
+            4.503781318664551
+          ],
+          "fp32_update": {
+            "fisher_cost": 5.486474405617774e-13,
+            "visual_linear_change": -0.30696900246038616,
+            "null_linear_change": 1.8853393954527953e-10,
+            "normalized_null_residual": 5.48335965430041e-10
+          },
+          "native_update": {
+            "fisher_cost": 5.569439371960517e-13,
+            "visual_linear_change": -0.3039533471685696,
+            "null_linear_change": 0.0002886553708449414,
+            "normalized_null_residual": 0.0008332546976831479
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.004129522480070591,
+            "relative_rounding_l2": 0.11048450370740107,
+            "delta_cosine": 0.9939347505569458,
+            "changed_elements": 38263440,
+            "fp32_delta_l2": 0.037376485764980316,
+            "native_delta_l2": 0.03754736855626106
+          },
+          "native_gain": 0.26122093200683594,
+          "native_gain_ratio": 0.8509684395048964,
+          "native_null_change": 0.03349781036376953,
+          "fp32_gain_ratio": 0.8537831501988887,
+          "fp32_null_change": 0.03575325012207031
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            4.037053108215332,
+            4.503057479858398
+          ],
+          "cumulative_null_change": 0.034476280212402344,
+          "combined_native_fisher_cost": 5.569439371960517e-13,
+          "gates": {
+            "null": false,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.03764915466308594,
+          "native_cumulative_null_change": 0.034476280212402344,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.006404876708984375,
+          "native_cumulative_null_change": 0.0003223419189453125,
+          "fp32_null_within_budget": true,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": false
+        },
+        "final_verdict": {
+          "native_nll": [
+            4.037135601043701,
+            4.468903541564941
+          ],
+          "cumulative_null_change": 0.0003223419189453125,
+          "combined_native_fisher_cost": 5.36381959358294e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 4,
+        "start_native_nll": [
+          4.037135601043701,
+          4.468903541564941
+        ],
+        "status": "ACCEPTED",
+        "correction": null,
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 73791717969.01685,
+          "native_before": [
+            4.037135601043701,
+            4.468903541564941
+          ],
+          "native_after": [
+            3.7594153881073,
+            4.478072166442871
+          ],
+          "fp32_before": [
+            4.035544395446777,
+            4.47080135345459
+          ],
+          "fp32_after": [
+            3.757033586502075,
+            4.481812953948975
+          ],
+          "fp32_update": {
+            "fisher_cost": 6.384860858472724e-13,
+            "visual_linear_change": -0.3069690042969315,
+            "null_linear_change": 2.6162371764989166e-09,
+            "normalized_null_residual": 5.42784584878439e-09
+          },
+          "native_update": {
+            "fisher_cost": 6.464521212006621e-13,
+            "visual_linear_change": -0.30452938935512847,
+            "null_linear_change": 0.0003692680269567726,
+            "normalized_null_residual": 0.0007613767920463838
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.004115795250982046,
+            "relative_rounding_l2": 0.09490412095015328,
+            "delta_cosine": 0.9955175518989563,
+            "changed_elements": 38376625,
+            "fp32_delta_l2": 0.04336792975664139,
+            "native_delta_l2": 0.04351463541388512
+          },
+          "native_gain": 0.27772021293640137,
+          "native_gain_ratio": 0.9047174527930726,
+          "native_null_change": 0.009168624877929688,
+          "fp32_gain_ratio": 0.9072929441455225,
+          "fp32_null_change": 0.011011600494384766
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            3.7594153881073,
+            4.478072166442871
+          ],
+          "cumulative_null_change": 0.009490966796875,
+          "combined_native_fisher_cost": 6.464521212006621e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.015680789947509766,
+          "native_cumulative_null_change": 0.009490966796875,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": true
+        },
+        "final_verdict": {
+          "native_nll": [
+            3.7594153881073,
+            4.478072166442871
+          ],
+          "cumulative_null_change": 0.009490966796875,
+          "combined_native_fisher_cost": 6.464521212006621e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 5,
+        "start_native_nll": [
+          3.7594153881073,
+          4.478072166442871
+        ],
+        "status": "ACCEPTED",
+        "correction": null,
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 82863155601.6474,
+          "native_before": [
+            3.7594153881073,
+            4.478072166442871
+          ],
+          "native_after": [
+            3.470980405807495,
+            4.472192764282227
+          ],
+          "fp32_before": [
+            3.758155345916748,
+            4.481644630432129
+          ],
+          "fp32_after": [
+            3.4653496742248535,
+            4.4731550216674805
+          ],
+          "fp32_update": {
+            "fisher_cost": 5.685878025027525e-13,
+            "visual_linear_change": -0.30696898680878204,
+            "null_linear_change": -4.3509632520130626e-09,
+            "normalized_null_residual": 8.156114631793162e-09
+          },
+          "native_update": {
+            "fisher_cost": 5.76389976410014e-13,
+            "visual_linear_change": -0.30423659295363725,
+            "null_linear_change": 3.6035172545680234e-05,
+            "normalized_null_residual": 6.70911245286525e-05
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.004111106041818857,
+            "relative_rounding_l2": 0.10160848677498296,
+            "delta_cosine": 0.9948651194572449,
+            "changed_elements": 38098670,
+            "fp32_delta_l2": 0.040460262447595596,
+            "native_delta_l2": 0.04061635956168175
+          },
+          "native_gain": 0.2884349822998047,
+          "native_gain_ratio": 0.9396225061315684,
+          "native_null_change": -0.005879402160644531,
+          "fp32_gain_ratio": 0.9538607170703838,
+          "fp32_null_change": -0.008489608764648438
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            3.470980405807495,
+            4.472192764282227
+          ],
+          "cumulative_null_change": 0.0036115646362304688,
+          "combined_native_fisher_cost": 5.76389976410014e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.007022857666015625,
+          "native_cumulative_null_change": 0.0036115646362304688,
+          "fp32_null_within_budget": true,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": false
+        },
+        "final_verdict": {
+          "native_nll": [
+            3.470980405807495,
+            4.472192764282227
+          ],
+          "cumulative_null_change": 0.0036115646362304688,
+          "combined_native_fisher_cost": 5.76389976410014e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 6,
+        "start_native_nll": [
+          3.470980405807495,
+          4.472192764282227
+        ],
+        "status": "ACCEPTED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": -0.015604019165039062,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            3.24066162109375,
+            4.452977180480957
+          ],
+          "native_after": [
+            3.244859218597412,
+            4.469519138336182
+          ],
+          "fp32_before": [
+            3.2422821521759033,
+            4.4518232345581055
+          ],
+          "fp32_after": [
+            3.2436130046844482,
+            4.4790191650390625
+          ],
+          "null_correction_energy": 363567480070.6101,
+          "protected_visual_directional_derivative": -2234.7013959884644,
+          "fp32_update": {
+            "fisher_cost": 9.114984380345748e-16,
+            "visual_linear_change": -2.051050996062934e-09,
+            "null_linear_change": 0.025744544210423322,
+            "normalized_null_residual": 0.9604588031529584
+          },
+          "native_update": {
+            "fisher_cost": 6.498409668718088e-16,
+            "visual_linear_change": 0.00037056564378604113,
+            "null_linear_change": 0.01515977819848303,
+            "normalized_null_residual": 0.6698241513435297
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0010908541735261679,
+            "relative_rounding_l2": 0.6423266149187794,
+            "delta_cosine": 0.7803937196731567,
+            "fp32_delta_l2": 0.0016982858069241047,
+            "native_delta_l2": 0.0015749147860333323,
+            "changed_elements": 4102940
+          },
+          "compensation": {
+            "rho": 0.44986067009772596,
+            "original_fp32_update": {
+              "fisher_cost": 3.348565464110169e-16,
+              "visual_linear_change": -2.0889363003316706e-09,
+              "null_linear_change": 0.015604013307925761,
+              "normalized_null_residual": 0.9604580781854517
+            },
+            "original_native_update": {
+              "fisher_cost": 1.8778821979948045e-16,
+              "visual_linear_change": 0.00019970263722299448,
+              "null_linear_change": 0.007019634517802231,
+              "normalized_null_residual": 0.576968132951932
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0007639155373908579,
+              "relative_rounding_l2": 0.7421356842570506,
+              "delta_cosine": 0.6891871690750122,
+              "fp32_delta_l2": 0.0010293475352227688,
+              "native_delta_l2": 0.0008745718514546752,
+              "changed_elements": 2454907
+            },
+            "multiplier": 1.6498665850060428,
+            "realized_effect_ratio_after": 0.9715303498504182,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.44986067009772596,
+              "second_scale": 2.222910484223402,
+              "second_effect": 1.4851057032222896,
+              "multiplier": 1.6498665850060428,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 2.222910484223402
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 161571494492.26276,
+          "native_before": [
+            3.470980405807495,
+            4.472192764282227
+          ],
+          "native_after": [
+            3.24066162109375,
+            4.452977180480957
+          ],
+          "fp32_before": [
+            3.4710471630096436,
+            4.470585346221924
+          ],
+          "fp32_after": [
+            3.239086151123047,
+            4.4526591300964355
+          ],
+          "fp32_update": {
+            "fisher_cost": 2.9160457171727695e-13,
+            "visual_linear_change": -0.30696900575961117,
+            "null_linear_change": 8.301593438066537e-09,
+            "normalized_null_residual": 1.686851755950399e-08
+          },
+          "native_update": {
+            "fisher_cost": 2.9631669889141936e-13,
+            "visual_linear_change": -0.301932656938936,
+            "null_linear_change": 0.000612015200979876,
+            "normalized_null_residual": 0.00123366364623519
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0038826288655400276,
+            "relative_rounding_l2": 0.13073282035419342,
+            "delta_cosine": 0.9915178418159485,
+            "changed_elements": 33484213,
+            "fp32_delta_l2": 0.029698960483074188,
+            "native_delta_l2": 0.029865847900509834
+          },
+          "native_gain": 0.23031878471374512,
+          "native_gain_ratio": 0.7502998144551098,
+          "native_null_change": -0.01921558380126953,
+          "fp32_gain_ratio": 0.7556496288205125,
+          "fp32_null_change": -0.01792621612548828
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            3.24066162109375,
+            4.452977180480957
+          ],
+          "cumulative_null_change": -0.015604019165039062,
+          "combined_native_fisher_cost": 2.9631669889141936e-13,
+          "gates": {
+            "null": false,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.013473033905029297,
+          "native_cumulative_null_change": -0.015604019165039062,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.012887001037597656,
+          "native_cumulative_null_change": 0.0009379386901855469,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": true
+        },
+        "final_verdict": {
+          "native_nll": [
+            3.244859218597412,
+            4.469519138336182
+          ],
+          "cumulative_null_change": 0.0009379386901855469,
+          "combined_native_fisher_cost": 2.9812453670681194e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 7,
+        "start_native_nll": [
+          3.244859218597412,
+          4.469519138336182
+        ],
+        "status": "ACCEPTED",
+        "correction": null,
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 171431777823.4051,
+          "native_before": [
+            3.244859218597412,
+            4.469519138336182
+          ],
+          "native_after": [
+            2.947099208831787,
+            4.463696479797363
+          ],
+          "fp32_before": [
+            3.2428364753723145,
+            4.468106746673584
+          ],
+          "fp32_after": [
+            2.9403090476989746,
+            4.463284492492676
+          ],
+          "fp32_update": {
+            "fisher_cost": 2.748322554658131e-13,
+            "visual_linear_change": -0.3069689942353975,
+            "null_linear_change": -3.86560243970796e-09,
+            "normalized_null_residual": 8.256620066137357e-09
+          },
+          "native_update": {
+            "fisher_cost": 2.7972134303601465e-13,
+            "visual_linear_change": -0.3016020708374604,
+            "null_linear_change": -0.00020776806816676574,
+            "normalized_null_residual": 0.00043988075757537534
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.003911279141902924,
+            "relative_rounding_l2": 0.13891563938477733,
+            "delta_cosine": 0.9904329776763916,
+            "changed_elements": 33839267,
+            "fp32_delta_l2": 0.02815578691661358,
+            "native_delta_l2": 0.028335897251963615
+          },
+          "native_gain": 0.297760009765625,
+          "native_gain_ratio": 0.9700002557627571,
+          "native_null_change": -0.005822658538818359,
+          "fp32_gain_ratio": 0.9855308724948405,
+          "fp32_null_change": -0.004822254180908203
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            2.947099208831787,
+            4.463696479797363
+          ],
+          "cumulative_null_change": -0.0048847198486328125,
+          "combined_native_fisher_cost": 2.7972134303601465e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.0028476715087890625,
+          "native_cumulative_null_change": -0.0048847198486328125,
+          "fp32_null_within_budget": true,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": false
+        },
+        "final_verdict": {
+          "native_nll": [
+            2.947099208831787,
+            4.463696479797363
+          ],
+          "cumulative_null_change": -0.0048847198486328125,
+          "combined_native_fisher_cost": 2.7972134303601465e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 8,
+        "start_native_nll": [
+          2.947099208831787,
+          4.463696479797363
+        ],
+        "status": "ACCEPTED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": -0.014487743377685547,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            2.6623806953430176,
+            4.4540934562683105
+          ],
+          "native_after": [
+            2.6600356101989746,
+            4.469407081604004
+          ],
+          "fp32_before": [
+            2.6609857082366943,
+            4.4562482833862305
+          ],
+          "fp32_after": [
+            2.6610162258148193,
+            4.485502243041992
+          ],
+          "null_correction_energy": 819520412686.7737,
+          "protected_visual_directional_derivative": 2829.1491940021515,
+          "fp32_update": {
+            "fisher_cost": 4.4034655031554247e-16,
+            "visual_linear_change": -3.690620938631012e-09,
+            "null_linear_change": 0.02686529930914789,
+            "normalized_null_residual": 0.9367664687556011
+          },
+          "native_update": {
+            "fisher_cost": 2.691761655883135e-16,
+            "visual_linear_change": 0.000342572437326467,
+            "null_linear_change": 0.013393345520213073,
+            "normalized_null_residual": 0.5973209186965752
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0008472486515529454,
+            "relative_rounding_l2": 0.7124700682336587,
+            "delta_cosine": 0.7192570567131042,
+            "fp32_delta_l2": 0.0011891708709299564,
+            "native_delta_l2": 0.0010431339032948017,
+            "changed_elements": 2838527
+          },
+          "compensation": {
+            "rho": 0.33367769489981586,
+            "original_fp32_update": {
+              "fisher_cost": 1.280601578142924e-16,
+              "visual_linear_change": -4.6130905860660917e-10,
+              "null_linear_change": 0.014487737019820859,
+              "normalized_null_residual": 0.936764642899693
+            },
+            "original_native_update": {
+              "fisher_cost": 5.3953621647454756e-17,
+              "visual_linear_change": 0.00014111744854523417,
+              "null_linear_change": 0.004834236814566186,
+              "normalized_null_residual": 0.4815646207519386
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0005249013775028288,
+              "relative_rounding_l2": 0.8185107734244729,
+              "delta_cosine": 0.5964063405990601,
+              "fp32_delta_l2": 0.0006412882939912379,
+              "native_delta_l2": 0.0004851957783102989,
+              "changed_elements": 1425523
+            },
+            "multiplier": 1.8543470754599087,
+            "realized_effect_ratio_after": 0.9244604332819631,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.33367769489981586,
+              "second_scale": 2.9969039443893375,
+              "second_effect": 1.8911028649606836,
+              "multiplier": 1.8543470754599087,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 2.9969039443893375
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 185948828150.3739,
+          "native_before": [
+            2.947099208831787,
+            4.463696479797363
+          ],
+          "native_after": [
+            2.6623806953430176,
+            4.4540934562683105
+          ],
+          "fp32_before": [
+            2.9489381313323975,
+            4.462390899658203
+          ],
+          "fp32_after": [
+            2.6551613807678223,
+            4.452237606048584
+          ],
+          "fp32_update": {
+            "fisher_cost": 2.533760556698335e-13,
+            "visual_linear_change": -0.3069689879564939,
+            "null_linear_change": 1.8571238093352538e-09,
+            "normalized_null_residual": 3.2940890387484323e-09
+          },
+          "native_update": {
+            "fisher_cost": 2.5789510847610534e-13,
+            "visual_linear_change": -0.3012877527930573,
+            "null_linear_change": 0.0001562183655207808,
+            "normalized_null_residual": 0.0002746551828081474
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0038753633853048086,
+            "relative_rounding_l2": 0.1408494479976999,
+            "delta_cosine": 0.9901653528213501,
+            "changed_elements": 33226812,
+            "fp32_delta_l2": 0.027514224871993065,
+            "native_delta_l2": 0.027692317962646484
+          },
+          "native_gain": 0.28471851348876953,
+          "native_gain_ratio": 0.927515522053767,
+          "native_null_change": -0.009603023529052734,
+          "fp32_gain_ratio": 0.9570241598564299,
+          "fp32_null_change": -0.01015329360961914
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            2.6623806953430176,
+            4.4540934562683105
+          ],
+          "cumulative_null_change": -0.014487743377685547,
+          "combined_native_fisher_cost": 2.5789510847610534e-13,
+          "gates": {
+            "null": false,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.01389455795288086,
+          "native_cumulative_null_change": -0.014487743377685547,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.019370079040527344,
+          "native_cumulative_null_change": 0.0008258819580078125,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": true
+        },
+        "final_verdict": {
+          "native_nll": [
+            2.6600356101989746,
+            4.469407081604004
+          ],
+          "cumulative_null_change": 0.0008258819580078125,
+          "combined_native_fisher_cost": 2.6049712790216637e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 9,
+        "start_native_nll": [
+          2.6600356101989746,
+          4.469407081604004
+        ],
+        "status": "ACCEPTED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": -0.02896261215209961,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            2.3781943321228027,
+            4.4396185874938965
+          ],
+          "native_after": [
+            2.383577823638916,
+            4.470168113708496
+          ],
+          "fp32_before": [
+            2.3815462589263916,
+            4.442422866821289
+          ],
+          "fp32_after": [
+            2.3811845779418945,
+            4.488132476806641
+          ],
+          "null_correction_energy": 1203421736881.7444,
+          "protected_visual_directional_derivative": 11828.8625228405,
+          "fp32_update": {
+            "fisher_cost": 9.14983490981324e-16,
+            "visual_linear_change": 8.747421411888813e-10,
+            "null_linear_change": 0.046927812367269645,
+            "normalized_null_residual": 0.9048266609830972
+          },
+          "native_update": {
+            "fisher_cost": 6.582114718306687e-16,
+            "visual_linear_change": 0.0004959810167420159,
+            "null_linear_change": 0.02823073431228732,
+            "normalized_null_residual": 0.6417725829817413
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0010988530702888966,
+            "relative_rounding_l2": 0.6371691905829325,
+            "delta_cosine": 0.7842376232147217,
+            "fp32_delta_l2": 0.0017245860071852803,
+            "native_delta_l2": 0.0016024806536734104,
+            "changed_elements": 4147698
+          },
+          "compensation": {
+            "rho": 0.4675914155855871,
+            "original_fp32_update": {
+              "fisher_cost": 3.4852033118051997e-16,
+              "visual_linear_change": 1.635241897125154e-09,
+              "null_linear_change": 0.028962592748778535,
+              "normalized_null_residual": 0.9048260327088575
+            },
+            "original_native_update": {
+              "fisher_cost": 2.0034482559446224e-16,
+              "visual_linear_change": 0.0002690591072964739,
+              "null_linear_change": 0.013542668815256583,
+              "normalized_null_residual": 0.558029169972564
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0007803697371855378,
+              "relative_rounding_l2": 0.7331759427575179,
+              "delta_cosine": 0.6981741189956665,
+              "fp32_delta_l2": 0.0010643689893186092,
+              "native_delta_l2": 0.0009113867999985814,
+              "changed_elements": 2534162
+            },
+            "multiplier": 1.6202895631628533,
+            "realized_effect_ratio_after": 0.9747302544408367,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.4675914155855871,
+              "second_scale": 2.138619244640435,
+              "second_effect": 1.444894108113504,
+              "multiplier": 1.6202895631628533,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 2.138619244640435
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 175639759062.35815,
+          "native_before": [
+            2.6600356101989746,
+            4.469407081604004
+          ],
+          "native_after": [
+            2.3781943321228027,
+            4.4396185874938965
+          ],
+          "fp32_before": [
+            2.6600444316864014,
+            4.471456527709961
+          ],
+          "fp32_after": [
+            2.3757243156433105,
+            4.443645000457764
+          ],
+          "fp32_update": {
+            "fisher_cost": 2.682478447188206e-13,
+            "visual_linear_change": -0.3069690079258418,
+            "null_linear_change": 4.389297467155551e-09,
+            "normalized_null_residual": 6.194274423274346e-09
+          },
+          "native_update": {
+            "fisher_cost": 2.7301245750322555e-13,
+            "visual_linear_change": -0.30151435771640567,
+            "null_linear_change": 6.117868371705634e-05,
+            "normalized_null_residual": 8.55800320284589e-05
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0038990492466837168,
+            "relative_rounding_l2": 0.1386701977797385,
+            "delta_cosine": 0.9904659986495972,
+            "changed_elements": 33638946,
+            "fp32_delta_l2": 0.028117427602410316,
+            "native_delta_l2": 0.02829592302441597
+          },
+          "native_gain": 0.2818412780761719,
+          "native_gain_ratio": 0.9181424733078787,
+          "native_null_change": -0.029788494110107422,
+          "fp32_gain_ratio": 0.9262176794572821,
+          "fp32_null_change": -0.027811527252197266
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            2.3781943321228027,
+            4.4396185874938965
+          ],
+          "cumulative_null_change": -0.02896261215209961,
+          "combined_native_fisher_cost": 2.7301245750322555e-13,
+          "gates": {
+            "null": false,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.022487163543701172,
+          "native_cumulative_null_change": -0.02896261215209961,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.02200031280517578,
+          "native_cumulative_null_change": 0.0015869140625,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": true
+        },
+        "final_verdict": {
+          "native_nll": [
+            2.383577823638916,
+            4.470168113708496
+          ],
+          "cumulative_null_change": 0.0015869140625,
+          "combined_native_fisher_cost": 2.776958192319236e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 10,
+        "start_native_nll": [
+          2.383577823638916,
+          4.470168113708496
+        ],
+        "status": "ACCEPTED",
+        "correction": null,
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 166835499252.0945,
+          "native_before": [
+            2.383577823638916,
+            4.470168113708496
+          ],
+          "native_after": [
+            2.2151875495910645,
+            4.475255012512207
+          ],
+          "fp32_before": [
+            2.3824362754821777,
+            4.472319602966309
+          ],
+          "fp32_after": [
+            2.2143867015838623,
+            4.472420692443848
+          ],
+          "fp32_update": {
+            "fisher_cost": 2.824038116469754e-13,
+            "visual_linear_change": -0.30696898970542186,
+            "null_linear_change": -7.775629341788548e-10,
+            "normalized_null_residual": 8.655516106171191e-10
+          },
+          "native_update": {
+            "fisher_cost": 2.8709419977395497e-13,
+            "visual_linear_change": -0.3018796568311689,
+            "null_linear_change": 0.0006266474756333167,
+            "normalized_null_residual": 0.0006918369945316039
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0038822065107524395,
+            "relative_rounding_l2": 0.13137417197149714,
+            "delta_cosine": 0.9914354085922241,
+            "changed_elements": 33469222,
+            "fp32_delta_l2": 0.029550759121775627,
+            "native_delta_l2": 0.029719119891524315
+          },
+          "native_gain": 0.16839027404785156,
+          "native_gain_ratio": 0.5485579108589667,
+          "native_null_change": 0.0050868988037109375,
+          "fp32_gain_ratio": 0.5474480263165508,
+          "fp32_null_change": 0.0001010894775390625
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            2.2151875495910645,
+            4.475255012512207
+          ],
+          "cumulative_null_change": 0.0066738128662109375,
+          "combined_native_fisher_cost": 2.8709419977395497e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.0062885284423828125,
+          "native_cumulative_null_change": 0.0066738128662109375,
+          "fp32_null_within_budget": true,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": false
+        },
+        "final_verdict": {
+          "native_nll": [
+            2.2151875495910645,
+            4.475255012512207
+          ],
+          "cumulative_null_change": 0.0066738128662109375,
+          "combined_native_fisher_cost": 2.8709419977395497e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 11,
+        "start_native_nll": [
+          2.2151875495910645,
+          4.475255012512207
+        ],
+        "status": "ACCEPTED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": -0.068206787109375,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            2.1607136726379395,
+            4.400374412536621
+          ],
+          "native_after": [
+            2.163713216781616,
+            4.466270446777344
+          ],
+          "fp32_before": [
+            2.1619038581848145,
+            4.404233455657959
+          ],
+          "fp32_after": [
+            2.1630592346191406,
+            4.495484352111816
+          ],
+          "null_correction_energy": 2166890747803.7585,
+          "protected_visual_directional_derivative": -55.67372965812683,
+          "fp32_update": {
+            "fisher_cost": 2.160982833295906e-15,
+            "visual_linear_change": -6.1263871825253686e-09,
+            "null_linear_change": 0.09677407393920787,
+            "normalized_null_residual": 0.9996448066201937
+          },
+          "native_update": {
+            "fisher_cost": 1.796215681244013e-15,
+            "visual_linear_change": -0.00022250350785790746,
+            "null_linear_change": 0.06779722622388311,
+            "normalized_null_residual": 0.7681482273198081
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0014265256468206644,
+            "relative_rounding_l2": 0.5441730651394117,
+            "delta_cosine": 0.8482394814491272,
+            "fp32_delta_l2": 0.002621455816552043,
+            "native_delta_l2": 0.002551404293626547,
+            "changed_elements": 6038718
+          },
+          "compensation": {
+            "rho": 0.6095283180652009,
+            "original_fp32_update": {
+              "fisher_cost": 1.073466254163161e-15,
+              "visual_linear_change": -2.8026490073623832e-09,
+              "null_linear_change": 0.06820676749759727,
+              "normalized_null_residual": 0.9996445851523279
+            },
+            "original_native_update": {
+              "fisher_cost": 7.957126521757127e-16,
+              "visual_linear_change": -0.00016117920174991607,
+              "null_linear_change": 0.04157396822740857,
+              "normalized_null_residual": 0.7077105934167968
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0011482163099572062,
+              "relative_rounding_l2": 0.6214592300097845,
+              "delta_cosine": 0.7963802814483643,
+              "fp32_delta_l2": 0.0018476132536306977,
+              "native_delta_l2": 0.0017355085583403707,
+              "changed_elements": 4373953
+            },
+            "multiplier": 1.4188335166685637,
+            "realized_effect_ratio_after": 0.9939953059974057,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.6095283180652009,
+              "second_scale": 1.6406128646725657,
+              "second_effect": 1.2067612824358895,
+              "multiplier": 1.4188335166685637,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 1.6406128646725657
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 179395118290.362,
+          "native_before": [
+            2.2151875495910645,
+            4.475255012512207
+          ],
+          "native_after": [
+            2.1607136726379395,
+            4.400374412536621
+          ],
+          "fp32_before": [
+            2.215135335922241,
+            4.475006580352783
+          ],
+          "fp32_after": [
+            2.1632659435272217,
+            4.39702033996582
+          ],
+          "fp32_update": {
+            "fisher_cost": 2.6263248153503166e-13,
+            "visual_linear_change": -0.3069690034705944,
+            "null_linear_change": -4.815380040025519e-09,
+            "normalized_null_residual": 4.837429790772408e-09
+          },
+          "native_update": {
+            "fisher_cost": 2.664095937534666e-13,
+            "visual_linear_change": -0.3018810503317756,
+            "null_linear_change": 0.0010519468711326216,
+            "normalized_null_residual": 0.001049245707679671
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.003744499059394002,
+            "relative_rounding_l2": 0.12973416537436683,
+            "delta_cosine": 0.9916413426399231,
+            "changed_elements": 31179447,
+            "fp32_delta_l2": 0.028862860053777695,
+            "native_delta_l2": 0.02901267074048519
+          },
+          "native_gain": 0.054473876953125,
+          "native_gain_ratio": 0.17745725699872106,
+          "native_null_change": -0.07488059997558594,
+          "fp32_gain_ratio": 0.16897273723570447,
+          "fp32_null_change": -0.07798624038696289
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            2.1607136726379395,
+            4.400374412536621
+          ],
+          "cumulative_null_change": -0.068206787109375,
+          "combined_native_fisher_cost": 2.664095937534666e-13,
+          "gates": {
+            "null": false,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.06911182403564453,
+          "native_cumulative_null_change": -0.068206787109375,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.029352188110351562,
+          "native_cumulative_null_change": -0.0023107528686523438,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": true
+        },
+        "final_verdict": {
+          "native_nll": [
+            2.163713216781616,
+            4.466270446777344
+          ],
+          "cumulative_null_change": -0.0023107528686523438,
+          "combined_native_fisher_cost": 2.6275040534178517e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 12,
+        "start_native_nll": [
+          2.163713216781616,
+          4.466270446777344
+        ],
+        "status": "ACCEPTED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": -0.06998634338378906,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            2.0307796001434326,
+            4.398594856262207
+          ],
+          "native_after": [
+            2.0313496589660645,
+            4.466149806976318
+          ],
+          "fp32_before": [
+            2.0310654640197754,
+            4.39937162399292
+          ],
+          "fp32_after": [
+            2.0326931476593018,
+            4.494408130645752
+          ],
+          "null_correction_energy": 2106789422922.815,
+          "protected_visual_directional_derivative": 3274.1831333637238,
+          "fp32_update": {
+            "fisher_cost": 2.2657312524416002e-15,
+            "visual_linear_change": -9.676837259828871e-11,
+            "null_linear_change": 0.09770788882163525,
+            "normalized_null_residual": 0.9835826256037362
+          },
+          "native_update": {
+            "fisher_cost": 1.908468829455024e-15,
+            "visual_linear_change": 4.416922414940675e-05,
+            "null_linear_change": 0.06969822267230476,
+            "normalized_null_residual": 0.7644772831012093
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0014475854113698006,
+            "relative_rounding_l2": 0.5350710121028717,
+            "delta_cosine": 0.8536036014556885,
+            "fp32_delta_l2": 0.002705408027395606,
+            "native_delta_l2": 0.002640026854351163,
+            "changed_elements": 6180632
+          },
+          "compensation": {
+            "rho": 0.6283801770374272,
+            "original_fp32_update": {
+              "fisher_cost": 1.1624539611656416e-15,
+              "visual_linear_change": 1.213407071896282e-09,
+              "null_linear_change": 0.06998633270937624,
+              "normalized_null_residual": 0.9835824538953788
+            },
+            "original_native_update": {
+              "fisher_cost": 8.831923718080237e-16,
+              "visual_linear_change": 4.0179583461765525e-05,
+              "null_linear_change": 0.04397803084570755,
+              "normalized_null_residual": 0.7090772332534762
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0011799061903730035,
+              "relative_rounding_l2": 0.6088791447242737,
+              "delta_cosine": 0.805554986000061,
+              "fp32_delta_l2": 0.0019378331489861012,
+              "native_delta_l2": 0.0018326923018321395,
+              "changed_elements": 4556969
+            },
+            "multiplier": 1.3960997039604746,
+            "realized_effect_ratio_after": 0.9958831866682287,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.6283801770374272,
+              "second_scale": 1.5913932942866187,
+              "second_effect": 1.1832239931943218,
+              "multiplier": 1.3960997039604746,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 1.5913932942866187
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 255833992622.47882,
+          "native_before": [
+            2.163713216781616,
+            4.466270446777344
+          ],
+          "native_after": [
+            2.0307796001434326,
+            4.398594856262207
+          ],
+          "fp32_before": [
+            2.164567470550537,
+            4.470861434936523
+          ],
+          "fp32_after": [
+            2.032768964767456,
+            4.39642858505249
+          ],
+          "fp32_update": {
+            "fisher_cost": 1.8416232303530726e-13,
+            "visual_linear_change": -0.30696899365382796,
+            "null_linear_change": -4.9451888638717134e-09,
+            "normalized_null_residual": 5.744428429359149e-09
+          },
+          "native_update": {
+            "fisher_cost": 1.8697055557247368e-13,
+            "visual_linear_change": -0.30032066655649986,
+            "null_linear_change": 2.8921213094181518e-05,
+            "normalized_null_residual": 3.3342198191644825e-05
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0036138633731752634,
+            "relative_rounding_l2": 0.14966297488176167,
+            "delta_cosine": 0.9888921976089478,
+            "changed_elements": 29020378,
+            "fp32_delta_l2": 0.024146676063537598,
+            "native_delta_l2": 0.02430153824388981
+          },
+          "native_gain": 0.1329336166381836,
+          "native_gain_ratio": 0.4330522498303348,
+          "native_null_change": -0.06767559051513672,
+          "fp32_gain_ratio": 0.4293544469566876,
+          "fp32_null_change": -0.0744328498840332
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            2.0307796001434326,
+            4.398594856262207
+          ],
+          "cumulative_null_change": -0.06998634338378906,
+          "combined_native_fisher_cost": 1.8697055557247368e-13,
+          "gates": {
+            "null": false,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.06970357894897461,
+          "native_cumulative_null_change": -0.06998634338378906,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.02827596664428711,
+          "native_cumulative_null_change": -0.0024313926696777344,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": true
+        },
+        "final_verdict": {
+          "native_nll": [
+            2.0313496589660645,
+            4.466149806976318
+          ],
+          "cumulative_null_change": -0.0024313926696777344,
+          "combined_native_fisher_cost": 1.8330590384573534e-13,
+          "gates": {
+            "null": true,
+            "visual": true,
+            "trust": true
+          },
+          "accepted": true
+        }
+      },
+      {
+        "step": 13,
+        "start_native_nll": [
+          2.0313496589660645,
+          4.466149806976318
+        ],
+        "status": "REJECTED_AND_STOPPED",
+        "correction": {
+          "status": "APPLIED",
+          "residual": -0.08922624588012695,
+          "target_native_null": 4.468581199645996,
+          "native_before": [
+            2.060610294342041,
+            4.379354953765869
+          ],
+          "native_after": [
+            2.061203718185425,
+            4.463219165802002
+          ],
+          "fp32_before": [
+            2.0619747638702393,
+            4.3785200119018555
+          ],
+          "fp32_after": [
+            2.0615460872650146,
+            4.5017595291137695
+          ],
+          "null_correction_energy": 3142642733239.7812,
+          "protected_visual_directional_derivative": -1550.681936264038,
+          "fp32_update": {
+            "fisher_cost": 2.431263850729148e-15,
+            "visual_linear_change": -2.085910303696332e-09,
+            "null_linear_change": 0.12361706329226786,
+            "normalized_null_residual": 0.971063311647372
+          },
+          "native_update": {
+            "fisher_cost": 2.0596301723163325e-15,
+            "visual_linear_change": 0.00011429714471362354,
+            "null_linear_change": 0.08882491110404708,
+            "normalized_null_residual": 0.7580979622541699
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.0014789886772632599,
+            "relative_rounding_l2": 0.5286391624073299,
+            "delta_cosine": 0.8574140071868896,
+            "fp32_delta_l2": 0.002797728171572089,
+            "native_delta_l2": 0.0027370715979486704,
+            "changed_elements": 6361711
+          },
+          "compensation": {
+            "rho": 0.636143556910172,
+            "original_fp32_update": {
+              "fisher_cost": 1.2666612861487193e-15,
+              "visual_linear_change": 1.6856911983355143e-09,
+              "null_linear_change": 0.08922623313038842,
+              "normalized_null_residual": 0.9710631652514176
+            },
+            "original_native_update": {
+              "fisher_cost": 9.724746643691453e-16,
+              "visual_linear_change": 0.00010036470840284038,
+              "null_linear_change": 0.056760701423925544,
+              "normalized_null_residual": 0.7050075635569913
+            },
+            "original_quantization": {
+              "absolute_rounding_l2": 0.0012138774618506432,
+              "relative_rounding_l2": 0.6011117923922445,
+              "delta_cosine": 0.8110871315002441,
+              "fp32_delta_l2": 0.0020193872042000294,
+              "native_delta_l2": 0.0019176957430317998,
+              "changed_elements": 4734844
+            },
+            "multiplier": 1.3854341560893704,
+            "realized_effect_ratio_after": 0.9955020546687681,
+            "secant": {
+              "first_scale": 1,
+              "first_effect": 0.636143556910172,
+              "second_scale": 1.57197222095139,
+              "second_effect": 1.176095127297998,
+              "multiplier": 1.3854341560893704,
+              "valid": true
+            },
+            "inverse_rho_multiplier": 1.57197222095139
+          }
+        },
+        "proposal": {
+          "requested_reduction": 0.3069690012931824,
+          "effective_reduction": 0.3069690012931824,
+          "clipped": false,
+          "E": 117110954824.09961,
+          "native_before": [
+            2.0313496589660645,
+            4.466149806976318
+          ],
+          "native_after": [
+            2.060610294342041,
+            4.379354953765869
+          ],
+          "fp32_before": [
+            2.0318753719329834,
+            4.4684929847717285
+          ],
+          "fp32_after": [
+            2.063861846923828,
+            4.376007556915283
+          ],
+          "fp32_update": {
+            "fisher_cost": 4.023106167864496e-13,
+            "visual_linear_change": -0.3069689892488798,
+            "null_linear_change": -9.918859162835747e-09,
+            "normalized_null_residual": 7.71238503642953e-09
+          },
+          "native_update": {
+            "fisher_cost": 4.0759826537003643e-13,
+            "visual_linear_change": -0.3034819921315679,
+            "null_linear_change": 0.00025513376476825333,
+            "normalized_null_residual": 0.00019708769047080342
+          },
+          "quantization": {
+            "absolute_rounding_l2": 0.003900456940755248,
+            "relative_rounding_l2": 0.11008284409479384,
+            "delta_cosine": 0.9939739108085632,
+            "changed_elements": 34066733,
+            "fp32_delta_l2": 0.03543201461434364,
+            "native_delta_l2": 0.03557680547237396
+          },
+          "native_gain": -0.029260635375976562,
+          "native_gain_ratio": -0.09532114074290544,
+          "native_null_change": -0.08679485321044922,
+          "fp32_gain_ratio": -0.10420099376840605,
+          "fp32_null_change": -0.09248542785644531
+        },
+        "proposal_verdict": {
+          "native_nll": [
+            2.060610294342041,
+            4.379354953765869
+          ],
+          "cumulative_null_change": -0.08922624588012695,
+          "combined_native_fisher_cost": 4.0759826537003643e-13,
+          "gates": {
+            "null": false,
+            "visual": false,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "proposal_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": -0.09012460708618164,
+          "native_cumulative_null_change": -0.08922624588012695,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": false,
+          "null_budget_decision_flip": false
+        },
+        "correction_diagnostics": {
+          "available": true,
+          "fp32_cumulative_null_change": 0.03562736511230469,
+          "native_cumulative_null_change": -0.005362033843994141,
+          "fp32_null_within_budget": false,
+          "native_null_within_budget": true,
+          "null_budget_decision_flip": true
+        },
+        "final_verdict": {
+          "native_nll": [
+            2.061203718185425,
+            4.463219165802002
+          ],
+          "cumulative_null_change": -0.005362033843994141,
+          "combined_native_fisher_cost": 3.994170823830627e-13,
+          "gates": {
+            "null": true,
+            "visual": false,
+            "trust": true
+          },
+          "accepted": false
+        },
+        "rollback_pass": true
+      }
+    ],
+    "accepted_trajectory": [
+      {
+        "step": 1,
+        "native_nll": [
+          4.569253921508789,
+          4.4684553146362305
+        ],
+        "cumulative_visual_gain": 0.306643009185791,
+        "cumulative_null_change": -0.000125885009765625
+      },
+      {
+        "step": 2,
+        "native_nll": [
+          4.298274040222168,
+          4.469559669494629
+        ],
+        "cumulative_visual_gain": 0.5776228904724121,
+        "cumulative_null_change": 0.0009784698486328125
+      },
+      {
+        "step": 3,
+        "native_nll": [
+          4.037135601043701,
+          4.468903541564941
+        ],
+        "cumulative_visual_gain": 0.8387613296508789,
+        "cumulative_null_change": 0.0003223419189453125
+      },
+      {
+        "step": 4,
+        "native_nll": [
+          3.7594153881073,
+          4.478072166442871
+        ],
+        "cumulative_visual_gain": 1.1164815425872803,
+        "cumulative_null_change": 0.009490966796875
+      },
+      {
+        "step": 5,
+        "native_nll": [
+          3.470980405807495,
+          4.472192764282227
+        ],
+        "cumulative_visual_gain": 1.404916524887085,
+        "cumulative_null_change": 0.0036115646362304688
+      },
+      {
+        "step": 6,
+        "native_nll": [
+          3.244859218597412,
+          4.469519138336182
+        ],
+        "cumulative_visual_gain": 1.631037712097168,
+        "cumulative_null_change": 0.0009379386901855469
+      },
+      {
+        "step": 7,
+        "native_nll": [
+          2.947099208831787,
+          4.463696479797363
+        ],
+        "cumulative_visual_gain": 1.928797721862793,
+        "cumulative_null_change": -0.0048847198486328125
+      },
+      {
+        "step": 8,
+        "native_nll": [
+          2.6600356101989746,
+          4.469407081604004
+        ],
+        "cumulative_visual_gain": 2.2158613204956055,
+        "cumulative_null_change": 0.0008258819580078125
+      },
+      {
+        "step": 9,
+        "native_nll": [
+          2.383577823638916,
+          4.470168113708496
+        ],
+        "cumulative_visual_gain": 2.492319107055664,
+        "cumulative_null_change": 0.0015869140625
+      },
+      {
+        "step": 10,
+        "native_nll": [
+          2.2151875495910645,
+          4.475255012512207
+        ],
+        "cumulative_visual_gain": 2.6607093811035156,
+        "cumulative_null_change": 0.0066738128662109375
+      },
+      {
+        "step": 11,
+        "native_nll": [
+          2.163713216781616,
+          4.466270446777344
+        ],
+        "cumulative_visual_gain": 2.712183713912964,
+        "cumulative_null_change": -0.0023107528686523438
+      },
+      {
+        "step": 12,
+        "native_nll": [
+          2.0313496589660645,
+          4.466149806976318
+        ],
+        "cumulative_visual_gain": 2.8445472717285156,
+        "cumulative_null_change": -0.0024313926696777344
+      }
+    ],
+    "attempted_steps": 13,
+    "accepted_steps": 12,
+    "correction_attempts": 8,
+    "four_steps_completed": true,
+    "trajectory_completed": false,
+    "requested_steps": 16,
+    "final_accepted_native_nll": [
+      2.0313496589660645,
+      4.466149806976318
+    ],
+    "edit_threshold_met": true,
+    "null_gate_on_accepted_states": true,
+    "joint_gate": false,
+    "generation_calls": 0,
+    "judge_calls": 0
+  },
+  "metrics": {
+    "joint_pass": false,
+    "accepted_steps": 12,
+    "correction_attempts": 8,
+    "max_abs_accepted_null": 0.009490966796875,
+    "boundary_margin": 0.0005090332031250002,
+    "near_boundary_pass": false,
+    "failures": [
+      "visual"
+    ]
+  },
+  "base_restored": true
+}

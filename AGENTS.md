@@ -1,3 +1,7 @@
+## 最新终态：完整割线16步仍0/8
+
+新接受97步（旧49），105主候选/68修正，所有样本更长但不算16步成功。5 visual/5 null失败含2同时；五主候选FP32已上升。64项复核0差异，回滚/恢复/退出PASS，240.605132秒，无checkpoint/生成/Judge。报告reports/vigor_secant_stress16_v1_20261018/completion。窗口内最后一次ABC7归因（S04无修正只用已存日志）；之后不追加新优化规则，完整交付并监测到19:49暂停。累计驻留757.895756秒。
+
 ## 最新运行：完整割线16步attempt2已启动
 
 有效输出vigor-secant-stress16-v1-20261018/attempt2，PID2182562/GPU5，实现da568e6；CPU/实时准入PASS。首run只CPU预期TimeoutError断言助手失败，GPU/实际模型更新0，原记录保留；仅测试修复后新attempt2启动，无科学重放。最新状态reports/vigor_secant_stress16_v1_20261018/STATE_ZH.md。不要重放旧run或attempt2，预算/19:49截止和科学门保持。
