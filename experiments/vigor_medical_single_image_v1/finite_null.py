@@ -23,7 +23,7 @@ def native_losses(runtime,pair):
     with torch.no_grad():return [float(nll(runtime.model,b)) for b in pair]
 
 
-def correction(runtime,record,factor,base_null):
+def correction(runtime,record,factor,base_null, *, evaluate_rounded=False):
     layer=runtime.get_module('model.layers.0.mlp.down_proj')
     original=layer.weight.detach().clone()
     pair=paired_batches(runtime,record)
@@ -49,11 +49,23 @@ def correction(runtime,record,factor,base_null):
             fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)),
             changed_elements=int(torch.count_nonzero(native_delta)))
         fp_after=native_losses(runtime,pair)
+        extra={}
+        if evaluate_rounded:
+            unrounded=layer.weight.detach().clone()
+            rounded=unrounded.half()
+            try:
+                with torch.no_grad():layer.weight.copy_(rounded.float())
+                extra['rounded_fp32_after']=native_losses(runtime,pair)
+                extra['rounded_weights_equal']=torch.equal(layer.weight,rounded.float())
+            finally:
+                with torch.no_grad():layer.weight.copy_(unrounded)
     after=native_losses(runtime,pair)
+    if evaluate_rounded:
+        extra['native_weights_equal_rounded']=torch.equal(layer.weight,rounded)
     return dict(status='APPLIED',residual=residual,target_native_null=base_null,
         native_before=before,native_after=after,fp32_before=fp_before,fp32_after=fp_after,
         null_correction_energy=geometry['E'],protected_visual_directional_derivative=geometry['null_directional_derivative'],
-        fp32_update=fp_metrics,native_update=native_metrics,quantization=quant)
+        fp32_update=fp_metrics,native_update=native_metrics,quantization=quant,**extra)
 
 
 def gates(runtime,pair,factor,start_weight,start_losses,base_null):
