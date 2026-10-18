@@ -1,0 +1,43 @@
+{
+  "status": "FOUR_GPU_TRAINING_RUNNING",
+  "date": "2026-10-18",
+  "source_commit": "c440ea1bbf4e6d9e40f7d12788a11500fa4a8231",
+  "physical_GPUs": [0, 1, 3, 4],
+  "completed_owners_preserved": 97,
+  "remaining_owners": 49,
+  "partition_sizes": [12, 13, 12, 12],
+  "remaining_steps_at_migration": [6300, 6640, 6480, 6480],
+  "active_checkpoints_resumed_at_steps": [180, 380],
+  "new_unstarted_owners": 47,
+  "cold_recovery_verification": {
+    "first_attempt": "FAIL_PREPARATION_ATTENTION_BACKEND",
+    "second_attempt": "PASS",
+    "from_step": 300,
+    "to_step": 320,
+    "state_exact": true,
+    "scalar_state_exact": true,
+    "full_curve_exact": true,
+    "cpu_checkpoint_boundaries_checked": 28
+  },
+  "incident": "First diagnostic failure marker reached the shared stop guard. Both original workers and both CPU controllers exited; failure receipts retained. Backend and diagnostic isolation fixed before recovery.",
+  "extra_cost": {
+    "diagnostic_updates": 40,
+    "diagnostic_backwards": 80,
+    "diagnostic_operator_backwards": 40,
+    "abandoned_updates": 14,
+    "abandoned_backwards": 30,
+    "abandoned_operator_backwards": 14,
+    "all_GPU_leases_and_actual_elapsed_cost_preserved": true,
+    "project_budget_reset": false
+  },
+  "startup_verification": {
+    "all_four_GPU_workers_active": true,
+    "new_persisted_updates_per_worker": [20, 20, 60, 60],
+    "neutral_process_arguments": true,
+    "active_failure_markers": 0,
+    "hourly_monitor_updated": true
+  },
+  "scientific_parameters_and_thresholds_unchanged": true,
+  "training_complete": false,
+  "speedup_benchmark_performed": false
+}
