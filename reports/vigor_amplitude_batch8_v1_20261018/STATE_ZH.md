@@ -45,3 +45,7 @@ ABC8已公开交付640c20e并核验。第四阶段解析割线8点局部诊断�
 ## 最终科学工作结束（2026-10-18T18:52:54+08:00）
 
 最后ABC7完成，全部模型进程退出/基础恢复。总报告WINDOW_SUMMARY_ZH.md、WINDOW_RECEIPT.json；累计六轮驻留968.426367秒，无生成/Judge/checkpoint。当前只剩本次公开交付及19:49到期暂停pure-w自动化，不再新实验。最新阶段reports/vigor_secant_precision7_v1_20261018/STATE_ZH.md。
+
+## 交付完成
+
+836c8ab包含最终ABC7和窗口总报告，远端SHA一致，匿名两报告HTTP200。PUBLICATION与WINDOW_RECEIPT已记录；当前无待实验/重建/评分/发布任务，仅保持半小时静默到19:49并暂停pure-w。到期不必重读远端，全部结束证据已经核实。
