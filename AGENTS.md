@@ -1,3 +1,7 @@
+## 最新运行：完整割线16步attempt2已启动
+
+有效输出vigor-secant-stress16-v1-20261018/attempt2，PID2182562/GPU5，实现da568e6；CPU/实时准入PASS。首run只CPU预期TimeoutError断言助手失败，GPU/实际模型更新0，原记录保留；仅测试修复后新attempt2启动，无科学重放。最新状态reports/vigor_secant_stress16_v1_20261018/STATE_ZH.md。不要重放旧run或attempt2，预算/19:49截止和科学门保持。
+
 ## 当前阶段：冻结割线规则完整16步
 
 4小时授权内同8例从基座完整最多16步，所有需要修正处都用已冻secant，不拼接旧局部、不强制旧修正后路径、不试备用规则；原基线/参考复核，原native三门不变。协议reports/vigor_secant_stress16_v1_20261018/PROTOCOL_ZH.md，输出vigor-secant-stress16-v1-20261018/run。CPU/实时准入后启动，预算15GPU分钟/累计1GPUh/2GiB/19:49截止；无生成/Judge/checkpoint，完成完整匿名公开交付。
