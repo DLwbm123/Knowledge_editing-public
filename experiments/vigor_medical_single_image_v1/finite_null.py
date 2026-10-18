@@ -23,6 +23,18 @@ def native_losses(runtime,pair):
     with torch.no_grad():return [float(nll(runtime.model,b)) for b in pair]
 
 
+def secant_multiplier(rho,eta):
+    """One interpolation of quantized linear effects; no extrapolation or search."""
+    if not all(math.isfinite(x) and x>0 for x in (rho,eta)):return None
+    if rho==1:return 1.0
+    second=1/rho
+    if not math.isfinite(second) or second==1 or not min(rho,eta)<=1<=max(rho,eta):return None
+    slope=(eta-rho)/(second-1)
+    if not math.isfinite(slope) or slope<=0:return None
+    alpha=1+(1-rho)/slope
+    return alpha if math.isfinite(alpha) and alpha>0 and min(1,second)<=alpha<=max(1,second) else None
+
+
 def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compensate=False):
     layer=runtime.get_module('model.layers.0.mlp.down_proj')
     original=layer.weight.detach().clone()
@@ -59,6 +71,29 @@ def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compe
             extra['compensation']['multiplier']=1/rho
             # Rebuild from the same pre-correction weight, never add to the rounded control.
             with torch.no_grad():layer.weight.copy_(finite(original.float()+delta/rho))
+            actual=layer.weight.detach()-original.float()
+            native_delta=layer.weight.detach().half().float()-original.float()
+            norm=float(torch.linalg.vector_norm(actual))
+            fp_metrics=update_metrics(actual,*gradients,a,b)
+            native_metrics=update_metrics(native_delta,*gradients,a,b)
+            rounding=float(torch.linalg.vector_norm(native_delta-actual))
+            quant=dict(absolute_rounding_l2=rounding,relative_rounding_l2=rounding/norm if norm else None,
+                delta_cosine=float(F.cosine_similarity(actual.flatten(),native_delta.flatten(),dim=0)),
+                fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)),
+                changed_elements=int(torch.count_nonzero(native_delta)))
+            extra['compensation']['realized_effect_ratio_after']=native_metrics['null_linear_change']/(-residual)
+        if compensate=='secant':
+            eta=native_metrics['null_linear_change']/(-residual)
+            alpha=secant_multiplier(rho,eta)
+            extra['compensation']['secant']=dict(first_scale=1,first_effect=rho,
+                second_scale=1/rho,second_effect=eta if math.isfinite(eta) else None,
+                multiplier=alpha,valid=alpha is not None)
+            if alpha is None:
+                with torch.no_grad():layer.weight.copy_(original.float())
+                return dict(status='INVALID_SECANT',native_before=before,native_after=before,**extra)
+            extra['compensation']['inverse_rho_multiplier']=1/rho
+            extra['compensation']['multiplier']=alpha
+            with torch.no_grad():layer.weight.copy_(finite(original.float()+delta*alpha))
             actual=layer.weight.detach()-original.float()
             native_delta=layer.weight.detach().half().float()-original.float()
             norm=float(torch.linalg.vector_norm(actual))

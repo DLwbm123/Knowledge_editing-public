@@ -7,13 +7,13 @@ from .finite_null import correction,gates,native_losses
 AUTH=dict(precision_abc.AUTH,variant='one_shot_amplitude',candidates_per_point=1)
 
 
-def point(runtime,record,factor,snapshot,old,state,emit, *, compensated):
+def point(runtime,record,factor,snapshot,old,state,emit, *, compensated, mode=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);base_losses=native_losses(runtime,pair)
     key='candidate' if compensated else 'control'
     try:
         with torch.no_grad():layer.weight.copy_(snapshot['weight'])
-        c=correction(runtime,record,factor,snapshot['baseline']['native'][1],compensate=compensated)
+        c=correction(runtime,record,factor,snapshot['baseline']['native'][1],compensate=mode if mode is not None else compensated)
         state[key]=dict(correction=c);emit()
         if not compensated:
             precision_abc.compare(c,old['method']['steps'][-1]['correction'],'target.control',state['checks'])
