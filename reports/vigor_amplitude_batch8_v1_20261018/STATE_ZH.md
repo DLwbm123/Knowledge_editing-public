@@ -13,3 +13,7 @@ heartbeat pure-w 每半小时，授权到19:49；累计GPU预算1小时，新磁
 ## 16:54更新
 
 16步报告4829b19已公开核验。第三阶段八首拒绝点ABC已启动，PID2115231/GPU5，实现34b8ece；最新跟进读reports/vigor_stress_precision8_v1_20261018/STATE_ZH.md。
+
+## 17:22更新
+
+第三阶段ABC8完成，A0/B2/C0 null通过，556项差异0；主问题是幅度过冲，舍入缓解，S07/S08计算精度决定最终越界。下一步准备局部确定性割线补偿；最新读reports/vigor_stress_precision8_v1_20261018/STATE_ZH.md。累计驻留376.485932秒，远端约3.274MB。

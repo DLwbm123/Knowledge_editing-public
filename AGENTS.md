@@ -1,3 +1,7 @@
+## 最新终态：八首拒绝点ABC归因完成
+
+556项复核差异0，A/B/C null通过0/2/0；全部未舍入A先越界，舍入缓解，S07/S08计算精度再越界。141.675471秒，恢复/进程退出PASS，无checkpoint/生成/Judge。报告reports/vigor_stress_precision8_v1_20261018/completion。4h窗口内准备同8点一次解析割线补偿局部诊断，不扫描/模型反馈搜倍率、不改门；累计驻留376.485932秒。
+
 ## 当前阶段：八首拒绝点同一补偿ABC精度归因
 
 4小时自主授权内仅归因S01/6、S02/11、S03/9、S04/6、S05/8、S06/5、S07/5、S08/7，复现全部补偿前缀及8个原拒绝控制后才同一补偿ABC评估；不试新倍率/后续步、不调门/选样。协议reports/vigor_stress_precision8_v1_20261018/PROTOCOL_ZH.md，输出vigor-stress-precision8-v1-20261018/run，CPU/准入后启动；15GPU分钟上限，累计1GPUh与19:49截止不变。全部匿名完整交付，私有权重快照仅内存、无checkpoint/生成/Judge。
