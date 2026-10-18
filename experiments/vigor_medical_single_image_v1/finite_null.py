@@ -102,7 +102,7 @@ def gates(runtime,pair,factor,start_weight,start_losses,base_null):
         gates=verdict,accepted=all(verdict.values()))
 
 
-def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, edit_threshold=EDIT_THRESHOLD):
+def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, edit_threshold=EDIT_THRESHOLD, compensate=False):
     layer=runtime.get_module('model.layers.0.mlp.down_proj')
     original=layer.weight.detach().clone();pair=paired_batches(runtime,record)
     baseline=native_losses(runtime,pair);rows=[];accepted=[]
@@ -118,7 +118,7 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, e
                 if any(abs(a-b)>1e-5 for a,b in zip(row['proposal']['native_after'],first_reference)):
                     raise ValueError('First proposal reference mismatch')
             if not row['proposal_verdict']['gates']['null']:
-                row['correction']=correction(runtime,record,factor,baseline[1])
+                row['correction']=correction(runtime,record,factor,baseline[1],compensate=compensate)
                 row['status']='CORRECTED';emit(rows)
             verdict=gates(runtime,pair,factor,start_weight,start_losses,baseline[1])
             if row['correction'] is not None and row['correction']['status']!='APPLIED':

@@ -71,7 +71,7 @@ def sample_metrics(result):
         failures=failures)
 
 
-def run_sample(runtime,record,factor,state,emit):
+def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);base_losses=native_losses(runtime,pair)
     try:
@@ -80,6 +80,13 @@ def run_sample(runtime,record,factor,state,emit):
         state['phase']='REFERENCE';emit(state)
         reference=candidate(runtime,record,0,factor,FIRST_D/4,baseline['anchor'])
         state['reference']=reference
+        if history is not None:
+            from .precision_abc import compare
+            checks=[]
+            compare(baseline,history['baseline'],'baseline',checks)
+            compare(baseline['anchor'],history['baseline']['anchor'],'anchor',checks)
+            compare(reference,history['reference'],'reference',checks)
+            state['historical_checks']=checks
         state['reference_diagnostics']=stage_diagnostics(reference,baseline)
         state['reference_improved_visual']=reference['native_after'][0]<base_losses[0]
         state['phase']='METHOD';emit(state)
@@ -91,7 +98,7 @@ def run_sample(runtime,record,factor,state,emit):
                 if row.get('correction'):row['correction_diagnostics']=stage_diagnostics(row['correction'],baseline)
             emit(state)
         result=trajectory(runtime,record,factor,progress,anchor=baseline['anchor'],
-            edit_threshold=reference['native_after'][0])
+            edit_threshold=reference['native_after'][0],compensate=compensate)
         state['method']=result;state.pop('method_candidates',None)
         state['status']='EVALUATED';state['phase']='DONE';state['metrics']=sample_metrics(state)
         return state
@@ -104,8 +111,11 @@ def run_sample(runtime,record,factor,state,emit):
 
 
 def main(config):
-    if config['authorization']!=dict(samples=8,steps=4,max_corrections_per_step=1,reference_steps=1,
-        tune=False,replace=False,expand=False,generation=False,judge=False):
+    expected=dict(samples=8,steps=4,max_corrections_per_step=1,reference_steps=1,
+        tune=False,replace=False,expand=False,generation=False,judge=False)
+    compensate=config.get('amplitude_compensation',False)
+    if compensate:expected['variant']='one_shot_amplitude'
+    if config['authorization']!=expected:
         raise PermissionError('Only the frozen eight-sample batch is authorized')
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG')!=':4096:8':raise RuntimeError('Missing deterministic workspace')
     torch.use_deterministic_algorithms(True)
@@ -120,6 +130,7 @@ def main(config):
         from scripts.medtrace.run_realmodel_core import load_real_runtime
         from m3bench_repro.editors.llava_runtime import EditorRecord
         read=lambda p:json.loads(Path(p).read_text())
+        history=read(config['historical_batch'])['samples'] if compensate else None
         raw=read(root/'private/records.json');manifest=read(config['manifest']);pilot=read(config['record'])
         if len(raw)!=8 or len({r['record_id'] for r in raw})!=8:raise ValueError('Frozen sample count changed')
         groups=['SLAKE:'+r['relative_image_path'].split('/')[0] for r in raw]
@@ -145,7 +156,7 @@ def main(config):
             write(root/'public/STATUS.json',dict(status='RUNNING',sample=active['sample'],completed=index,total=8))
             record=EditorRecord(**dict(row,image_path=Path(row['image_path'])))
             try:
-                run_sample(runtime,record,factor,active,emit)
+                run_sample(runtime,record,factor,active,emit,compensate=compensate,history=history[index] if history else None)
             except DegenerateCandidateError:
                 active['status']='DEGENERATE_DIRECTION';active['metrics']=sample_metrics(active)
             active['joint_pass']=active.get('metrics',{}).get('joint_pass',False);emit(active)
@@ -153,6 +164,7 @@ def main(config):
             generation_calls=0,judge_calls=0,elapsed_seconds=time.time()-start,
             peak_allocated_bytes=torch.cuda.max_memory_allocated(),all_base_restored=all(s.get('base_restored',False) for s in states))
         result['pass_rate']=result['passed']/8
+        result['amplitude_compensation']=compensate
         write(root/'public/RESULT.json',result)
         write(root/'public/STATUS.json',dict(status='COMPLETE',completed=8,total=8,passed=result['passed']))
     except BaseException as e:
