@@ -1,0 +1,49 @@
+{
+  "status": "COMPLETE",
+  "scope": "Two preselected source-QA negative protection candidates; unchanged original questions and images",
+  "generation_attempts": 2,
+  "retries": 0,
+  "training_steps": 0,
+  "additional_questions": 0,
+  "base_correct": 2,
+  "base_incorrect": 0,
+  "missing": 0,
+  "precision": "MATH_FP32_FROZEN_FP16_PREFILL",
+  "max_new_tokens": 1024,
+  "do_sample": false,
+  "num_beams": 1,
+  "model_snapshot": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+  "vision_snapshot": "ce19dc912ca5cd21c8a653c79e251e808ccabcd1",
+  "results": [
+    {
+      "candidate": "negative_1",
+      "reference": "no",
+      "generated_polarity": "no",
+      "correct": true,
+      "EOS": true,
+      "at_cap": false,
+      "generated_tokens": 18
+    },
+    {
+      "candidate": "negative_2",
+      "reference": "no",
+      "generated_polarity": "no",
+      "correct": true,
+      "EOS": true,
+      "at_cap": false,
+      "generated_tokens": 19
+    }
+  ],
+  "limitations": [
+    "Correctness is relative to original dataset annotation; no new clinical adjudication.",
+    "Different source case identifiers do not establish patient-level independence.",
+    "No edited model or protection training was evaluated."
+  ],
+  "private_artifacts": [
+    "Original source identifiers and image bindings",
+    "Exact questions and full generated answers/token IDs",
+    "Prompt IDs, image preprocessing seed and input tensors",
+    "Frozen FP16 multimodal embeddings",
+    "Runtime and process receipts"
+  ]
+}
