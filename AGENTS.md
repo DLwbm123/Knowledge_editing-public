@@ -1,3 +1,7 @@
+## 当前终态：确定性四候选全部完成
+
+4/4单步完成，冻结基线精确复现，四格均恢复基座，生成/Judge0。小步长改善线性预测与null漂移；sum-target无一致收益；层5原图降幅更小且null漂移绝对值更大。仅单样本NLL诊断。报告reports/vigor_minimal_diagnostic4_v1_20261018/final；26.943782秒，累计113.910621秒，进程退出，无模型checkpoint。公开交付后停止，不调参、扩展、生成、Judge或新监测。
+
 ## 当前授权：重冻确定性基线并完成四候选
 
 用户允许E=65214837377.33204的新确定性基线，原NLL/E容差、样本、Fisher口径及四候选设置保持，复核后执行并公开推送。旧结果历史参照；无调参、扩展、生成、Judge。见reports/vigor_minimal_diagnostic4_v1_20261018/DETERMINISTIC_BASELINE_AMENDMENT_ZH.md。
