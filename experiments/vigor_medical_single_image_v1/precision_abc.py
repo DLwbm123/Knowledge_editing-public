@@ -33,7 +33,7 @@ def compare(current,old,label,checks):
             if not math.isfinite(diff) or diff>1e-5:raise ValueError('Reconstruction energy mismatch: '+label+'.'+key)
 
 
-def reconstruct(runtime,record,factor,old,target,state,emit):
+def reconstruct(runtime,record,factor,old,target,state,emit, *, compensate=False,deadline_epoch=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);losses=native_losses(runtime,pair)
     checks=state['checks'];rows=state['prefix']
@@ -44,6 +44,7 @@ def reconstruct(runtime,record,factor,old,target,state,emit):
         state['baseline']=baseline;emit()
         if len(old['method']['steps'])!=target:raise ValueError('Frozen failure position changed')
         for previous in old['method']['steps']:
+            if deadline_epoch is not None and time.time()>=deadline_epoch:raise TimeoutError('Attribution budget exhausted')
             i=previous['step'];start_weight=layer.weight.detach().clone();start_losses=native_losses(runtime,pair)
             compare({'native_before':start_losses},{'native_before':previous['start_native_nll']},f'step{i}.start',checks)
             proposal=candidate(runtime,record,0,factor,FIRST_D/16,baseline['anchor'] if i==1 else None,retain=True)
@@ -58,7 +59,7 @@ def reconstruct(runtime,record,factor,old,target,state,emit):
                 return dict(weight=layer.weight.detach().cpu().clone(),start_weight=start_weight.cpu(),start_losses=start_losses,
                     start_fp32=proposal['fp32_before'],baseline=baseline)
             if previous['correction']:
-                row['correction']=correction(runtime,record,factor,baseline['native'][1])
+                row['correction']=correction(runtime,record,factor,baseline['native'][1],compensate=compensate)
                 compare(row['correction'],previous['correction'],f'step{i}.correction',checks)
             row['final_verdict']=gates(runtime,pair,factor,start_weight,start_losses,baseline['native'][1])
             if not row['final_verdict']['accepted'] or row['final_verdict']['gates']!=previous['final_verdict']['gates']:
@@ -89,12 +90,12 @@ def attribution(c,baseline,start_fp32,start_native,cost):
         total_null_difference=c0-a)
 
 
-def evaluate(runtime,record,factor,snapshot,old,state,emit):
+def evaluate(runtime,record,factor,snapshot,old,state,emit, *, compensate=False):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);base_losses=native_losses(runtime,pair)
     try:
         with torch.no_grad():layer.weight.copy_(snapshot['weight'])
-        c=correction(runtime,record,factor,snapshot['baseline']['native'][1],evaluate_rounded=True)
+        c=correction(runtime,record,factor,snapshot['baseline']['native'][1],evaluate_rounded=True,compensate=compensate)
         state['correction']=c;emit()
         if not c.get('rounded_weights_equal') or not c.get('native_weights_equal_rounded'):
             raise ValueError('B/C weight equality failed')
@@ -112,13 +113,14 @@ def evaluate(runtime,record,factor,snapshot,old,state,emit):
         if not state['base_restored']:raise ValueError('ABC base restore failed')
 
 
-def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label='ABC'):
-    if config['authorization']!=authorization:raise PermissionError('Only the frozen three points authorized')
+def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label='ABC',points=POINTS,prefix_compensate=False):
+    if config['authorization']!=authorization:raise PermissionError('Only the frozen points authorized')
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG')!=':4096:8':raise RuntimeError('Missing deterministic workspace')
     torch.use_deterministic_algorithms(True)
     root=Path(config['output']);start=time.time()
     with (root/'STARTED.json').open('x') as f:json.dump(dict(pid=os.getpid(),epoch=start),f)
-    states=[dict(sample=s,step=i,status='NOT_RUN',checks=[],prefix=[]) for s,i in POINTS]
+    deadline=min(config.get('deadline_epoch',float('inf')),start+config.get('resident_budget_seconds',float('inf')))
+    states=[dict(sample=s,step=i,status='NOT_RUN',checks=[],prefix=[]) for s,i in points]
     def emit():write(root/'public/POINTS.json',states)
     try:
         sys.path.insert(0,config['source_root'])
@@ -149,19 +151,21 @@ def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label
             record=EditorRecord(**dict(raw_record,image_path=Path(raw_record['image_path'])))
             old=read(parent/'public'/f"{state['sample']}.json")
             records.append(record);olds.append(old)
-            snapshots.append(reconstruct(runtime,record,factor,old,state['step'],state,emit))
+            snapshots.append(reconstruct(runtime,record,factor,old,state['step'],state,emit,compensate=prefix_compensate,deadline_epoch=deadline))
         if prepare is not None:
             for state,record,snapshot,old in zip(states,records,snapshots,olds):
+                if time.time()>=deadline:raise TimeoutError('Attribution budget exhausted')
                 prepare(runtime,record,factor,snapshot,old,state,emit)
-        write(root/'public/RECONSTRUCTION_GATE.json',dict(status='PASS',points=3,all_before_evaluation=True,evaluation=label,NLL_absolute_tolerance=1e-5,E_relative_tolerance=1e-5))
+        write(root/'public/RECONSTRUCTION_GATE.json',dict(status='PASS',points=len(points),all_before_evaluation=True,evaluation=label,NLL_absolute_tolerance=1e-5,E_relative_tolerance=1e-5))
         for state,record,snapshot,old in zip(states,records,snapshots,olds):
             state['status']='EVALUATING_'+label;emit()
             write(root/'public/STATUS.json',dict(status='EVALUATING_'+label,sample=state['sample']))
+            if time.time()>=deadline:raise TimeoutError('Attribution budget exhausted')
             evaluation(runtime,record,factor,snapshot,old,state,emit)
         write(root/'public/RESULT.json',dict(status='COMPLETE',points=states,generation_calls=0,judge_calls=0,
             extra_optimization_steps=0,extra_corrections=0,all_base_restored=all(s['base_restored'] for s in states),
             elapsed_seconds=time.time()-start,peak_allocated_bytes=torch.cuda.max_memory_allocated()))
-        write(root/'public/STATUS.json',dict(status='COMPLETE',points=3))
+        write(root/'public/STATUS.json',dict(status='COMPLETE',points=len(points)))
     except BaseException as e:
         (root/'private/FAILURE.txt').write_text(traceback.format_exc())
         emit();write(root/'public/STATUS.json',dict(status='FAILED',error_type=type(e).__name__))
