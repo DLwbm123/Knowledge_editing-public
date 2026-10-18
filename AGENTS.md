@@ -1,3 +1,7 @@
+## 最新终态：4小时授权已到期，监测已暂停
+
+2026-10-18北京时间19:49授权到期，2026-10-18T19:51:42+08:00工具回执确认pure-w自动化PAUSED。六轮及完整匿名数据/报告均已公开交付；总报告reports/vigor_amplitude_batch8_v1_20261018/WINDOW_SUMMARY_ZH.md，WINDOW_RECEIPT状态CLOSED_MONITORING_PAUSED。无进行中本任务实验、无待补实验/评分/交付；不再自动实验或恢复监测，等待用户新指令。四步8/8、两规则完整16步0/8、局部割线8/8的各自边界保持。
+
 ## 当前终态：六轮科学工作已结束，不再追加模型实验
 
 最后ABC7完成，885项复核差异0，A/B/C null0/4/2（分母7）且C整步0/7，S04无修正单列。原4步8/8、旧inverse16步0/8、局部secant8/8、新完整secant16步0/8均保持；主更新FP32有限上升及有限null非线性/计算精度仍限制结果。六轮GPU进程累计驻留968.426367秒，全部恢复/退出，无checkpoint/生成/Judge；CPU一次失败真实GPU0且保留。总报告reports/vigor_amplitude_batch8_v1_20261018/WINDOW_SUMMARY_ZH.md及WINDOW_RECEIPT.json，最终归因报告reports/vigor_secant_precision7_v1_20261018/completion。完成本次公开交付后，pure-w半小时只静默等待19:49到期暂停；无需重复远端健康/模型/重建/评分，不启动新实验/新规则。
