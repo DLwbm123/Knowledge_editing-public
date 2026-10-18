@@ -9,3 +9,7 @@ heartbeat pure-w 每半小时，授权到19:49；累计GPU预算1小时，新磁
 ## 16:52更新
 
 第二阶段已完成16步0/8，全部null门拒绝并安全回滚；细节见reports/vigor_amplitude_stress16_v1_20261018/STATE_ZH.md和completion/。下一步是8个首拒绝点ABC归因（尚未部署），四步8/8/旧5/8不改。累计驻留234.798891秒，远端新增约2.27MB。
+
+## 16:54更新
+
+16步报告4829b19已公开核验。第三阶段八首拒绝点ABC已启动，PID2115231/GPU5，实现34b8ece；最新跟进读reports/vigor_stress_precision8_v1_20261018/STATE_ZH.md。
