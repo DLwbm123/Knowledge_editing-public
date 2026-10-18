@@ -1,3 +1,7 @@
+## 当前授权：四候选最小单步诊断
+
+用户授权先核对32条目标长度，再固定样本比较层0原Fisher的d/4、d/16、层0sum-target Fisher的d/16、层5原Fisher的d/16；无调参、扩展、生成或Judge。协议reports/vigor_minimal_diagnostic4_v1_20261018/PROTOCOL_ZH.md。每次恢复基座，不自动下一轮。
+
 ## 当前终态：VIGOR 单样本试跑完成，工程通过、目标未达到
 
 固定层0和原Fisher完成一条训练样本5步。原生原图NLL4.920643→2.118944，未达0.01；null NLL4.468581→3.730609，有限步不保持null不变。FP16更新余弦0.999988，相对量化误差0.4877%；保存重载、生成/NLL一致性、基础权重/生成/NLL恢复均PASS。简单字符串匹配仍false，无医学Judge结论。16.558秒、进程退出，117517336字节生成checkpoint按消费者完成退役；原基础模型、Fisher、私有生成及诊断保留。见 reports/vigor_training_trial1_v1_20261018/completion。无调参、扩样、正式实验扩展、Judge或新监测授权。
