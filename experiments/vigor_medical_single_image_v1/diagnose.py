@@ -68,7 +68,7 @@ def sum_target_factor(runtime, records, original, lengths, positions):
     return dict(a=original['a'].clone(), b=damp((moment/count).float()).cpu(), positions=count)
 
 
-def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False, solve_factor=None, native_norm_target=None):
+def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False, solve_factor=None, native_norm_target=None, rounded_fp32=False):
     layer = runtime.get_module(f'model.layers.{layer_index}.mlp.down_proj')
     if layer.weight.dtype != torch.float16:
         raise ValueError('Diagnostic comparison is frozen to native FP16')
@@ -133,6 +133,14 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
                     native_direction_cosine=float(F.cosine_similarity(unscaled_native.flatten(),native_delta.flatten(),dim=0)))
                 del unscaled_native, unscaled_delta
             fp_after = losses()
+            if rounded_fp32:
+                unrounded = layer.weight.detach().clone()
+                try:
+                    with torch.no_grad():layer.weight.copy_(unrounded.half().float())
+                    rounded_after = losses()
+                finally:
+                    with torch.no_grad():layer.weight.copy_(unrounded)
+                if not torch.equal(layer.weight,unrounded):raise ValueError('Rounded readout restoration failed')
         native_after = losses()
         completed = True
         result = dict(requested_reduction=requested,effective_reduction=effective,clipped=effective<requested,
@@ -143,6 +151,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
             native_null_change=native_after[1]-native_before[1],
             fp32_gain_ratio=(fp_before[0]-fp_after[0])/effective,
             fp32_null_change=fp_after[1]-fp_before[1])
+        if rounded_fp32:result['rounded_fp32_after']=rounded_after
         if matching is not None:result['native_norm_matching']=matching
         return result
     finally:
