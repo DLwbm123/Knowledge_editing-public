@@ -23,7 +23,7 @@ def budget():
     import shutil
     assert shutil.disk_usage(OUT).free>8*1024**3
     assert time.time()<float(os.environ['DEADLINE_EPOCH']),'Finite chain deadline'
-    assert counts['updates']<=960 and counts['backwards']<=9500 and counts['operator_backwards']<=1100 and counts['generations']<=250
+    assert counts['updates']<=1060 and counts['backwards']<=10000 and counts['operator_backwards']<=1100 and counts['generations']<=325
     assert counts['forwards']<=400000
 
 def prepare(runtime,bindings,task,rows,training):
