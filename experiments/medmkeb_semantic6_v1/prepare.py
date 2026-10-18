@@ -25,7 +25,7 @@ def freeze(data,repo,private,remote):
     components=collections.defaultdict(set)
     for s in parent:components[root(s)].add(s)
     banned={k for k,paths in components.items() if any(key(s) in exposed for s in paths)}
-    chosen=[];seen=set();excluded=[];images=private/'images';images.mkdir(exist_ok=True)
+    chosen=[];seen=set();excluded=[];images=private/'images';images.mkdir(exist_ok=True);asset_bytes=0
     for v in evaluation:
         if v['modality']!='CT':continue
         group=root(v['image'])
@@ -41,6 +41,10 @@ def freeze(data,repo,private,remote):
                 source=data/v[role]
                 with Image.open(source) as im:im.verify()
         except Exception as e:excluded.append(dict(id=v['id'],reason='IMAGE_UNREADABLE',error=repr(e)));continue
+        required=sum((data/v[role]).stat().st_size for role in ('image','image_rephrase'))
+        if asset_bytes+required>1024**3:
+            excluded.append(dict(id=v['id'],reason='ASSET_CAP_RESERVE_FOR_BINDINGS'));break
+        asset_bytes+=required
         seen.add(group);index=len(chosen)+1;rows=[]
         for role,name,question in [('image','native',v['src']),('image_rephrase','cross',v['src'])]:
             source=data/v[role];dest=images/(f'C{index:02d}_{name}'+source.suffix.lower());shutil.copyfile(source,dest)
@@ -48,7 +52,7 @@ def freeze(data,repo,private,remote):
         chosen.append(dict(index=index,original=v,component=group,component_paths=sorted(components[group]),rows=rows,reference_status='Original benchmark source answer; not independent clinical adjudication',patient_independence='UNKNOWN'))
         if len(chosen)==24:break
     rows=[r for c in chosen for r in c['rows']]
-    manifest=dict(time=time.time(),source_revision='d9f38639ec2285a0e9f541e22156ec14f87271d8',candidates=chosen,rows=rows,excluded_before_base=excluded,history_components_excluded=len(banned),all_components=len(components),historical_image_keys=len(exposed),frozen_before_base=True,source_only=True,original_record_order=True)
+    manifest=dict(time=time.time(),source_revision='d9f38639ec2285a0e9f541e22156ec14f87271d8',candidates=chosen,rows=rows,excluded_before_base=excluded,history_components_excluded=len(banned),all_components=len(components),historical_image_keys=len(exposed),candidate_image_bytes=asset_bytes,frozen_before_base=True,source_only=True,original_record_order=True)
     (private/'CANDIDATES_FROZEN.json').write_text(json.dumps(manifest,indent=2)+'\n')
     # Keep each pair on one GPU; no overlap between partitions.
     for part in (0,1):
