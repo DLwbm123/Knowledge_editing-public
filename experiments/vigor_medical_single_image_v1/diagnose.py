@@ -18,6 +18,10 @@ from .prepare import write
 DETERMINISTIC_ANCHOR = dict(visual_nll=4.921504020690918, null_nll=4.466132164001465,
                             E=65214837377.33204)
 
+class DegenerateCandidateError(ValueError):
+    """A scientific non-updatable direction, distinct from a lifecycle failure."""
+
+
 FIRST_D = 4.911504020690918
 CASES = (('quarter', 0, 'original', FIRST_D/4),
          ('sixteenth', 0, 'original', FIRST_D/16),
@@ -81,7 +85,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
             fp_before, gradients = gradient_pair(runtime, layer, pair)
             tangent, geometry = direction(*gradients, a, b)
             if tangent is None:
-                raise ValueError('Degenerate candidate; no replacement permitted')
+                raise DegenerateCandidateError('Degenerate candidate; no replacement permitted')
             if historical is not None:
                 if (abs(fp_before[0]-historical['visual_nll']) > 1e-5
                         or abs(fp_before[1]-historical['null_nll']) > 1e-5
@@ -97,7 +101,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
             norm = float(torch.linalg.vector_norm(actual))
             fp_metrics = update_metrics(actual, *gradients, a, b)
             native_metrics = update_metrics(native_delta, *gradients, a, b)
-            quantization = dict(relative_rounding_l2=rounding/norm if norm else None,
+            quantization = dict(absolute_rounding_l2=rounding,relative_rounding_l2=rounding/norm if norm else None,
                 delta_cosine=float(F.cosine_similarity(actual.flatten(),native_delta.flatten(),dim=0)),
                 changed_elements=int(torch.count_nonzero(native_delta)),
                 fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)))

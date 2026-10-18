@@ -43,7 +43,8 @@ def correction(runtime,record,factor,base_null):
         norm=float(torch.linalg.vector_norm(actual))
         fp_metrics=update_metrics(actual,*gradients,a,b)
         native_metrics=update_metrics(native_delta,*gradients,a,b)
-        quant=dict(relative_rounding_l2=float(torch.linalg.vector_norm(native_delta-actual))/norm if norm else None,
+        rounding=float(torch.linalg.vector_norm(native_delta-actual))
+        quant=dict(absolute_rounding_l2=rounding,relative_rounding_l2=rounding/norm if norm else None,
             delta_cosine=float(F.cosine_similarity(actual.flatten(),native_delta.flatten(),dim=0)),
             fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)),
             changed_elements=int(torch.count_nonzero(native_delta)))
@@ -68,7 +69,7 @@ def gates(runtime,pair,factor,start_weight,start_losses,base_null):
         gates=verdict,accepted=all(verdict.values()))
 
 
-def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None):
+def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, edit_threshold=EDIT_THRESHOLD):
     layer=runtime.get_module('model.layers.0.mlp.down_proj')
     original=layer.weight.detach().clone();pair=paired_batches(runtime,record)
     baseline=native_losses(runtime,pair);rows=[];accepted=[]
@@ -105,7 +106,7 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None):
                 break
         final=native_losses(runtime,pair)
         complete=len(accepted)==4
-        edit=final[0]<=EDIT_THRESHOLD
+        edit=final[0]<=edit_threshold and final[0]<baseline[0]
         null=bool(accepted) and all(abs(s['cumulative_null_change'])<=NULL_BUDGET for s in accepted)
         return dict(status='COMPLETE' if complete else 'STOPPED_REJECTED',baseline=baseline,
             steps=rows,accepted_trajectory=accepted,attempted_steps=len(rows),accepted_steps=len(accepted),
