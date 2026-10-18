@@ -1,3 +1,7 @@
+## 最新终态：同NLL F0/F1探针完成，保护差异有方向交互
+
+报告reports/vigor_probemetric_v1_20261019/completion：133参考差异0/182审计PASS，57.783298秒全部恢复退出。D−A收益F1−0.039793/F0−0.068658；null新增差F1−0.005431/F0+0.032855，F0两端仍拒绝，不能称通用保护退化或安全替换。下一项NEXT_MINIMAL_ZH.md已冻结同端点四固定探针null一阶耦合分解，尚未启动，先公开回执。半小时自动化ACTIVE，无重放旧轮。
+
 ## 当前轮：同NLL两端F0/F1固定范数探针
 
 已冻结reports/vigor_probemetric_v1_20261019/PROTOCOL_ZH.md，CPU检查PASS。A8与D4+已选比例控制重建，先两端F1复核后两端F0，共4固定探针；各一次native范数匹配，无探针补偿/搜索。13参考主候选、最多17主候选，原门/旧F0 trust/secant/900秒/50MiB保持。公开交付后分析必要后续，半小时监测持续ACTIVE，不重放旧轮。
