@@ -46,7 +46,7 @@ def prepare(single,selected):
     prior={k:ledger[k] for k in ('gpu_seconds_used','Judge_attempts')};manifest=read(parent/'RUN_MANIFEST.json')
     assert prior['gpu_seconds_used']+30000+1488.5244522094727<manifest['GPU_seconds_limit']
     assert prior['Judge_attempts']+4538<=manifest['Judge_limit'],'Preserve weights: project Judge headroom insufficient'
-    manifest.update(stage=f.EPOCH,candidate='M13P',starting_epoch=time.time(),GPU_seconds_limit=prior['gpu_seconds_used']+30000,Judge_limit=prior['Judge_attempts']+4538,physical_GPUs=[0,1])
+    manifest.update(stage=f.EPOCH,candidate='M13P',starting_epoch=time.time(),GPU_seconds_limit=prior['gpu_seconds_used']+30000,Judge_limit=prior['Judge_attempts']+4538,physical_GPUs=[0,1,3,4])
     write(RUN/'RUN_MANIFEST.json',manifest);write(RUN/'STAGE_CAP.json',dict(GPU_seconds_limit=manifest['GPU_seconds_limit']))
     write(RUN/'RESOURCE_LEDGER.json',dict(prior,gpu_sessions=[]));write(RUN/'private/INHERITED_COST.json',prior)
     plan=read(RUN/'private/EVAL_PLAN146.json')
@@ -69,7 +69,7 @@ def main():
     a=read(RUN/'private/CONTINUOUS_ADMISSION.json');single=Path(a['single_run'])
     assert read(RUN/'private/CONTINUOUS_CPU_CHECK.json')['status']=='PASS'
     assert read(RUN/'private/CONTINUOUS_SELECTION_CPU_CHECK.json')['status']=='PASS'
-    with (RUN/'private/CONTINUOUS_SELECTION_CONTROLLER_ONCE').open('x'):pass
+    with (RUN/'private/CONTINUOUS_FOUR_GPU_CONTROLLER_ONCE').open('x'):pass
     while True:
         receipts={arm:hold_arm(single,arm) for arm in ('C','M1','M13P')}
         assert not list((single/'private').glob('FAILURE_curriculum*.json')),'Single failed; preserve retained artifacts'
@@ -94,13 +94,13 @@ def main():
     f.admit(RUN)
     while True:
         f.project_budget(RUN)
-        free=subprocess.check_output(['nvidia-smi','-i','0,1','--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True)
+        free=subprocess.check_output(['nvidia-smi','-i','0,1,3,4','--query-gpu=memory.free','--format=csv,noheader,nounits'],text=True)
         if all(int(v)>=45*1024 for v in free.split()):break
         time.sleep(30)
-    jobs=[shared.launch('continuous_runtime.py','m13_146_bank',p,g) for p,g in enumerate((0,1))]
-    assert [j.wait() for j in jobs]==[0,0]
+    jobs=[shared.launch('continuous_runtime.py','m13_146_bank',p,g) for p,g in enumerate((0,1,3,4))]
+    assert [j.wait() for j in jobs]==[0,0,0,0]
     counts={k:0 for k in f.CAPS}
-    for p in (0,1):
+    for p in range(4):
         for k,v in read(RUN/'private'/f'CONTINUOUS_WORKER_COMPLETE_{p}.json')['counts'].items():
             if k in counts:counts[k]+=v
     assert all(counts[k]<=cap for k,cap in f.CAPS.items()) and counts['generation_attempts']==4538

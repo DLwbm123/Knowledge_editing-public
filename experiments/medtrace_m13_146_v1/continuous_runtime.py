@@ -14,7 +14,7 @@ def main():
     c.budget=budget
     with (RUN/'private'/('CONTINUOUS_ONCE_'+os.environ['PARTITION'])).open('x'):pass
     import bank146
-    bank146.evaluate(146,2,lambda:f.admit(RUN),'CONTINUOUS_FROZEN.json','SCOPE_LOCK.json','GPU_SOURCE_VERSION.json','CONTINUOUS_NEW_PLAN.json')
+    bank146.evaluate(146,4,lambda:f.admit(RUN),'CONTINUOUS_FROZEN.json','SCOPE_LOCK.json','GPU_SOURCE_VERSION.json','CONTINUOUS_NEW_PLAN.json')
     assert r.COUNTS['updates']==r.COUNTS['backwards']==r.COUNTS['operator_backwards']==0
     c.write(RUN/'private'/('CONTINUOUS_WORKER_COMPLETE_'+os.environ['PARTITION']+'.json'),dict(status='COMPLETE',counts=r.COUNTS,epoch=time.time()))
 if __name__=='__main__':

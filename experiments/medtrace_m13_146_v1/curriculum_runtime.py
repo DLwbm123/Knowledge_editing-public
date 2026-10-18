@@ -85,7 +85,7 @@ def main():
         import bank146
         # Reuse the original single-generation worker; method labels are unchanged inside this isolated run.
         os.environ['ACTION']='m13_146_single'
-        bank146.evaluate(146,2,lambda:f.admit(RUN),f'FROZEN_{arm}.json','SCOPE_LOCK.json','GPU_SOURCE_VERSION.json',f'PLAN_{arm}.json')
+        bank146.evaluate(146,int(os.environ.get('GENERATION_PARTITIONS','2')),lambda:f.admit(RUN),f'FROZEN_{arm}.json','SCOPE_LOCK.json','GPU_SOURCE_VERSION.json',f'PLAN_{arm}.json')
         os.environ['ACTION']=action
     r.save_counts();c.write(RUN/'private'/f'COMPLETE_{action}_{part}.json',dict(status='COMPLETE',counts=r.COUNTS,epoch=time.time()))
 if __name__=='__main__':

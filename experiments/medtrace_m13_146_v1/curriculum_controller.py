@@ -10,8 +10,10 @@ read,write=shared.read,shared.write
 
 def stage(action,arm):
     os.environ['CURRICULUM_ARM']=arm
-    jobs=[shared.launch('curriculum_runtime.py',action,p,g) for p,g in enumerate((0,1))]
-    codes=[j.wait() for j in jobs];assert codes==[0,0],(action,codes)
+    devices=(0,1,3,4) if action=='curriculum_generate_M13P' else (0,1)
+    os.environ['GENERATION_PARTITIONS']=str(len(devices))
+    jobs=[shared.launch('curriculum_runtime.py',action,p,g) for p,g in enumerate(devices)]
+    codes=[j.wait() for j in jobs];assert codes==[0]*len(devices),(action,codes)
 
 def retire(arm):
     from common import digest
@@ -30,16 +32,33 @@ def retire(arm):
 
 def main():
     f.admit(RUN);assert read(RUN/'private/CURRICULUM_CPU_CHECK.json')['status']=='PASS'
-    with (RUN/'private/CURRICULUM_CONTROLLER_ONCE').open('x'):pass
+    adopt=os.environ.get('CURRICULUM_ADOPT_TRAINING')=='1'
+    if adopt:
+        # Adopt the two already-running training workers; never replay their work.
+        with (RUN/'private/CURRICULUM_FOUR_GPU_CONTROLLER_ONCE').open('x'):pass
+        for part in (0,1):
+            start=read(RUN/'private'/f'START_curriculum_train_M13P_{part}.json')
+            exit_path=RUN/'private'/f'EXIT_curriculum_train_M13P_{part}.json'
+            while not exit_path.exists():
+                stat=Path(f'/proc/{start["pid"]}/stat').read_text()
+                assert stat.split(') ')[1].split()[19]==str(start['start_ticks'])
+                f.project_budget(RUN);time.sleep(10)
+            assert read(exit_path)['exit_code']==0
+            assert read(RUN/'private'/f'COMPLETE_curriculum_train_M13P_{part}.json')['status']=='COMPLETE'
+    else:
+        with (RUN/'private/CURRICULUM_CONTROLLER_ONCE').open('x'):pass
     counts={k:0 for k in f.CAPS}
     for arm in f.METHODS:
-        stage('curriculum_train_'+arm,arm)
+        if not adopt:stage('curriculum_train_'+arm,arm)
+        elif arm!='M13P':
+            assert read(RUN/'private'/f'DELETION_{arm}.json')['status']=='DELETED'
         for i in range(1,147):
             d=read(RUN/'private/results'/arm/f'{i}.json');assert d['status']=='COMPLETE' and d['save_load_exact'] and len(d['curve'])==540
-        write(RUN/'private'/f'FROZEN_{arm}.json',dict(candidates=146,steps=540,methods=[arm],epoch=time.time()))
-        stage('curriculum_generate_'+arm,arm);retire(arm)
+        if not adopt or arm=='M13P':
+            write(RUN/'private'/f'FROZEN_{arm}.json',dict(candidates=146,steps=540,methods=[arm],epoch=time.time()))
+            stage('curriculum_generate_'+arm,arm);retire(arm)
         for mode in ('train','generate'):
-            for p in (0,1):
+            for p in range(4 if mode=='generate' and arm=='M13P' else 2):
                 for k,v in read(RUN/'private'/f'COMPLETE_curriculum_{mode}_{arm}_{p}.json')['counts'].items():
                     if k in counts:counts[k]+=v
         assert all(counts[k]<=cap for k,cap in f.CAPS.items())
