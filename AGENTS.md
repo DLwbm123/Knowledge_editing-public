@@ -1,3 +1,7 @@
+## 当前授权：重冻确定性基线并完成四候选
+
+用户允许E=65214837377.33204的新确定性基线，原NLL/E容差、样本、Fisher口径及四候选设置保持，复核后执行并公开推送。旧结果历史参照；无调参、扩展、生成、Judge。见reports/vigor_minimal_diagnostic4_v1_20261018/DETERMINISTIC_BASELINE_AMENDMENT_ZH.md。
+
 ## 当前终态：E反向非确定性已定位并修复，历史门仍失败
 
 同输入前向一致而梯度漂移；固定cuBLAS workspace并启用确定性算法后，两个进程五次E均65214837377.33204、重复梯度逐值一致。相对旧历史E仍偏0.0091039%，原0.001%门未放宽。四候选仍0/4，更新/生成/Judge0；新增61.721231秒三进程退出。详见reports/vigor_minimal_diagnostic4_v1_20261018/cause_analysis。新确定性基线替代历史门需要用户明确授权，当前未执行。

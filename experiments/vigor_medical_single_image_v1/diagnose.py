@@ -15,6 +15,9 @@ import torch.nn.functional as F
 from .editor import damp, direction, editable_fp32, finite, gradient_pair, nll, paired_batches, update_metrics
 from .prepare import write
 
+DETERMINISTIC_ANCHOR = dict(visual_nll=4.921504020690918, null_nll=4.466132164001465,
+                            E=65214837377.33204)
+
 FIRST_D = 4.911504020690918
 CASES = (('quarter', 0, 'original', FIRST_D/4),
          ('sixteenth', 0, 'original', FIRST_D/16),
@@ -82,7 +85,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None):
                 if (abs(fp_before[0]-historical['visual_nll']) > 1e-5
                         or abs(fp_before[1]-historical['null_nll']) > 1e-5
                         or abs(geometry['E']/historical['E']-1) > 1e-5):
-                    raise ValueError(f'Historical first-step anchor mismatch: current={fp_before}, E={geometry["E"]}; historical={[historical["visual_nll"],historical["null_nll"]]}, E={historical["E"]}')
+                    raise ValueError(f'Frozen deterministic anchor mismatch: current={fp_before}, E={geometry["E"]}; historical={[historical["visual_nll"],historical["null_nll"]]}, E={historical["E"]}')
             effective = min(requested, math.sqrt(2*.001*geometry['E']))
             delta = finite(-effective/geometry['E']*tangent)
             with torch.no_grad():
@@ -168,7 +171,11 @@ def main(config):
         write(root/'public/FACTOR_CHANGE.json',dict(input_factor_unchanged=torch.equal(alternative['a'],original['a']),
             output_factor_ratio_min=float(ratio.min()),output_factor_ratio_median=float(ratio.median()),
             output_factor_ratio_max=float(ratio.max())))
-        history=read(config['historical_result'])['edit']['steps'][0]
+        history=dict(DETERMINISTIC_ANCHOR)
+        write(root/'public/BASELINE.json',dict(deterministic_anchor=history,
+            historical_reference=read(config['historical_result'])['edit']['steps'][0],
+            E_relative_tolerance=1e-5,NLL_absolute_tolerance=1e-5,
+            historical_reference_is_acceptance_gate=False))
         results=[]
         for name,index,variant,requested in CASES:
             write(root/'public/STATUS.json',dict(status='RUNNING',candidate=name,complete=len(results)))
