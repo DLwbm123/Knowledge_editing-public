@@ -82,7 +82,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None):
                 if (abs(fp_before[0]-historical['visual_nll']) > 1e-5
                         or abs(fp_before[1]-historical['null_nll']) > 1e-5
                         or abs(geometry['E']/historical['E']-1) > 1e-5):
-                    raise ValueError('Historical first-step anchor mismatch')
+                    raise ValueError(f'Historical first-step anchor mismatch: current={fp_before}, E={geometry["E"]}; historical={[historical["visual_nll"],historical["null_nll"]]}, E={historical["E"]}')
             effective = min(requested, math.sqrt(2*.001*geometry['E']))
             delta = finite(-effective/geometry['E']*tangent)
             with torch.no_grad():

@@ -1,3 +1,7 @@
+## 当前终态：四候选诊断在更新前停止
+
+32条目标长度3/4/5分布12/3/17；sum-target B变化非统一缩放。历史前向NLL一致，但只读检查E偏差0.0172475%超过原0.001%门。四候选0/4，更新/生成/Judge均0，25.245608秒，两进程退出。报告reports/vigor_minimal_diagnostic4_v1_20261018/completion。原因未定，不放宽门、不自动重跑或下一轮；保留全部现场。
+
 ## 当前授权：四候选最小单步诊断
 
 用户授权先核对32条目标长度，再固定样本比较层0原Fisher的d/4、d/16、层0sum-target Fisher的d/16、层5原Fisher的d/16；无调参、扩展、生成或Judge。协议reports/vigor_minimal_diagnostic4_v1_20261018/PROTOCOL_ZH.md。每次恢复基座，不自动下一轮。
