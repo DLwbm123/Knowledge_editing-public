@@ -1,0 +1,28 @@
+{
+  "version": "vigor-medical-single-image-v1",
+  "status": "IMPLEMENTED_CPU_CHECKED_NOT_LAUNCHED",
+  "implementation_provenance": "paper_equations_9_to_14_and_appendix_A5_not_author_code",
+  "cpu_check": "PASS_SYNTHETIC_ONLY",
+  "real_model": "NOT_RUN",
+  "real_training_calibration": "NOT_RUN",
+  "medical_layer_selection": "NOT_RUN",
+  "real_generation_and_evaluation": "NOT_RUN",
+  "background_executor": "NOT_IMPLEMENTED",
+  "permissions": {
+    "real_model_load": false,
+    "remote_deployment": false,
+    "gpu_experiment": false,
+    "judge": false,
+    "resume_old_experiment": false,
+    "new_monitor": false
+  },
+  "frozen_method_constants": {
+    "target_mean_token_nll": 0.01,
+    "max_closed_form_steps": 5,
+    "per_step_half_fisher_quadratic_budget": 0.001,
+    "relative_factor_damping": 0.001,
+    "factor_floor": 1e-12
+  },
+  "not_selected": ["real_train_manifest", "candidate_medical_layers", "edit_cohort", "hardware"],
+  "scientific_conclusion": "NONE"
+}

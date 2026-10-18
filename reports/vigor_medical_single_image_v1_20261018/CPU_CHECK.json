@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "solver": "dense-KKT agreement",
+  "pairing": "postprocessing zeros with unchanged structure",
+  "calibration": "train-only, immutable weights, fixed mean-E selection",
+  "lifecycle": "native export, generation, restore and exception rollback",
+  "precision_cases": [
+    {
+      "dtype": "torch.float32",
+      "steps": 5,
+      "native_rounding_l2": 0.0,
+      "native_target_met": false
+    },
+    {
+      "dtype": "torch.float16",
+      "steps": 5,
+      "native_rounding_l2": 0.0036422540433704853,
+      "native_target_met": false
+    },
+    {
+      "dtype": "torch.bfloat16",
+      "steps": 5,
+      "native_rounding_l2": 0.005338209681212902,
+      "native_target_met": false
+    }
+  ],
+  "real_model_loaded": false,
+  "experiment_started": false
+}
