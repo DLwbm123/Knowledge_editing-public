@@ -17,7 +17,7 @@ def remote_secant_stress16(payload):
     outputs = Path('/data/bmw/Knowledge_editing/outputs')
     preparation = outputs/'vigor-medical-preparation-v1-20261018/run/attempt2'
     parent = outputs/'full-context-summary8-v1-20261018/run'
-    root = outputs/'vigor-secant-stress16-v1-20261018/run'
+    root = outputs/'vigor-secant-stress16-v1-20261018/attempt2'
     batch8 = outputs/'vigor-finite-null-batch8-v1-20261018/run'
     if root.exists():
         raise FileExistsError('Trial already installed; do not replay')
