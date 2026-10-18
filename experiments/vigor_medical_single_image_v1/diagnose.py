@@ -68,7 +68,7 @@ def sum_target_factor(runtime, records, original, lengths, positions):
     return dict(a=original['a'].clone(), b=damp((moment/count).float()).cpu(), positions=count)
 
 
-def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False):
+def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False, solve_factor=None):
     layer = runtime.get_module(f'model.layers.{layer_index}.mlp.down_proj')
     if layer.weight.dtype != torch.float16:
         raise ValueError('Diagnostic comparison is frozen to native FP16')
@@ -83,7 +83,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
     try:
         with editable_fp32(runtime.model, layer):
             fp_before, gradients = gradient_pair(runtime, layer, pair)
-            tangent, geometry = direction(*gradients, a, b)
+            tangent, geometry = direction(*gradients, a, b, diagonal=solve_factor)
             if tangent is None:
                 raise DegenerateCandidateError('Degenerate candidate; no replacement permitted')
             if historical is not None:
@@ -91,7 +91,12 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
                         or abs(fp_before[1]-historical['null_nll']) > 1e-5
                         or abs(geometry['E']/historical['E']-1) > 1e-5):
                     raise ValueError(f'Frozen deterministic anchor mismatch: current={fp_before}, E={geometry["E"]}; historical={[historical["visual_nll"],historical["null_nll"]]}, E={historical["E"]}')
-            effective = min(requested, math.sqrt(2*.001*geometry['E']))
+            if solve_factor is None:
+                effective = min(requested, math.sqrt(2*.001*geometry['E']))
+            else:
+                # The new solve metric never replaces the original trust ruler.
+                unit_cost = update_metrics(tangent, *gradients, a, b)['fisher_cost']
+                effective = min(requested, geometry['E']*math.sqrt(.001/unit_cost))
             delta = finite(-effective/geometry['E']*tangent)
             with torch.no_grad():
                 layer.weight.add_(delta)

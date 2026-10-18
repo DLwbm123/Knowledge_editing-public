@@ -11,13 +11,14 @@ AUTH=dict(samples=8,steps=16,reference_steps=1,primary_denominator=16,fallback_d
     expand=False,generation=False,judge=False,variant='secant_single_half_backoff16')
 
 
-def _attempt(runtime,record,factor,pair,start_weight,start_losses,base_null,requested,anchor,trial,emit):
+def _attempt(runtime,record,factor,pair,start_weight,start_losses,base_null,requested,anchor,trial,emit,solve_factor=None):
     trial.update(requested_reduction=requested,status='PROPOSING',correction=None);emit()
-    trial['proposal']=candidate(runtime,record,0,factor,requested,anchor,retain=True)
+    solver={} if solve_factor is None else dict(solve_factor=solve_factor)
+    trial['proposal']=candidate(runtime,record,0,factor,requested,anchor,retain=True,**solver)
     trial['proposal_verdict']=gates(runtime,pair,factor,start_weight,start_losses,base_null)
     trial['status']='PROPOSED';emit()
     if not trial['proposal_verdict']['gates']['null']:
-        trial['correction']=correction(runtime,record,factor,base_null,compensate='secant')
+        trial['correction']=correction(runtime,record,factor,base_null,compensate='secant',**solver)
         trial['status']='CORRECTED';emit()
     verdict=gates(runtime,pair,factor,start_weight,start_losses,base_null)
     if trial['correction'] is not None and trial['correction']['status']!='APPLIED':
@@ -33,7 +34,7 @@ def _rollback(layer,pair,runtime,weight,losses):
 
 
 def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *,
-        edit_threshold,compensate='secant',steps=16,prefix_reference=None,deadline_epoch=None):
+        edit_threshold,compensate='secant',steps=16,prefix_reference=None,deadline_epoch=None,solve_factor=None):
     if compensate!='secant':raise PermissionError('Frozen backoff requires the secant correction')
     layer=runtime.get_module('model.layers.0.mlp.down_proj');original=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);baseline=native_losses(runtime,pair);rows=[];accepted=[]
@@ -48,7 +49,7 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *,
             rows.append(row)
             progress=lambda:emit(rows)
             verdict=_attempt(runtime,record,factor,pair,start_weight,start_losses,baseline[1],
-                FIRST_D/16,anchor if i==0 else None,row['primary'],progress)
+                FIRST_D/16,anchor if i==0 else None,row['primary'],progress,solve_factor)
             if i==0 and first_reference is not None:
                 if any(abs(a-b)>1e-5 for a,b in zip(row['primary']['proposal']['native_after'],first_reference)):
                     raise ValueError('First full proposal reference mismatch')
@@ -60,7 +61,7 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *,
                 check_time()
                 row['half']={}
                 verdict=_attempt(runtime,record,factor,pair,start_weight,start_losses,baseline[1],
-                    FIRST_D/32,anchor if i==0 else None,row['half'],progress)
+                    FIRST_D/32,anchor if i==0 else None,row['half'],progress,solve_factor)
                 selected='half'
             row['selected_attempt']=selected;row['final_verdict']=verdict
             if verdict['accepted']:

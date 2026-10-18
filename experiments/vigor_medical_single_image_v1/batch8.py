@@ -114,7 +114,7 @@ def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=Non
         if not restored:raise ValueError('Cross-sample base restoration failed; stop entire batch')
 
 
-def main(config, *, trajectory_fn=None,authorization=None):
+def main(config, *, trajectory_fn=None,authorization=None,prepare_solver=None):
     steps=config.get('trajectory_steps',4)
     if steps not in (4,16):raise PermissionError('Unfrozen horizon')
     expected=dict(samples=8,steps=steps,max_corrections_per_step=1,reference_steps=1,
@@ -166,6 +166,9 @@ def main(config, *, trajectory_fn=None,authorization=None):
         def emit(state):
             write(root/'public'/f"{state['sample']}.json",state)
             write(root/'public/SAMPLES.json',states)
+        solver_metadata=None
+        if prepare_solver is not None:
+            trajectory_fn,solver_metadata=prepare_solver(runtime,factor,calibration,config)
         for index,row in enumerate(raw):
             active=states[index];active['status']='RUNNING'
             write(root/'public/STATUS.json',dict(status='RUNNING',sample=active['sample'],completed=index,total=8))
@@ -182,6 +185,7 @@ def main(config, *, trajectory_fn=None,authorization=None):
             peak_allocated_bytes=torch.cuda.max_memory_allocated(),all_base_restored=all(s.get('base_restored',False) for s in states))
         result['pass_rate']=result['passed']/8
         result['amplitude_compensation']=compensate
+        if solver_metadata is not None:result['solver_calibration']=solver_metadata
         result['model_forward_calls']=model_forward_count[0] if forward_handle is not None else None
         write(root/'public/RESULT.json',result)
         write(root/'public/STATUS.json',dict(status='COMPLETE',completed=8,total=8,passed=result['passed']))

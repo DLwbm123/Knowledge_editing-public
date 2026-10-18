@@ -117,7 +117,7 @@ def damp(moment):
     return (moment + 1e-3 * moment.mean()).clamp_min(1e-12)
 
 
-def direction(gv, g0, a, b):
+def direction(gv, g0, a, b, *, diagonal=None):
     """Diagonal Kronecker inverse in [output, input] matrix order."""
     if gv.shape != g0.shape or gv.shape != (b.numel(), a.numel()):
         raise ValueError('Fisher/gradient shape mismatch')
@@ -125,8 +125,14 @@ def direction(gv, g0, a, b):
         raise ValueError('Nonpositive damped Fisher factor')
     for value in (gv, g0, a, b):
         finite(value)
-    iv = gv / b[:, None] / a[None, :]
-    i0 = g0 / b[:, None] / a[None, :]
+    if diagonal is None:
+        iv = gv / b[:, None] / a[None, :]
+        i0 = g0 / b[:, None] / a[None, :]
+    else:
+        if diagonal.shape != gv.shape or (diagonal <= 0).any():
+            raise ValueError('Invalid direct Fisher diagonal')
+        finite(diagonal)
+        iv, i0 = gv / diagonal, g0 / diagonal
     vv = float((gv.double() * iv.double()).sum())
     zz = float((g0.double() * i0.double()).sum())
     vz = float((gv.double() * i0.double()).sum())
@@ -135,7 +141,7 @@ def direction(gv, g0, a, b):
     if vv <= 0 or zz <= 0:
         return None, dict(status='DEGENERATE_GRADIENT', E=0., kvv=vv, k00=zz)
     tangent = finite(iv - (vz / zz) * i0)
-    energy = float((tangent.double().square() * b.double()[:, None] * a.double()[None, :]).sum())
+    energy = float((tangent.double().square() * b.double()[:, None] * a.double()[None, :]).sum()) if diagonal is None else float((tangent.double().square()*diagonal.double()).sum())
     descent = float((gv.double() * tangent.double()).sum())
     residual = float((g0.double() * tangent.double()).sum())
     if energy <= 1e-6 * vv or descent <= 0:

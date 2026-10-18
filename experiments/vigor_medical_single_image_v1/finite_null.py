@@ -35,7 +35,7 @@ def secant_multiplier(rho,eta):
     return alpha if math.isfinite(alpha) and alpha>0 and min(1,second)<=alpha<=max(1,second) else None
 
 
-def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compensate=False):
+def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compensate=False, solve_factor=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj')
     original=layer.weight.detach().clone()
     pair=paired_batches(runtime,record)
@@ -45,7 +45,7 @@ def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compe
     with editable_fp32(runtime.model,layer):
         fp_before,gradients=gradient_pair(runtime,layer,pair)
         # Swap the existing projection roles: correct null while protecting visual to first order.
-        tangent,geometry=direction(gradients[1],gradients[0],a,b)
+        tangent,geometry=direction(gradients[1],gradients[0],a,b,diagonal=solve_factor)
         if tangent is None:
             return dict(status='DEGENERATE',native_before=before,native_after=before,residual=residual)
         delta=finite(-residual/geometry['E']*tangent)
