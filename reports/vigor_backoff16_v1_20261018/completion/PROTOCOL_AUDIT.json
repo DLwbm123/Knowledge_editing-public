@@ -1,0 +1,6333 @@
+{
+  "status": "PASS",
+  "structural_checks_pass": true,
+  "accepted_state_continuity_exact": true,
+  "full_rollback_before_every_half": true,
+  "only_d16_and_d32": true,
+  "at_most_one_half_per_logical_step": true,
+  "all_actual_native_gates_recomputed": true,
+  "baseline_reference_checks": 64,
+  "max_baseline_reference_difference": 0.0,
+  "posthoc_prefix_and_first_half_checks": 1053,
+  "max_posthoc_difference": 0.0,
+  "checks": [
+    {
+      "field": "S01.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step11.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step11.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step11.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step11.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step11.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step11.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.step12.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S01.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step11.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step12.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.step13.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S02.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step11.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step12.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.step13.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S03.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step11.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step11.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step11.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step11.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step11.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step11.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step12.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step12.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step12.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step12.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step12.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step12.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step13.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step14.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step14.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step14.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step14.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step14.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step14.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step15.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step16.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step16.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step16.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step16.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step16.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.step16.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S04.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step11.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step12.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step13.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.step14.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S05.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.step11.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S06.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S07.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step1.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step1.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step1.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step1.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step1.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step1.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step2.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step3.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step3.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step3.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step3.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step3.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step3.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step4.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step4.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step4.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step4.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step4.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step4.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step5.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step6.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step6.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step6.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step6.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step6.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step6.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step7.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step8.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step9.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step10.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step11.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step12.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step13.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step14.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step14.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step14.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step14.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step14.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step14.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step15.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.primary.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.primary.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.primary.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.primary.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.primary.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.step16.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.proposal.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.proposal.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.proposal.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.proposal.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.proposal.E",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.correction.native_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.correction.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.correction.fp32_before",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.correction.fp32_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.correction.null_correction_energy",
+      "kind": "energy_relative",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "S08.first_half.final.native_after",
+      "kind": "NLL_absolute",
+      "difference": 0.0,
+      "tolerance": 1e-05
+    }
+  ]
+}
