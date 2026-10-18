@@ -88,7 +88,7 @@ def run(runtime,r,out,partition,counts):
             proxies=[read(shared/('PROXY_'+str(i)+'.json')) for i in (0,1)]
             assert abs(proxies[0]['score']-proxies[1]['score'])<=1e-6 and proxies[0]['content_tokens']==proxies[1]['content_tokens'],'Proxy partition identity drift'
             if not all(v['positive'] for v in proxies):
-                write(out/'STUDY_COMPLETE.json',dict(status='PROXY_ADMISSION_FAILED',counts=counts));return
+                write(out/'STUDY_COMPLETE.json',dict(status='PROXY_ADMISSION_FAILED',counts=counts));raise RuntimeError('PROXY_ADMISSION_FAILED: finite scientific stop, no training')
             for mode in ('NONE','CE','SEM'):
                 arm=prefix+'_'+mode
                 with (out/('ONCE_'+arm)).open('x'):pass
