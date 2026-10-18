@@ -1,3 +1,7 @@
+## 当前轮：同NLL两端F0/F1固定范数探针
+
+已冻结reports/vigor_probemetric_v1_20261019/PROTOCOL_ZH.md，CPU检查PASS。A8与D4+已选比例控制重建，先两端F1复核后两端F0，共4固定探针；各一次native范数匹配，无探针补偿/搜索。13参考主候选、最多17主候选，原门/旧F0 trust/secant/900秒/50MiB保持。公开交付后分析必要后续，半小时监测持续ACTIVE，不重放旧轮。
+
 ## 最新进度：同NLL ABC精度轮已交付，继续既有方向探针对照
 
 两端ABC固定读数完成，133参考差异0/182审计PASS；收益D−A三精度均负，null新增差未舍入FP32−0.002855、舍入FP32+0.000086、native−0.005431，精度效应有端点相关抵消，native A过门D拒绝。首run工程变量覆盖失败已保留/公开，attempt2修复成功，累计执行100.273秒、首启动至最终退出233.876秒<900，全部恢复/退出。报告reports/vigor_nllprecision_v1_20261019/completion，公开84832dd远端/匿名HTTP200核验。下一项NEXT_MINIMAL_ZH.md冻结两端F0/F1既有方向固定范数探针对照，未启动；不得重放旧run/attempt2或二分。pure-w自动化ACTIVE，原门/旧F0 trust/每轮900秒有限预算继续。
