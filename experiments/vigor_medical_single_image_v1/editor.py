@@ -65,7 +65,7 @@ def nll(model, batch):
 
 
 @contextmanager
-def editable_fp32(model, layer):
+def editable_fp32(model, layer, *, readonly=False):
     """Temporary casts, frozen backbone, rollback on exception, native exit."""
     if not isinstance(layer, torch.nn.Linear) or layer.bias is not None:
         raise ValueError('Expected a bias-free FFN output Linear')
@@ -95,6 +95,8 @@ def editable_fp32(model, layer):
         handles = [layer.register_forward_pre_hook(before), layer.register_forward_hook(after)]
         yield
         committed = finite(layer.weight.detach().to(native.dtype))
+        if readonly and not torch.equal(committed, native):
+            raise ValueError('Calibration unexpectedly changed native weights')
         layer.weight.data = committed
     except BaseException:
         layer.weight.data = native
@@ -153,7 +155,7 @@ def gradient_pair(runtime, layer, pair):
     return values, gradients
 
 
-def calibrate(runtime, records, candidate_layers, *, train_ids, excluded_ids, binding):
+def calibrate(runtime, records, candidate_layers, *, train_ids, excluded_ids, binding, progress=None):
     """Explicit train-only calibration and mean-E fixed layer selection; no I/O."""
     records, candidate_layers = list(records), list(candidate_layers)
     ids = [r.record_id for r in records]
@@ -164,13 +166,17 @@ def calibrate(runtime, records, candidate_layers, *, train_ids, excluded_ids, bi
     if not candidate_layers or len(candidate_layers) != len(set(candidate_layers)):
         raise ValueError('Need distinct candidate FFN output layers')
     factors, profile = {}, {}
+    def emit(**event):
+        if progress is not None:
+            progress(event)
     for name in candidate_layers:
+        emit(layer=name, stage='START', completed=0, total=len(records))
         layer = runtime.get_module(name)
         a = torch.zeros(layer.weight.shape[1], device=layer.weight.device, dtype=torch.float64)
         b = torch.zeros(layer.weight.shape[0], device=layer.weight.device, dtype=torch.float64)
         count = 0
-        with editable_fp32(runtime.model, layer):
-            for record in records:
+        with editable_fp32(runtime.model, layer, readonly=True):
+            for index, record in enumerate(records):
                 batch = runtime.build_edit_batch(record)
                 captured = []
                 handle = layer.register_forward_hook(
@@ -191,14 +197,23 @@ def calibrate(runtime, records, candidate_layers, *, train_ids, excluded_ids, bi
                 a += finite(x.detach()[valid].double()).square().sum(0)
                 b += finite(gradient.detach()[valid].double()).square().sum(0)
                 count += int(valid.sum())
+                emit(layer=name, stage='FISHER', completed=index+1, total=len(records))
+            if not (b > 0).any():
+                raise ValueError('All calibration output-gradient moments are zero')
             af, bf = damp((a/count).float()), damp((b/count).float())
             energies = []
-            for record in records:
+            statuses = {}
+            for index, record in enumerate(records):
                 _, gradients = gradient_pair(runtime, layer, paired_batches(runtime, record))
                 _, geometry = direction(*gradients, af, bf)
                 energies.append(geometry['E'] if geometry['status'] == 'OK' else 0.)
+                statuses[geometry['status']] = statuses.get(geometry['status'], 0) + 1
+                emit(layer=name, stage='PROFILE', completed=index+1, total=len(records))
         factors[name] = dict(a=af.cpu(), b=bf.cpu(), positions=count)
         profile[name] = sum(energies) / len(energies)
+        emit(layer=name, stage='COMPLETE', completed=len(records), total=len(records),
+             factor=factors[name], mean_E=profile[name], geometry_status_counts=statuses,
+             zero_input_moments=int((a == 0).sum()), zero_output_gradient_moments=int((b == 0).sum()))
     selected = max(candidate_layers, key=profile.get)
     if profile[selected] <= 0:
         raise ValueError('No nondegenerate training editability candidate')

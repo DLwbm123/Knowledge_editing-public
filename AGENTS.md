@@ -1,4 +1,8 @@
-## 当前范围：VIGOR 医学单图适配，仅实现与 CPU 检查
+## 当前授权：VIGOR 真实兼容性、训练 Fisher 与固定层选择
+
+2026-10-18 用户授权复用现有模型和训练数据，做真实模型兼容性检查、训练 Fisher 校准与层选择，暂不启动正式编辑实验。独立准备目录 vigor-medical-preparation-v1-20261018；复用原生 FP16 LLaVA-Med 和现有 SLAKE train，固定32个同时避开官方 validation/test 及现有编辑评估图像组的训练样本，检查全部32个 down_proj，平均 E 最大者固定选层。旧32条校准与官方 heldout 有图像交集，本次重新筛选，不修改旧清单。允许准备阶段GPU前反向和两次未编辑生成一致性检查；不调用 Editor.edit、不启动正式队列、Judge、续跑旧任务或新增监测。无 subagent。完成准备报告仅代表兼容性与校准，不代表编辑有效。
+
+## 历史范围：VIGOR 医学单图适配，仅实现与 CPU 检查
 
 2026-10-18 用户要求按论文独立实现 VIGOR 医学单图编辑器、复用现有模型与评估接口、记录论文差异并做必要 CPU 检查，明确先不启动实验。实现位于 experiments/vigor_medical_single_image_v1，报告 reports/vigor_medical_single_image_v1_20261018。合成 CPU FP32/FP16/BF16 检查通过；真实模型、训练 Fisher/层选择、GPU、Judge、后台启动和新增监测均未运行/未授权。现有实验结果保持不变；以下历史启动权限不适用于 VIGOR。无 subagent 或自动下一轮。
 

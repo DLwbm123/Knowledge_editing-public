@@ -81,7 +81,7 @@ def record(key, image=1., target='2'):
 def rejects(fn):
     try:
         fn()
-    except (ValueError, RuntimeError):
+    except (ValueError, RuntimeError, PermissionError):
         return
     raise AssertionError('Expected rejection')
 
@@ -94,6 +94,8 @@ def run():
     original_cuda_init = torch.cuda._lazy_init
     torch.cuda._lazy_init = forbidden
     try:
+        from .prepare import main
+        rejects(lambda: main(dict(authorization=dict(formal_edit=True))))
         # Independent dense KKT solution, with nonidentity anisotropic geometry.
         gv, g0 = torch.randn(3, 4), torch.randn(3, 4)
         a, b = torch.rand(4)+.2, torch.rand(3)+.3
@@ -120,8 +122,17 @@ def run():
                            preprocessing_revision='synthetic-v1')
             train = [record('train-1', .8, '1'), record('train-2', 1.2, '3')]
             base = {k: v.clone() for k, v in runtime.model.state_dict().items()}
+            def accidental_write():
+                with editable_fp32(runtime.model, runtime.model.layer, readonly=True):
+                    with torch.no_grad():
+                        runtime.model.layer.weight.add_(1.)
+            rejects(accidental_write)
+            assert torch.equal(runtime.model.layer.weight, base['layer.weight'])
+            events = []
             calibration = calibrate(runtime, train, [name], train_ids={'train-1', 'train-2'},
-                                    excluded_ids={'test'}, binding=binding)
+                                    excluded_ids={'test'}, binding=binding, progress=events.append)
+            assert [e['stage'] for e in events] == ['START', 'FISHER', 'FISHER', 'PROFILE', 'PROFILE', 'COMPLETE']
+            assert events[-1]['factor']['positions'] == 10
             assert all(torch.equal(base[k], v) for k, v in runtime.model.state_dict().items())
             rejects(lambda: calibrate(runtime, train, [name], train_ids={'train-1'},
                                       excluded_ids=set(), binding=binding))
