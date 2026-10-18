@@ -1,6 +1,7 @@
 """Synthetic CPU integration and independent constrained-solver checks."""
 import ast
 import io
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
@@ -158,7 +159,11 @@ def run():
             expected_loss = -logits[0, 3].log_softmax(-1)[2]
             assert torch.allclose(nll(runtime.model, full), expected_loss)
             initial = editor.state_dict()
-            result = editor.edit(record('test'))
+            result = editor.edit(record('test'), diagnostics=True)
+            assert result['quantization']['changed_native_elements'] > 0
+            assert result['quantization']['delta_cosine'] > .9
+            assert all(s['proposed_update']['normalized_null_residual'] < 1e-4
+                       for s in result['steps'] if s['status'] == 'UPDATED')
             assert any(s['status'] == 'UPDATED' for s in result['steps'])
             assert len(result['steps']) <= 5
             assert all(s.get('fisher_cost', 0) <= TRUST_BUDGET*(1+1e-6) for s in result['steps'])
@@ -202,6 +207,22 @@ def run():
             no_op = editor.edit(record('satisfied'))
             assert no_op['steps'][0]['status'] == 'TARGET_ALREADY_MET'
             assert torch.equal(satisfied['weight'], runtime.model.layer.weight)
+            if dtype == torch.float16:
+                from .trial import exercise
+                editor.load_state_dict(initial)
+                generate = runtime.generate
+                def generation(r):
+                    ids = generate(r).flatten().tolist()
+                    return dict(raw_token_ids=ids, decoded_text=str(ids[-1]))
+                runtime.generate = generation
+                with tempfile.TemporaryDirectory() as folder:
+                    root = Path(folder)
+                    (root/'private').mkdir()
+                    (root/'public').mkdir()
+                    trial = exercise(runtime, calibration, record('trial'), root, binding)
+                    assert trial['base_restoration'] == 'PASS' and trial['generation_reload'] == 'PASS'
+                    assert not (root/'private/edited.pt').exists()
+                    assert torch.equal(initial['weight'], runtime.model.layer.weight)
             rows.append(dict(dtype=str(dtype), steps=len(result['steps']),
                              native_rounding_l2=result['native_rounding_l2'],
                              native_target_met=result['native_target_met']))

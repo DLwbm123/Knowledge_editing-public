@@ -221,6 +221,17 @@ def calibrate(runtime, records, candidate_layers, *, train_ids, excluded_ids, bi
                 selected_layer=selected, mean_E=profile, factors=factors)
 
 
+def update_metrics(delta, gv, g0, a, b):
+    d = delta.double()
+    cost = float((d.square()*b.double()[:, None]*a.double()[None, :]).sum())/2
+    null_dot = float((g0.double()*d).sum())
+    null_norm = float((g0.double().square()/b.double()[:, None]/a.double()[None, :]).sum())
+    return dict(fisher_cost=cost, visual_linear_change=float((gv.double()*d).sum()),
+                null_linear_change=null_dot,
+                normalized_null_residual=abs(null_dot)/math.sqrt(2*cost*null_norm)
+                    if cost > 0 and null_norm > 0 else None)
+
+
 class Editor:
     """Direct native-W editor; caller retains existing generation/evaluation loop."""
     def __init__(self, runtime, calibration, *, binding):
@@ -239,7 +250,7 @@ class Editor:
             raise ValueError('Invalid Fisher factors')
         self.calibration_ids = set(calibration['calibration_ids'])
 
-    def edit(self, record):
+    def edit(self, record, *, diagnostics=False):
         if record.record_id in self.calibration_ids:
             raise ValueError('Edit request overlaps calibration')
         original = self.layer.weight.detach().clone()
@@ -261,15 +272,31 @@ class Editor:
                     requested = losses[0] - TARGET_NLL
                     effective = min(requested, math.sqrt(2 * TRUST_BUDGET * geometry['E']))
                     delta = finite((-effective / geometry['E']) * tangent)
+                    before = self.layer.weight.detach().clone() if diagnostics else None
                     with torch.no_grad():
                         self.layer.weight.add_(delta)
                     finite(self.layer.weight)
                     row.update(requested_reduction=requested, effective_reduction=effective,
                                fisher_cost=effective**2/(2*geometry['E']), status='UPDATED')
+                    if diagnostics:
+                        actual = self.layer.weight.detach()-before
+                        row['actual_fp32_update'] = update_metrics(actual, *gradients, self.a, self.b)
+                        row['proposed_update'] = update_metrics(delta, *gradients, self.a, self.b)
                 with torch.no_grad():
                     fp32_losses = [float(nll(self.runtime.model, batch)) for batch in pair]
                     native = finite(self.layer.weight.to(original.dtype))
                     rounding = float(torch.linalg.vector_norm(self.layer.weight-native.float()))
+                    quantization = {}
+                    if diagnostics:
+                        fp_delta = self.layer.weight-original.float()
+                        native_delta = native.float()-original.float()
+                        fp_norm = float(torch.linalg.vector_norm(fp_delta))
+                        native_norm = float(torch.linalg.vector_norm(native_delta))
+                        quantization = dict(fp32_delta_l2=fp_norm, native_delta_l2=native_norm,
+                            relative_rounding_l2=rounding/fp_norm if fp_norm else None,
+                            changed_native_elements=int(torch.count_nonzero(native_delta)),
+                            delta_cosine=float(F.cosine_similarity(fp_delta.flatten(), native_delta.flatten(), dim=0))
+                                if fp_norm and native_norm else None)
             # Evaluate the actual deployed dtype without temporary editing hooks.
             modes = [(m, m.training) for m in self.runtime.model.modules()]
             try:
@@ -284,7 +311,9 @@ class Editor:
             raise
         return dict(version=VERSION, layer=self.name, steps=steps, fp32_final_nll=fp32_losses,
                     native_final_nll=native_losses, native_target_met=native_losses[0] <= TARGET_NLL,
-                    native_dtype=str(original.dtype), native_rounding_l2=rounding)
+                    native_dtype=str(original.dtype), native_rounding_l2=rounding, quantization=quantization)
+
+
 
     def state_dict(self):
         return dict(version=VERSION, binding=self.binding, layer=self.name,
