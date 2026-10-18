@@ -33,7 +33,7 @@ def compare(current,old,label,checks):
             if not math.isfinite(diff) or diff>1e-5:raise ValueError('Reconstruction energy mismatch: '+label+'.'+key)
 
 
-def reconstruct(runtime,record,factor,old,target,state,emit, *, compensate=False,deadline_epoch=None):
+def reconstruct(runtime,record,factor,old,target,state,emit, *, compensate=False,deadline_epoch=None,require_target_correction=True):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);losses=native_losses(runtime,pair)
     checks=state['checks'];rows=state['prefix']
@@ -53,8 +53,12 @@ def reconstruct(runtime,record,factor,old,target,state,emit, *, compensate=False
             if verdict['gates']!=previous['proposal_verdict']['gates']:raise ValueError('Proposal gate changed')
             row=dict(step=i,proposal=proposal,proposal_verdict=verdict);rows.append(row);emit()
             if i==target:
-                if previous['status']!='REJECTED_AND_STOPPED' or verdict['gates']['null'] or not previous['correction']:
+                if previous['status']!='REJECTED_AND_STOPPED':
+                    raise ValueError('Point is not the frozen rejected step')
+                if require_target_correction and (verdict['gates']['null'] or not previous['correction']):
                     raise ValueError('Point is not the frozen rejected correction')
+                if not require_target_correction and previous['final_verdict']['accepted']:
+                    raise ValueError('Frozen target was accepted')
                 state['reconstruction']='PASS';emit()
                 return dict(weight=layer.weight.detach().cpu().clone(),start_weight=start_weight.cpu(),start_losses=start_losses,
                     start_fp32=proposal['fp32_before'],baseline=baseline)
@@ -113,7 +117,7 @@ def evaluate(runtime,record,factor,snapshot,old,state,emit, *, compensate=False)
         if not state['base_restored']:raise ValueError('ABC base restore failed')
 
 
-def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label='ABC',points=POINTS,prefix_compensate=False):
+def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label='ABC',points=POINTS,prefix_compensate=False,target_correction_required=True):
     if config['authorization']!=authorization:raise PermissionError('Only the frozen points authorized')
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG')!=':4096:8':raise RuntimeError('Missing deterministic workspace')
     torch.use_deterministic_algorithms(True)
@@ -122,6 +126,7 @@ def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label
     deadline=min(config.get('deadline_epoch',float('inf')),start+config.get('resident_budget_seconds',float('inf')))
     states=[dict(sample=s,step=i,status='NOT_RUN',checks=[],prefix=[]) for s,i in points]
     def emit():write(root/'public/POINTS.json',states)
+    model_forward_count=[0];forward_handle=None
     try:
         sys.path.insert(0,config['source_root'])
         if subprocess.check_output(['git','rev-parse','HEAD'],cwd=config['source_root'],text=True).strip()!=config['source_commit']:
@@ -137,6 +142,9 @@ def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label
         if calibration['binding']!=config['binding'] or calibration['selected_layer']!='model.layers.0.mlp.down_proj':raise ValueError('Fisher binding changed')
         factor=calibration['factors']['model.layers.0.mlp.down_proj']
         runtime=load_real_runtime(SimpleNamespace(cpu_gate=Path(config['cpu_gate'])))
+        if config.get('count_model_calls',False):
+            def count_forward(module,args):model_forward_count[0]+=1
+            forward_handle=runtime.model.register_forward_pre_hook(count_forward)
         def forbidden(*args,**kwargs):raise PermissionError('Generation forbidden')
         runtime.generate=forbidden
         argv=subprocess.check_output(['ps','-ww','-p',str(os.getpid()),'-o','args='],text=True)
@@ -151,7 +159,7 @@ def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label
             record=EditorRecord(**dict(raw_record,image_path=Path(raw_record['image_path'])))
             old=read(parent/'public'/f"{state['sample']}.json")
             records.append(record);olds.append(old)
-            snapshots.append(reconstruct(runtime,record,factor,old,state['step'],state,emit,compensate=prefix_compensate,deadline_epoch=deadline))
+            snapshots.append(reconstruct(runtime,record,factor,old,state['step'],state,emit,compensate=prefix_compensate,deadline_epoch=deadline,require_target_correction=target_correction_required))
         if prepare is not None:
             for state,record,snapshot,old in zip(states,records,snapshots,olds):
                 if time.time()>=deadline:raise TimeoutError('Attribution budget exhausted')
@@ -163,11 +171,15 @@ def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label
             if time.time()>=deadline:raise TimeoutError('Attribution budget exhausted')
             evaluation(runtime,record,factor,snapshot,old,state,emit)
         write(root/'public/RESULT.json',dict(status='COMPLETE',points=states,generation_calls=0,judge_calls=0,
-            extra_optimization_steps=0,extra_corrections=0,all_base_restored=all(s['base_restored'] for s in states),
-            elapsed_seconds=time.time()-start,peak_allocated_bytes=torch.cuda.max_memory_allocated()))
+            extra_optimization_steps=sum(s.get('new_main_candidate_count',0) for s in states),
+            extra_corrections=sum(s.get('new_correction_count',0) for s in states),all_base_restored=all(s['base_restored'] for s in states),
+            elapsed_seconds=time.time()-start,peak_allocated_bytes=torch.cuda.max_memory_allocated(),
+            model_forward_calls=model_forward_count[0] if forward_handle is not None else None))
         write(root/'public/STATUS.json',dict(status='COMPLETE',points=len(points)))
     except BaseException as e:
         (root/'private/FAILURE.txt').write_text(traceback.format_exc())
         emit();write(root/'public/STATUS.json',dict(status='FAILED',error_type=type(e).__name__))
         raise
-    finally:write(root/'ENDED.json',dict(pid=os.getpid(),epoch=time.time(),resident_seconds=time.time()-start))
+    finally:
+        if forward_handle is not None:forward_handle.remove()
+        write(root/'ENDED.json',dict(pid=os.getpid(),epoch=time.time(),resident_seconds=time.time()-start))
