@@ -71,6 +71,9 @@ def run(runtime,r,out,partition,counts):
         for task in tasks:
             targets=coefficient=None
             key=task['key'];folder=out/key;source=prepare([task['source']],True);source_batch=r.old.batch_on(runtime,source[0][1])
+            reused=read(read(shared/'BASE_REUSE.json')[task['source']['query_id']])['binding']
+            for identity in ('question','reference','image_sha256','prompt_ids','generation'):assert source[0][4][identity]==reused[identity],'Edit Base input identity drift'
+            assert reused['runtime']['actual_precision']=='MATH_FP32_FROZEN_FP16_PREFILL'
             answers=[]
             for form in ('{}.', 'The answer is {}.', 'It is {}.'):
                 answers.extend([form.format(task['retention_correct'].rstrip('.')),form.format(task['retention_wrong'].rstrip('.'))])
