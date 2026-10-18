@@ -83,7 +83,8 @@ def main(config):
             compatibility = dict(status='PASS', model='LLaVA-Med-v1.5-Mistral-7B',
                 native_dtype='float16', paired_mean_target_nll=losses,
                 gradient_shapes=[list(g.shape) for g in gradients],
-                visual_token_count=pair[0].image_token_count,
+                image_placeholder_count=pair[0].image_token_count,
+                expanded_visual_token_count=pair[0].image_token_end-pair[0].image_token_start,
                 generated_token_count=len(base_generation['raw_token_ids']),
                 postprocessed_pixel_null=True, native_weight_unchanged=True,
                 formal_updates=0, judge_calls=0)

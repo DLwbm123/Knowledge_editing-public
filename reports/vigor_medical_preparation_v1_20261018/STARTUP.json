@@ -1,0 +1,36 @@
+{
+  "status": "STARTED_COMPATIBILITY_PASS_CALIBRATION_RUNNING",
+  "physical_gpu": 5,
+  "run_id": "vigor-medical-preparation-v1-20261018",
+  "attempt": 2,
+  "training_records": 32,
+  "candidate_layers": 32,
+  "snapshot": {
+    "status": "RUNNING",
+    "elapsed_seconds": 48.30000066757202,
+    "layers_complete": 2,
+    "layers_total": 32,
+    "current": {
+      "layer": "model.layers.2.mlp.down_proj",
+      "stage": "PROFILE",
+      "completed": 8,
+      "total": 32
+    },
+    "formal_updates": 0
+  },
+  "neutral_process_command_verified": true,
+  "gpu_process_name_verified": true,
+  "process_alive_at_snapshot": true,
+  "formal_updates": 0,
+  "judge_calls": 0,
+  "new_monitor": false,
+  "prior_attempt": {
+    "status": "FAILED_BEFORE_MODEL_LOAD",
+    "resident_seconds": 3.2395589351654053,
+    "completed_layers": 0,
+    "reason": "Missing local model/vision environment bindings; corrected in independent attempt2"
+  },
+  "implementation_commit": "bd0b5de95d9d88f25e90562f4f7bc3f179b76325",
+  "final_layer_selection": "PENDING",
+  "scientific_conclusion": "NONE"
+}
