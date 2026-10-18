@@ -64,7 +64,7 @@ def sum_target_factor(runtime, records, original, lengths, positions):
     return dict(a=original['a'].clone(), b=damp((moment/count).float()).cpu(), positions=count)
 
 
-def candidate(runtime, record, layer_index, factor, requested, historical=None):
+def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False):
     layer = runtime.get_module(f'model.layers.{layer_index}.mlp.down_proj')
     if layer.weight.dtype != torch.float16:
         raise ValueError('Diagnostic comparison is frozen to native FP16')
@@ -75,6 +75,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None):
             return [float(nll(runtime.model, x)) for x in pair]
     native_before = losses()
     a, b = (factor[k].to(layer.weight.device) for k in ('a','b'))
+    completed = False
     try:
         with editable_fp32(runtime.model, layer):
             fp_before, gradients = gradient_pair(runtime, layer, pair)
@@ -102,6 +103,7 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None):
                 fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)))
             fp_after = losses()
         native_after = losses()
+        completed = True
         return dict(requested_reduction=requested,effective_reduction=effective,clipped=effective<requested,
             E=geometry['E'],native_before=native_before,native_after=native_after,
             fp32_before=fp_before,fp32_after=fp_after,fp32_update=fp_metrics,native_update=native_metrics,
@@ -111,11 +113,13 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None):
             fp32_gain_ratio=(fp_before[0]-fp_after[0])/effective,
             fp32_null_change=fp_after[1]-fp_before[1])
     finally:
-        with torch.no_grad():
-            layer.weight.copy_(original)
-        if (not torch.equal(layer.weight,original) or losses()!=native_before
-                or layer._forward_hooks or layer._forward_pre_hooks):
-            raise ValueError('Candidate base restoration failed')
+        if not retain or not completed:
+            with torch.no_grad():
+                layer.weight.copy_(original)
+            if not torch.equal(layer.weight,original) or losses()!=native_before:
+                raise ValueError('Candidate base restoration failed')
+        if layer._forward_hooks or layer._forward_pre_hooks:
+            raise ValueError('Candidate hooks were not removed')
 
 
 def main(config):
