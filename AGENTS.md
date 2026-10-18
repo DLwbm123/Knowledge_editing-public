@@ -1,3 +1,7 @@
+## 当前终态：六轮科学工作已结束，不再追加模型实验
+
+最后ABC7完成，885项复核差异0，A/B/C null0/4/2（分母7）且C整步0/7，S04无修正单列。原4步8/8、旧inverse16步0/8、局部secant8/8、新完整secant16步0/8均保持；主更新FP32有限上升及有限null非线性/计算精度仍限制结果。六轮GPU进程累计驻留968.426367秒，全部恢复/退出，无checkpoint/生成/Judge；CPU一次失败真实GPU0且保留。总报告reports/vigor_amplitude_batch8_v1_20261018/WINDOW_SUMMARY_ZH.md及WINDOW_RECEIPT.json，最终归因报告reports/vigor_secant_precision7_v1_20261018/completion。完成本次公开交付后，pure-w半小时只静默等待19:49到期暂停；无需重复远端健康/模型/重建/评分，不启动新实验/新规则。
+
 ## 当前阶段：最后ABC7归因，结束后不再追加模型实验
 
 新secant完整路径全部有修正首拒绝点S01/12、S02/13、S03/13、S05/14、S06/11、S07/10、S08/16，S04无修正不适用且不替换。同一割线修正ABC，所有前缀和原拒绝控制先复现，原门/容差/预算不变。协议reports/vigor_secant_precision7_v1_20261018/PROTOCOL_ZH.md，输出vigor-secant-precision7-v1-20261018/run，源父secant-stress16的attempt2。CPU/实时准入后启动；完成完整公开交付和窗口总结，之后无新优化规则/模型实验，半小时静默至19:49暂停。
