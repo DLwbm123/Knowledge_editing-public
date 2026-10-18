@@ -116,7 +116,10 @@ def main(config):
     expected=dict(samples=8,steps=steps,max_corrections_per_step=1,reference_steps=1,
         tune=False,replace=False,expand=False,generation=False,judge=False)
     compensate=config.get('amplitude_compensation',False)
-    if compensate:expected['variant']='one_shot_amplitude' if steps==4 else 'one_shot_amplitude_stress16'
+    if compensate=='secant':
+        if steps!=16:raise PermissionError('Only the frozen secant sixteen-step horizon is authorized')
+        expected['variant']='secant_stress16'
+    elif compensate:expected['variant']='one_shot_amplitude' if steps==4 else 'one_shot_amplitude_stress16'
     if steps==16 and not compensate:raise PermissionError('Stress horizon requires compensated rule')
     if config['authorization']!=expected:
         raise PermissionError('Only the frozen eight-sample batch is authorized')
@@ -134,7 +137,7 @@ def main(config):
         from m3bench_repro.editors.llava_runtime import EditorRecord
         read=lambda p:json.loads(Path(p).read_text())
         history=read(config['historical_batch'])['samples'] if compensate else None
-        prefix=read(config['prefix_result'])['samples'] if steps==16 else None
+        prefix=read(config['prefix_result'])['samples'] if steps==16 and compensate!='secant' else None
         raw=read(root/'private/records.json');manifest=read(config['manifest']);pilot=read(config['record'])
         if len(raw)!=8 or len({r['record_id'] for r in raw})!=8:raise ValueError('Frozen sample count changed')
         groups=['SLAKE:'+r['relative_image_path'].split('/')[0] for r in raw]
