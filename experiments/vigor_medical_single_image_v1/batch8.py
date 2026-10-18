@@ -58,10 +58,10 @@ def sample_metrics(result):
     accepted=method['accepted_trajectory']
     maxdrift=max((abs(r['cumulative_null_change']) for r in accepted),default=None)
     failures=[]
-    if not method['four_steps_completed']:
+    if not method.get('trajectory_completed',method['four_steps_completed']):
         last=method['steps'][-1]
         failures.extend(k for k,v in last.get('final_verdict',{}).get('gates',{}).items() if not v)
-        if not failures:failures.append('INCOMPLETE_FOUR_STEPS')
+        if not failures:failures.append('INCOMPLETE_REQUESTED_STEPS')
     if not method['edit_threshold_met']:failures.append('EDIT_REFERENCE_NOT_MET')
     if not method['null_gate_on_accepted_states']:failures.append('NO_VALID_NULL_ACCEPTED_PATH')
     margin=.01-maxdrift if maxdrift is not None else None
@@ -71,7 +71,7 @@ def sample_metrics(result):
         failures=failures)
 
 
-def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=None):
+def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=None,steps=4,prefix_reference=None,deadline_epoch=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);base_losses=native_losses(runtime,pair)
     try:
@@ -98,7 +98,7 @@ def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=Non
                 if row.get('correction'):row['correction_diagnostics']=stage_diagnostics(row['correction'],baseline)
             emit(state)
         result=trajectory(runtime,record,factor,progress,anchor=baseline['anchor'],
-            edit_threshold=reference['native_after'][0],compensate=compensate)
+            edit_threshold=reference['native_after'][0],compensate=compensate,steps=steps,prefix_reference=prefix_reference,deadline_epoch=deadline_epoch)
         state['method']=result;state.pop('method_candidates',None)
         state['status']='EVALUATED';state['phase']='DONE';state['metrics']=sample_metrics(state)
         return state
@@ -111,10 +111,13 @@ def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=Non
 
 
 def main(config):
-    expected=dict(samples=8,steps=4,max_corrections_per_step=1,reference_steps=1,
+    steps=config.get('trajectory_steps',4)
+    if steps not in (4,16):raise PermissionError('Unfrozen horizon')
+    expected=dict(samples=8,steps=steps,max_corrections_per_step=1,reference_steps=1,
         tune=False,replace=False,expand=False,generation=False,judge=False)
     compensate=config.get('amplitude_compensation',False)
-    if compensate:expected['variant']='one_shot_amplitude'
+    if compensate:expected['variant']='one_shot_amplitude' if steps==4 else 'one_shot_amplitude_stress16'
+    if steps==16 and not compensate:raise PermissionError('Stress horizon requires compensated rule')
     if config['authorization']!=expected:
         raise PermissionError('Only the frozen eight-sample batch is authorized')
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG')!=':4096:8':raise RuntimeError('Missing deterministic workspace')
@@ -131,6 +134,7 @@ def main(config):
         from m3bench_repro.editors.llava_runtime import EditorRecord
         read=lambda p:json.loads(Path(p).read_text())
         history=read(config['historical_batch'])['samples'] if compensate else None
+        prefix=read(config['prefix_result'])['samples'] if steps==16 else None
         raw=read(root/'private/records.json');manifest=read(config['manifest']);pilot=read(config['record'])
         if len(raw)!=8 or len({r['record_id'] for r in raw})!=8:raise ValueError('Frozen sample count changed')
         groups=['SLAKE:'+r['relative_image_path'].split('/')[0] for r in raw]
@@ -156,7 +160,9 @@ def main(config):
             write(root/'public/STATUS.json',dict(status='RUNNING',sample=active['sample'],completed=index,total=8))
             record=EditorRecord(**dict(row,image_path=Path(row['image_path'])))
             try:
-                run_sample(runtime,record,factor,active,emit,compensate=compensate,history=history[index] if history else None)
+                run_sample(runtime,record,factor,active,emit,compensate=compensate,history=history[index] if history else None,steps=steps,
+                    prefix_reference=prefix[index]['method']['steps'] if prefix else None,
+                    deadline_epoch=min(start+900,config['deadline_epoch']) if steps==16 else None)
             except DegenerateCandidateError:
                 active['status']='DEGENERATE_DIRECTION';active['metrics']=sample_metrics(active)
             active['joint_pass']=active.get('metrics',{}).get('joint_pass',False);emit(active)

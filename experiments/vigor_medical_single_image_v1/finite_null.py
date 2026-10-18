@@ -102,12 +102,14 @@ def gates(runtime,pair,factor,start_weight,start_losses,base_null):
         gates=verdict,accepted=all(verdict.values()))
 
 
-def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, edit_threshold=EDIT_THRESHOLD, compensate=False):
+def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, edit_threshold=EDIT_THRESHOLD, compensate=False, steps=4, prefix_reference=None, deadline_epoch=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj')
     original=layer.weight.detach().clone();pair=paired_batches(runtime,record)
     baseline=native_losses(runtime,pair);rows=[];accepted=[]
     try:
-        for i in range(4):
+        for i in range(steps):
+            if deadline_epoch is not None and time.time()>=deadline_epoch:
+                raise TimeoutError("Frozen trajectory time budget exhausted")
             start_weight=layer.weight.detach().clone();start_losses=native_losses(runtime,pair)
             row=dict(step=i+1,start_native_nll=start_losses,status='PROPOSING',correction=None)
             rows.append(row);emit(rows)
@@ -125,6 +127,19 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, e
                 verdict['accepted']=False
                 verdict['gates']['correction_nondegenerate']=False
             row['final_verdict']=verdict
+            if prefix_reference is not None and i<len(prefix_reference):
+                from .precision_abc import compare
+                previous=prefix_reference[i];checks=[]
+                compare(row['proposal'],previous['proposal'],'prefix.proposal',checks)
+                if bool(row['correction'])!=bool(previous['correction']):
+                    raise ValueError('Prefix correction decision changed')
+                if row['correction']:
+                    compare(row['correction'],previous['correction'],'prefix.correction',checks)
+                compare(dict(native_after=verdict['native_nll']),
+                    dict(native_after=previous['final_verdict']['native_nll']),'prefix.final',checks)
+                if verdict['accepted']!=previous['final_verdict']['accepted']:
+                    raise ValueError('Prefix acceptance changed')
+                row['prefix_checks']=checks
             if verdict['accepted']:
                 row['status']='ACCEPTED'
                 accepted.append(dict(step=i+1,native_nll=verdict['native_nll'],
@@ -138,12 +153,12 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *, e
                 if not row['rollback_pass']:raise ValueError('Rejected step rollback failed')
                 break
         final=native_losses(runtime,pair)
-        complete=len(accepted)==4
+        complete=len(accepted)==steps
         edit=final[0]<=edit_threshold and final[0]<baseline[0]
         null=bool(accepted) and all(abs(s['cumulative_null_change'])<=NULL_BUDGET for s in accepted)
         return dict(status='COMPLETE' if complete else 'STOPPED_REJECTED',baseline=baseline,
             steps=rows,accepted_trajectory=accepted,attempted_steps=len(rows),accepted_steps=len(accepted),
-            correction_attempts=sum(s['correction'] is not None for s in rows),four_steps_completed=complete,
+            correction_attempts=sum(s['correction'] is not None for s in rows),four_steps_completed=len(accepted)>=4,trajectory_completed=complete,requested_steps=steps,
             final_accepted_native_nll=final,edit_threshold_met=edit,null_gate_on_accepted_states=null,
             joint_gate=complete and edit and null,generation_calls=0,judge_calls=0)
     finally:
