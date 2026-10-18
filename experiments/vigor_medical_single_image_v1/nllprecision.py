@@ -133,9 +133,9 @@ def main(config):
         if len(ids)!=32 or len(set(ids))!=32 or ids!=manifest['calibration_ids'] or ids!=cal['calibration_ids']:raise ValueError('Calibration list changed')
         training=[EditorRecord(**dict(r,image_path=Path(r['image_path']))) for r in train]
         diagonal,metadata=estimate(runtime,training,factor,lambda e:write(root/'public/CALIBRATION_PROGRESS.json',e),min(deadline,time.time()+120))
-        previous=read(config['new_fisher_summary'])
+        fisher_reference=read(config['new_fisher_summary'])
         for k in ('raw_trace','final_trace','multiplier'):
-            if abs(metadata[k]/previous[k]-1)>1e-5:raise ValueError('Direct Fisher changed')
+            if abs(metadata[k]/fisher_reference[k]-1)>1e-5:raise ValueError('Direct Fisher changed')
         metadata['prior_summary_match']=True;write(root/'public/DIRECT_FISHER.json',metadata)
         record=EditorRecord(**dict(raw[2],image_path=Path(raw[2]['image_path'])))
         write(root/'public/STATUS.json',dict(status='RECONSTRUCTING',arm='A'))
@@ -160,4 +160,4 @@ def main(config):
         raise
     finally:
         if handle is not None:handle.remove()
-        write(root/'ENDED.json',dict(pid=os.getpid(),epoch=time.time(),resident_seconds=time.time()-started))
+        write(root/'ENDED.json',dict(pid=os.getpid(),epoch=time.time(),resident_seconds=time.time()-started,model_forward_calls=calls[0]))

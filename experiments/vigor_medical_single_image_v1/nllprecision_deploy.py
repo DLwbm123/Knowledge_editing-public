@@ -17,7 +17,15 @@ def remote_nllprecision(payload):
     outputs = Path('/data/bmw/Knowledge_editing/outputs')
     preparation = outputs/'vigor-medical-preparation-v1-20261018/run/attempt2'
     parent = outputs/'full-context-summary8-v1-20261018/run'
-    root = outputs/'vigor-nllprecision-v1-20261019/run'
+    root = outputs/'vigor-nllprecision-v1-20261019/attempt2'
+    failed = outputs/'vigor-nllprecision-v1-20261019/run'
+    prior_launch=json.loads((failed/'private/LAUNCH.json').read_text())
+    prior_end=json.loads((failed/'ENDED.json').read_text())
+    prior_states=json.loads((failed/'public/ARMS.json').read_text())
+    if not all(s.get('base_restored') for s in prior_states) or any('replay' in s or s['probes'] for s in prior_states):
+        raise ValueError('Failure state not safe for controlled reconstruction')
+    prior_cost=prior_end['epoch']-prior_launch['epoch']
+    if prior_cost>=800:raise RuntimeError('Insufficient cumulative budget')
     batch8 = outputs/'vigor-finite-null-batch8-v1-20261018/run'
     if root.exists():
         raise FileExistsError('Trial already installed; do not replay')
@@ -94,7 +102,8 @@ def remote_nllprecision(payload):
         M3BENCH_LLAVA_SOURCE=str(parent/'private/official_llava'),
         M3BENCH_EXPECTED_LLAVA_SOURCE=str(parent/'private/official_llava'),CONFIG_FILE=str(root/'private/config.json'))
     config.pop('trajectory_steps',None)
-    config['hard_deadline_epoch']=time.time()+900
+    config['hard_deadline_epoch']=min(time.time()+900-prior_cost,prior_launch['epoch']+900)
+    config['prior_launch_to_end_seconds']=prior_cost
     config['deadline_epoch']=config['hard_deadline_epoch']-30
     write('private/config.json',config)
     entry = entry_root/'d.py'

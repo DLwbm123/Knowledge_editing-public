@@ -1,3 +1,7 @@
+## 当前工程接续：precision首run失败保留，attempt2待启动
+
+首run在12参考步后Fisher摘要覆盖端点索引KeyError，所选D步/探针均0，全部参考基座恢复且进程退出，47.285783秒成本保留。只修复局部变量名，科学配置不变；失败报告公开后attempt2重建必要参考接续，硬截止不晚于首启动+900秒，同时扣除累计执行成本，两个目录总磁盘50MiB。旧run不覆盖/删除/重放。半小时自动化ACTIVE。
+
 ## 当前轮：同NLL两端固定探针ABC精度归因
 
 heartbeat按已冻结NEXT_MINIMAL推进，协议reports/vigor_nllprecision_v1_20261019/PROTOCOL_ZH.md：A8、D4+已选0.504169231828125控制重建，不再二分；两端各一个固定F1 native范数探针，仅增加同一舍入权重FP32只读分支，A/C历史必须复核。原门仅native，旧F0方向/secant/trust/900秒保持，新磁盘50MiB，无新delta/配置/样本。CPU及现场准入通过后一次启动；完成完整匿名交付，半小时监测继续。
