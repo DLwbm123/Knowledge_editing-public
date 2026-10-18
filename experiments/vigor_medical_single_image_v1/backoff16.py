@@ -11,14 +11,15 @@ AUTH=dict(samples=8,steps=16,reference_steps=1,primary_denominator=16,fallback_d
     expand=False,generation=False,judge=False,variant='secant_single_half_backoff16')
 
 
-def _attempt(runtime,record,factor,pair,start_weight,start_losses,base_null,requested,anchor,trial,emit,solve_factor=None):
+def _attempt(runtime,record,factor,pair,start_weight,start_losses,base_null,requested,anchor,trial,emit,solve_factor=None, *, correction_factor=None,separate_correction=False):
     trial.update(requested_reduction=requested,status='PROPOSING',correction=None);emit()
     solver={} if solve_factor is None else dict(solve_factor=solve_factor)
     trial['proposal']=candidate(runtime,record,0,factor,requested,anchor,retain=True,**solver)
     trial['proposal_verdict']=gates(runtime,pair,factor,start_weight,start_losses,base_null)
     trial['status']='PROPOSED';emit()
     if not trial['proposal_verdict']['gates']['null']:
-        trial['correction']=correction(runtime,record,factor,base_null,compensate='secant',**solver)
+        correction_solver=solver if not separate_correction else ({} if correction_factor is None else dict(solve_factor=correction_factor))
+        trial['correction']=correction(runtime,record,factor,base_null,compensate='secant',**correction_solver)
         trial['status']='CORRECTED';emit()
     verdict=gates(runtime,pair,factor,start_weight,start_losses,base_null)
     if trial['correction'] is not None and trial['correction']['status']!='APPLIED':
