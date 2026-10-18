@@ -52,7 +52,8 @@ def sample_metrics(result):
         accepted=[r['final_verdict'] for r in rows if r.get('status')=='ACCEPTED']
         maxdrift=max((abs(r['cumulative_null_change']) for r in accepted),default=None)
         return dict(joint_pass=False,accepted_steps=len(accepted),
-            correction_attempts=sum(r.get('correction') is not None for r in rows),
+            correction_attempts=sum(r.get('correction') is not None for r in rows)+
+                sum(t.get('correction') is not None for r in rows for t in (r.get('primary',{}),r.get('half') or {})),
             max_abs_accepted_null=maxdrift,boundary_margin=.01-maxdrift if maxdrift is not None else None,
             near_boundary_pass=False,failures=[result.get('status','INCOMPLETE')])
     accepted=method['accepted_trajectory']
@@ -71,7 +72,7 @@ def sample_metrics(result):
         failures=failures)
 
 
-def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=None,steps=4,prefix_reference=None,deadline_epoch=None):
+def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=None,steps=4,prefix_reference=None,deadline_epoch=None,trajectory_fn=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);base_losses=native_losses(runtime,pair)
     try:
@@ -94,10 +95,13 @@ def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=Non
             state['method_candidates']=rows
             # Diagnostics never affect acceptance: each path uses its own initial baseline.
             for row in rows:
-                if 'proposal' in row:row['proposal_diagnostics']=stage_diagnostics(row['proposal'],baseline)
-                if row.get('correction'):row['correction_diagnostics']=stage_diagnostics(row['correction'],baseline)
+                trials=(row['primary'],row.get('half') or {}) if 'primary' in row else (row,)
+                for trial in trials:
+                    if 'proposal' in trial:trial['proposal_diagnostics']=stage_diagnostics(trial['proposal'],baseline)
+                    if trial.get('correction'):trial['correction_diagnostics']=stage_diagnostics(trial['correction'],baseline)
             emit(state)
-        result=trajectory(runtime,record,factor,progress,anchor=baseline['anchor'],
+        run_trajectory=trajectory if trajectory_fn is None else trajectory_fn
+        result=run_trajectory(runtime,record,factor,progress,anchor=baseline['anchor'],
             edit_threshold=reference['native_after'][0],compensate=compensate,steps=steps,prefix_reference=prefix_reference,deadline_epoch=deadline_epoch)
         state['method']=result;state.pop('method_candidates',None)
         state['status']='EVALUATED';state['phase']='DONE';state['metrics']=sample_metrics(state)
@@ -110,7 +114,7 @@ def run_sample(runtime,record,factor,state,emit, *, compensate=False,history=Non
         if not restored:raise ValueError('Cross-sample base restoration failed; stop entire batch')
 
 
-def main(config):
+def main(config, *, trajectory_fn=None,authorization=None):
     steps=config.get('trajectory_steps',4)
     if steps not in (4,16):raise PermissionError('Unfrozen horizon')
     expected=dict(samples=8,steps=steps,max_corrections_per_step=1,reference_steps=1,
@@ -121,6 +125,7 @@ def main(config):
         expected['variant']='secant_stress16'
     elif compensate:expected['variant']='one_shot_amplitude' if steps==4 else 'one_shot_amplitude_stress16'
     if steps==16 and not compensate:raise PermissionError('Stress horizon requires compensated rule')
+    if authorization is not None:expected=authorization
     if config['authorization']!=expected:
         raise PermissionError('Only the frozen eight-sample batch is authorized')
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG')!=':4096:8':raise RuntimeError('Missing deterministic workspace')
@@ -128,7 +133,7 @@ def main(config):
     root=Path(config['output']);start=time.time()
     with (root/'STARTED.json').open('x') as f:json.dump(dict(pid=os.getpid(),epoch=start),f)
     states=[dict(sample=f'S{i+1:02}',status='NOT_RUN',joint_pass=False) for i in range(8)]
-    active=None
+    active=None;model_forward_count=[0];forward_handle=None
     try:
         sys.path.insert(0,config['source_root'])
         if subprocess.check_output(['git','rev-parse','HEAD'],cwd=config['source_root'],text=True).strip()!=config['source_commit']:
@@ -148,6 +153,9 @@ def main(config):
             raise ValueError('Fisher binding changed')
         factor=calibration['factors']['model.layers.0.mlp.down_proj']
         runtime=load_real_runtime(SimpleNamespace(cpu_gate=Path(config['cpu_gate'])))
+        if config.get('count_model_calls',False):
+            def count_forward(module,args):model_forward_count[0]+=1
+            forward_handle=runtime.model.register_forward_pre_hook(count_forward)
         def forbidden(*args,**kwargs):raise PermissionError('Generation forbidden')
         runtime.generate=forbidden
         argv=subprocess.check_output(['ps','-ww','-p',str(os.getpid()),'-o','args='],text=True)
@@ -165,7 +173,7 @@ def main(config):
             try:
                 run_sample(runtime,record,factor,active,emit,compensate=compensate,history=history[index] if history else None,steps=steps,
                     prefix_reference=prefix[index]['method']['steps'] if prefix else None,
-                    deadline_epoch=min(start+900,config['deadline_epoch']) if steps==16 else None)
+                    deadline_epoch=min(start+900,config['deadline_epoch']) if steps==16 else None,trajectory_fn=trajectory_fn)
             except DegenerateCandidateError:
                 active['status']='DEGENERATE_DIRECTION';active['metrics']=sample_metrics(active)
             active['joint_pass']=active.get('metrics',{}).get('joint_pass',False);emit(active)
@@ -174,6 +182,7 @@ def main(config):
             peak_allocated_bytes=torch.cuda.max_memory_allocated(),all_base_restored=all(s.get('base_restored',False) for s in states))
         result['pass_rate']=result['passed']/8
         result['amplitude_compensation']=compensate
+        result['model_forward_calls']=model_forward_count[0] if forward_handle is not None else None
         write(root/'public/RESULT.json',result)
         write(root/'public/STATUS.json',dict(status='COMPLETE',completed=8,total=8,passed=result['passed']))
     except BaseException as e:
@@ -183,4 +192,6 @@ def main(config):
         write(root/'public/STATUS.json',dict(status='FAILED',error_type=type(e).__name__,denominator=8))
         (root/'private/FAILURE.txt').write_text(traceback.format_exc())
         raise
-    finally:write(root/'ENDED.json',dict(pid=os.getpid(),epoch=time.time(),resident_seconds=time.time()-start))
+    finally:
+        if forward_handle is not None:forward_handle.remove()
+        write(root/'ENDED.json',dict(pid=os.getpid(),epoch=time.time(),resident_seconds=time.time()-start))
