@@ -11,7 +11,11 @@ for gpu,phase in enumerate(('reserve','trajectory')):
     assert time.time()<float(os.environ['DEADLINE_EPOCH'])
     free=subprocess.check_output(['nvidia-smi',f'--id={gpu}','--query-gpu=uuid,memory.free','--format=csv,noheader,nounits'],text=True).strip().split(',')
     assert int(free[1])>=46080
-    directory=root/phase;env=dict(os.environ,OUTPUT_RUN=str(directory),CUDA_VISIBLE_DEVICES=str(gpu))
+    directory=root/phase;env=dict(os.environ,OUTPUT_RUN=str(directory),CUDA_VISIBLE_DEVICES=str(gpu),M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES=str(gpu),M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES='0,1',M3BENCH_FORMAL_EXPECTED_GPU_UUID=free[0].strip())
+    gate="from scripts.medtrace.run_realmodel_core import assert_authorized_device,assert_official_llavamed_source;assert_authorized_device();assert_official_llavamed_source();print('PASS')"
+    admission=subprocess.run([sys.executable,'-'],input=gate,text=True,env=env,capture_output=True)
+    write('DEVICE_ADMISSION_'+phase+'.json',dict(code=admission.returncode,stdout=admission.stdout,stderr=admission.stderr))
+    assert admission.returncode==0,admission.stderr
     with (directory/'tools/run.py').open('rb') as source,(directory/'run.log').open('ab') as log:
         child=subprocess.Popen([sys.executable,'-u','-'],stdin=source,stdout=log,stderr=subprocess.STDOUT,env=env)
     record=dict(phase=phase,pid=child.pid,start_ticks=Path('/proc/'+str(child.pid)+'/stat').read_text().split()[21],start=time.time(),gpu=gpu,uuid=free[0].strip(),free_MiB=int(free[1]))
