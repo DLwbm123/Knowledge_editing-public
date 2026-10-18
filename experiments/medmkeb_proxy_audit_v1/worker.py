@@ -44,7 +44,7 @@ def main():
             for form in ('{}.', 'The answer is {}.', 'It is {}.'):
                 texts.extend([form.format(row['reference'].rstrip('.')),form.format(entry['wrong_choice'].rstrip('.'))])
             expressions=[dict(row,query_id=qid+'_sem_'+str(i),reference=text) for i,text in enumerate(texts)]
-            runtime.model.half();items=r.s.prepare(runtime,bindings,template,expressions,True);r.old.fp32(runtime)
+            r.old.fp32(runtime);runtime.model.half();items=r.s.prepare(runtime,bindings,template,expressions,True);r.old.fp32(runtime)
             old=read(entry['prior_base'])['binding'];assert old['runtime']['actual_precision']=='MATH_FP32_FROZEN_FP16_PREFILL'
             prepared=[];content_ids=[];prefix=None
             for expr,value,raw,_,binding in items:
