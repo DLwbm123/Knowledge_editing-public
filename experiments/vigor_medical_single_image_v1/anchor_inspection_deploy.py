@@ -2,7 +2,7 @@
 import inspect,json,subprocess
 from pathlib import Path
 from experiments.vigor_medical_single_image_v1.diagnose_deploy import remote_diagnostic
-s=inspect.getsource(remote_diagnostic).replace('vigor-minimal-diagnostic4-v1-20261018/run','vigor-minimal-diagnostic4-v1-20261018/anchor_inspection')
+s=inspect.getsource(remote_diagnostic).replace('vigor-minimal-diagnostic4-v1-20261018/repaired_candidates','vigor-minimal-diagnostic4-v1-20261018/anchor_inspection')
 entry='''import json,os,torch
 from experiments.vigor_medical_single_image_v1.diagnose import main
 import experiments.vigor_medical_single_image_v1.diagnose as d

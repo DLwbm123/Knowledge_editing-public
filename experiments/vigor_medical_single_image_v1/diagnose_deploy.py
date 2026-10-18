@@ -17,7 +17,7 @@ def remote_diagnostic(payload):
     outputs = Path('/data/bmw/Knowledge_editing/outputs')
     preparation = outputs/'vigor-medical-preparation-v1-20261018/run/attempt2'
     parent = outputs/'full-context-summary8-v1-20261018/run'
-    root = outputs/'vigor-minimal-diagnostic4-v1-20261018/run'
+    root = outputs/'vigor-minimal-diagnostic4-v1-20261018/repaired_candidates'
     if root.exists():
         raise FileExistsError('Trial already installed; do not replay')
     if json.loads((preparation/'public/RESULT.json').read_text())['status'] != 'COMPLETE':
@@ -57,7 +57,7 @@ def remote_diagnostic(payload):
         if not (Path(env[key])/'config.json').is_file():
             raise FileNotFoundError('Existing model path unavailable')
     env.update(PYTHONPATH=str(root/'implementation')+':'+str(parent/'private/official_llava'),
-        CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',
+        CUBLAS_WORKSPACE_CONFIG=':4096:8',CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',
         PYTHONDONTWRITEBYTECODE='1',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',TOKENIZERS_PARALLELISM='false')
     entry_root = Path(tempfile.mkdtemp(prefix='p.',dir='/data/bmw/tmp'))
     cpu = entry_root/'c.py'

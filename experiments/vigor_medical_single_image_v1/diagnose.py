@@ -118,6 +118,10 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None):
 def main(config):
     if config['authorization'] != dict(candidates=4,tune=False,expand=False,generation=False,judge=False):
         raise PermissionError('Only four fixed diagnostic candidates authorized')
+    # Fix stochastic CUDA backward accumulation; keep the historical anchor gate unchanged.
+    if os.environ.get('CUBLAS_WORKSPACE_CONFIG') != ':4096:8':
+        raise RuntimeError('Deterministic CUDA workspace must be configured before loading the model')
+    torch.use_deterministic_algorithms(True)
     root = Path(config['output'])
     started = time.time()
     with (root/'STARTED.json').open('x') as f:
@@ -141,6 +145,8 @@ def main(config):
         calibration = torch.load(config['calibration'],map_location='cpu',weights_only=True)
         if calibration['binding']!=config['binding'] or calibration['selected_layer']!='model.layers.0.mlp.down_proj':
             raise ValueError('Fisher binding mismatch')
+        write(root/'public/NUMERICS.json',dict(deterministic_algorithms=True,
+            cublas_workspace=os.environ['CUBLAS_WORKSPACE_CONFIG'],historical_E_relative_tolerance=1e-5))
         runtime = load_real_runtime(SimpleNamespace(cpu_gate=Path(config['cpu_gate'])))
         def forbidden(*args,**kwargs):
             raise PermissionError('Generation is forbidden in this diagnosis')
