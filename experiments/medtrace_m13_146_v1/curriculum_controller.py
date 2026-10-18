@@ -10,7 +10,7 @@ read,write=shared.read,shared.write
 
 def stage(action,arm):
     os.environ['CURRICULUM_ARM']=arm
-    devices=(0,1,3,4) if action=='curriculum_generate_M13P' else (0,1)
+    devices=(0,1,3,4) if action in ('curriculum_generate_M13P','curriculum_recover_M13P') else (0,1)
     os.environ['GENERATION_PARTITIONS']=str(len(devices))
     jobs=[shared.launch('curriculum_runtime.py',action,p,g) for p,g in enumerate(devices)]
     codes=[j.wait() for j in jobs];assert codes==[0]*len(devices),(action,codes)
@@ -33,7 +33,12 @@ def retire(arm):
 def main():
     f.admit(RUN);assert read(RUN/'private/CURRICULUM_CPU_CHECK.json')['status']=='PASS'
     adopt=os.environ.get('CURRICULUM_ADOPT_TRAINING')=='1'
-    if adopt:
+    migrated=os.environ.get('CURRICULUM_RECOVERY_PLAN')
+    if migrated:
+        assert adopt and read(RUN/'private/RECOVERY_PARITY.json')['status']=='PASS'
+        with (RUN/'private/CURRICULUM_RECOVERY_CONTROLLER_ONCE').open('x'):pass
+        stage('curriculum_recover_M13P','M13P')
+    elif adopt:
         # Adopt the two already-running training workers; never replay their work.
         with (RUN/'private/CURRICULUM_FOUR_GPU_CONTROLLER_ONCE').open('x'):pass
         for part in (0,1):
@@ -58,12 +63,19 @@ def main():
             write(RUN/'private'/f'FROZEN_{arm}.json',dict(candidates=146,steps=540,methods=[arm],epoch=time.time()))
             stage('curriculum_generate_'+arm,arm);retire(arm)
         for mode in ('train','generate'):
-            for p in range(4 if mode=='generate' and arm=='M13P' else 2):
-                for k,v in read(RUN/'private'/f'COMPLETE_curriculum_{mode}_{arm}_{p}.json')['counts'].items():
+            if migrated and mode=='train' and arm=='M13P':
+                entries=list(read(migrated)['prior_counts'].values())+[read(RUN/'private'/f'COMPLETE_curriculum_recover_M13P_{p}.json')['counts'] for p in range(4)]
+            else:entries=[read(RUN/'private'/f'COMPLETE_curriculum_{mode}_{arm}_{p}.json')['counts'] for p in range(4 if mode=='generate' and arm=='M13P' else 2)]
+            for entry in entries:
+                for k,v in entry.items():
                     if k in counts:counts[k]+=v
         assert all(counts[k]<=cap for k,cap in f.CAPS.items())
     assert counts['updates']==236520 and counts['backwards']==411724 and counts['operator_backwards']==78840 and counts['generation_attempts']==8868
     assert len(list((RUN/'private/outputs').glob('*/*/*.json')))==f.CONSUMERS
+    if migrated:
+        verification=read(migrated)['diagnostic_counts']
+        abandoned=read(migrated)['abandoned_counts']
+        write(RUN/'private/RECOVERY_COST_AUDIT.json',dict(logical_and_persisted_counts=counts,diagnostic_counts=verification,abandoned_execution_counts=abandoned,actual_execution_counts={k:counts[k]+verification.get(k,0)+abandoned.get(k,0) for k in counts},gpu_seconds='All original, verification and replacement leases included without reset'))
     write(RUN/'private/CURRICULUM_GENERATION_COMPLETE.json',dict(status='COMPLETE',counts=counts,epoch=time.time()));shared.merge('GPU')
     root=RUN/'private'/f.QUEUE
     while not (root/'ALL_WORKERS_COMPLETE.json').exists():

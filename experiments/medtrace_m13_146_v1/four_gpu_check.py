@@ -32,6 +32,7 @@ def main():
         stage('curriculum_generate_M13P','M13P')
         assert [v[2] for v in calls]==[0,1,3,4] and os.environ['GENERATION_PARTITIONS']=='4'
         calls.clear();stage('curriculum_train_M13P','M13P');assert [v[2] for v in calls]==[0,1]
+        calls.clear();stage('curriculum_recover_M13P','M13P');assert [v[2] for v in calls]==[0,1,3,4]
     class ReachedGeneration(Exception):pass
     with tempfile.TemporaryDirectory() as tmp:
         run=Path(tmp);(run/'private').mkdir()
