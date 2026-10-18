@@ -81,12 +81,18 @@ def remote_install(payload):
         previous_calibration_official_overlap=overlaps, previous_calibration_reused=False,
         selection=manifest['selection'], patient_id_audit='NOT_AVAILABLE_IN_SOURCE_METADATA'))
     env = dict(os.environ)
+    previous_env = json.loads((parent/'private/LAUNCH_ENV.json').read_text())
+    for key in ('M3BENCH_MODEL_PATH', 'M3BENCH_VISION_PATH'):
+        env[key] = previous_env[key]
+        if not (Path(env[key])/'config.json').is_file():
+            raise FileNotFoundError('Existing model/vision configuration unavailable')
     for line in Path('/data/bmw/env.sh').read_text().splitlines():
         if line.startswith('export '):
             key, value = line[7:].split('=', 1)
             env[key] = value
     entry_root = Path(tempfile.mkdtemp(prefix='p.', dir='/data/bmw/tmp'))
-    env.update(PYTHONPATH=str(root/'implementation'), CUDA_VISIBLE_DEVICES='', OMP_NUM_THREADS='2',
+    env.update(PYTHONPATH=str(root/'implementation')+':'+str(parent/'private/official_llava'),
+               CUDA_VISIBLE_DEVICES='', OMP_NUM_THREADS='2', PYTHONDONTWRITEBYTECODE='1',
                OPENBLAS_NUM_THREADS='2', TOKENIZERS_PARALLELISM='false', HF_HUB_OFFLINE='1',
                TRANSFORMERS_OFFLINE='1')
     cpu = entry_root/'c.py'
