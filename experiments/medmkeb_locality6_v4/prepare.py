@@ -23,7 +23,7 @@ def prepare(data,repo,private,old,remote):
             exposed.update(article(k) for k in f['image_keys'] if article(k))
     exposed.update(prior_articles)
     candidates=[];skips=[]
-    for split,a,limit in [('train',train,64),('eval',ev,256)]:
+    for split,a,limit in [('train',train,256),('eval',ev,256)]:
         seen=set();pool=[]
         for v in a:
             group=article(v['m_loc'])
@@ -48,7 +48,7 @@ def prepare(data,repo,private,old,remote):
                         ann['Answer_label']=answer;ann['Answer']=re.sub(r'^\s*[A-D]\s*[:.)]\s*','',row.get('Choice '+answer,'')).strip()
                     annotations.setdefault(key,[]).append(ann)
     admitted=[]
-    for split,limit in [('train',64),('eval',256)]:
+    for split,limit in [('train',256),('eval',256)]:
         for c in [x for x in candidates if x['split']==split]:
             v=c['original'];key=(Path(v['m_loc']).name,norm(v['m_loc_q']));matches=[a for a in annotations.get(key,[]) if norm(a['Answer'])==norm(v['m_loc_a'])]
             if not matches:skips.append(dict(split=split,id=v['id'],reason='UPSTREAM_QA_NOT_EXACT'));continue
@@ -56,7 +56,7 @@ def prepare(data,repo,private,old,remote):
             if not wrong:skips.append(dict(split=split,id=v['id'],reason='NO_DISTINCT_WRONG_CHOICE'));continue
             c.update(annotation=ann,wrong_choice=wrong[0]);admitted.append(c)
             if sum(x['split']==split for x in admitted)==limit:break
-    images=private/'images';images.mkdir();rows=[]
+    images=private/'images';images.mkdir(exist_ok=True);rows=[]
     for i,c in enumerate(admitted):
         v=c['original'];qid=('T' if c['split']=='train' else 'V')+str(sum(x['split']==c['split'] for x in admitted[:i+1])).zfill(2);source=data/v['m_loc'];dest=images/(qid+source.suffix.lower());shutil.copyfile(source,dest)
         c['row']=dict(query_id=qid,image_path=remote+'/images/'+dest.name,question=v['m_loc_q'],reference=v['m_loc_a'],dataset='SOURCE_ANCHOR',source_group=c['article'],audit_role='RETENTION_TRAIN_CANDIDATE' if c['split']=='train' else 'HELDOUT_LOCALITY_CANDIDATE');rows.append(c['row'])
