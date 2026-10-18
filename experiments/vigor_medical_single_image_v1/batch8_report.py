@@ -47,5 +47,6 @@ def summarize(root):
     (root/'SUMMARY.json').write_text(json.dumps(aggregate,indent=2)+'\n')
     for name,rows in [('SAMPLE_SUMMARY.tsv',summary),('FULL_TRAJECTORY.tsv',trace)]:
         with (root/name).open('w') as f:
-            writer=csv.DictWriter(f,fieldnames=list(rows[0]),delimiter='\t');writer.writeheader();writer.writerows(rows)
+            writer=csv.DictWriter(f,fieldnames=list(rows[0]),delimiter='\t',lineterminator='\n');writer.writeheader()
+            writer.writerows({k:('NA' if v is None or v=='' else v) for k,v in row.items()} for row in rows)
     return summary,aggregate

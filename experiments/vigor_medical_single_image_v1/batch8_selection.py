@@ -20,4 +20,3 @@ def select_records(rows,manifest,pilot,data_root):
     if len(selected)!=8:raise ValueError('Fewer than eight eligible image groups; do not relax selection')
     if any(not r['target'].strip() for r in selected):raise ValueError('Selected target is empty; do not replace')
     return selected
-
