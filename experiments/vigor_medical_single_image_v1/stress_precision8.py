@@ -10,12 +10,12 @@ AUTH=dict(points=[list(p) for p in POINTS],extra_steps=0,extra_corrections=0,
     tune=False,replace=False,generation=False,judge=False,variant='compensated_stress_ABC')
 
 
-def prepare_control(runtime,record,factor,snapshot,old,state,emit):
+def prepare_control(runtime,record,factor,snapshot,old,state,emit, *, compensate=True):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');base=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);losses=native_losses(runtime,pair)
     try:
         with torch.no_grad():layer.weight.copy_(snapshot['weight'])
-        c=correction(runtime,record,factor,snapshot['baseline']['native'][1],compensate=True)
+        c=correction(runtime,record,factor,snapshot['baseline']['native'][1],compensate=compensate)
         precision_abc.compare(c,old['method']['steps'][-1]['correction'],'control.correction',state['checks'])
         verdict=gates(runtime,pair,factor,snapshot['start_weight'].to(layer.weight.device),snapshot['start_losses'],snapshot['baseline']['native'][1])
         if verdict['accepted'] or verdict['gates']!=old['method']['steps'][-1]['final_verdict']['gates']:
