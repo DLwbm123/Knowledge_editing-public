@@ -23,7 +23,7 @@ def native_losses(runtime,pair):
     with torch.no_grad():return [float(nll(runtime.model,b)) for b in pair]
 
 
-def correction(runtime,record,factor,base_null, *, evaluate_rounded=False):
+def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compensate=False):
     layer=runtime.get_module('model.layers.0.mlp.down_proj')
     original=layer.weight.detach().clone()
     pair=paired_batches(runtime,record)
@@ -48,8 +48,29 @@ def correction(runtime,record,factor,base_null, *, evaluate_rounded=False):
             delta_cosine=float(F.cosine_similarity(actual.flatten(),native_delta.flatten(),dim=0)),
             fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)),
             changed_elements=int(torch.count_nonzero(native_delta)))
-        fp_after=native_losses(runtime,pair)
         extra={}
+        if compensate:
+            rho=native_metrics['null_linear_change']/(-residual) if residual else float('nan')
+            extra['compensation']=dict(rho=rho if math.isfinite(rho) else None,
+                original_fp32_update=fp_metrics,original_native_update=native_metrics,original_quantization=quant)
+            if not math.isfinite(rho) or rho<=0 or not math.isfinite(1/rho):
+                with torch.no_grad():layer.weight.copy_(original.float())
+                return dict(status='INVALID_COMPENSATION',native_before=before,native_after=before,**extra)
+            extra['compensation']['multiplier']=1/rho
+            # Rebuild from the same pre-correction weight, never add to the rounded control.
+            with torch.no_grad():layer.weight.copy_(finite(original.float()+delta/rho))
+            actual=layer.weight.detach()-original.float()
+            native_delta=layer.weight.detach().half().float()-original.float()
+            norm=float(torch.linalg.vector_norm(actual))
+            fp_metrics=update_metrics(actual,*gradients,a,b)
+            native_metrics=update_metrics(native_delta,*gradients,a,b)
+            rounding=float(torch.linalg.vector_norm(native_delta-actual))
+            quant=dict(absolute_rounding_l2=rounding,relative_rounding_l2=rounding/norm if norm else None,
+                delta_cosine=float(F.cosine_similarity(actual.flatten(),native_delta.flatten(),dim=0)),
+                fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)),
+                changed_elements=int(torch.count_nonzero(native_delta)))
+            extra['compensation']['realized_effect_ratio_after']=native_metrics['null_linear_change']/(-residual)
+        fp_after=native_losses(runtime,pair)
         if evaluate_rounded:
             unrounded=layer.weight.detach().clone()
             rounded=unrounded.half()

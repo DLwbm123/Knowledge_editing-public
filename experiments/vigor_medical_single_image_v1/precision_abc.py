@@ -112,8 +112,8 @@ def evaluate(runtime,record,factor,snapshot,old,state,emit):
         if not state['base_restored']:raise ValueError('ABC base restore failed')
 
 
-def main(config):
-    if config['authorization']!=AUTH:raise PermissionError('Only three frozen ABC points authorized')
+def main(config, *, evaluation=evaluate, authorization=AUTH, prepare=None, label='ABC'):
+    if config['authorization']!=authorization:raise PermissionError('Only the frozen three points authorized')
     if os.environ.get('CUBLAS_WORKSPACE_CONFIG')!=':4096:8':raise RuntimeError('Missing deterministic workspace')
     torch.use_deterministic_algorithms(True)
     root=Path(config['output']);start=time.time()
@@ -150,11 +150,14 @@ def main(config):
             old=read(parent/'public'/f"{state['sample']}.json")
             records.append(record);olds.append(old)
             snapshots.append(reconstruct(runtime,record,factor,old,state['step'],state,emit))
-        write(root/'public/RECONSTRUCTION_GATE.json',dict(status='PASS',points=3,all_before_ABC=True,NLL_absolute_tolerance=1e-5,E_relative_tolerance=1e-5))
+        if prepare is not None:
+            for state,record,snapshot,old in zip(states,records,snapshots,olds):
+                prepare(runtime,record,factor,snapshot,old,state,emit)
+        write(root/'public/RECONSTRUCTION_GATE.json',dict(status='PASS',points=3,all_before_evaluation=True,evaluation=label,NLL_absolute_tolerance=1e-5,E_relative_tolerance=1e-5))
         for state,record,snapshot,old in zip(states,records,snapshots,olds):
-            state['status']='EVALUATING_ABC';emit()
-            write(root/'public/STATUS.json',dict(status='EVALUATING_ABC',sample=state['sample']))
-            evaluate(runtime,record,factor,snapshot,old,state,emit)
+            state['status']='EVALUATING_'+label;emit()
+            write(root/'public/STATUS.json',dict(status='EVALUATING_'+label,sample=state['sample']))
+            evaluation(runtime,record,factor,snapshot,old,state,emit)
         write(root/'public/RESULT.json',dict(status='COMPLETE',points=states,generation_calls=0,judge_calls=0,
             extra_optimization_steps=0,extra_corrections=0,all_base_restored=all(s['base_restored'] for s in states),
             elapsed_seconds=time.time()-start,peak_allocated_bytes=torch.cuda.max_memory_allocated()))
