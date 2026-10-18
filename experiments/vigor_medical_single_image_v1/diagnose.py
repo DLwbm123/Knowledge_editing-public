@@ -68,7 +68,7 @@ def sum_target_factor(runtime, records, original, lengths, positions):
     return dict(a=original['a'].clone(), b=damp((moment/count).float()).cpu(), positions=count)
 
 
-def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False, solve_factor=None):
+def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False, solve_factor=None, native_norm_target=None):
     layer = runtime.get_module(f'model.layers.{layer_index}.mlp.down_proj')
     if layer.weight.dtype != torch.float16:
         raise ValueError('Diagnostic comparison is frozen to native FP16')
@@ -97,6 +97,22 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
                 # The new solve metric never replaces the original trust ruler.
                 unit_cost = update_metrics(tangent, *gradients, a, b)['fisher_cost']
                 effective = min(requested, geometry['E']*math.sqrt(.001/unit_cost))
+            matching = None
+            if native_norm_target is not None:
+                if not math.isfinite(native_norm_target) or native_norm_target <= 0:
+                    raise ValueError('Invalid frozen native norm target')
+                unscaled_delta = finite(-effective/geometry['E']*tangent)
+                unscaled_native = (layer.weight.detach()+unscaled_delta).half().float()-original.float()
+                unscaled_norm = float(torch.linalg.vector_norm(unscaled_native))
+                if not math.isfinite(unscaled_norm) or unscaled_norm <= 0:
+                    raise DegenerateCandidateError('Undefined native norm ratio')
+                scale = native_norm_target/unscaled_norm
+                matching = dict(target=native_norm_target,seed_requested=requested,
+                    unscaled_effective=effective,unscaled_native_norm=unscaled_norm,
+                    ratio=scale,applications=1,tolerance=.01)
+                requested = effective*scale
+                effective = min(requested, math.sqrt(2*.001*geometry['E']) if solve_factor is None
+                    else geometry['E']*math.sqrt(.001/unit_cost))
             delta = finite(-effective/geometry['E']*tangent)
             with torch.no_grad():
                 layer.weight.add_(delta)
@@ -110,10 +126,16 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
                 delta_cosine=float(F.cosine_similarity(actual.flatten(),native_delta.flatten(),dim=0)),
                 changed_elements=int(torch.count_nonzero(native_delta)),
                 fp32_delta_l2=norm,native_delta_l2=float(torch.linalg.vector_norm(native_delta)))
+            if matching is not None:
+                error = abs(quantization['native_delta_l2']/native_norm_target-1)
+                matching.update(relative_error=error,trust_clipped=effective<requested,
+                    passed=error<=.01 and effective==requested,
+                    native_direction_cosine=float(F.cosine_similarity(unscaled_native.flatten(),native_delta.flatten(),dim=0)))
+                del unscaled_native, unscaled_delta
             fp_after = losses()
         native_after = losses()
         completed = True
-        return dict(requested_reduction=requested,effective_reduction=effective,clipped=effective<requested,
+        result = dict(requested_reduction=requested,effective_reduction=effective,clipped=effective<requested,
             E=geometry['E'],native_before=native_before,native_after=native_after,
             fp32_before=fp_before,fp32_after=fp_after,fp32_update=fp_metrics,native_update=native_metrics,
             quantization=quantization,native_gain=native_before[0]-native_after[0],
@@ -121,6 +143,8 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
             native_null_change=native_after[1]-native_before[1],
             fp32_gain_ratio=(fp_before[0]-fp_after[0])/effective,
             fp32_null_change=fp_after[1]-fp_before[1])
+        if matching is not None:result['native_norm_matching']=matching
+        return result
     finally:
         if not retain or not completed:
             with torch.no_grad():
