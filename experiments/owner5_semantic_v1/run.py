@@ -6,7 +6,8 @@ P=Path(os.environ['PARENT_RUN']);OUT=Path(os.environ['OUTPUT_RUN'])
 sys.path[:0]=[str(OUT/'tools'),str(P/'private/tools'),str(P/'private/source'),str(P/'private/official_llava')]
 import torch
 import module_run as r
-import trajectory,training_math,semantic
+import trajectory,training_math
+import owner5_semantic_loss as semantic
 from prefix_cache import PrefixCache
 from scripts.medtrace.run_realmodel_core import load_real_runtime
 from m3bench_repro.editors.llava_runtime import seed_everything
