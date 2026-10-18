@@ -12,7 +12,7 @@ for gpu,phase in enumerate(('reserve','trajectory')):
     free=subprocess.check_output(['nvidia-smi',f'--id={gpu}','--query-gpu=uuid,memory.free','--format=csv,noheader,nounits'],text=True).strip().split(',')
     assert int(free[1])>=46080
     directory=root/phase;env=dict(os.environ,OUTPUT_RUN=str(directory),CUDA_VISIBLE_DEVICES=str(gpu),M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES=str(gpu),M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES='0,1',M3BENCH_FORMAL_EXPECTED_GPU_UUID=free[0].strip())
-    gate="from scripts.medtrace.run_realmodel_core import assert_authorized_device,assert_official_llavamed_source;assert_authorized_device();assert_official_llavamed_source();print('PASS')"
+    gate="import os,sys;from pathlib import Path;P=Path(os.environ['PARENT_RUN']);sys.path[:0]=[str(P/'private/tools'),str(P/'private/source'),str(P/'private/official_llava')];from scripts.medtrace.run_realmodel_core import assert_authorized_device,assert_official_llavamed_source;assert_authorized_device();assert_official_llavamed_source();print('PASS')"
     admission=subprocess.run([sys.executable,'-'],input=gate,text=True,env=env,capture_output=True)
     write('DEVICE_ADMISSION_'+phase+'.json',dict(code=admission.returncode,stdout=admission.stdout,stderr=admission.stderr))
     assert admission.returncode==0,admission.stderr
