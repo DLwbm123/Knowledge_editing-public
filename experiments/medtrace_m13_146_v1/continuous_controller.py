@@ -69,7 +69,7 @@ def main():
     a=read(RUN/'private/CONTINUOUS_ADMISSION.json');single=Path(a['single_run'])
     assert read(RUN/'private/CONTINUOUS_CPU_CHECK.json')['status']=='PASS'
     assert read(RUN/'private/CONTINUOUS_SELECTION_CPU_CHECK.json')['status']=='PASS'
-    with (RUN/'private'/('CONTINUOUS_RECOVERY_CONTROLLER_ONCE' if os.environ.get('CURRICULUM_RECOVERY_CONTROLLER')=='1' else 'CONTINUOUS_FOUR_GPU_CONTROLLER_ONCE')).open('x'):pass
+    with (RUN/'private'/('CONTINUOUS_FINISH_RECOVERY_CONTROLLER_ONCE' if os.environ.get('CURRICULUM_FINISH_ONLY')=='1' else 'CONTINUOUS_RECOVERY_CONTROLLER_ONCE' if os.environ.get('CURRICULUM_RECOVERY_CONTROLLER')=='1' else 'CONTINUOUS_FOUR_GPU_CONTROLLER_ONCE')).open('x'):pass
     while True:
         receipts={arm:hold_arm(single,arm) for arm in ('C','M1','M13P')}
         assert not list((single/'private').glob('FAILURE_curriculum*.json')),'Single failed; preserve retained artifacts'

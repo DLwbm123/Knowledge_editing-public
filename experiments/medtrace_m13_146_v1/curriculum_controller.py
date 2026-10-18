@@ -33,8 +33,16 @@ def retire(arm):
 def main():
     f.admit(RUN);assert read(RUN/'private/CURRICULUM_CPU_CHECK.json')['status']=='PASS'
     adopt=os.environ.get('CURRICULUM_ADOPT_TRAINING')=='1'
-    migrated=os.environ.get('CURRICULUM_RECOVERY_PLAN')
-    if migrated:
+    migrated=Path(os.environ['CURRICULUM_RECOVERY_PLAN']) if os.environ.get('CURRICULUM_RECOVERY_PLAN') else None
+    finish_only=os.environ.get('CURRICULUM_FINISH_ONLY')=='1'
+    if finish_only:
+        assert adopt and migrated
+        with (RUN/'private/CURRICULUM_FINISH_CONTROLLER_ONCE').open('x'):pass
+        for part in range(4):
+            for action in ('recover','generate'):
+                assert read(RUN/'private'/f'EXIT_curriculum_{action}_M13P_{part}.json')['exit_code']==0
+                assert read(RUN/'private'/f'COMPLETE_curriculum_{action}_M13P_{part}.json')['status']=='COMPLETE'
+    elif migrated:
         assert adopt and read(RUN/'private/RECOVERY_PARITY.json')['status']=='PASS'
         with (RUN/'private/CURRICULUM_RECOVERY_CONTROLLER_ONCE').open('x'):pass
         stage('curriculum_recover_M13P','M13P')
@@ -55,11 +63,11 @@ def main():
     counts={k:0 for k in f.CAPS}
     for arm in f.METHODS:
         if not adopt:stage('curriculum_train_'+arm,arm)
-        elif arm!='M13P':
+        elif arm!='M13P' or finish_only:
             assert read(RUN/'private'/f'DELETION_{arm}.json')['status']=='DELETED'
         for i in range(1,147):
             d=read(RUN/'private/results'/arm/f'{i}.json');assert d['status']=='COMPLETE' and d['save_load_exact'] and len(d['curve'])==540
-        if not adopt or arm=='M13P':
+        if not finish_only and (not adopt or arm=='M13P'):
             write(RUN/'private'/f'FROZEN_{arm}.json',dict(candidates=146,steps=540,methods=[arm],epoch=time.time()))
             stage('curriculum_generate_'+arm,arm);retire(arm)
         for mode in ('train','generate'):
