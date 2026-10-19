@@ -68,7 +68,7 @@ def sum_target_factor(runtime, records, original, lengths, positions):
     return dict(a=original['a'].clone(), b=damp((moment/count).float()).cpu(), positions=count)
 
 
-def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False, solve_factor=None, native_norm_target=None, rounded_fp32=False):
+def candidate(runtime, record, layer_index, factor, requested, historical=None, *, retain=False, solve_factor=None, native_norm_target=None, rounded_fp32=False, update_observer=None):
     layer = runtime.get_module(f'model.layers.{layer_index}.mlp.down_proj')
     if layer.weight.dtype != torch.float16:
         raise ValueError('Diagnostic comparison is frozen to native FP16')
@@ -132,6 +132,8 @@ def candidate(runtime, record, layer_index, factor, requested, historical=None, 
                     passed=error<=.01 and effective==requested,
                     native_direction_cosine=float(F.cosine_similarity(unscaled_native.flatten(),native_delta.flatten(),dim=0)))
                 del unscaled_native, unscaled_delta
+            if update_observer is not None:
+                update_observer(actual.detach())
             fp_after = losses()
             if rounded_fp32:
                 unrounded = layer.weight.detach().clone()
