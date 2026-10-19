@@ -77,23 +77,25 @@
     },
     {
       "name": "responseNative",
-      "status": "RUNNING",
+      "status": "COMPLETE_ACCEPTED_NATIVE_BUDGET_PATH",
       "gpu_seconds_reserved": 900,
       "new_disk_bytes_reserved": 52428800,
       "actual_dataset_solver_invocations": 0,
       "reused_frozen_coefficients": true,
-      "source_commit": "de837daf49cfd1cc15498b38c28fa2c1c290f9b1"
+      "source_commit": "de837daf49cfd1cc15498b38c28fa2c1c290f9b1",
+      "gpu_seconds_actual": 80.06178092956543,
+      "remote_trial_bytes": 1719898
     }
   ],
-  "cumulative_gpu_seconds_actual": 662.6508886814117,
+  "cumulative_gpu_seconds_actual": 742.7126696109772,
   "cumulative_new_disk_bytes_actual": null,
   "temporary_entry_files_bytes": null,
   "local_baseline_allocated_bytes": 346255360,
   "internal_byte_ceiling": 18000000000,
   "rounds_max": 24,
   "disk_accounting": {
-    "measurement": "allocated KiB via du; eight completed rounds plus ninth reserved",
-    "local_repository_net_growth_bytes": 7249920,
+    "measurement": "allocated KiB via du; nine completed own rounds, local net growth, temporary allowance",
+    "local_repository_net_growth_bytes": 8003584,
     "round1_remote_allocated_bytes": 1687552,
     "round1_remote_temp_allocated_bytes": 12288,
     "unmeasured_local_temp_allowance_bytes": 1000000,
@@ -110,9 +112,10 @@
     "round6_remote_temp_allocated_bytes": 12288,
     "round7_remote_allocated_bytes": 2015232,
     "round7_remote_temp_allocated_bytes": 12288,
-    "accounted_usage_plus_live_round_reservation_bytes": 75838016,
+    "accounted_usage_plus_live_round_reservation_bytes": 26333760,
     "round8_remote_allocated_bytes": 2084864,
     "round8_remote_temp_allocated_bytes": 12288,
-    "round9_reserved_bytes": 52428800
+    "round9_remote_allocated_bytes": 2158592,
+    "round9_remote_temp_allocated_bytes": 12288
   }
 }

@@ -1,0 +1,221 @@
+{
+  "status": "COMPLETE",
+  "recorded_checks": 428,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true,
+    "no_matching": true,
+    "native_cost_bound": true,
+    "center_control": true
+  },
+  "costs": {
+    "forward": 500,
+    "extra_forward": 32,
+    "seconds": 80.06178092956543,
+    "new_secant": 1,
+    "native_match_attempts": 0,
+    "generation": 1,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1719898,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": true,
+  "candidate_evaluated": true,
+  "analytic": null,
+  "matching": null,
+  "main_gate": {
+    "native_nll": [
+      1.3595670461654663,
+      3.692440986633301
+    ],
+    "cumulative_null_change": -0.013334274291992188,
+    "combined_native_fisher_cost": 6.724196124598781e-14,
+    "gates": {
+      "null": false,
+      "visual": true,
+      "trust": true
+    },
+    "accepted": false
+  },
+  "main_margin": {
+    "target_position": 1,
+    "mean_nll": 1.3595670461654663,
+    "margin": -4.65625,
+    "nll": 4.810308456420898,
+    "probability": 0.008145347237586975,
+    "rank": 3,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 4.65625,
+    "fixed_competitor_margin": -4.65625,
+    "strongest_competitor_changed": false
+  },
+  "main_conditions": {
+    "actual_NLL_gain": 0.0785675048828125,
+    "NLL_floor": 1e-05,
+    "NLL_pass": true,
+    "margin": -4.65625,
+    "margin_reference": -5.359365,
+    "margin_gain": 0.703125,
+    "margin_pass": true,
+    "criterion": "new_monotone_path_not_old_fixed_per_step_A_comparison"
+  },
+  "main_margin_gain": 0.703125,
+  "correction_status": "APPLIED",
+  "final_gate": {
+    "native_nll": [
+      1.3609756231307983,
+      3.7059593200683594
+    ],
+    "cumulative_null_change": 0.00018405914306640625,
+    "combined_native_fisher_cost": 6.717078459325197e-14,
+    "gates": {
+      "null": true,
+      "visual": true,
+      "trust": true
+    },
+    "accepted": true
+  },
+  "final_margin": {
+    "target_position": 1,
+    "mean_nll": 1.3609756231307983,
+    "margin": -4.671875,
+    "nll": 4.8243513107299805,
+    "probability": 0.008031762205064297,
+    "rank": 3,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 4.671875,
+    "fixed_competitor_margin": -4.671875,
+    "strongest_competitor_changed": false
+  },
+  "final_conditions": {
+    "actual_NLL_gain": 0.07715892791748047,
+    "NLL_floor": 1e-05,
+    "NLL_pass": true,
+    "margin": -4.671875,
+    "margin_reference": -5.359365,
+    "margin_gain": 0.6875,
+    "margin_pass": true,
+    "criterion": "new_monotone_path_not_old_fixed_per_step_A_comparison"
+  },
+  "final_margin_gain": 0.6875,
+  "numerically_accepted": true,
+  "official_generation": {
+    "forwards": 1,
+    "sequence_length": 1,
+    "target_stats": {
+      "nll": 4.8243513107299805,
+      "probability": 0.008031762205064297,
+      "rank": 3,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 4.671875
+    },
+    "selected_matches_target": false,
+    "selected_is_processed_argmax": true,
+    "raw_vs_processed_max_difference": 0.0
+  },
+  "local_flip": false,
+  "round_completed_and_accepted": true,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "native_budget_validation": {
+    "continuous_target_cost": 6.85146725701001e-14,
+    "actual_native_F0_cost": 6.724196124598781e-14,
+    "budget_C_A": 5.368434395105091e-13,
+    "bound_pass": true,
+    "rounding_cost_gap_relative": -0.01857574846920751,
+    "not_an_equality_match": true,
+    "coefficients_unchanged": [
+      0.0,
+      0.35725653171539307
+    ],
+    "quadratic_recheck": {
+      "coefficients": [
+        0.0,
+        0.35725653171539307
+      ],
+      "predicted_NLL": -0.06388261328957837,
+      "predicted_margin": 0.5810840474146602,
+      "predicted_null": -0.011693963079790393,
+      "predicted_base_null": -0.009999999075273791,
+      "continuous_F0_cost": 6.851467238115065e-14,
+      "in_hull": true,
+      "NLL_pass": true,
+      "margin_pass": true,
+      "null_pass": true,
+      "cost_pass": true
+    },
+    "historical_seed_weight_direct_comparison": null
+  },
+  "overall_conditions": {
+    "actual_NLL_gain": 0.14975428581237793,
+    "NLL_floor": 0.07246601581573486,
+    "NLL_pass": true,
+    "margin": -4.671875,
+    "margin_reference": -5.4296875,
+    "margin_pass": true
+  },
+  "cumulative_F0_cost": 5.845923154965742e-13,
+  "continuation_start": {
+    "native_nll": [
+      1.4381345510482788,
+      3.7074692249298096
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.4381345510482788,
+      "margin": -5.359375,
+      "nll": 5.47253942489624,
+      "probability": 0.00420055165886879,
+      "rank": 4,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 5.359375,
+      "fixed_competitor_margin": -5.359375,
+      "strongest_competitor_changed": false
+    }
+  },
+  "center_control_forward_calls": 3,
+  "step_criterion": "new_monotone_path_not_old_fixed_per_step_A_comparison"
+}
