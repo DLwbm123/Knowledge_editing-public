@@ -1,3 +1,7 @@
+## 最新终态：QuantReserve前向前失败，结束经验加预留分支
+
+reports/vigor_responseQuantReserve_v1_20261020/completion：旧解析/FP32物化/加法/FP16参数写入NLL dot分解闭合0，FP16写入贡献+.000181308723主导旧提案一阶反号，不等于前向全链路精度或真实非线性证据。唯一新预留.000191809113仍使native NLL dot+1.1745868e-5，形成1/写入评估0，实际指标/翻转NA。495forward/81.032911秒、工程恢复退出通过；不补前向/再加预留/重试。下一独立必要机制可仅筛选原native提案逐坐标NLL降且margin升的非零更新，成本子集不增加但null投影破坏需明确并用原门把关，先冻结协议。
+
 ## 当前自主轮：参数写入损失分解和唯一解析加性预留
 
 reports/vigor_responseQuantReserve_v1_20261020/PROTOCOL_ZH.md：旧SmallDirection失败候选只内存重构，不安装/forward；分解解析目标、FP32物化、FP32加法有效更新与FP16参数写入三量dot/NLL闭合。唯一新NLL连续预留=1.05e-5+正(native_old−materialized_old NLL dot)，非统一误差界；新解析1/候选1，不匹配/刷预留/改成本。原小成本上界2.404374612e-15与native准入/真实原门/新单调路径比较保持，失败恢复停止不重试追加，900秒/600forward/50MiB。不能补旧前向或把参数写入分解冒称全链路FP32/纯曲率证据。
