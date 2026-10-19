@@ -1,0 +1,227 @@
+{
+  "status": "METADATA_COHORT_FROZEN_PATIENT_INDEPENDENCE_UNRESOLVED",
+  "source_record_counts": {
+    "train": 4490,
+    "eval": 2497
+  },
+  "historical_manifest_count": 10,
+  "historical_candidate_entries_including_archive_duplicates": 1047,
+  "historical_image_keys": 5116,
+  "historical_PMC_count": 1402,
+  "historical_edit_components": 584,
+  "cross_split_edit_components": 687,
+  "cross_split_PMC_count": 893,
+  "selected": {
+    "RETENTION_train": 32,
+    "RETENTION_eval": 32,
+    "EDIT_eval": 0
+  },
+  "exclusion_reason_counts": {
+    "HISTORICAL_NATIVE_CROSS_COMPONENT": 2863,
+    "CROSS_SPLIT_PMC": 1399,
+    "HISTORICAL_IMAGE": 2187,
+    "HISTORICAL_PMC": 1718,
+    "NEW_COHORT_ROLE_OR_GROUP_OVERLAP": 96,
+    "CROSS_SPLIT_EDIT_COMPONENT": 455
+  },
+  "patient_related_field_counts": {},
+  "other_case_study_field_counts": {},
+  "patient_independence": "UNKNOWN",
+  "strict_patient_independent_admission": false,
+  "actual_modality_admission": false,
+  "source_QA_admission": false,
+  "Base_admission": false,
+  "model_calls": 0,
+  "pixel_reads": 0,
+  "GPU_hours": 0,
+  "elapsed_seconds": 5.41988205909729,
+  "source_schema_fields": [
+    "alt",
+    "clinical_VQA_task",
+    "department",
+    "id",
+    "image",
+    "image_rephrase",
+    "loc",
+    "loc_ans",
+    "m_loc",
+    "m_loc_a",
+    "m_loc_q",
+    "modality",
+    "original_task",
+    "perceptual_granularity",
+    "port_new",
+    "pred",
+    "rephrase",
+    "src"
+  ],
+  "not_a_clinical_or_protection_result": true,
+  "edit_metadata_CT_rows_examined": 460,
+  "edit_only_new_role_allocation_exclusions": 0,
+  "edit_exclusion_combinations": [
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT"
+      ],
+      "count": 7
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC"
+      ],
+      "count": 18
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT"
+      ],
+      "count": 70
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT",
+        "HISTORICAL_PMC"
+      ],
+      "count": 66
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_PMC"
+      ],
+      "count": 2
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_PMC",
+        "NEW_COHORT_ROLE_OR_GROUP_OVERLAP"
+      ],
+      "count": 1
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT"
+      ],
+      "count": 37
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT",
+        "HISTORICAL_PMC"
+      ],
+      "count": 6
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_PMC"
+      ],
+      "count": 3
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "HISTORICAL_PMC",
+        "NEW_COHORT_ROLE_OR_GROUP_OVERLAP"
+      ],
+      "count": 3
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "CROSS_SPLIT_PMC",
+        "NEW_COHORT_ROLE_OR_GROUP_OVERLAP"
+      ],
+      "count": 8
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT"
+      ],
+      "count": 49
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT",
+        "HISTORICAL_PMC"
+      ],
+      "count": 130
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT",
+        "NEW_COHORT_ROLE_OR_GROUP_OVERLAP"
+      ],
+      "count": 2
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT"
+      ],
+      "count": 28
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT",
+        "HISTORICAL_PMC"
+      ],
+      "count": 8
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "HISTORICAL_PMC",
+        "NEW_COHORT_ROLE_OR_GROUP_OVERLAP"
+      ],
+      "count": 2
+    },
+    {
+      "reasons": [
+        "CROSS_SPLIT_EDIT_COMPONENT",
+        "NEW_COHORT_ROLE_OR_GROUP_OVERLAP"
+      ],
+      "count": 15
+    },
+    {
+      "reasons": [
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT"
+      ],
+      "count": 2
+    },
+    {
+      "reasons": [
+        "HISTORICAL_IMAGE",
+        "HISTORICAL_NATIVE_CROSS_COMPONENT",
+        "HISTORICAL_PMC"
+      ],
+      "count": 3
+    }
+  ]
+}
