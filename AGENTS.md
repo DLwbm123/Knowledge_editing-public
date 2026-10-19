@@ -1,3 +1,7 @@
+## 最新明确授权：E01两端逐token与首步生成验证
+
+协议reports/vigor_t0probe_v1_20261019/PROTOCOL_ZH.md。仅原E01重建一次原16步（16全/4半/20secant），基座/终点逐token及官方生成首步；原门/旧F0/trust/FP16保持。900秒/600forward，工作870秒/580forward预留恢复，只读≤16forward/2次单token生成/0Judge/50MiB。复核或恢复失败停止，无重试/追加/attempt2。先存状态与读数再判错，完整匿名交付。此为新明确授权，不重放其他失败轮，不改变正式八例性能。
+
 ## 最新终态：正式前八例生成编辑性能不通过
 
 reports/vigor_editperf8_v1_20261019/completion：250生成、246评分全齐；T0 0/8，T1G Fix0/29（PostAcc1/32），T2G2/32，T1L/T2L有效支持均0、NA。数值门6/8，E05/E06按唯一半步拒绝回滚停止；全部基座恢复、进程退出。累计GPU947.240471秒，保留首run失败成本；无缺评分/重判/checkpoint。不能将数值门当生成性能、不能宣称locality保护成功。完整匿名交付后无待启动候选，不自动attempt3/调门/扩样本/重评分，半小时监测ACTIVE。下述待运行/待答复仅历史。
