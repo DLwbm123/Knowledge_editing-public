@@ -1,3 +1,7 @@
+## 最新明确授权：E01固定完整H只读最小分解
+
+协议reports/vigor_hdecompose_v1_20261019/PROTOCOL_ZH.md。冻结旧H全部75/25解析系数及ratio0.9974240855956152，不重新匹配/半步/新secant/生成/Judge/接受编辑。仅已有可编辑层FP32参考F的W/W+u/W+q及native W/W+q；匹配后P对齐、历史/实际前向权重/基点及未舍入复读复核，失败保存恢复停止，无重试/追加/完整链路FP32。900秒/600forward，诊断20/50MiB，旧F0原门保持，完整匿名交付，无subagent。
+
 ## 最新终态：E01固定75/25 H主实际NLL与旧A余量失败
 
 reports/vigor_hybridH_v1_20261019/completion：STOPPED_MAIN_ACTUAL_NLL_FAILED。H仅一个、native匹配一次误差0.0019531062%通过，正交/分量成本通过；主NLL1.598409534高于起点1.510729909，余量改善0.421875低于旧A主0.4453125，visual/null拒绝、trust过。新secant/生成/Judge0，补偿后和官方首步翻转NA。339检查PASS，480/600forward（新增12/64）、79.195524秒，全部恢复及主GPU进程退出。完整匿名交付后无待启动候选，不自动调75/25/缩步/追加/重试，无subagent。
