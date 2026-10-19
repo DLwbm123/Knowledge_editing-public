@@ -1,3 +1,7 @@
+## 当前自主轮：参数写入损失分解和唯一解析加性预留
+
+reports/vigor_responseQuantReserve_v1_20261020/PROTOCOL_ZH.md：旧SmallDirection失败候选只内存重构，不安装/forward；分解解析目标、FP32物化、FP32加法有效更新与FP16参数写入三量dot/NLL闭合。唯一新NLL连续预留=1.05e-5+正(native_old−materialized_old NLL dot)，非统一误差界；新解析1/候选1，不匹配/刷预留/改成本。原小成本上界2.404374612e-15与native准入/真实原门/新单调路径比较保持，失败恢复停止不重试追加，900秒/600forward/50MiB。不能补旧前向或把参数写入分解冒称全链路FP32/纯曲率证据。
+
 ## 最新终态：SmallDirection写入前NLL一阶准入失败
 
 reports/vigor_responseSmallDirection_v1_20261020/completion：457检查PASS、495forward/79.945314秒、恢复退出。候选形成1但写入/评估0，实际指标/原候选门/翻转NA。连续目标NLL−1.05e-5、native一阶+.000170809，成本/margin/null预测过；连续→native差+.000181309含物化/加法/写入，不能唯一称纯FP16或实际非线性。不得补旧候选前向/重试/调预留刷候选。下一独立必要验证先冻结写入损失内存分解和唯一解析正损失预留规则，原成本/原门不改，仍native预测和实际门判定。
