@@ -47,7 +47,7 @@ def summarize(root,v18):
         metrics[arm]=m
     counts=collections.Counter()
     for g in (0,1):counts.update(read(root/str(g)/'EXIT.json')['counts'])
-    out=dict(status='COMPLETE',natural_consumers=140,unique_queries=28,independent_edit_sources=2,arms=metrics,counts=dict(counts),evidence_scope='TWO_EXPERT_DEVELOPMENT_DIAGNOSIS_NOT_146_OR_PATIENT_INDEPENDENT',scores_missing=0);write(root/'RESULTS_PRIVATE.json',out);return out
+    prefetch_seconds=sum(read(root/str(g)/'PREFETCH_EXIT.json')['seconds'] for g in (0,1));out=dict(prefetch_GPU_process_seconds=prefetch_seconds,status='COMPLETE',natural_consumers=140,unique_queries=28,independent_edit_sources=2,arms=metrics,counts=dict(counts),evidence_scope='TWO_EXPERT_DEVELOPMENT_DIAGNOSIS_NOT_146_OR_PATIENT_INDEPENDENT',scores_missing=0);write(root/'RESULTS_PRIVATE.json',out);return out
 
 def retire(root):
     import time
@@ -55,7 +55,7 @@ def retire(root):
     assert len(read(root/'BE_SINGLE_REUSE_INDEX.json'))==100
     paths=[]
     for a in read(root/'START.json'):
-        p=Path('/proc')/str(a['pid']);assert not p.exists() or (p/'stat').read_text().split()[21]!=str(a['start_ticks']);assert read(root/str(a['gpu'])/'EXIT.json')['code']==0;paths.append(root/str(a['gpu'])/'QUERY_KEYS.pt')
+        p=Path('/proc')/str(a['pid']);assert not p.exists() or (p/'stat').read_text().split()[21]!=str(a['start_ticks']);assert read(root/str(a.get('partition',a['gpu']))/'EXIT.json')['code']==0;paths.extend([root/str(a.get('partition',a['gpu']))/'QUERY_KEYS.pt',root/str(a.get('partition',a['gpu']))/'QUERY_CACHE.pt'])
     assert all(p.is_file() and not p.is_symlink() and root.resolve() in p.resolve().parents for p in paths)
     receipt=dict(count=len(paths),bytes=sum(p.stat().st_size for p in paths),reason='All routing outputs and bindings persisted; no model-state copies created',time=time.time())
     for p in paths:p.unlink()

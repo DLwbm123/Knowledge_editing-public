@@ -18,7 +18,7 @@ def budget():
 
 def main():
     with (OUT/'ATTEMPT').open('x'):pass
-    sys.path[:0]=[str(OUT/'tools'),str(V18/os.environ['GPU']/'tools'),str(P/'private/tools'),str(P/'private/source'),str(P/'private/official_llava')]
+    sys.path[:0]=[str(OUT/'tools'),str(V18/os.environ.get('PARTITION',os.environ['GPU'])/'tools'),str(P/'private/tools'),str(P/'private/source'),str(P/'private/official_llava')]
     import torch
     import module_run as r
     import route_math_v19 as math
@@ -36,11 +36,12 @@ def main():
     handle=runtime.model.register_forward_pre_hook(count);vision=runtime.model.get_vision_tower().register_forward_pre_hook(lambda *_:counts.__setitem__('vision_forwards',counts['vision_forwards']+1))
     write(OUT/'MODEL_READY.json',dict(time=time.time(),gpu=os.environ['GPU'],commands=subprocess.check_output(['ps','-ww','-p',str(os.getpid()),'-o','pid=,args='],text=True)))
     try:
+        prefetch=torch.load(OUT/'QUERY_CACHE.pt',map_location='cpu',weights_only=True);assert read(OUT/'PREFETCH_EXIT.json')['code']==0;counts.update(prefetch['counts'])
         entries=[]
         for i,t in enumerate(tasks):
             state=torch.load(V18/str(i)/t['key']/'BALANCEDIT.pt',map_location='cpu',weights_only=True);es=state['router']['entries'];assert len(es)==1 and es[0]['logical_edit_id']==t['key'];entries+=es
         router=MemoryRouter.from_state(dict(distance='euclidean',entries=entries),device=runtime.device)
-        template=read(P/'private/M13_SOURCE_PACKET.json')['original_tasks'][4];bindings=read(P/'private/EVAL_BINDINGS.json');assigned=rows[int(os.environ['GPU'])::2];assert len(assigned)==14
+        template=read(P/'private/M13_SOURCE_PACKET.json')['original_tasks'][4];bindings=read(P/'private/EVAL_BINDINGS.json');assigned=rows[int(os.environ.get('PARTITION',os.environ['GPU']))::2];assert len(assigned)==14
         runtime.model.half();items=r.s.prepare(runtime,bindings,template,assigned,False);r.old.fp32(runtime)
         forced={}
         for i,t in enumerate(tasks):
@@ -48,9 +49,7 @@ def main():
         records=[];saved_keys={};owner={t[k]['query_id']:t['key'] for t in tasks for k in ('source','cross','rephrase')}
         for row,_,raw,expanded,binding in items:
             budget();qid=row['query_id'];prior=read(base[qid]);assert math.same_input(binding,prior['binding']);assert raw['preprocessing_seed']==prior['binding']['preprocessing_seed']
-            batch=runtime.build_question_batch(r.s.record(template,row));assert batch.image_sha256==binding['image_sha256'] and batch.raw_input_ids[0].tolist()==binding['prompt_ids'] and batch.preprocessing_seed==raw['preprocessing_seed']
-            with torch.inference_mode():key=runtime.extract_layer_input_key(batch,module_path=runtime.target_lock['balancedit']['targets'][0],pooling='mean')
-            counts['route_keys']+=1;saved_keys[qid]=key.detach().cpu();decision=router.route(key);route=decision_as_json(decision);selected=decision.logical_edit_id if decision.activated else None
+            assert math.same_input(binding,prefetch['bindings'][qid]);key=prefetch['keys'][qid].to(runtime.device);saved_keys[qid]=key.detach().cpu();decision=router.route(key);route=decision_as_json(decision);selected=decision.logical_edit_id if decision.activated else None
             if qid.endswith('_SOURCE'):
                 entry=next(x for x in entries if x['logical_edit_id']==owner[qid]);difference=float((key.detach().cpu()-torch.as_tensor(entry['key'])).abs().max());assert difference<=1e-6,'Saved native router key mismatch';write(OUT/'NATIVE_KEY_ADMISSION.json',dict(status='PASS',max_difference=difference,reused_saved_anchor=True))
             write(OUT/'routes'/(qid+'.json'),dict(route=route,preprocessing_seed=raw['preprocessing_seed'],binding=binding,counts=counts))
