@@ -1,3 +1,7 @@
+## 最新终态：Native新端点局部方向诊断完成
+
+reports/vigor_responseEndpoint_v1_20261020/completion：450核验PASS、494forward/98.487580秒，候选/生成/新secant0，全部恢复退出。同一旧Native主有效增量新端点NLL/margin/null dot[-.040357556,+.431782605,-.026567529]，仍局部双收益但null敏感性显著增强；旧R3同向量[-.107322718,+.886399712,-.000623024]。可编辑层FP32非全链路，有限步结果NA。下一必要干预须按真实剩余null余量界定单一保守步长，不盲加/扫描，冻结协议后再独立测试，旧结果不改写。
+
 ## 当前自主轮：Native成功终点只读方向导数
 
 reports/vigor_responseEndpoint_v1_20261020/PROTOCOL_ZH.md：先离线审计旧代理低估三量响应；唯一新增科学读数为Native已接受终点的NLL/固定竞争者margin/null梯度（2forward），对同一qRefresh与上次Native主有效增量核旧R3/新终点g·q。不试走方向/不拟合新模型/新候选0/匹配0/新补偿0/生成0，历史成功补偿仅冻结alpha内存重建，必要控制复核后恢复。900秒/600forward/新增64/50MiB；任一绑定/复核/恢复失败停止不重试。局部导数不等同新端点有限步可接受。
