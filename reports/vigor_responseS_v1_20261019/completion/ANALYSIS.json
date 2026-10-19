@@ -1,0 +1,247 @@
+{
+  "status": "STOPPED_QUANTIZED_MODEL_CONSTRAINT_FAILED",
+  "recorded_checks": 342,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true
+  },
+  "costs": {
+    "forward": 477,
+    "extra_forward": 9,
+    "seconds": 103.67054152488708,
+    "new_secant": 0,
+    "native_match_attempts": 1,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1286249,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": false,
+  "candidate_evaluated": false,
+  "analytic": {
+    "NLL_energy": 84500122973.39484,
+    "margin_energy": 702681749793.0122,
+    "cross": -15257790430.60708,
+    "cost": 5.368434395105091e-13,
+    "NLL_floor": 0.07246601581573486,
+    "required_margin_gain": 0.4453125,
+    "minimum_NLL_cost": 3.1072874591317065e-14,
+    "free_linear_NLL_change": -0.01886041008073587,
+    "constraint_active": true,
+    "perpendicular_energy": 699926722218.7018,
+    "status": "ELIGIBLE",
+    "predicted_NLL_change": -0.07246601581573486,
+    "predicted_margin_gain": 0.8545149804216317,
+    "NLL_scale": -8.575847379364293e-13,
+    "perpendicular_scale": 1.2021688921183867e-12
+  },
+  "matching": {
+    "seed_native_F0_cost": 5.493305442847475e-13,
+    "target_native_F0_cost": 5.368434395105091e-13,
+    "ratio": 0.9885689174450921,
+    "ratio_applications": 1,
+    "actual_native_F0_cost": 5.370279611898679e-13,
+    "relative_error": 0.0003437159994488237,
+    "tolerance": 0.01,
+    "native_delta_l2": 0.03142367446961034,
+    "changed_elements": 41499546,
+    "prediction_model": "A_H_secant_calibrated_vectors_not_true_gradients",
+    "native_calibrated_NLL_change": -0.07128332209091041,
+    "native_calibrated_margin_gain": 0.8376433741040216,
+    "native_calibrated_null_change": -0.0008170267374967152
+  },
+  "main_gate": null,
+  "main_margin": null,
+  "main_conditions": null,
+  "main_margin_gain": null,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": {
+    "Gram": [
+      [
+        1.0736868790210181e-12,
+        9.181099329024013e-13
+      ],
+      [
+        9.181099329024015e-13,
+        1.0737078492660301e-12
+      ]
+    ],
+    "condition_max": 10000.0,
+    "responses": [
+      [
+        -0.07246601581573486,
+        0.08767962455749512
+      ],
+      [
+        0.4453125,
+        0.421875
+      ],
+      [
+        -0.07164859771728516,
+        -0.11273932456970215
+      ]
+    ],
+    "normalized_Gram": [
+      [
+        1.0,
+        0.8550919128674066
+      ],
+      [
+        0.8550919128674067,
+        1.0
+      ]
+    ],
+    "eigenvalues": [
+      0.14490808713259323,
+      1.8550919128674068
+    ],
+    "condition": 12.801852191796362,
+    "condition_infinite": false,
+    "vectors": [
+      {
+        "quantity": "NLL",
+        "before": [
+          -0.30462159422541646,
+          -0.26377901406357784
+        ],
+        "observed": [
+          -0.07246601581573486,
+          0.08767962455749512
+        ],
+        "coefficients": [
+          -236884019079.4092,
+          529887352386.07214
+        ],
+        "fitted": [
+          -0.07246601573310213,
+          0.08767962461856771
+        ],
+        "absolute_errors": [
+          8.263273398867454e-11,
+          6.107259142851262e-11
+        ]
+      },
+      {
+        "quantity": "margin",
+        "before": [
+          1.6459236408741293,
+          2.8740037902207276
+        ],
+        "observed": [
+          0.4453125,
+          0.421875
+        ],
+        "coefficients": [
+          3104929435053.157,
+          -4938769283589.555
+        ],
+        "fitted": [
+          0.445312500420411,
+          0.4218750005027253
+        ],
+        "absolute_errors": [
+          4.204109838035208e-10,
+          5.027253058287329e-10
+        ]
+      },
+      {
+        "quantity": "null",
+        "before": [
+          2.4416887286465632e-05,
+          -0.0005208826715252218
+        ],
+        "observed": [
+          -0.07164859771728516,
+          -0.11273932456970215
+        ],
+        "coefficients": [
+          84133503038.681,
+          -176456050737.98962
+        ],
+        "fitted": [
+          -0.07164859778207988,
+          -0.11273932468544375
+        ],
+        "absolute_errors": [
+          6.479472514087092e-11,
+          1.1574159686222885e-10
+        ]
+      }
+    ],
+    "status": "PASS"
+  },
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": {
+    "NLL": {
+      "status": "OK",
+      "E": 84500122973.39484,
+      "kvv": 84554364013.07434,
+      "k00": 855594147459.5632,
+      "kv0": -6812361111.763027,
+      "null_directional_derivative": 355.4589006304741
+    },
+    "margin": {
+      "status": "OK",
+      "E": 702681749793.0122,
+      "kvv": 1081981182694.033,
+      "k00": 855594147459.5632,
+      "kv0": 569672164530.4836,
+      "null_directional_derivative": 8130.804690241814
+    }
+  },
+  "analytic_recheck": {
+    "F0_cost": 5.36843444624345e-13,
+    "calibrated_NLL": -0.07246601570888592,
+    "calibrated_margin": 0.8545149912546952,
+    "normalized_null": 1.034356517798422e-08
+  },
+  "historical_endpoint_forward_calls": 0
+}
