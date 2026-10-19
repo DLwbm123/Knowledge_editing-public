@@ -1,3 +1,7 @@
+## 当前自主轮：R3仅增加第三有限响应锚点
+
+12小时授权内独立protocol reports/vigor_response3_v1_20261019/PROTOCOL_ZH.md。固定5%求解预留、全部实际门/旧F0/原secant不改；三历史锚点仅内存重建，不重评或重新匹配历史。最多一个新方向/匹配1/secant1/官方首步1，900秒/600forward/50MiB。校准/复核/实际条件失败保存恢复停止本轮，不扫描比例。
+
 ## 最新终态：Sreserve原门通过、旧A比较底线未达
 
 reports/vigor_responseReserve_v1_20261019/completion：STOPPED_MAIN_ACTUAL_NLL_FAILED，348检查PASS，480forward/79.937433秒。实际NLL1.441345215降0.069384694，余量−5.359375改善0.5078125，原三门全部通过；冻结下降0.072466016未达，按协议恢复停止，新secant/生成/Judge0，官方翻转NA。12小时自主授权仍有效，但不改写终态或调门；下一必要轮先冻结再运行。
