@@ -16,7 +16,11 @@ def run(runtime,r,out,gpu,counts):
         path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_suffix('.tmp');tmp.write_text(json.dumps(v,indent=2,default=str)+'\n');tmp.replace(path)
     def save(path,v):
         path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);tmp=path.with_suffix('.tmp');torch.save(v,tmp);tmp.replace(path)
+    last_assets=[0.]
     def budget():
+        if time.time()-last_assets[0]>60:
+            assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file())<16*1024**3
+            last_assets[0]=time.time()
         assert time.time()<float(os.environ['DEADLINE_EPOCH']) and not (root/'STOP').exists()
         assert counts['updates']<=900 and counts['backwards']<=50000 and counts['forwards']<=3000000 and counts['generations']<=175
         assert shutil.disk_usage(root).free>8*1024**3
@@ -83,6 +87,9 @@ def run(runtime,r,out,gpu,counts):
                                 value,g=nll(batch,needs_grad);values.append(value)
                                 if arm in ('CE_PROJ','RESERVE'):grads.append(g)
                                 elif arm=='CE' and i%2==0:total+=g/24
+                        if step==1:
+                            difference=max(abs(a-b) for a,b in zip(anchor,values));assert difference<=1e-6,'Initial shared support numerical binding drift'
+                            write(dest/'ENGINEERING_ADMISSION.json',dict(status='PASS',shared_support_NLL_difference=difference,zero_constraint_same_path=True,content_expressions=48))
                         raw,updated,direction=proposal(r,before,total,scalar,keys);empty=torch.empty((0,direction.numel()));zero,zero_audit=project(direction,empty,torch.empty(0));full=construct(r,before,raw,direction,direction,1.,keys);assert same(full,construct(r,before,raw,direction,zero,1.,keys))
                         limit=r.fm.map_norm(before,full);accepted=None;qp=None
                         if arm in ('CE_PROJ','RESERVE'):
