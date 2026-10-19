@@ -17,6 +17,8 @@ def main():
     assert time.time()<limit,'Original global deadline reached before dependency admission'
     sys.path.insert(0,str(V18/'0/tools'));import consumers_v18
     records,expected=consumers_v18.collect(V18);assert consumers_v18.validate(records,expected)['outputs']==350
+    sys.path.insert(0,str(ROOT/'tools'));from audit_v19 import inventory_be
+    write('BE_SINGLE_REUSE_SUMMARY.json',inventory_be(V18,ROOT))
     for a in read(V18/'FORMAL_START.json'):
         assert read(V18/str(a['gpu'])/'FORMAL_EXIT.json')['code']==0
         p=Path('/proc')/str(a['pid']);assert not p.exists() or (p/'stat').read_text().split()[21]!=str(a['start_ticks'])

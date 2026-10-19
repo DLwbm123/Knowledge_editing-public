@@ -51,6 +51,8 @@ def summarize(root,v18):
 
 def retire(root):
     import time
+    v18=Path(read(root/'RUN_CONFIG.json')['V18_RUN']);collect(root,v18)
+    assert len(read(root/'BE_SINGLE_REUSE_INDEX.json'))==100
     paths=[]
     for a in read(root/'START.json'):
         p=Path('/proc')/str(a['pid']);assert not p.exists() or (p/'stat').read_text().split()[21]!=str(a['start_ticks']);assert read(root/str(a['gpu'])/'EXIT.json')['code']==0;paths.append(root/str(a['gpu'])/'QUERY_KEYS.pt')

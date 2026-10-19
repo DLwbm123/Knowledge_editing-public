@@ -4,10 +4,14 @@ from pathlib import Path
 from types import SimpleNamespace
 OUT=Path(os.environ['OUTPUT_RUN']);ROOT=OUT.parent;V18=Path(os.environ['V18_RUN']);P=Path(os.environ['PARENT_RUN']);began=time.time()
 counts=dict(forwards=0,vision_forwards=0,generations=0,backwards=0,updates=0,route_keys=0)
+last_assets=[0.]
 def read(p):return json.loads(Path(p).read_text())
 def write(p,value):
     p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);tmp=p.with_suffix('.tmp');tmp.write_text(json.dumps(value,indent=2)+'\n');tmp.replace(p)
 def budget():
+    if time.time()-last_assets[0]>60:
+        assert sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file())<128*1024**2
+        last_assets[0]=time.time()
     assert time.time()<float(os.environ['DEADLINE_EPOCH']) and not (ROOT/'STOP').exists()
     assert counts['forwards']<=20000 and counts['generations']<=15 and counts['route_keys']<=14 and counts['vision_forwards']<=50 and counts['backwards']==counts['updates']==0
     assert shutil.disk_usage(ROOT).free>8*1024**3
@@ -62,7 +66,7 @@ def main():
                     tokens=list(answer.raw_token_ids);write(output,dict(binding=dict(binding,preprocessing_seed=raw['preprocessing_seed']),raw_answer=answer.decoded_text,raw_token_ids=tokens,generation_trace=trace,EOS=bool(tokens) and tokens[-1]==runtime.adapter.tokenizer.eos_token_id,at_cap=len(tokens)>=1024,selected_expert=selected));del expert
                 records.append(dict(arm=arm,query_id=qid,route_source='FROZEN_R0_TWO_EXPERT',route=route,expected_expert=owner.get(qid),expected_action='OWN_EXPERT' if qid in owner else 'OFF',output_path=str(output),reuse=choice['kind']!='MISSING',reuse_kind=choice['kind']))
             write(OUT/'PROGRESS.json',dict(completed_queries=counts['route_keys'],counts=counts,time=time.time()))
-        assert math.validate(records,[(arm,x['query_id']) for arm in math.ARMS for x in assigned])==70
+        budget();assert math.validate(records,[(arm,x['query_id']) for arm in math.ARMS for x in assigned])==70
         torch.save(saved_keys,OUT/'QUERY_KEYS.pt');write(OUT/'CONSUMERS.json',records);write(OUT/'COMPLETE.json',dict(status='COMPLETE',queries=14,consumers=70,counts=counts,seconds=time.time()-began))
     finally:handle.remove();vision.remove()
 if __name__=='__main__':
