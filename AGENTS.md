@@ -1,3 +1,7 @@
+## 最新明确批准：当前Base与post配对正式评测
+
+用户已批准PROPOSED_BASE_AMENDMENT_ZH.md：同正式前八例/算法，Judge上限246，生成仍250且首轮5次已计费；复用已完成输出，Q003仅一次资格复读，不一致停止。attempt2独立目录，旧失败保留，不自动重试。当前Base盲评分决定主掩码，历史掩码次报，缺失及locality分母保留。单GPU累计3600秒/原启动墙钟10800秒/256MiB。下述“待答复/123评分”仅历史。
+
 ## 当前正式性能评测：Base绑定失败，预算修订待用户决定
 
 reports/vigor_editperf8_v1_20261019：用户已改正式前八例，首run Q003 Base当前/历史输出不一致，3唯一Base+2复读=5生成，197forward，编辑/评分0，已退出。五任务未评估。保留failure_attempt1，未重放。PROPOSED_BASE_AMENDMENT_ZH.md已提出当前Base+post配对、Judge123→246且总生成仍250，异步问题待用户答复；未答前禁止恢复或评分。

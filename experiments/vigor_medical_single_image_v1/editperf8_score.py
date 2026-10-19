@@ -2,7 +2,7 @@
 import json,os,sys,time,subprocess,tempfile,threading,signal,traceback
 from pathlib import Path
 
-ROOT='/data/bmw/Knowledge_editing/outputs/vigor-editperf8-v1-20261019/run'
+ROOT='/data/bmw/Knowledge_editing/outputs/vigor-editperf8-v1-20261019/attempt2'
 
 
 def remote(code):
@@ -22,13 +22,18 @@ if not (r/'ENDED.json').exists():print(json.dumps(dict(ready=False,status=status
 elif status['status']!='GENERATION_COMPLETE':print(json.dumps(dict(ready=True,failed=True,status=status)))
 else:
  m=json.loads((r/'private/MANIFEST.json').read_text());packets=[]
+ for alias,row in m['queries'].items():
+  p=r/'private/outputs/base'/(alias+'.json')
+  if p.exists():
+   d=json.loads(p.read_text())
+   if d['status']=='COMPLETE':packets.append(dict(opaque_query_id='B_'+alias,question=row['question'],gold_answer=row['reference'],raw_base_answer=d['raw_answer']))
  for t in m['tasks']:
   for e in t['panel']:
    p=r/'private/outputs'/t['alias']/(e['query']+'.json')
    if p.exists():
     d=json.loads(p.read_text());row=m['queries'][e['query']]
     if d['status']=='COMPLETE':packets.append(dict(opaque_query_id=t['alias']+'_'+e['query'],question=row['question'],gold_answer=row['reference'],raw_base_answer=d['raw_answer']))
- print(json.dumps(dict(ready=True,failed=False,packets=packets,launch=json.loads((r/'private/LAUNCH.json').read_text()))))
+ print(json.dumps(dict(ready=True,failed=False,packets=packets,launch=dict(epoch=json.loads((r/'private/config.json').read_text())['original_launch_epoch']))))
 ''')
 
 
@@ -53,8 +58,8 @@ def main():
     if data['failed']:
         publish('SUMMARY.json',dict(status='NOT_STARTED_GENERATION_FAILED',new_payload_attempts=0,missing=True));return
     wall=data['launch']['epoch']+10800
-    packets=data['packets'];assert len(packets)<=123 and len({r['opaque_query_id'] for r in packets})==len(packets)
-    if len(json.dumps(packets).encode())>1048576:raise ValueError('Judge input byte ceiling')
+    packets=data['packets'];assert len(packets)<=246 and len({r['opaque_query_id'] for r in packets})==len(packets)
+    if len(json.dumps(packets).encode())>2097152:raise ValueError('Judge input byte ceiling')
     scores={};attempts=0;transport_failures=0;usage=[]
     cli=Path('/Applications/ChatGPT.app/Contents/Resources/codex-cli/bin/codex')
     for offset in range(0,len(packets),25):
