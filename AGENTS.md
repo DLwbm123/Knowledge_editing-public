@@ -1,3 +1,7 @@
+## 最新明确授权：E01终点NLL/竞争余量A/B唯一成本匹配
+
+协议reports/vigor_marginab_v1_20261019/PROTOCOL_ZH.md。原E01只重建一次旧轨迹后，A一次NLL d/16候选，B同起点margin方向一次native F0成本比例匹配（误差≤1%）；保持旧F0/原null/visual/trust/secant。新候选无半步救援，≤2主+2secant/2单token生成/0Judge，900秒/600forward/50MiB；复核、恢复、匹配或预算失败停止整轮，无重试/追加/attempt2。匹配主成本，补偿后成本单报；拒绝臂只读结果不当安全编辑。完整匿名交付，旧正式性能不改写，无subagent。
+
 ## 最新终态：E01首步三路径一致，概率提高但未翻转
 
 reports/vigor_t0probe_v1_20261019/completion：COMPLETE，原E01轨迹复核全部通过，478/600forward、10只读、2单token生成、99.950533秒；所有恢复/进程退出通过。两端teacher首位置/问题prefill/官方generate raw/processed logits差均0。首token概率2.6428e-7→0.00254007、排名110→7，仍非top1；降损首token37.52%、其他内容61.39%、EOS1.09%，不能称仅尾部/EOS改善。第3/11目标token仍rank30/2。仅E01机制证据，不重写八例T0、不宣称全解码无误，不自动下一轮/attempt2/调参。完整匿名公开交付后监测ACTIVE，无待启动候选。
