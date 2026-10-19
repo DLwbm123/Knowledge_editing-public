@@ -1,3 +1,7 @@
+## 最新终态：R3终点原始NLL方向也失败
+
+reports/vigor_responseNcontrol_v1_20261020/completion：379检查PASS、485forward/77.481238秒、恢复退出；NLL1.594661832升0.156976938，margin−7.4765625退2.1171875，visual/null拒绝trust过。匹配误差0.003284123%，secant/生成/Judge0/官方翻转NA；不是仅margin校准失败。离线二次screen预测margin最大约0.13765<0.4453125，不盲目缩步；该模型非真实全尺度不可行证明。下一必要验证先冻结有界有限响应模型，不扫描方向/尺度。
+
 ## 当前自主轮：同R3终点原始局部NLL方向控制
 
 protocol reports/vigor_responseNcontrol_v1_20261020/PROTOCOL_ZH.md。仅一个原始局部NLL/null投影方向、旧F0同成本匹配1；不做新有限响应校准或margin方向。R3控制3forward+梯度2forward，失败Follow端点不重评。实际下降/余量比较门和原门保持，secant最多1，900秒/600forward/50MiB，失败保存恢复停止本轮。

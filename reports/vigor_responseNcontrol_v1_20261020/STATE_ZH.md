@@ -1,3 +1,3 @@
-# 状态
+# 终态
 
-RUNNING：原始局部NLL方向控制已后台启动，CPU/存储/显存与主/GPU中性argv核验通过；正在重建必要原控制，尚无候选结果。
+STOPPED_MAIN_ACTUAL_NLL_FAILED：原始NLL方向新步NLL升0.156976938、margin退2.1171875，visual/null拒绝，全部恢复退出，待公开回执。
