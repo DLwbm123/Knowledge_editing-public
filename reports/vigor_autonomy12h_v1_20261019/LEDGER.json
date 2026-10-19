@@ -38,9 +38,10 @@
     },
     {
       "name": "responseNcontrol",
-      "status": "PREPARING",
+      "status": "RUNNING",
       "gpu_seconds_reserved": 900,
-      "new_disk_bytes_reserved": 52428800
+      "new_disk_bytes_reserved": 52428800,
+      "source_commit": "739ef194ccde81e6a5b5a6632f16fd85fbc52524"
     }
   ],
   "cumulative_gpu_seconds_actual": 316.34735679626465,
@@ -50,8 +51,8 @@
   "internal_byte_ceiling": 18000000000,
   "rounds_max": 24,
   "disk_accounting": {
-    "measurement": "allocated KiB via du; three complete rounds plus fourth reserved",
-    "local_repository_net_growth_bytes": 2744320,
+    "measurement": "allocated KiB via du; four completed rounds plus fifth reserved",
+    "local_repository_net_growth_bytes": 3620864,
     "round1_remote_allocated_bytes": 1687552,
     "round1_remote_temp_allocated_bytes": 12288,
     "unmeasured_local_temp_allowance_bytes": 1000000,
@@ -60,6 +61,8 @@
     "round2_remote_temp_allocated_bytes": 12288,
     "round3_remote_allocated_bytes": 1794048,
     "round3_remote_temp_allocated_bytes": 12288,
-    "round4_reserved_bytes": 52428800
+    "round4_remote_allocated_bytes": 1851392,
+    "round4_remote_temp_allocated_bytes": 12288,
+    "round5_reserved_bytes": 52428800
   }
 }
