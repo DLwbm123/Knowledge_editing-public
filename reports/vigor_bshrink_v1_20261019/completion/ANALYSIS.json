@@ -1,0 +1,120 @@
+{
+  "status": "STOPPED_NO_ELIGIBLE_SCALE",
+  "recorded_checks": 334,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true
+  },
+  "costs": {
+    "forward": 485,
+    "extra_forward": 17,
+    "seconds": 80.35673141479492,
+    "new_secant": 0,
+    "new_cost_matching": 0,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 2,
+    "disk_bytes": 1178821,
+    "checkpoint_count": 0
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "new_cost_matching": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true
+  },
+  "preselected_scale": null,
+  "selected_scale": null,
+  "candidates": [
+    {
+      "alpha": 0.5,
+      "status": "MAIN_REJECTED",
+      "main_NLL": 1.562448501586914,
+      "main_actual_NLL_gain": -0.05171859264373779,
+      "NLL_floor": 0.03623300790786743,
+      "main_NLL_pass": false,
+      "main_margin": -5.328125,
+      "main_margin_gain": 0.5390625,
+      "main_margin_pass": true,
+      "main_gate": {
+        "native_nll": [
+          1.562448501586914,
+          3.6687214374542236
+        ],
+        "cumulative_null_change": -0.037053823471069336,
+        "combined_native_fisher_cost": 1.339981618484197e-13,
+        "gates": {
+          "null": false,
+          "visual": false,
+          "trust": true
+        },
+        "accepted": false
+      },
+      "main_F0_cost": 1.339981618484197e-13,
+      "secant_applied": null,
+      "final_NLL": null,
+      "final_actual_NLL_gain": null,
+      "final_margin": null,
+      "final_margin_gain": null,
+      "final_gate": null,
+      "accepted": false,
+      "generation": null,
+      "local_flip": null,
+      "endpoint_restored": true
+    },
+    {
+      "alpha": 0.25,
+      "status": "MAIN_REJECTED",
+      "main_NLL": 1.5140033960342407,
+      "main_actual_NLL_gain": -0.003273487091064453,
+      "NLL_floor": 0.018116503953933716,
+      "main_NLL_pass": false,
+      "main_margin": -5.40625,
+      "main_margin_gain": 0.4609375,
+      "main_margin_pass": true,
+      "main_gate": {
+        "native_nll": [
+          1.5140033960342407,
+          3.691864013671875
+        ],
+        "cumulative_null_change": -0.013911247253417969,
+        "combined_native_fisher_cost": 3.304012669066771e-14,
+        "gates": {
+          "null": false,
+          "visual": false,
+          "trust": true
+        },
+        "accepted": false
+      },
+      "main_F0_cost": 3.304012669066771e-14,
+      "secant_applied": null,
+      "final_NLL": null,
+      "final_actual_NLL_gain": null,
+      "final_margin": null,
+      "final_margin_gain": null,
+      "final_gate": null,
+      "accepted": false,
+      "generation": null,
+      "local_flip": null,
+      "endpoint_restored": true
+    }
+  ],
+  "frozen_order_pass": true,
+  "first_eligible_search_closed": true,
+  "all_candidate_restores_pass": true,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "generation_missing_reason": "NO_FINAL_ELIGIBLE_CANDIDATE"
+}
