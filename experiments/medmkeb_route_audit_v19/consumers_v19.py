@@ -60,3 +60,12 @@ def retire(root):
     receipt=dict(count=len(paths),bytes=sum(p.stat().st_size for p in paths),reason='All routing outputs and bindings persisted; no model-state copies created',time=time.time())
     for p in paths:p.unlink()
     write(root/'RETIREMENT.json',receipt);return receipt
+
+def be_single_summary(root,v18):
+    """Keep the existing BE single-gated diagnostic separate from the TT bank."""
+    tasks=read(v18/'DATA_ADMISSION.json')['tasks'];base={r['query_id']:r['label'] for r in read(v18/'BASE_VERDICTS.json')['rows']};vlabels={tuple(key):read(v18/'BLIND_VERDICTS.json')[code]['label'] for code,keys in read(v18/'BLIND_ALIASES.json').items() for key in keys};rows=read(root/'BE_SINGLE_REUSE_INDEX.json');assert len(rows)==100;result={}
+    for arm in ('BALANCEDIT','BALANCEDIT_CE'):
+        assigned=[r for r in rows if r['arm']==arm]
+        def verdict(row):return vlabels[row['task'],arm,row['query_id']] if row['reuse']=='FORCED' else base[row['query_id']]
+        metrics={kind:sum(verdict(r)=='CORRECT' for r in assigned if r['query_id'] in {t[kind]['query_id'] for t in tasks}) for kind in ('source','cross','rephrase')};eval_ids={q['query_id'] for q in read(v18/'EVAL_ROWS.json')};retained=[r for r in assigned if r['query_id'] in eval_ids and base[r['query_id']]=='CORRECT'];assert len(retained)==20;metrics.update(denominator=2,retention_Base_correct_pairs=20,retention_labels=dict(collections.Counter(verdict(r) for r in retained)),routing_mode='SINGLE_GATED_NOT_TWO_EXPERT_BANK');result[arm]=metrics
+    write(root/'BE_SINGLE_RESULTS.json',result);return result
