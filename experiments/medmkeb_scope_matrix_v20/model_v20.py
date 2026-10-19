@@ -15,7 +15,7 @@ def budget():
  if MODE=='SOURCE':assert counts['forwards']<=35000 and counts['backwards']<=161 and counts['updates']<=160 and counts['generations']<=28
  else:assert MODE=='KEYS' and counts['forwards']<=20 and counts['generations']==counts['backwards']==counts['updates']==0
  if time.time()-last_space>60:
-  assert sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file())<16000000000
+  assert sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file())+1000000<16000000000
   last_space=time.time()
 def main():
  with (OUT/'ATTEMPT').open('x'):pass
@@ -63,6 +63,17 @@ def main():
     black=runtime.make_black_image(record,OUT/'black_images')
     negative,_=extract(row,image=black);native=allkeys[row['id']]['joint'];radius=balanced_radius(native.to(runtime.device),positive['joint'].to(runtime.device),negative['joint'].to(runtime.device),alpha=.2,distance='euclidean');anchors[task['key']]=dict(native=native,positive=positive['joint'],negative=negative['joint'],radius=float(radius));counts['anchor_keys']+=2
    save(OUT/'KEYS_FINAL.pt',dict(keys=keys,bindings=kb,anchors=anchors,counts=copy.deepcopy(counts)))
+   write(OUT/'ANCHORS_READY.json',dict(status='PASS',counts=counts))
+   if INDEX==0:
+    from dataclasses import asdict
+    from m3bench_repro.editors.routing import MemoryRouter
+    while not (other/'ANCHORS_READY.json').exists():
+     budget();assert not (other/'FAILURE.json').exists();time.sleep(2)
+    otherdata=torch.load(other/'KEYS_FINAL.pt',map_location='cpu',weights_only=True);allanchors=dict(otherdata['anchors']);allanchors.update(anchors);router=MemoryRouter('euclidean')
+    for task in config['tasks']:
+     a=allanchors[task['key']];router.add(task['key'],a['native'].to(runtime.device),a['radius'],())
+    decisions={row['id']:asdict(router.route(allkeys[row['id']]['joint'].to(runtime.device))) for row in config['rows']}
+    write(ROOT/'R0_DECISIONS.json',dict(decisions=decisions,device='Original FP32 GPU MemoryRouter',extra_language_forward=0))
    write(OUT/'COMPLETE.json',dict(status='KEY_CONSUMERS_COMPLETE',counts=counts,seconds=time.time()-START))
   else:
    task=config['tasks'][INDEX];source=task['source'];seed_everything(template['seed'])
