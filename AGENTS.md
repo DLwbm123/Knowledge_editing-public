@@ -1,3 +1,7 @@
+## 当前正式性能评测：Base绑定失败，预算修订待用户决定
+
+reports/vigor_editperf8_v1_20261019：用户已改正式前八例，首run Q003 Base当前/历史输出不一致，3唯一Base+2复读=5生成，197forward，编辑/评分0，已退出。五任务未评估。保留failure_attempt1，未重放。PROPOSED_BASE_AMENDMENT_ZH.md已提出当前Base+post配对、Judge123→246且总生成仍250，异步问题待用户答复；未答前禁止恢复或评分。
+
 ## 当前授权：正式队列前八例独立性能评测
 
 用户明确替换无正式面板的诊断S01–S08为既有正式队列前八例E01–E08；native FP16/旧F0/secant/唯一半步，独立基座、不调参扩样本。协议reports/vigor_editperf8_v1_20261019/PROTOCOL_ZH.md，250生成/123新Judge payload/单GPU3600秒/墙钟10800秒/256MiB。原面板T0 8、G32/32、L49/2，Base有效T1G29/T2G32/T1L0/T2L0，空locality NA。此为新明确授权，旧FP32工程失败仍不重试。尚未启动，CPU/准入后一次执行，匿名完整交付。
