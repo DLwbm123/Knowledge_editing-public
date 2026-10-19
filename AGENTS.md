@@ -1,3 +1,7 @@
+## 最新终态：历史参考半径子集预测null越界，实际NA
+
+reports/vigor_responseOrthantRadius_v1_20261020/completion：NLL/margin dot−.104448499/+1.053982606、native成本2.677829342e-13≤历史C_A通过，gNull dot−.028018950使原基座预测−.030392407越界；形成1/写入评估0，实际性能/原候选门/翻转NA，495forward/80.940932秒/恢复退出。不得补前向/缩步/扫描倍率或去预测门。下一必要不同干预如需，仅同native格点候选内按确定贡献损失排序删除负null坐标平衡中心，保留双收益坐标性质与成本上界，先冻结规则/候选/预算/停止条件；不能声称原null投影或全局最优。
+
 ## 当前自主轮：同一native子集规则固定历史参考半径
 
 reports/vigor_responseOrthantRadius_v1_20261020/PROTOCOL_ZH.md：同Nullstep起点、同SmallDirection冻结连续方向、同native双收益坐标规则，唯一尺度sqrt(历史C_A/C_small)=14.94248258401418，核连续成本回历史C_A，主native成本≤历史C_A。这是新独立幅度比较，非等成本，也不声称仍在旧小成本内。候选1/不扫描/新求解0/匹配0，null投影破坏如实记录，原基座null预测与native NLL/margin/成本不合格写入前停，不补前向或改尺度；实际原门/新单调进展/全路径旧A要求保持，900秒/600forward/50MiB。小半径子集仅内存重构forward0，旧失败不改写。
