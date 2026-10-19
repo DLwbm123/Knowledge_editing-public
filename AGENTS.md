@@ -1,3 +1,7 @@
+## 最新终态：固定R3增量再走一步失败，禁止盲目累加
+
+reports/vigor_responseFollow_v1_20261020/completion：STOPPED_MAIN_ACTUAL_NLL_FAILED，372检查PASS、483forward/80.033725秒、全部恢复退出。R3控制NLL1.437684894/余量−5.359375复核通过；新步NLL1.558104992升0.120420098，margin−5.5降0.140625，visual/null拒绝trust过。成本漂移−0.011222169%通过1%资格，匹配/secant/生成/Judge0，官方翻转NA。12小时授权内下一轮必须独立冻结新假设，不重放失败增量或追加尺度。
+
 ## 当前自主轮：固定R3有效增量仅延续一步
 
 protocol reports/vigor_responseFollow_v1_20261020/PROTOCOL_ZH.md，12小时授权内，R3终点3forward控制后只一个新候选W_R3+q_R3。冻结方向及旧ratio，不新匹配，不扫描；新步实际下降/余量要求保持旧A每步底线，null相对最初基座。900秒/600forward/50MiB，secant最多1，失败恢复停止本轮；原三门保持。

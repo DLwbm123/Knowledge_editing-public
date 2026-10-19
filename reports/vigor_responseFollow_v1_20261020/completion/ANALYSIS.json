@@ -1,0 +1,324 @@
+{
+  "status": "STOPPED_MAIN_ACTUAL_NLL_FAILED",
+  "recorded_checks": 372,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true,
+    "historical_R3_control_forward": true,
+    "no_new_matching": true
+  },
+  "costs": {
+    "forward": 483,
+    "extra_forward": 15,
+    "seconds": 80.03372478485107,
+    "new_secant": 0,
+    "native_match_attempts": 0,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1408924,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": true,
+  "candidate_evaluated": true,
+  "analytic": {
+    "NLL_energy": 84655765981.15904,
+    "margin_energy": 304070744032.27246,
+    "cross": -16626359309.172306,
+    "cost": 5.368434395105091e-13,
+    "NLL_floor": 0.07608931660652161,
+    "required_margin_gain": 0.4453125,
+    "minimum_NLL_cost": 3.419485982169256e-14,
+    "free_linear_NLL_change": -0.03124270774173639,
+    "constraint_active": true,
+    "perpendicular_energy": 300805333570.5772,
+    "status": "ELIGIBLE",
+    "predicted_NLL_change": -0.07608931660652161,
+    "predicted_margin_gain": 0.5648518564498017,
+    "NLL_scale": -8.988084358418779e-13,
+    "perpendicular_scale": 1.8281189961558844e-12
+  },
+  "matching": null,
+  "main_gate": {
+    "native_nll": [
+      1.5581049919128418,
+      3.6356194019317627
+    ],
+    "cumulative_null_change": -0.07015585899353027,
+    "combined_native_fisher_cost": 5.368634311608097e-13,
+    "gates": {
+      "null": false,
+      "visual": false,
+      "trust": true
+    },
+    "accepted": false
+  },
+  "main_margin": {
+    "target_position": 1,
+    "mean_nll": 1.5581049919128418,
+    "margin": -5.5,
+    "nll": 5.608494758605957,
+    "probability": 0.0036665843799710274,
+    "rank": 5,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 5.5,
+    "fixed_competitor_margin": -5.5,
+    "strongest_competitor_changed": false
+  },
+  "main_conditions": {
+    "actual_NLL_gain": -0.12042009830474854,
+    "NLL_floor": 0.07246601581573486,
+    "NLL_pass": false,
+    "margin": -5.5,
+    "margin_reference": -4.9140625,
+    "margin_pass": false
+  },
+  "main_margin_gain": -0.140625,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": {
+    "Gram": [
+      [
+        1.0736868790210181e-12,
+        9.181099329024013e-13,
+        5.205036952314429e-13
+      ],
+      [
+        9.181099329024015e-13,
+        1.0737078492660301e-12,
+        3.52231881853164e-13
+      ],
+      [
+        5.205036952314429e-13,
+        3.52231881853164e-13,
+        1.0740840918728408e-12
+      ]
+    ],
+    "condition_max": 10000.0,
+    "responses": [
+      [
+        -0.07246601581573486,
+        0.08767962455749512,
+        -0.06938469409942627
+      ],
+      [
+        0.4453125,
+        0.421875,
+        0.5078125
+      ],
+      [
+        -0.07164859771728516,
+        -0.11273932456970215,
+        -0.0018134117126464844
+      ]
+    ],
+    "normalized_Gram": [
+      [
+        1.0,
+        0.8550919128674066,
+        0.4846920003917793
+      ],
+      [
+        0.8550919128674067,
+        1.0,
+        0.32799442116430166
+      ],
+      [
+        0.4846920003917793,
+        0.32799442116430166,
+        1.0
+      ]
+    ],
+    "eigenvalues": [
+      0.1269067522201785,
+      0.728048218442945,
+      2.1450450293368775
+    ],
+    "condition": 16.90252876076526,
+    "condition_infinite": false,
+    "vectors": [
+      {
+        "quantity": "NLL",
+        "before": [
+          -0.30462159422541646,
+          -0.26377901406357784,
+          -0.1381980247107795
+        ],
+        "observed": [
+          -0.07246601581573486,
+          0.08767962455749512,
+          -0.06938469409942627
+        ],
+        "coefficients": [
+          -242131978219.1412,
+          532109117086.3815,
+          6906465147.08083
+        ],
+        "fitted": [
+          -0.07246601592926011,
+          0.0876796244280253,
+          -0.06938469415295037
+        ],
+        "absolute_errors": [
+          1.1352524476038184e-10,
+          1.2946982375083849e-10,
+          5.352410181735934e-11
+        ]
+      },
+      {
+        "quantity": "margin",
+        "before": [
+          1.6459236408741293,
+          2.8740037902207276,
+          0.9591522687650337
+        ],
+        "observed": [
+          0.4453125,
+          0.421875,
+          0.5078125
+        ],
+        "coefficients": [
+          3419545886008.6025,
+          -5071964627962.054,
+          -414044297100.4194
+        ],
+        "fitted": [
+          0.445312500161392,
+          0.4218750002450007,
+          0.5078125000901843
+        ],
+        "absolute_errors": [
+          1.6139201086673438e-10,
+          2.4500068640520567e-10,
+          9.018430446872117e-11
+        ]
+      },
+      {
+        "quantity": "null",
+        "before": [
+          2.4416887286465632e-05,
+          -0.0005208826715252218,
+          0.01754082863821209
+        ],
+        "observed": [
+          -0.07164859771728516,
+          -0.11273932456970215,
+          -0.0018134117126464844
+        ],
+        "coefficients": [
+          85085957472.70291,
+          -176859279799.76755,
+          -1253457425.5642474
+        ],
+        "fitted": [
+          -0.0716485976521753,
+          -0.11273932451489738,
+          -0.001813411679487375
+        ],
+        "absolute_errors": [
+          6.510986194641077e-11,
+          5.480477183184007e-11,
+          3.3159109355876404e-11
+        ]
+      }
+    ],
+    "status": "PASS"
+  },
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": {
+    "NLL": {
+      "status": "OK",
+      "E": 84655765981.15904,
+      "kvv": 84708390177.7799,
+      "k00": 855551884251.553,
+      "kv0": -6709906083.64489,
+      "null_directional_derivative": -154.53659319877625
+    },
+    "margin": {
+      "status": "OK",
+      "E": 304070744032.27246,
+      "kvv": 693534368086.6394,
+      "k00": 855551884251.553,
+      "kv0": 577240276934.3303,
+      "null_directional_derivative": 13695.280192732811
+    }
+  },
+  "analytic_recheck": {
+    "F0_cost": 5.368434597353039e-13,
+    "calibrated_NLL": -0.07608931497996907,
+    "calibrated_margin": 0.5648518849619881,
+    "normalized_null": 2.6011155748088657e-08
+  },
+  "historical_endpoint_forward_calls": 0,
+  "continuation_start": {
+    "native_nll": [
+      1.4376848936080933,
+      3.697877883911133
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.4376848936080933,
+      "margin": -5.359375,
+      "nll": 5.473104953765869,
+      "probability": 0.00419817678630352,
+      "rank": 4,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 5.359375,
+      "fixed_competitor_margin": -5.359375,
+      "strongest_competitor_changed": false
+    }
+  },
+  "continuation_preview": {
+    "actual_F0_cost": 5.368634311608097e-13,
+    "frozen_R3_cost": 5.369236856438324e-13,
+    "relative_cost_difference": 0.00011222168928992637,
+    "new_matching_applications": 0
+  },
+  "historical_R3_forward_calls": 3
+}

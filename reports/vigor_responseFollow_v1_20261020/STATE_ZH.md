@@ -1,3 +1,3 @@
-# 状态
+# 终态
 
-RUNNING：固定R3增量一步延续已后台启动，CPU/存储/显存及主/GPU中性argv核验通过。尚无新步结果，不重匹配或扫描。
+STOPPED_MAIN_ACTUAL_NLL_FAILED：固定增量新一步NLL升0.120420098、余量降0.140625，visual/null拒绝，trust过；全部恢复退出，待公开回执。
