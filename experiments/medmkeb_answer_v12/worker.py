@@ -1,4 +1,4 @@
-"""Finite31-step trajectories with V7 exact reuse and bounded cumulative constraints."""
+"""Fixed64 answers, zero training, initialization failures retained."""
 import os,sys,json,time,traceback,subprocess
 from pathlib import Path
 from types import SimpleNamespace

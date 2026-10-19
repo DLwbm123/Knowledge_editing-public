@@ -1,7 +1,7 @@
 """V11 dependency-ordered four-plus-two retirement for fixed V12 consumer."""
 import os,json,time
 from pathlib import Path
-from check import check
+from answer_check import check
 
 def retire(source,audit,phase):
     source=Path(source).resolve();audit=Path(audit).resolve();assert source.name==audit.name=='admission1' and 'medmkeb-reserve-v11-' in str(source) and 'medmkeb-answer-v12-' in str(audit) and phase in ('PARTIAL','FINAL')

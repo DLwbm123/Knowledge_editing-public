@@ -2,7 +2,7 @@
 import os,json,time,shutil
 from pathlib import Path
 import torch
-from check import check,selfcheck
+from answer_check import check,selfcheck
 
 def run(runtime,r,out,partition,counts):
     shared=out.parent;parent=Path(os.environ['PARENT_RUN']);source=Path(os.environ['V11_ROOT'])/str(partition);read=lambda p:json.loads(Path(p).read_text())
