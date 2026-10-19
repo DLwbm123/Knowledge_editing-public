@@ -20,9 +20,10 @@
     },
     {
       "name": "responseFollow",
-      "status": "PREPARING",
+      "status": "RUNNING",
       "gpu_seconds_reserved": 900,
-      "new_disk_bytes_reserved": 52428800
+      "new_disk_bytes_reserved": 52428800,
+      "source_commit": "ff081e57cd1f49111a9f694a39218bf2fa3d2cae"
     }
   ],
   "cumulative_gpu_seconds_actual": 157.42899751663208,
@@ -32,12 +33,14 @@
   "internal_byte_ceiling": 18000000000,
   "rounds_max": 24,
   "disk_accounting": {
-    "measurement": "allocated KiB via du; provisional during second live round",
-    "local_repository_net_growth_bytes": 999424,
+    "measurement": "allocated KiB via du; first two rounds complete, third reserved",
+    "local_repository_net_growth_bytes": 1867776,
     "round1_remote_allocated_bytes": 1687552,
     "round1_remote_temp_allocated_bytes": 12288,
-    "round2_reserved_bytes": 52428800,
     "unmeasured_local_temp_allowance_bytes": 1000000,
-    "total_conservative_global_reservation_bytes": 4516582400
+    "total_conservative_global_reservation_bytes": 4516582400,
+    "round2_remote_allocated_bytes": 1753088,
+    "round2_remote_temp_allocated_bytes": 12288,
+    "round3_reserved_bytes": 52428800
   }
 }
