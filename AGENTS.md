@@ -1,3 +1,7 @@
+## 当前自主轮：native格点逐坐标NLL降/margin升子集
+
+reports/vigor_responseNativeOrthant_v1_20261020/PROTOCOL_ZH.md：仅内存重建旧SmallDirection native提案P，当前W起点固定Nullstep；保留q!=0且gN*q<0且gM*q>0坐标，其余保留W。候选值均既有half格点，不新求解/预留/匹配/缩放/搜索。对角旧F0成本子集不增，但null一阶投影被破坏须明确记录并过原基座null预测准入/实际原门，不重投影找新子集。候选1/原secant≤1/单token≤1，900秒/600forward/50MiB，任一失败恢复停止不追加规则。结束经验预留分支，旧失败前向0/实际NA不补。
+
 ## 最新终态：QuantReserve前向前失败，结束经验加预留分支
 
 reports/vigor_responseQuantReserve_v1_20261020/completion：旧解析/FP32物化/加法/FP16参数写入NLL dot分解闭合0，FP16写入贡献+.000181308723主导旧提案一阶反号，不等于前向全链路精度或真实非线性证据。唯一新预留.000191809113仍使native NLL dot+1.1745868e-5，形成1/写入评估0，实际指标/翻转NA。495forward/81.032911秒、工程恢复退出通过；不补前向/再加预留/重试。下一独立必要机制可仅筛选原native提案逐坐标NLL降且margin升的非零更新，成本子集不增加但null投影破坏需明确并用原门把关，先冻结协议。
