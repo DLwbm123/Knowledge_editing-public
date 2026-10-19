@@ -1,3 +1,7 @@
+## 当前自主轮：R3终点局部梯度和有限响应刷新
+
+protocol reports/vigor_responseRefresh_v1_20261020/PROTOCOL_ZH.md。固定重复R3失效后，不重评失败候选；新端点2forward梯度及历史失败响应rank1校准，只一个新方向/匹配1/secant最多1，5%预留及原保护门旧F0不变。900秒/600forward/50MiB，任何准入/实际/复核/恢复失败保存恢复停止本轮。
+
 ## 最新终态：固定R3增量再走一步失败，禁止盲目累加
 
 reports/vigor_responseFollow_v1_20261020/completion：STOPPED_MAIN_ACTUAL_NLL_FAILED，372检查PASS、483forward/80.033725秒、全部恢复退出。R3控制NLL1.437684894/余量−5.359375复核通过；新步NLL1.558104992升0.120420098，margin−5.5降0.140625，visual/null拒绝trust过。成本漂移−0.011222169%通过1%资格，匹配/secant/生成/Judge0，官方翻转NA。12小时授权内下一轮必须独立冻结新假设，不重放失败增量或追加尺度。
