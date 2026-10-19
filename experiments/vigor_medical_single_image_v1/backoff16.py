@@ -41,7 +41,7 @@ def _rollback(layer,pair,runtime,weight,losses):
 
 
 def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *,
-        edit_threshold,compensate='secant',steps=16,prefix_reference=None,deadline_epoch=None,solve_factor=None):
+        edit_threshold,compensate='secant',steps=16,prefix_reference=None,deadline_epoch=None,solve_factor=None,endpoint_observer=None):
     if compensate!='secant':raise PermissionError('Frozen backoff requires the secant correction')
     layer=runtime.get_module('model.layers.0.mlp.down_proj');original=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);baseline=native_losses(runtime,pair);rows=[];accepted=[]
@@ -92,7 +92,7 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *,
         half_corr=sum(r.get('half') is not None and r['half'].get('correction') is not None for r in rows)
         full_accepted=sum(s['selected_attempt']=='primary' for s in accepted)
         half_accepted=sum(s['selected_attempt']=='half' for s in accepted)
-        return dict(status='COMPLETE' if complete else 'STOPPED_REJECTED',baseline=baseline,steps=rows,
+        result=dict(status='COMPLETE' if complete else 'STOPPED_REJECTED',baseline=baseline,steps=rows,
             accepted_trajectory=accepted,attempted_steps=len(rows),accepted_steps=len(accepted),
             primary_proposals=len(rows),half_proposals=sum(r.get('half') is not None for r in rows),
             accepted_primary_steps=full_accepted,accepted_half_steps=half_accepted,
@@ -103,6 +103,8 @@ def trajectory(runtime,record,factor,emit,anchor=None,first_reference=None, *,
             four_steps_completed=len(accepted)>=4,trajectory_completed=complete,requested_steps=steps,
             final_accepted_native_nll=final,edit_threshold_met=edit,null_gate_on_accepted_states=null,
             joint_gate=complete and edit and null,generation_calls=0,judge_calls=0)
+        if endpoint_observer is not None:endpoint_observer(layer.weight.detach(),result)
+        return result
     finally:
         with torch.no_grad():layer.weight.copy_(original)
         if not torch.equal(layer.weight,original) or native_losses(runtime,pair)!=baseline or layer._forward_hooks or layer._forward_pre_hooks:
