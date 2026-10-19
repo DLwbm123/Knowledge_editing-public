@@ -1,3 +1,7 @@
+## 当前自主轮：native双收益大子集内确定贪心null平衡
+
+reports/vigor_responseOrthantBalance_v1_20261020/PROTOCOL_ZH.md：同Nullstep起点/固定历史参考半径/既有native双收益大子集，仅删除负null贡献坐标使原基座预测居中。按margin损失/负null恢复比值稳定排序（tie按扁平索引），只取首个累计恢复达到目标的完整前缀，无法居中即停不改目标。单候选/不搜索规则或前缀/不缩放/匹配/新求解；值为既有native子集，成本不增，原null投影不声称保持。仍native预测与实际原门/双收益/全路径旧A要求，900秒/600forward/50MiB，失败恢复停不追加。旧Radius未写入候选只内存复核forward0，历史NA不补。
+
 ## 最新终态：历史参考半径子集预测null越界，实际NA
 
 reports/vigor_responseOrthantRadius_v1_20261020/completion：NLL/margin dot−.104448499/+1.053982606、native成本2.677829342e-13≤历史C_A通过，gNull dot−.028018950使原基座预测−.030392407越界；形成1/写入评估0，实际性能/原候选门/翻转NA，495forward/80.940932秒/恢复退出。不得补前向/缩步/扫描倍率或去预测门。下一必要不同干预如需，仅同native格点候选内按确定贡献损失排序删除负null坐标平衡中心，保留双收益坐标性质与成本上界，先冻结规则/候选/预算/停止条件；不能声称原null投影或全局最优。
