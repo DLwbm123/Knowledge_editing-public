@@ -1,3 +1,7 @@
+## 最新明确授权：E01 NLL下降约束内的唯一C
+
+协议reports/vigor_marginc_v1_20261019/PROTOCOL_ZH.md。原E01必要控制一次，复用旧A/B参考，不评估A/B；新C≤1、一次native F0匹配误差≤1%，原保护门/旧F0/FP16/secant保持，900秒/600forward/50MiB，生成首步≤1/0Judge，无新半步。NLL约束不激活回旧B则立即停止，不形成/重放B；不可行/退化/量化线性条件/实际NLL降幅不足（固定0.0724660158，数值1e-5）/复核/恢复/预算失败均停止整轮，无重试/追加/attempt2。先保存状态数据，全部恢复、匿名完整公开交付。无subagent，历史正式结果不改写。
+
 ## 最新终态：E01等native F0成本margin-only B未优于A
 
 reports/vigor_marginab_v1_20261019/completion：COMPLETE，320检查PASS，515/600forward、83.123779秒、2单token生成/0Judge，全部恢复且进程退出。B一次成本误差0.002080681%通过；主余量收益A0.4453125/B0.359375，补偿后A0.4375/B0.390625，均未翻转。最终NLL A1.436505914/B1.685219765，B原visual门拒绝，null/trust过；坏NLL在secant前已有，secant反改善B余量。不能默认margin-only替换、不能归咎补偿/成本没匹配；有限步/量化/计算尚未分离。完整匿名交付后无待启动候选，不自动attempt2/调参/追加，监测ACTIVE。
