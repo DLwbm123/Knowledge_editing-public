@@ -1,3 +1,7 @@
+## 最新终态：NativeOrthant实际双收益，原门全过
+
+reports/vigor_responseNativeOrthant_v1_20261020/completion：保留2355279/4644017个native更新坐标（50.7164%），NLL dot+.000170809→−.005543829，margin dot+.058364076，gNull dot−.001762165，null投影不保持。实际NLL1.354653835→1.348325253、margin−4.6015625→−4.546875，原基座null漂移−.005375862，原三门过，无新secant，官方rank3未翻转。502forward/82.040788秒/恢复退出；本步F0成本1.046743690e-15。只小半径一步证据；下一必要同起点/同方向/同坐标规则固定旧C_A参考半径单候选验证，不等成本/不扫描，须另冻协议且预测失败不补前向。
+
 ## 当前自主轮：native格点逐坐标NLL降/margin升子集
 
 reports/vigor_responseNativeOrthant_v1_20261020/PROTOCOL_ZH.md：仅内存重建旧SmallDirection native提案P，当前W起点固定Nullstep；保留q!=0且gN*q<0且gM*q>0坐标，其余保留W。候选值均既有half格点，不新求解/预留/匹配/缩放/搜索。对角旧F0成本子集不增，但null一阶投影被破坏须明确记录并过原基座null预测准入/实际原门，不重投影找新子集。候选1/原secant≤1/单token≤1，900秒/600forward/50MiB，任一失败恢复停止不追加规则。结束经验预留分支，旧失败前向0/实际NA不补。
