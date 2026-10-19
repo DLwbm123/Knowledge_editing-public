@@ -36,7 +36,7 @@ def main():
         assert read(ROOT/str(part)/'PREFETCH_EXIT.json')['code']==0
         g=a['gpu'];out=ROOT/str(part);assert (out/'tools').resolve()==ROOT/'tools'
         entry=Path('/data/bmw/tmp')/('q.20261019.19.'+str(g)+'.py');entry.write_text("import runpy,os\nrunpy.run_path(os.environ['WORKER_FILE'],run_name='__main__')\n")
-        e=dict(os.environ);e.update(env);e.update(CUDA_VISIBLE_DEVICES=str(g),GPU=str(g),PARTITION=str(part),OUTPUT_RUN=str(out),WORKER_FILE=str(ROOT/'tools/worker_v19.py'));log=(out/'worker.log').open('ab');p=subprocess.Popen(['/data/bmw/envs/v0/bin/python','-u',str(entry)],env=e,stdout=log,stderr=subprocess.STDOUT,start_new_session=True);log.close();ticks=(Path('/proc')/str(p.pid)/'stat').read_text().split()[21]
+        e=dict(os.environ);e.update(env);e.update(CUDA_VISIBLE_DEVICES=str(g),GPU=str(g),PARTITION=str(part),OUTPUT_RUN=str(out),WORKER_FILE=str(ROOT/'tools/worker_v19.py'),M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES=str(g),M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES='3,4,5',M3BENCH_FORMAL_EXPECTED_GPU_UUID=a['uuid']);log=(out/'worker.log').open('ab');p=subprocess.Popen(['/data/bmw/envs/v0/bin/python','-u',str(entry)],env=e,stdout=log,stderr=subprocess.STDOUT,start_new_session=True);log.close();ticks=(Path('/proc')/str(p.pid)/'stat').read_text().split()[21]
         item=dict(a,partition=part,pid=p.pid,start_ticks=ticks,start=began,deadline=deadline,entry=str(entry));write(str(part)+'/LAUNCH.json',item);launch.append(item)
     write('START.json',launch);write('QUEUE_STATUS.json',dict(status='MODEL_WORK_RUNNING',time=time.time(),deadline=deadline))
 if __name__=='__main__':
