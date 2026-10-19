@@ -1,3 +1,7 @@
+## 当前自主轮：同R3终点原始局部NLL方向控制
+
+protocol reports/vigor_responseNcontrol_v1_20261020/PROTOCOL_ZH.md。仅一个原始局部NLL/null投影方向、旧F0同成本匹配1；不做新有限响应校准或margin方向。R3控制3forward+梯度2forward，失败Follow端点不重评。实际下降/余量比较门和原门保持，secant最多1，900秒/600forward/50MiB，失败保存恢复停止本轮。
+
 ## 最新终态：局部响应刷新失败，旧方向NLL梯度已变号
 
 reports/vigor_responseRefresh_v1_20261020/completion：379检查PASS、485forward/78.884634秒、全部恢复退出；NLL1.490619779升0.052934885，margin−5.421875退0.0625，visual/null拒绝trust过，secant/生成/Judge0。沿重复增量原/新端点gNLLdot−0.205448302→+0.047974376，梯度来自可编辑层FP32；残差不称纯曲率。单点校准拟合通过不保证新方向有限响应。下一必要独立控制为同R3端点原始局部NLL方向，同旧F0成本一次匹配，不扫描。
