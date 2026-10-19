@@ -1,3 +1,7 @@
+## 最新明确授权：E01固定75/25 H单候选
+
+协议reports/vigor_hybridH_v1_20261019/PROTOCOL_ZH.md。旧F0及原保护门，75%NLL下降能量+25%NLL正交余量能量，C_A固定旧A主成本。仅H一个候选，一次native匹配≤1%、最多一次旧secant；主实际降幅≥0.072466016且margin超过旧A主−5.421875，最终同NLL底线/原门且超过旧A最终−5.4296875。任一失败保存恢复停止，不重试/调比例/缩步/追加。900秒/600forward（新增64）/50MiB，生成≤1/Judge0，无subagent，匿名完整公开交付。
+
 ## 最新终态：E01两级缩步均未实际降NLL
 
 reports/vigor_bshrink_v1_20261019/completion：STOPPED_NO_ELIGIBLE_SCALE。仅旧B的1/2、1/4，主NLL1.562448502/1.514003396高于起点1.510729909；余量改善0.5390625/0.4609375，visual/null拒绝、trust过。无合格候选，新secant/生成/Judge/匹配0，补偿后和官方首步翻转NA不可写作实测未翻转。334检查PASS，485/600forward（新增17/64）、80.356731秒，全部恢复和主GPU进程退出。匿名完整交付后无待启动候选，不自动追加1/8/新算法/重试/调阈值，无subagent。
