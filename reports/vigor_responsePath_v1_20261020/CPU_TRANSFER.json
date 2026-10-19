@@ -1,0 +1,115 @@
+{
+  "status": "STOPPED_QUADRATIC_PREDICTED_CONSTRAINT_FAILED",
+  "frozen_old_model": {
+    "models": [
+      {
+        "linear": [
+          -0.5650427298679286,
+          -0.3076277640706924
+        ],
+        "quadratic": [
+          0.7220196681156092,
+          0.36056264909571684,
+          1.013711295940574
+        ]
+      },
+      {
+        "linear": [
+          1.3895522457734582,
+          2.565325429201166
+        ],
+        "quadratic": [
+          -3.506739745773458,
+          -2.627825429201166,
+          -6.6501901749746235
+        ]
+      },
+      {
+        "linear": [
+          0.0011932724624098975,
+          -0.0015344442989228234
+        ],
+        "quadratic": [
+          -0.19669626890711206,
+          -0.08732725957375784,
+          -0.1714088968280379
+        ]
+      }
+    ],
+    "fit_errors": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.220446049250313e-16,
+      0.0,
+      0.0,
+      1.3877787807814457e-17
+    ],
+    "max_fit_error": 2.220446049250313e-16,
+    "status": "PASS",
+    "interpretation": "quantized_response_surrogate_not_pure_curvature"
+  },
+  "Gram": [
+    [
+      1.073651617821166e-12,
+      5.769930783853549e-13
+    ],
+    [
+      5.769930783853549e-13,
+      1.0736265075775955e-12
+    ]
+  ],
+  "center_native_nll": [
+    1.4381345510482788,
+    3.7074692249298096
+  ],
+  "center_margin": -5.359375,
+  "center_null_bias": 0.0016939640045166016,
+  "step_NLL_floor": 1e-05,
+  "step_margin_gain_floor": 1e-05,
+  "solver": {
+    "status": "STOPPED_QUADRATIC_PREDICTED_CONSTRAINT_FAILED",
+    "success": true,
+    "solver_message": "Optimization terminated successfully",
+    "iterations": 7,
+    "initial_coefficients": [
+      0.25,
+      0.25
+    ],
+    "solver_invocations": 1,
+    "max_iterations": 200,
+    "coefficients": [
+      0.0,
+      0.3572565461798544
+    ],
+    "inequalities": [
+      0.06387211401281642,
+      0.020000000000000018,
+      -1.5612511283791264e-17,
+      0.6427434538201455,
+      0.8723749367383309
+    ],
+    "recheck": {
+      "coefficients": [
+        0.0,
+        0.3572565461798544
+      ],
+      "predicted_NLL": -0.06388261401281642,
+      "predicted_margin": 0.581084057362012,
+      "predicted_null": -0.011693964004516617,
+      "predicted_base_null": -0.010000000000000016,
+      "continuous_F0_cost": 6.851467792914076e-14,
+      "in_hull": true,
+      "NLL_pass": true,
+      "margin_pass": true,
+      "null_pass": false,
+      "cost_pass": true
+    }
+  },
+  "model_calls": 0,
+  "dataset_solver_invocations": 1,
+  "old_failed_runs_unchanged": true,
+  "scope": "prediction_transfer_not_new_measured_model"
+}
