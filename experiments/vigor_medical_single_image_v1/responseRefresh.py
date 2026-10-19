@@ -12,7 +12,7 @@ from .finite_null import native_losses
 from .precision_abc import compare
 from .responseRefresh_ops import StopRound
 
-AUTH=dict(sample='E01',endpoint_steps=16,calibration_anchors=['A','H','Sreserve'],historical_endpoint_forward_max=0,metric='F0',NLL_floor=0.07246601581573486,main_margin_reference=-5.421875,final_margin_reference=-5.4296875,normalized_Gram_condition_max=10000.,secant_max=1,candidates_max=1,cost_matching_max=1,matching_tolerance=.01,extra_forward_max=64,forward_max=600,seconds=900,generation_max=1,judge=0,retry=0,solver_NLL_reserve=1.05,refresh_at_R3=True)
+AUTH=dict(sample='E01',endpoint_steps=16,calibration_anchors=['A','H','Sreserve'],historical_endpoint_forward_max=0,metric='F0',NLL_floor=0.07246601581573486,main_margin_reference=-5.421875,final_margin_reference=-5.4296875,normalized_Gram_condition_max=10000.,secant_max=1,candidates_max=1,cost_matching_max=1,matching_tolerance=.01,extra_forward_max=64,forward_max=600,seconds=900,generation_max=1,judge=0,retry=0,solver_NLL_reserve=1.05,refresh_at_R3=True,R3_control_forward_max=3,local_gradient_forward_max=2)
 
 
 def main(c):

@@ -101,8 +101,7 @@ def evaluate(rt,record,layer,pair,factor,identity,history,base_null,start_losses
             near(float(torch.linalg.vector_norm(q3.double())),old3['matching']['native_delta_l2'],'follow.R3_norm',True)
             data['historical_R3_matching']=old3['matching'];data['historical_R3_forward_calls']=0;emit()
         same(layer.weight.dtype==original.dtype and torch.equal(layer.weight,original),'S.no_historical_endpoint_write')
-        # One mandatory control read at the accepted R3 endpoint, then one new
-        # fixed-increment continuation candidate. No new direction or matching.
+        # One mandatory R3 endpoint control before local-gradient response refresh.
         with torch.no_grad():layer.weight.copy_(rounded)
         with weight_guard(layer,rounded,'follow.control_R3',checks,emit,expected_calls=3):
             step_start=native_losses(rt,pair)
@@ -141,6 +140,7 @@ def evaluate(rt,record,layer,pair,factor,identity,history,base_null,start_losses
                 loss0=nll(rt.model,pair[1]);g0_local=finite(torch.autograd.grad(loss0,layer.weight)[0].detach());local_F_null=float(loss0.detach());del loss0
             local_dot=[float((g.double()*q_follow.double()).sum()) for g in [gn_local,gm_local,g0_local]]
             old_dot=[float((g.double()*q_follow.double()).sum()) for g in [gn,gm,g0]]
+            data['local_gradient_forward_calls']=2
             data['local_gradient_diagnostic']=dict(F_baseline=[local_F_NLL,local_F_null],F_margin=local_F_margin,original_endpoint_dot=old_dot,local_endpoint_dot=local_dot,observed_native_response=[x[0] for x in responses1],local_native_minus_linear=[x[0]-v for x,v in zip(responses1,local_dot)],failed_endpoint_new_forward_calls=0);emit()
             def save_local(v):data['calibration']=v;emit()
             bn_local,bm_local,b0_local=calibrate_three([gn_local,gm_local,g0_local],[q_follow],responses1,a,b,save_local)
