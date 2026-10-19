@@ -1,3 +1,7 @@
+## 最新终态：二次模型内null余量不足，未形成新候选
+
+reports/vigor_responseQuad_v1_20261020/completion：STOPPED_QUADRATIC_SOLVE_FAILED，394检查PASS、487forward/75.942004秒、恢复退出。唯一混合诊断原visual/null拒绝，单次SLSQP33迭代失败，形成/匹配/新候选写入评估0，实际候选指标/翻转NA。离线代数证书仅该经验模型内NLL下降上界0.060539800<0.072466016；不是真实网络不可行证明，不重解/换初值/追加比例。下一必要单因素为原secant提前居中R3的null，需保留相对原共同终点的原收益。
+
 ## 当前自主轮：两个既有局部方向的有界经验二次响应
 
 protocol reports/vigor_responseQuad_v1_20261020/PROTOCOL_ZH.md。仅固定(.5,.5)混合诊断1（即使原门拒绝也仅记录并恢复，不当安全编辑），旧Ncontrol/Refresh端点不重评。三点拟合经验二次native响应（非纯Hessian），单次SLSQP固定初值/200迭代，系数≥0且和≤1，预测NLL/余量/null/旧F0预算准入后至多候选1/匹配1/secant1/首token1。目标成本为解自身成本≤旧C_A，不能称与历史全成本相同。900秒/600forward/50MiB，所有异常保存恢复停本轮，无重启/扫描。

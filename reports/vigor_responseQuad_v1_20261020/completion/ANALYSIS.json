@@ -1,0 +1,233 @@
+{
+  "status": "STOPPED_QUADRATIC_SOLVE_FAILED",
+  "recorded_checks": 394,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true,
+    "R3_control": true,
+    "local_gradient": true,
+    "one_mix_probe": true,
+    "one_solver": true
+  },
+  "costs": {
+    "forward": 487,
+    "extra_forward": 19,
+    "seconds": 75.94200420379639,
+    "new_secant": 0,
+    "native_match_attempts": 0,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 0,
+    "disk_bytes": 1559097,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": false,
+  "candidate_written": false,
+  "candidate_evaluated": false,
+  "analytic": null,
+  "matching": null,
+  "main_gate": null,
+  "main_margin": null,
+  "main_conditions": null,
+  "main_margin_gain": null,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "continuation_start": {
+    "native_nll": [
+      1.4376848936080933,
+      3.697877883911133
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.4376848936080933,
+      "margin": -5.359375,
+      "nll": 5.473104953765869,
+      "probability": 0.00419817678630352,
+      "rank": 4,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 5.359375,
+      "fixed_competitor_margin": -5.359375,
+      "strongest_competitor_changed": false
+    }
+  },
+  "diagnostic_mix": {
+    "coefficients": [
+      0.5,
+      0.5
+    ],
+    "native_F0_cost": 4.2142667477756056e-13,
+    "rounding_l2": 0.0037425664781006915,
+    "ideal_l2": 0.03762903013353986,
+    "accepted_as_edit": false,
+    "gate": {
+      "native_nll": [
+        1.5254230499267578,
+        3.5838491916656494
+      ],
+      "cumulative_null_change": -0.12192606925964355,
+      "combined_native_fisher_cost": 4.2142667477756056e-13,
+      "gates": {
+        "null": false,
+        "visual": false,
+        "trust": true
+      },
+      "accepted": false
+    },
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.5254230499267578,
+      "margin": -6.578125,
+      "nll": 6.7639946937561035,
+      "probability": 0.0011546076275408268,
+      "rank": 16,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 6.578125,
+      "fixed_competitor_margin": -6.578125,
+      "strongest_competitor_changed": false
+    },
+    "forward_calls": 3
+  },
+  "quadratic_Gram": {
+    "Gram": [
+      [
+        1.073651617821166e-12,
+        5.769930783853549e-13
+      ],
+      [
+        5.769930783853549e-13,
+        1.0736265075775955e-12
+      ]
+    ],
+    "normalized_condition": 3.323558819337244,
+    "eigenvalues": [
+      0.46258188764657054,
+      1.5374181123534296
+    ]
+  },
+  "quadratic_model": {
+    "models": [
+      {
+        "linear": [
+          -0.5650427298679286,
+          -0.3076277640706924
+        ],
+        "quadratic": [
+          0.7220196681156092,
+          0.36056264909571684,
+          1.013711295940574
+        ]
+      },
+      {
+        "linear": [
+          1.3895522457734582,
+          2.565325429201166
+        ],
+        "quadratic": [
+          -3.506739745773458,
+          -2.627825429201166,
+          -6.6501901749746235
+        ]
+      },
+      {
+        "linear": [
+          0.0011932724624098975,
+          -0.0015344442989228234
+        ],
+        "quadratic": [
+          -0.19669626890711206,
+          -0.08732725957375784,
+          -0.1714088968280379
+        ]
+      }
+    ],
+    "fit_errors": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      2.220446049250313e-16,
+      0.0,
+      0.0,
+      1.3877787807814457e-17
+    ],
+    "max_fit_error": 2.220446049250313e-16,
+    "status": "PASS",
+    "interpretation": "quantized_response_surrogate_not_pure_curvature"
+  },
+  "quadratic_solution": {
+    "status": "STOPPED_QUADRATIC_SOLVE_FAILED",
+    "success": false,
+    "solver_message": "Positive directional derivative for linesearch",
+    "iterations": 33,
+    "initial_coefficients": [
+      0.25,
+      0.25
+    ],
+    "solver_invocations": 1,
+    "max_iterations": 200,
+    "coefficients": [
+      0.1136708630252701,
+      6.335425152727421e-14
+    ],
+    "inequalities": [
+      -0.021189684992126444,
+      0.020303261999189907,
+      -0.0003032619991899044,
+      0.8863291369746665,
+      0.9870793592427788
+    ]
+  },
+  "historical_R3_forward_calls": 3,
+  "local_gradient_forward_calls": 2
+}
