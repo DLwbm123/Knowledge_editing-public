@@ -1,3 +1,7 @@
+## 当前自主轮：同一native子集规则固定历史参考半径
+
+reports/vigor_responseOrthantRadius_v1_20261020/PROTOCOL_ZH.md：同Nullstep起点、同SmallDirection冻结连续方向、同native双收益坐标规则，唯一尺度sqrt(历史C_A/C_small)=14.94248258401418，核连续成本回历史C_A，主native成本≤历史C_A。这是新独立幅度比较，非等成本，也不声称仍在旧小成本内。候选1/不扫描/新求解0/匹配0，null投影破坏如实记录，原基座null预测与native NLL/margin/成本不合格写入前停，不补前向或改尺度；实际原门/新单调进展/全路径旧A要求保持，900秒/600forward/50MiB。小半径子集仅内存重构forward0，旧失败不改写。
+
 ## 最新终态：NativeOrthant实际双收益，原门全过
 
 reports/vigor_responseNativeOrthant_v1_20261020/completion：保留2355279/4644017个native更新坐标（50.7164%），NLL dot+.000170809→−.005543829，margin dot+.058364076，gNull dot−.001762165，null投影不保持。实际NLL1.354653835→1.348325253、margin−4.6015625→−4.546875，原基座null漂移−.005375862，原三门过，无新secant，官方rank3未翻转。502forward/82.040788秒/恢复退出；本步F0成本1.046743690e-15。只小半径一步证据；下一必要同起点/同方向/同坐标规则固定旧C_A参考半径单候选验证，不等成本/不扫描，须另冻协议且预测失败不补前向。
