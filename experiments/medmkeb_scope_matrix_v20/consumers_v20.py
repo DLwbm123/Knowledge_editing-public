@@ -29,17 +29,24 @@ def route(root):
  for i in range(2):
   p=root/'features'/str(i);assert read(p/'EXIT.json')['code']==0 and read(p/'COMPLETE.json')['status']=='KEY_CONSUMERS_COMPLETE';d=torch.load(p/'KEYS_FINAL.pt',map_location='cpu',weights_only=True);keys.update(d['keys']);anchors.update(d['anchors'])
  assert set(keys)=={q['id'] for q in c['rows']} and set(anchors)=={t['key'] for t in c['tasks']}
- relations={(x['query_id'],x['scope']):x['label'] for x in c['relations']};r0=read(root/'R0_DECISIONS.json')['decisions'];out={'R0':{q:r['logical_edit_id'] for q,r in r0.items()}};cal={}
+ relations={(x['query_id'],x['scope']):x['label'] for x in c['relations']};r0=read(root/'R0_DECISIONS.json')['decisions'];out={'R0':{q:r['logical_edit_id'] for q,r in r0.items()}};cal={};score_receipts={}
  for kind in ('JOINT','CONTEXT_MIN'):
   result=calibrate(keys,c['tasks'],c['rows'],relations,kind);cal[kind]=result;assert result['status']=='PASS';supports=[]
   for t in c['tasks']:
    ids=[t['source']['id']]+[x['id'] for x in c['rows'] if x['role']=='ROUTER_TRAIN' and relations[x['id'],t['key']]=='YES'];supports.append([keys[q] for q in ids])
-  decisions={}
+  decisions={};test_scores={};fold_scores=[]
   for q in c['rows']:
-   vals=[scores(keys[q['id']],s,kind) for s in supports];index=choose(vals,result['tau']);decisions[q['id']]=None if index is None else c['tasks'][index]['key']
+   vals=[scores(keys[q['id']],s,kind) for s in supports];test_scores[q['id']]=vals;index=choose(vals,result['tau']);decisions[q['id']]=None if index is None else c['tasks'][index]['key']
+  train=[q for q in c['rows'] if q['role']=='ROUTER_TRAIN']
+  for q in train:
+   fold_supports=[]
+   for t in c['tasks']:
+    ids=[t['source']['id']]+[x['id'] for x in train if x['article']!=q['article'] and relations[x['id'],t['key']]=='YES'];fold_supports.append([keys[z] for z in ids])
+   fold_scores.append(dict(query=q['id'],values=[scores(keys[q['id']],s,kind) for s in fold_supports],labels=[relations[q['id'],t['key']] for t in c['tasks']]))
+  score_receipts[kind]=dict(test_scores=test_scores,leave_group_out_scores=fold_scores,expert_order=[t['key'] for t in c['tasks']])
   out[kind]=decisions
  outputs={(x['expert'],x['query']):x['path'] for x in recs};natural=[dict(router=kind,query=q,selected=e,path=c['Base_outputs'][q] if e is None else outputs[e,q]) for kind,dec in out.items() for q,e in dec.items()]
- assert len(natural)==3*len(c['rows']);write(root/'ROUTES.json',dict(calibration=cal,decisions=out,natural=natural,new_generations=0));return len(natural)
+ assert len(natural)==3*len(c['rows']);write(root/'ROUTES.json',dict(calibration=cal,decisions=out,natural=natural,new_generations=0));write(root/'ROUTE_SCORE_RECEIPTS.json',score_receipts);return len(natural)
 
 def summarize(root):
  root=Path(root);c,recs=collect(root);a=read(root/'BLIND_ALIASES.json');m=read(root/'BLIND_MATERIALS.json');v=read(root/'BLIND_VERDICTS.json');assert set(v)==set(m) and all(x.get('label') in LABELS and x.get('reason') for x in v.values()),'Missing/invalid/extra blinded verdicts'
