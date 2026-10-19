@@ -1,3 +1,7 @@
+## 最新终态：E01固定75/25 H主实际NLL与旧A余量失败
+
+reports/vigor_hybridH_v1_20261019/completion：STOPPED_MAIN_ACTUAL_NLL_FAILED。H仅一个、native匹配一次误差0.0019531062%通过，正交/分量成本通过；主NLL1.598409534高于起点1.510729909，余量改善0.421875低于旧A主0.4453125，visual/null拒绝、trust过。新secant/生成/Judge0，补偿后和官方首步翻转NA。339检查PASS，480/600forward（新增12/64）、79.195524秒，全部恢复及主GPU进程退出。完整匿名交付后无待启动候选，不自动调75/25/缩步/追加/重试，无subagent。
+
 ## 最新明确授权：E01固定75/25 H单候选
 
 协议reports/vigor_hybridH_v1_20261019/PROTOCOL_ZH.md。旧F0及原保护门，75%NLL下降能量+25%NLL正交余量能量，C_A固定旧A主成本。仅H一个候选，一次native匹配≤1%、最多一次旧secant；主实际降幅≥0.072466016且margin超过旧A主−5.421875，最终同NLL底线/原门且超过旧A最终−5.4296875。任一失败保存恢复停止，不重试/调比例/缩步/追加。900秒/600forward（新增64）/50MiB，生成≤1/Judge0，无subagent，匿名完整公开交付。
