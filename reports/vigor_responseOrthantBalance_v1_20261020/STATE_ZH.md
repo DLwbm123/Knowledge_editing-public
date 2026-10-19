@@ -1,3 +1,3 @@
 # 状态
 
-FROZEN_NOT_STARTED：同一native大子集内一次确定贪心null平衡，不改变尺度/门，最多一个候选，尚无结果。
+RUNNING：固定native大子集一次确定贪心null平衡，CPU性质/存储/显存准入通过，尚无候选准入或实际结果。
