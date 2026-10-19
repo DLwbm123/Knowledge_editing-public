@@ -1,3 +1,7 @@
+## 最新终态：E01等native F0成本margin-only B未优于A
+
+reports/vigor_marginab_v1_20261019/completion：COMPLETE，320检查PASS，515/600forward、83.123779秒、2单token生成/0Judge，全部恢复且进程退出。B一次成本误差0.002080681%通过；主余量收益A0.4453125/B0.359375，补偿后A0.4375/B0.390625，均未翻转。最终NLL A1.436505914/B1.685219765，B原visual门拒绝，null/trust过；坏NLL在secant前已有，secant反改善B余量。不能默认margin-only替换、不能归咎补偿/成本没匹配；有限步/量化/计算尚未分离。完整匿名交付后无待启动候选，不自动attempt2/调参/追加，监测ACTIVE。
+
 ## 最新明确授权：E01终点NLL/竞争余量A/B唯一成本匹配
 
 协议reports/vigor_marginab_v1_20261019/PROTOCOL_ZH.md。原E01只重建一次旧轨迹后，A一次NLL d/16候选，B同起点margin方向一次native F0成本比例匹配（误差≤1%）；保持旧F0/原null/visual/trust/secant。新候选无半步救援，≤2主+2secant/2单token生成/0Judge，900秒/600forward/50MiB；复核、恢复、匹配或预算失败停止整轮，无重试/追加/attempt2。匹配主成本，补偿后成本单报；拒绝臂只读结果不当安全编辑。完整匿名交付，旧正式性能不改写，无subagent。
