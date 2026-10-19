@@ -1,0 +1,56 @@
+{
+  "status": "STOPPED",
+  "events": [
+    {
+      "label": "S1.fixed.first",
+      "weight_equal_before": true,
+      "weight_max_abs_before": 0.0,
+      "cache_changes_before": [],
+      "losses": [
+        2.658053159713745,
+        4.4844207763671875
+      ],
+      "weight_equal_after": true,
+      "cache_changes_after": [],
+      "input_unchanged": true,
+      "training_modules": 0,
+      "tf32_matmul": false,
+      "tf32_cudnn": false,
+      "attention_implementation": "sdpa",
+      "weight_dtype": "torch.float32",
+      "baseline_difference": null
+    },
+    {
+      "label": "S1.fixed.repeat",
+      "weight_equal_before": true,
+      "weight_max_abs_before": 0.0,
+      "cache_changes_before": [],
+      "losses": [
+        2.659262180328369,
+        4.48439884185791
+      ],
+      "weight_equal_after": true,
+      "cache_changes_after": [],
+      "input_unchanged": true,
+      "training_modules": 0,
+      "tf32_matmul": false,
+      "tf32_cudnn": false,
+      "attention_implementation": "sdpa",
+      "weight_dtype": "torch.float32",
+      "baseline_difference": 0.0012090206146240234
+    }
+  ],
+  "stages_completed": [],
+  "context_1": {
+    "float_output_count": 1692,
+    "non_fp32_output_count": 0,
+    "roots_include_rotary": true,
+    "precision_context_exited": true
+  },
+  "error_type": "ValueError",
+  "failure": "Baseline readout mismatch",
+  "precision_flags_hooks_restored": true,
+  "base_weight_restored": true,
+  "base_losses_restored": true,
+  "base_cache_changes": []
+}
