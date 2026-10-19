@@ -1,0 +1,204 @@
+{
+  "status": "COMPLETE",
+  "recorded_checks": 469,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true
+  },
+  "costs": {
+    "forward": 501,
+    "extra_forward": 33,
+    "seconds": 81.65210556983948,
+    "new_secant": 0,
+    "native_match_attempts": 0,
+    "generation": 1,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1846112,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": true,
+  "candidate_evaluated": true,
+  "analytic": null,
+  "matching": null,
+  "main_gate": {
+    "native_nll": [
+      1.3546538352966309,
+      3.703401803970337
+    ],
+    "cumulative_null_change": -0.0023734569549560547,
+    "combined_native_fisher_cost": 2.4043746118789385e-15,
+    "gates": {
+      "null": true,
+      "visual": true,
+      "trust": true
+    },
+    "accepted": true
+  },
+  "main_margin": {
+    "target_position": 1,
+    "mean_nll": 1.3546538352966309,
+    "margin": -4.6015625,
+    "nll": 4.761768817901611,
+    "probability": 0.008550471626222134,
+    "rank": 3,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 4.6015625,
+    "fixed_competitor_margin": -4.6015625,
+    "strongest_competitor_changed": false
+  },
+  "main_conditions": {
+    "actual_NLL_gain": 0.0063217878341674805,
+    "NLL_floor": 1e-05,
+    "NLL_pass": true,
+    "margin": -4.6015625,
+    "margin_reference": -4.671865,
+    "margin_gain": 0.0703125,
+    "margin_pass": true,
+    "criterion": "new_monotone_path_not_old_fixed_per_step_A_comparison"
+  },
+  "main_margin_gain": 0.0703125,
+  "correction_status": null,
+  "final_gate": {
+    "native_nll": [
+      1.3546538352966309,
+      3.703401803970337
+    ],
+    "cumulative_null_change": -0.0023734569549560547,
+    "combined_native_fisher_cost": 2.4043746118789385e-15,
+    "gates": {
+      "null": true,
+      "visual": true,
+      "trust": true
+    },
+    "accepted": true
+  },
+  "final_margin": {
+    "target_position": 1,
+    "mean_nll": 1.3546538352966309,
+    "margin": -4.6015625,
+    "nll": 4.761768817901611,
+    "probability": 0.008550471626222134,
+    "rank": 3,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 4.6015625,
+    "fixed_competitor_margin": -4.6015625,
+    "strongest_competitor_changed": false
+  },
+  "final_conditions": {
+    "actual_NLL_gain": 0.0063217878341674805,
+    "NLL_floor": 1e-05,
+    "NLL_pass": true,
+    "margin": -4.6015625,
+    "margin_reference": -4.671865,
+    "margin_gain": 0.0703125,
+    "margin_pass": true,
+    "criterion": "new_monotone_path_not_old_fixed_per_step_A_comparison"
+  },
+  "final_margin_gain": 0.0703125,
+  "numerically_accepted": true,
+  "official_generation": {
+    "forwards": 1,
+    "sequence_length": 1,
+    "target_stats": {
+      "nll": 4.761768817901611,
+      "probability": 0.008550471626222134,
+      "rank": 3,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 4.6015625
+    },
+    "selected_matches_target": false,
+    "selected_is_processed_argmax": true,
+    "raw_vs_processed_max_difference": 0.0
+  },
+  "local_flip": false,
+  "round_completed_and_accepted": true,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "nullstep_eligibility": {
+    "frozen_scale": 0.19166364845040093,
+    "headroom": 0.010184059143066406,
+    "reserve_fraction": 0.5,
+    "starting_null_bias": 0.00018405914306640625,
+    "native_F0_cost": 2.4043746118789385e-15,
+    "native_linear_change": [
+      -0.007270512460101911,
+      0.07286423740978851,
+      -0.004516151877493149
+    ],
+    "predicted_original_base_null": -0.004332092734426743,
+    "cost_pass": true,
+    "NLL_pass": true,
+    "margin_pass": true,
+    "null_pass": true
+  },
+  "overall_conditions": {
+    "actual_NLL_gain": 0.1560760736465454,
+    "NLL_floor": 0.07246601581573486,
+    "NLL_pass": true,
+    "margin": -4.6015625,
+    "margin_reference": -5.4296875,
+    "margin_pass": true
+  },
+  "cumulative_F0_cost": 6.066666934528045e-13,
+  "continuation_start": {
+    "native_nll": [
+      1.3609756231307983,
+      3.7059593200683594
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.3609756231307983,
+      "margin": -4.671875,
+      "nll": 4.8243513107299805,
+      "probability": 0.008031762205064297,
+      "rank": 3,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 4.671875,
+      "fixed_competitor_margin": -4.671875,
+      "strongest_competitor_changed": false
+    }
+  }
+}
