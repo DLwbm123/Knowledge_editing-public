@@ -1,3 +1,7 @@
+## 最新终态：局部响应刷新失败，旧方向NLL梯度已变号
+
+reports/vigor_responseRefresh_v1_20261020/completion：379检查PASS、485forward/78.884634秒、全部恢复退出；NLL1.490619779升0.052934885，margin−5.421875退0.0625，visual/null拒绝trust过，secant/生成/Judge0。沿重复增量原/新端点gNLLdot−0.205448302→+0.047974376，梯度来自可编辑层FP32；残差不称纯曲率。单点校准拟合通过不保证新方向有限响应。下一必要独立控制为同R3端点原始局部NLL方向，同旧F0成本一次匹配，不扫描。
+
 ## 当前自主轮：R3终点局部梯度和有限响应刷新
 
 protocol reports/vigor_responseRefresh_v1_20261020/PROTOCOL_ZH.md。固定重复R3失效后，不重评失败候选；新端点2forward梯度及历史失败响应rank1校准，只一个新方向/匹配1/secant最多1，5%预留及原保护门旧F0不变。900秒/600forward/50MiB，任何准入/实际/复核/恢复失败保存恢复停止本轮。

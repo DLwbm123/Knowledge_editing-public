@@ -1,3 +1,3 @@
-# 状态
+# 终态
 
-RUNNING：局部梯度与响应刷新轮已后台启动，CPU/存储/显存准入与主进程中性argv通过；模型正在加载，尚无结果。
+STOPPED_MAIN_ACTUAL_NLL_FAILED：原门visual/null拒绝，NLL升0.052934885、margin退0.0625；379检查和全部恢复通过，待公开回执。
