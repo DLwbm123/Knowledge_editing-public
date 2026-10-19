@@ -70,10 +70,10 @@ def grid(runtime,pair,layer,base,u,deadline):
         fp32_update_norm=float(torch.linalg.vector_norm(u)),baseline_repeat_error=repeat,positions=[0,.5,1])
 
 
-def read_grid(runtime,record,snapshot,update,proposal,deadline,emit,*,modules=None):
+def read_grid(runtime,record,snapshot,update,proposal,deadline,emit,*,modules=None,output=None):
     layer=runtime.get_module('model.layers.0.mlp.down_proj');original=layer.weight.detach().clone()
     pair=paired_batches(runtime,record);original_losses=native_losses(runtime,pair)
-    answer={}
+    answer={} if output is None else output
     try:
         with torch.no_grad():layer.weight.copy_(snapshot)
         endpoint=layer.weight.detach().clone();base=endpoint.float();u=update.to(base.device)

@@ -138,7 +138,8 @@ def main(config):
             if metric=='F1':write(root/'public/PROBE_CONTROL_GATE.json',dict(status='PASS',both_F1_before_diagnostics=True))
         for state,snapshot in zip(states,(snapshotA,snapshotD)):
             write(root/'public/STATUS.json',dict(status='READONLY_GRID',arm=state['arm']))
-            state['grid']=read_grid(runtime,record,snapshot,captured[state['arm']],state['probes']['F1']['proposal'],deadline,lambda:emit())
+            state['grid']={}
+            read_grid(runtime,record,snapshot,captured[state['arm']],state['probes']['F1']['proposal'],deadline,lambda:emit(),output=state['grid'])
             emit()
         captured.clear()
         result_status='COMPLETE' if sum(len(s['probes']) for s in states)==2 and all(p['matching_passed'] for s in states for p in s['probes'].values()) else 'STOPPED_MATCH_FAILED'
