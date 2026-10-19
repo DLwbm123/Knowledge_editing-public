@@ -1,3 +1,7 @@
+## 当前自主轮：小成本上界内一个局部margin方向
+
+reports/vigor_responseSmallDirection_v1_20261020/PROTOCOL_ZH.md：在Nullstep成功终点新取梯度2forward，旧F0/null投影与解析NLL约束求margin方向，仅一次，主提案native成本上界为上一实测小步2.4043746118789385e-15，不匹配/不放大全成本。量化后成本/NLL dot/margin dot/原基座null预测不合格写入前停；实际主双收益+trust后null拒绝才原secant≤1，最终原门/双收益/全路径旧A基准过才单token1。不同起点非旧方向等成本优劣对照；候选1、900秒/600forward/50MiB，不重试/追加/扫描。历史成功只内存冻结重构，失败端点不重评，正式八例不改写。
+
 ## 最新终态：Nullstep原门内小幅双收益，无新补偿
 
 reports/vigor_responseNullstep_v1_20261020/completion：NLL1.360975623→1.354653835、margin−4.671875→−4.6015625、null原基座漂移−0.002373457，原三门过，无新secant；官方rank3未翻转。501forward/81.652106秒/恢复退出，本步成本2.404374612e-15，非等成本匹配；全路径旧A收益保持，旧严格逐步比较不改写。不得无限重复旧方向；若有必要新干预，只在已测小成本上界内单候选验证局部方向刷新，不扫描、改门或扩样本。
