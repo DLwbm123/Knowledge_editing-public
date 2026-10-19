@@ -1,3 +1,7 @@
+## 最新终态：SmallDirection写入前NLL一阶准入失败
+
+reports/vigor_responseSmallDirection_v1_20261020/completion：457检查PASS、495forward/79.945314秒、恢复退出。候选形成1但写入/评估0，实际指标/原候选门/翻转NA。连续目标NLL−1.05e-5、native一阶+.000170809，成本/margin/null预测过；连续→native差+.000181309含物化/加法/写入，不能唯一称纯FP16或实际非线性。不得补旧候选前向/重试/调预留刷候选。下一独立必要验证先冻结写入损失内存分解和唯一解析正损失预留规则，原成本/原门不改，仍native预测和实际门判定。
+
 ## 当前自主轮：小成本上界内一个局部margin方向
 
 reports/vigor_responseSmallDirection_v1_20261020/PROTOCOL_ZH.md：在Nullstep成功终点新取梯度2forward，旧F0/null投影与解析NLL约束求margin方向，仅一次，主提案native成本上界为上一实测小步2.4043746118789385e-15，不匹配/不放大全成本。量化后成本/NLL dot/margin dot/原基座null预测不合格写入前停；实际主双收益+trust后null拒绝才原secant≤1，最终原门/双收益/全路径旧A基准过才单token1。不同起点非旧方向等成本优劣对照；候选1、900秒/600forward/50MiB，不重试/追加/扫描。历史成功只内存冻结重构，失败端点不重评，正式八例不改写。

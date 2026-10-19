@@ -1,3 +1,3 @@
-# 状态
+# 终态
 
-RUNNING：小成本上界内一个局部margin方向，CPU/存储/启动显存准入通过，尚无实际候选读数。
+STOPPED_SMALL_NATIVE_ADMISSION_FAILED：native一阶NLL预测+.000170809失去下降性，成本/margin/null预测通过；候选形成1、写入/评估0，实际指标与翻转NA，457检查PASS，全部恢复退出，待公开回执。
