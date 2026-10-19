@@ -1,0 +1,65 @@
+{
+  "mean_nll_before": 3.5476994168323777,
+  "mean_nll_after": 1.5107223109953338,
+  "mean_nll_reduction": 2.036977105837044,
+  "parts": {
+    "first_content": {
+      "tokens": 1,
+      "summed_nll_before": 15.146273612976074,
+      "summed_nll_after": 5.975564002990723,
+      "summed_nll_reduction": 9.170709609985352,
+      "contribution_to_mean_reduction": 0.7642258008321127,
+      "share_of_mean_reduction": 0.3751764311155935
+    },
+    "later_content": {
+      "tokens": 10,
+      "summed_nll_before": 27.12459913082421,
+      "summed_nll_after": 12.117615987721365,
+      "summed_nll_reduction": 15.006983143102843,
+      "contribution_to_mean_reduction": 1.2505819285919035,
+      "share_of_mean_reduction": 0.6139401002634287
+    },
+    "eos": {
+      "tokens": 1,
+      "summed_nll_before": 0.3015202581882477,
+      "summed_nll_after": 0.035487741231918335,
+      "summed_nll_reduction": 0.26603251695632935,
+      "contribution_to_mean_reduction": 0.022169376413027447,
+      "share_of_mean_reduction": 0.010883468620977704
+    }
+  },
+  "additive_identity_error": 0.0,
+  "BASE_first_token": {
+    "nll": 15.146273612976074,
+    "probability": 2.642755418946763e-07,
+    "rank": 110,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 15.14453125
+  },
+  "POST_first_token": {
+    "nll": 5.975564002990723,
+    "probability": 0.002540069166570902,
+    "rank": 7,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 5.8671875
+  },
+  "first_token_probability_ratio": 9611.442467813442,
+  "paths": {
+    "BASE": {
+      "teacher_vs_prefill_max_logit_difference": 0.0,
+      "prefill_vs_generation_max_logit_difference": 0.0,
+      "generation_raw_vs_processed_max_logit_difference": 0.0,
+      "selected_matches_target": false,
+      "selected_matches_historical_first": true,
+      "selected_is_processed_argmax": true
+    },
+    "POST": {
+      "teacher_vs_prefill_max_logit_difference": 0.0,
+      "prefill_vs_generation_max_logit_difference": 0.0,
+      "generation_raw_vs_processed_max_logit_difference": 0.0,
+      "selected_matches_target": false,
+      "selected_matches_historical_first": true,
+      "selected_is_processed_argmax": true
+    }
+  }
+}

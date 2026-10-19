@@ -1,3 +1,7 @@
+## 最新终态：E01首步三路径一致，概率提高但未翻转
+
+reports/vigor_t0probe_v1_20261019/completion：COMPLETE，原E01轨迹复核全部通过，478/600forward、10只读、2单token生成、99.950533秒；所有恢复/进程退出通过。两端teacher首位置/问题prefill/官方generate raw/processed logits差均0。首token概率2.6428e-7→0.00254007、排名110→7，仍非top1；降损首token37.52%、其他内容61.39%、EOS1.09%，不能称仅尾部/EOS改善。第3/11目标token仍rank30/2。仅E01机制证据，不重写八例T0、不宣称全解码无误，不自动下一轮/attempt2/调参。完整匿名公开交付后监测ACTIVE，无待启动候选。
+
 ## 最新明确授权：E01两端逐token与首步生成验证
 
 协议reports/vigor_t0probe_v1_20261019/PROTOCOL_ZH.md。仅原E01重建一次原16步（16全/4半/20secant），基座/终点逐token及官方生成首步；原门/旧F0/trust/FP16保持。900秒/600forward，工作870秒/580forward预留恢复，只读≤16forward/2次单token生成/0Judge/50MiB。复核或恢复失败停止，无重试/追加/attempt2。先存状态与读数再判错，完整匿名交付。此为新明确授权，不重放其他失败轮，不改变正式八例性能。
