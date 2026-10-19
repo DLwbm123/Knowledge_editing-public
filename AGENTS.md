@@ -1,3 +1,7 @@
+## 当前自主轮：两个既有局部方向的有界经验二次响应
+
+protocol reports/vigor_responseQuad_v1_20261020/PROTOCOL_ZH.md。仅固定(.5,.5)混合诊断1（即使原门拒绝也仅记录并恢复，不当安全编辑），旧Ncontrol/Refresh端点不重评。三点拟合经验二次native响应（非纯Hessian），单次SLSQP固定初值/200迭代，系数≥0且和≤1，预测NLL/余量/null/旧F0预算准入后至多候选1/匹配1/secant1/首token1。目标成本为解自身成本≤旧C_A，不能称与历史全成本相同。900秒/600forward/50MiB，所有异常保存恢复停本轮，无重启/扫描。
+
 ## 最新终态：R3终点原始NLL方向也失败
 
 reports/vigor_responseNcontrol_v1_20261020/completion：379检查PASS、485forward/77.481238秒、恢复退出；NLL1.594661832升0.156976938，margin−7.4765625退2.1171875，visual/null拒绝trust过。匹配误差0.003284123%，secant/生成/Judge0/官方翻转NA；不是仅margin校准失败。离线二次screen预测margin最大约0.13765<0.4453125，不盲目缩步；该模型非真实全尺度不可行证明。下一必要验证先冻结有界有限响应模型，不扫描方向/尺度。
