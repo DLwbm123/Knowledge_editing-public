@@ -1,3 +1,7 @@
+## 最新终态：提前原secant居中成功、保留原比较收益
+
+reports/vigor_responseCenter_v1_20261020/completion：377检查PASS、492forward/80.075230秒、恢复退出。组合NLL1.438134551相对共同起点下降0.072595358，margin−5.359375改善0.5078125；原三门及abs null drift≤.002通过，实际漂移+0.001693964。相对R3 NLL升0.000449657/margin不变，明确保留；一次原secant，无匹配，官方rank4未翻转。下一独立有界延续协议需区分原三门与旧A研究比较门：全路径旧A收益要求保留，新不同起点每步只要求真实NLL下降/余量增加，旧失败原冻结结论不改写，不能称新协议在原严格逐步比较条件下成功。
+
 ## 当前自主轮：固定R3主提案提前原secant居中
 
 protocol reports/vigor_responseCenter_v1_20261020/PROTOCOL_ZH.md，组合候选由原共同起点的固定R3主提案加一次提前原secant构成；只改触发时机，补偿实现/旧F0/原门不改。R3控制3forward后调用原secant1，最终须保留原共同起点NLL下降≥0.072466016及margin超过旧A，原全部门/累计F0≤1.01C_A/abs null drift≤0.002。匹配0，新主方向0，无扫描，900秒/600forward/50MiB。失败保存恢复停本轮，不追加补偿；必须报告相对R3的NLL/margin增减。
