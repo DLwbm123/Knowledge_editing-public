@@ -1,3 +1,7 @@
+## 最新终态：native贪心null平衡实际较大幅度双收益
+
+reports/vigor_responseOrthantBalance_v1_20261020/completion：NLL1.354653835→1.293198824、margin−4.6015625→−3.734375，null原基座漂移−.005858421，原三门过，无新secant，官方rank3/p.019042853仍未翻转。预测中心6.91e-9但实际偏离，梯度/有限响应仍有差不能绕过真实原门。删除2059798坐标/保留12608998，cost2.595215527e-13，502forward/84.179409秒/恢复退出。下一必要单候选延续须当前新端点梯度刷新并按同固定seed半径/坐标及贪心规则，不盲加或改排序/幅度/目标，另冻协议。
+
 ## 当前自主轮：native双收益大子集内确定贪心null平衡
 
 reports/vigor_responseOrthantBalance_v1_20261020/PROTOCOL_ZH.md：同Nullstep起点/固定历史参考半径/既有native双收益大子集，仅删除负null贡献坐标使原基座预测居中。按margin损失/负null恢复比值稳定排序（tie按扁平索引），只取首个累计恢复达到目标的完整前缀，无法居中即停不改目标。单候选/不搜索规则或前缀/不缩放/匹配/新求解；值为既有native子集，成本不增，原null投影不声称保持。仍native预测与实际原门/双收益/全路径旧A要求，900秒/600forward/50MiB，失败恢复停不追加。旧Radius未写入候选只内存复核forward0，历史NA不补。
