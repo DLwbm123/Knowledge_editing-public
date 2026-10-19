@@ -1,3 +1,7 @@
+## 当前自主轮：固定R3有效增量仅延续一步
+
+protocol reports/vigor_responseFollow_v1_20261020/PROTOCOL_ZH.md，12小时授权内，R3终点3forward控制后只一个新候选W_R3+q_R3。冻结方向及旧ratio，不新匹配，不扫描；新步实际下降/余量要求保持旧A每步底线，null相对最初基座。900秒/600forward/50MiB，secant最多1，失败恢复停止本轮；原三门保持。
+
 ## 最新终态：R3实际条件与原门全过、官方首步未翻转
 
 reports/vigor_response3_v1_20261019/completion：COMPLETE，361检查PASS、484forward/77.491565秒、全部恢复退出。NLL1.437684894下降0.073045015超过旧A底线，margin−5.359375改善0.5078125；原三门全过，相对原基座null漂移−0.007897377。匹配误差0.014947772%，无需secant，官方首token仍目标rank4未翻转。仅E01局部成功，不改正式八例指标。12小时授权内下一独立有限验证先冻结再执行。
