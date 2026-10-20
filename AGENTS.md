@@ -1,3 +1,7 @@
+## 最新终态：刷新后null预测转正，单侧构造停止
+
+reports/vigor_responseBalancedRefresh_v1_20261020/completion：新raw NLL/margin/null dot[-.141286712,+1.138238064,+.057524318]、cost2.835291681e-13，原基座预测+.051665896；单侧负null函数R非正按协议停止。新种子解析1/raw内存提案1，最终候选形成/写入评估0，实际指标/原门/翻转NA，500forward/99.690812秒/恢复退出。下一必要独立镜像平衡需先冻结同已定方向/幅度，仅删除正null同侧贡献，稳定一次累计前缀；不能改写旧停止/重求方向/扫描。
+
 ## 当前自主轮：成功native平衡终点的一次局部方向刷新
 
 reports/vigor_responseBalancedRefresh_v1_20261020/PROTOCOL_ZH.md：OrthantBalance成功终点内存重建/3forward控制后，新梯度2forward，现有解析函数只求一次原固定小种子，再乘同fixed_scale14.94248258401418回历史C_A；同native双收益坐标筛选与负null贡献贪心中心规则，不盲加旧增量。R非正或恢复不足即停不换正方向或目标，成本/原基座预测/NLL/margin准入和实际原门/新步进展/全路径旧A要求保持。候选1/新方向解析1/新幅度0/匹配0/900秒600forward50MiB，不重试/改规则追加第二步。旧失败前向0/历史NA不补，正式八例不改写。
