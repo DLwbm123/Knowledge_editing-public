@@ -37,7 +37,9 @@ def selfcheck():
 def blind(root,partial=False):
     """Private hidden-method packet. Equal input/reference/answer shares one verdict."""
     if not partial:validate(root)
-    queries=read(root/'QUERY_ROWS.json');paths=list(sorted((root/'base').glob('*/*.json')))
+    queries=read(root/'QUERY_ROWS.json');config=read(root/'DATA_ADMISSION.json')
+    needed={r['query_id'] for t in config['tasks'] for r in t['eval_rows']}
+    paths=[p for p in sorted((root/'base').glob('*/*.json')) if p.stem in needed]
     paths+=list(sorted(root.glob('[0-4]/E*/outputs/*/*.json')))
     assert paths
     historical=read(root/'EVAL_BINDINGS.json');old={}
@@ -55,7 +57,7 @@ def blind(root,partial=False):
         mapping[str(path.relative_to(root))]=unique[key]
     packet=dict(status='PARTIAL_DEVELOPMENT_PACKET' if partial else 'ALL_OUTPUTS_HIDDEN',classes=['CORRECT','INCORRECT','UNCERTAIN','ABSTAIN'],instruction='Judge source-answer agreement only against the fixed reference; equivalent wording allowed, contradiction/wrong entity/polarity incorrect; ambiguous unsupported specificity uncertain; refusal abstain. Do not infer method or repair reference.',items=items)
     (root/'BLIND_PACKET.json').write_text(json.dumps(packet,indent=2));(root/'BLIND_MAPPING.json').write_text(json.dumps(mapping,indent=2));(root/'BLIND_REUSE.json').write_text(json.dumps(reuse,indent=2))
-    return dict(outputs=len(paths),unique_answers=len(items),exact_correct_reuse=len(reuse),partial=partial)
+    return dict(outputs=len(paths),unique_answers=len(items),exact_correct_reuse=len(reuse),required_Base_questions=len(needed),all_Base_outputs_preserved=len(queries),partial=partial)
 
 def summarize(root):
     validate(root)
