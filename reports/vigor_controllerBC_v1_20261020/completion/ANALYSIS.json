@@ -1,0 +1,75 @@
+{
+  "status": "COMPLETE",
+  "base": {
+    "native_nll": [
+      3.5477054119110107,
+      3.705775260925293
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 3.5477054119110107,
+      "margin": -15.14453125,
+      "nll": 15.146273612976074,
+      "probability": 2.642755418946763e-07,
+      "rank": 110,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 15.14453125
+    }
+  },
+  "arms": [
+    {
+      "arm": "B",
+      "accepted_steps": 8,
+      "proposals": 10,
+      "endpoint_NLL": 2.4541096687316895,
+      "NLL_gain": 1.0935957431793213,
+      "margin": -8.8671875,
+      "margin_gain": 6.27734375,
+      "original_base_null_drift": -0.0006647109985351562,
+      "target_rank": 19,
+      "target_probability": 0.0001357964938506484,
+      "cumulative_F0_cost": 1.3492966675039794e-11,
+      "editing_forward": 112,
+      "generation_forward": 51,
+      "secants": 6,
+      "source_target_exact_match": false,
+      "semantic_T0_score": null
+    },
+    {
+      "arm": "C",
+      "accepted_steps": 8,
+      "proposals": 8,
+      "endpoint_NLL": 2.7765109539031982,
+      "NLL_gain": 0.7711944580078125,
+      "margin": -8.6953125,
+      "margin_gain": 6.44921875,
+      "original_base_null_drift": -0.008582830429077148,
+      "target_rank": 19,
+      "target_probability": 0.0001600621617399156,
+      "cumulative_F0_cost": 1.0528250241101787e-11,
+      "editing_forward": 62,
+      "generation_forward": 47,
+      "secants": 2,
+      "source_target_exact_match": false,
+      "semantic_T0_score": null
+    }
+  ],
+  "restoration": {
+    "base_weight": true,
+    "base_losses": true,
+    "dtype": true,
+    "hooks": true,
+    "flags": true,
+    "generation_config": true
+  },
+  "costs": {
+    "epoch": 1792466018.4777677,
+    "resident_seconds": 80.33293271064758,
+    "model_forward_calls": 281,
+    "peak_allocated_bytes": 21084647936,
+    "status": "COMPLETE"
+  },
+  "scope": "E01_exposed_development_no_semantic_judge",
+  "no_controller_off_ablation": true,
+  "no_equal_F0_cost_claim": true
+}
