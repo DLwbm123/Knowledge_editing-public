@@ -1,3 +1,3 @@
 # F 已完成：固定事实加权配方未通过推进门
 
-F 0/3 vs B/N 1/3，均无缺分；B/N/F 同六题无关面板各损伤1/18，近边界0支持NA。F 1230编辑forward/636backward/42secant；B/N旧算法661/1350，必要重建613/1308另计。2439运行核验、4403离线审计PASS，恢复及主GPU/评分进程退出。主GPU903.226851秒/5526forward；含首失败与Base资格合计962.680753秒/5981forward。post 8个新不同输入一次盲分、44端点严格缓存、57端点评分齐全。私有评分已持久化。完整结果见completion/REPORT_ZH.md及ANALYSIS.json；公开推送回执待完成，不冒称已交付。停止固定0.5/0.5微调，不追加权重/步数；保持唯一pure-w ACTIVE，完整交付后先冻结下一独立源内修订资格验证。
+F 0/3 vs B/N 1/3，均无缺分；B/N/F 同六题无关面板各损伤1/18，近边界0支持NA。F 1230编辑forward/636backward/42secant；B/N旧算法661/1350，必要重建613/1308另计。2439运行核验、4403离线审计PASS，恢复及主GPU/评分进程退出。主GPU903.226851秒/5526forward；含首失败与Base资格合计962.680753秒/5981forward。post 8个新不同输入一次盲分、44端点严格缓存、57端点评分齐全。私有评分已持久化。完整结果见completion/REPORT_ZH.md及ANALYSIS.json；报告e40206508acb01f67d0b7ec1fdfb916ab82fd9ec已通过7897代理推送，远端精确SHA与匿名HTTP200/标题核验；回执见completion/PUBLICATION.json。停止固定0.5/0.5微调，不追加权重/步数；保持唯一pure-w ACTIVE，完整交付后先冻结下一独立源内修订资格验证。
