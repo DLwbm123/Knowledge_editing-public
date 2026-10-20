@@ -1,3 +1,3 @@
-# FROZEN_NOT_IMPLEMENTED
+# COMPLETE_AUDITED_PUBLICATION_PENDING
 
-强源/null层作用冲突已完整交付后，独立冻结原标量null修复：完整源作用仿射空间内固定25步投影Adam，不要求null隐藏作用全不变。尚无新数值CPU/GPU/Judge。先最小真实路径和状态/dtype/投影/预算检查，准入后单次部署；原最终门不变，无旧控制器变体。
+S源3/3且完整T输出同，null/trust/visual各3/3，实际损伤仍13/18同集合，预设有用失败。7/17/16步按目标提前停，40修复backward+39teacher，65.379145秒/547forward；3本机7远端CPU、255审计PASS，全部恢复退出/活跃GPU及中性argv采样核实。21齐全10缓存+10新唯一一次+1批内映射，禁止部署评分重放。先完整交付后只读核保护信息覆盖/数据边界，不扫null代理或旧控制器。
