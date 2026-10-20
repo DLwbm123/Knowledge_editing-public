@@ -1,0 +1,99 @@
+{
+  "status": "EXISTING_OUTPUT_AUDIT_COMPLETE",
+  "model_calls": 0,
+  "outputs_read": 588,
+  "unique_queries": 50,
+  "counts": {
+    "consumers": 84,
+    "all_seven_same_answer": 82,
+    "all_seven_same_tokens": 82,
+    "all_seven_same_label": 84,
+    "all_seven_same_binding": 84,
+    "base_core_binding_matches": 84,
+    "same_question_as_source": 84,
+    "different_image_from_source": 84,
+    "same_reference_as_source": 21,
+    "all_seven_generation_attempts_present": 84,
+    "source_tokens_equal_base": 0,
+    "reuse_flags": 0
+  },
+  "source_target_copy_normalized": {
+    "SOURCE": 82,
+    "CE": 82,
+    "KL": 82,
+    "CE_PROJ": 82,
+    "RESERVE": 82,
+    "BALANCEDIT": 84,
+    "BALANCEDIT_CE": 84
+  },
+  "TT_nonzero_generation_residual": {
+    "SOURCE": 84,
+    "CE": 84,
+    "KL": 84,
+    "CE_PROJ": 84,
+    "RESERVE": 84
+  },
+  "base_to_method_labels": {
+    "INCORRECT -> INCORRECT": 17,
+    "INCORRECT -> CORRECT": 30,
+    "ABSTAIN -> CORRECT": 3,
+    "ABSTAIN -> INCORRECT": 9,
+    "INCORRECT -> UNCERTAIN": 25
+  },
+  "per_edit": {
+    "E001": {
+      "consumers": 35,
+      "all_seven_same_answer": 34,
+      "all_seven_same_tokens": 34,
+      "all_seven_same_label": 35,
+      "all_seven_same_binding": 35,
+      "base_core_binding_matches": 35,
+      "same_question_as_source": 35,
+      "different_image_from_source": 35,
+      "same_reference_as_source": 7,
+      "all_seven_generation_attempts_present": 35,
+      "source_tokens_equal_base": 0
+    },
+    "E004": {
+      "consumers": 12,
+      "all_seven_same_answer": 12,
+      "all_seven_same_tokens": 12,
+      "all_seven_same_label": 12,
+      "all_seven_same_binding": 12,
+      "base_core_binding_matches": 12,
+      "same_question_as_source": 12,
+      "different_image_from_source": 12,
+      "same_reference_as_source": 3,
+      "all_seven_generation_attempts_present": 12,
+      "source_tokens_equal_base": 0
+    },
+    "E008": {
+      "consumers": 2,
+      "all_seven_same_answer": 2,
+      "all_seven_same_tokens": 2,
+      "all_seven_same_label": 2,
+      "all_seven_same_binding": 2,
+      "base_core_binding_matches": 2,
+      "same_question_as_source": 2,
+      "different_image_from_source": 2,
+      "same_reference_as_source": 2,
+      "all_seven_generation_attempts_present": 2,
+      "source_tokens_equal_base": 0
+    },
+    "E009": {
+      "consumers": 35,
+      "all_seven_same_answer": 34,
+      "all_seven_same_tokens": 34,
+      "all_seven_same_label": 35,
+      "all_seven_same_binding": 35,
+      "base_core_binding_matches": 35,
+      "same_question_as_source": 35,
+      "different_image_from_source": 35,
+      "same_reference_as_source": 9,
+      "all_seven_generation_attempts_present": 35,
+      "source_tokens_equal_base": 0
+    }
+  },
+  "normalization": "case, whitespace, trailing periods only",
+  "limitation": "Bindings and source inspection do not reconstruct retired model states or prove causal visual reliance."
+}
