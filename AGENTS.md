@@ -1,3 +1,7 @@
+## 最新人工快速验证：已完成输出独立语义评分
+
+reports/vigor_controllerBC_semantic_v1_20261020/completion：B 0/1、C 0/1，原source-agreement rubric/Astra medium、1批2payload一次、隔离工具0、GPU/新生成0。首启动仅隔离路径预检失败且无模型请求，规范路径修复后首次实际评分，原失败完整保留。旧controllerBC Judge0/语义NA为历史记录不覆盖，新评分独立追加，正式八例不改写。
+
 ## 自主12小时窗口已截止，无待启动任务
 
 reports/vigor_autonomy12h_v1_20261019/FINAL_REPORT_ZH.md和WINDOW_CLOSED.json：20轮终态、恢复退出、逐轮公开，GPU1688.634602秒；北京时间2026-10-20 11:32后不新增实验，后续新人工指令按其范围。半小时静默监测保持ACTIVE，不自行暂停、不重复总结/检查已退出旧进程。正式八例不改写；controllerBC两臂各8步原门过且完整生成，精确匹配否/语义T0 NA，C无明确额外性能优势。
