@@ -23,10 +23,14 @@ def freeze(data,repo,out):
     if not a or a in banned or key not in pool:continue
     pool[key].setdefault(a,dict(source_csv=name,source_row=i,figure=row['Figure_path'],question=row['Question'],reference=answer,original_choices={k:row.get(k) for k in ['Choice A','Choice B','Choice C','Choice D']}))
  items=[];taken=set()
+ is_a1=out.name=='kidney_a1'
+ if is_a1:taken.update(x['article'] for x in read(out.parent/'CANDIDATES_FROZEN.json')['items'])
  for ci,t in enumerate(TARGETS,1):
-  for i,(a,row) in enumerate(list(pool[t].items())[:32]):
+  if is_a1 and t!='kidney':continue
+  start=32 if is_a1 else 0
+  for i,(a,row) in enumerate(list(pool[t].items())[start:start+32],start):
    if a in taken:continue
-   taken.add(a);role=('WRITE_TRAIN','ROUTER_DEV','CONFIRM','CONFIRM')[i%4];items.append(dict(id='N%02d_%02d'%(ci,i+1),concept='N%02d'%ci,reference_key=t,role=role,article=a,**row))
+   taken.add(a);role=('WRITE_TRAIN','ROUTER_DEV','CONFIRM','CONFIRM')[i%4];items.append(dict(id=('K' if is_a1 else 'N')+'%02d_%02d'%(ci,i+1),concept='N%02d'%ci,reference_key=t,role=role,article=a,**row))
  out.mkdir(parents=True,exist_ok=True);d=dict(status='FROZEN_BEFORE_PIXELS',items=items,metadata_rows=n,historical_PMC_excluded=len(banned),available={t:len(pool[t]) for t in TARGETS},new_models=0,time=time.time());write(out/'CANDIDATES_FROZEN.json',d);print({k:v for k,v in d.items() if k!='items'})
 def visual(data,out):
  # Existing bounded member reader reused with per-V21 zero-based pixel accounting.
