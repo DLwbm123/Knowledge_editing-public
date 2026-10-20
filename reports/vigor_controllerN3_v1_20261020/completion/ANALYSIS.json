@@ -1,0 +1,159 @@
+{
+  "rows": [
+    {
+      "sample": "E01",
+      "B": {
+        "steps": 23,
+        "editing_forward": 265,
+        "backward": 94,
+        "secants": 11,
+        "NLL": 1.1073765754699707,
+        "margin": -4.7734375,
+        "base_null_drift": 0.00030493736267089844,
+        "semantic_success": false,
+        "endpoint_F0": 3.9706210473343734e-11
+      },
+      "N": {
+        "steps": 40,
+        "status": "STOPPED_EDIT_FORWARD_CAP",
+        "editing_forward": 512,
+        "backward": 177,
+        "secants": 27,
+        "NLL": 0.7662374973297119,
+        "margin": -4.3359375,
+        "base_null_drift": -0.0016515254974365234,
+        "semantic_success": false,
+        "endpoint_F0": 4.341498860236881e-11,
+        "accepted_margin_nonpositive_gain": 13,
+        "accepted_margin_rho_below_old_floor": 13,
+        "all_accepted_original_gates": true,
+        "final_generation": {
+          "status": "COMPLETE",
+          "raw_token_count": 104,
+          "source_target_exact_match": false,
+          "semantic_T0_score": null,
+          "source_target_exact_match_is_not_semantic_score": true,
+          "cap_hit": false,
+          "tracked_position_on_shared_reference_prefix": true,
+          "tracked_target_selected": false
+        },
+        "generation_forwards": 104
+      }
+    },
+    {
+      "sample": "E02",
+      "B": {
+        "steps": 3,
+        "editing_forward": 39,
+        "backward": 16,
+        "secants": 2,
+        "NLL": 2.6625101566314697,
+        "margin": -14.6171875,
+        "base_null_drift": -0.0002655982971191406,
+        "semantic_success": false,
+        "endpoint_F0": 3.0748717821284204e-12
+      },
+      "N": {
+        "steps": 36,
+        "status": "STOPPED_NO_ELIGIBLE_TRIAL",
+        "editing_forward": 326,
+        "backward": 135,
+        "secants": 12,
+        "NLL": 1.0348566770553589,
+        "margin": -12.6875,
+        "base_null_drift": -0.009842872619628906,
+        "semantic_success": false,
+        "endpoint_F0": 3.75012255114811e-11,
+        "accepted_margin_nonpositive_gain": 2,
+        "accepted_margin_rho_below_old_floor": 1,
+        "all_accepted_original_gates": true,
+        "final_generation": {
+          "status": "COMPLETE",
+          "raw_token_count": 66,
+          "source_target_exact_match": false,
+          "semantic_T0_score": null,
+          "source_target_exact_match_is_not_semantic_score": true,
+          "cap_hit": false,
+          "tracked_position_on_shared_reference_prefix": true,
+          "tracked_target_selected": false
+        },
+        "generation_forwards": 66
+      }
+    },
+    {
+      "sample": "E03",
+      "B": {
+        "steps": 30,
+        "editing_forward": 357,
+        "backward": 127,
+        "secants": 17,
+        "NLL": 0.2438705861568451,
+        "margin": -0.6484375,
+        "base_null_drift": 0.0036296844482421875,
+        "semantic_success": true,
+        "endpoint_F0": 4.7138054200329915e-11
+      },
+      "N": {
+        "steps": 53,
+        "status": "STOPPED_EDIT_FORWARD_CAP",
+        "editing_forward": 512,
+        "backward": 203,
+        "secants": 21,
+        "NLL": 0.0725521370768547,
+        "margin": 1.21875,
+        "base_null_drift": -0.0036377906799316406,
+        "semantic_success": true,
+        "endpoint_F0": 4.883794732171328e-11,
+        "accepted_margin_nonpositive_gain": 2,
+        "accepted_margin_rho_below_old_floor": 3,
+        "all_accepted_original_gates": true,
+        "final_generation": {
+          "status": "COMPLETE",
+          "raw_token_count": 8,
+          "source_target_exact_match": true,
+          "semantic_T0_score": null,
+          "source_target_exact_match_is_not_semantic_score": true,
+          "cap_hit": false,
+          "tracked_position_on_shared_reference_prefix": true,
+          "tracked_target_selected": true
+        },
+        "generation_forwards": 8
+      }
+    }
+  ],
+  "semantic": {
+    "B": {
+      "success": 1,
+      "denominator": 3,
+      "missing": 0
+    },
+    "N": {
+      "success": 1,
+      "denominator": 3,
+      "missing": 0
+    }
+  },
+  "total_editing_forward": {
+    "B": 661,
+    "N": 1350
+  },
+  "total_backward": {
+    "B": 237,
+    "N": 515
+  },
+  "total_secant": {
+    "B": 30,
+    "N": 60
+  },
+  "global_N": {
+    "seconds": 287.55746245384216,
+    "forward": 1545,
+    "editing": 1350,
+    "generation": 178,
+    "control_and_restore": 17,
+    "per_arm_wall_seconds": null
+  },
+  "comparison": "same exposed cases and budget limits, unequal realized cost and progress",
+  "locality_valid_support": 0,
+  "locality_retention": null
+}
