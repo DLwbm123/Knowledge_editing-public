@@ -1,3 +1,7 @@
+## 最新人工授权：三例共同预算B/C快速验证
+
+reports/vigor_controllerBC3_v1_20261020/PROTOCOL_ZH.md已冻结：E01/E02/E03各B/C独立原基座，原算法/门/旧F0不变，每臂512编辑forward/64步；E01第16步及最终生成、其余仅最终，总≤8请求×128forward，原生成1024不降低。GPU1800秒/4300forward，评分Astra medium≤8payload一次，先终态再盲评不反馈编辑；旧输出严格相同才复用旧评分。主结果最后合法端点语义T0/3，缺失保留界，不扩locality/重判/加倍预算。旧窗口截止不限制本次新人工授权，旧失败与报告不改写。
+
 ## 最新人工快速验证：已完成输出独立语义评分
 
 reports/vigor_controllerBC_semantic_v1_20261020/completion：B 0/1、C 0/1，原source-agreement rubric/Astra medium、1批2payload一次、隔离工具0、GPU/新生成0。首启动仅隔离路径预检失败且无模型请求，规范路径修复后首次实际评分，原失败完整保留。旧controllerBC Judge0/语义NA为历史记录不覆盖，新评分独立追加，正式八例不改写。
