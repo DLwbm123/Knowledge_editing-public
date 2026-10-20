@@ -1,0 +1,887 @@
+{
+  "status": "COMPLETE_SCORED_DEVELOPMENT",
+  "table": {
+    "A": {
+      "roles": {
+        "T1L": {
+          "INCORRECT": 26,
+          "CORRECT": 33,
+          "UNCERTAIN": 25
+        },
+        "T1G": {
+          "CORRECT": 37
+        },
+        "T2G": {
+          "CORRECT": 34,
+          "INCORRECT": 4,
+          "ABSTAIN": 1,
+          "UNCERTAIN": 1
+        },
+        "T2L": {
+          "CORRECT": 2,
+          "INCORRECT": 3
+        },
+        "T0": {
+          "CORRECT": 10
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 40
+        }
+      },
+      "damage": {
+        "Base_correct_denominator": 3,
+        "lost_correct": 2,
+        "explicit_incorrect": 2
+      },
+      "T1L_source_copy": {
+        "denominator": 84,
+        "source_target_copy": 82
+      },
+      "training_updates": 1600
+    },
+    "B": {
+      "roles": {
+        "T1L": {
+          "INCORRECT": 26,
+          "CORRECT": 33,
+          "UNCERTAIN": 25
+        },
+        "T1G": {
+          "CORRECT": 37
+        },
+        "T2G": {
+          "CORRECT": 34,
+          "ABSTAIN": 1,
+          "UNCERTAIN": 4,
+          "INCORRECT": 1
+        },
+        "T2L": {
+          "INCORRECT": 2,
+          "CORRECT": 3
+        },
+        "T0": {
+          "CORRECT": 10
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 40
+        }
+      },
+      "damage": {
+        "Base_correct_denominator": 3,
+        "lost_correct": 0,
+        "explicit_incorrect": 0
+      },
+      "T1L_source_copy": {
+        "denominator": 84,
+        "source_target_copy": 82
+      },
+      "training_updates": 1600
+    },
+    "C": {
+      "roles": {
+        "T1L": {
+          "INCORRECT": 42,
+          "CORRECT": 32,
+          "ABSTAIN": 1,
+          "UNCERTAIN": 9
+        },
+        "T1G": {
+          "CORRECT": 28,
+          "INCORRECT": 5,
+          "UNCERTAIN": 4
+        },
+        "T2G": {
+          "CORRECT": 18,
+          "INCORRECT": 9,
+          "UNCERTAIN": 10,
+          "ABSTAIN": 3
+        },
+        "T2L": {
+          "INCORRECT": 3,
+          "UNCERTAIN": 1,
+          "CORRECT": 1
+        },
+        "T0": {
+          "CORRECT": 8,
+          "INCORRECT": 1,
+          "UNCERTAIN": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 33,
+          "INCORRECT": 4,
+          "UNCERTAIN": 3
+        }
+      },
+      "damage": {
+        "Base_correct_denominator": 3,
+        "lost_correct": 2,
+        "explicit_incorrect": 2
+      },
+      "T1L_source_copy": {
+        "denominator": 84,
+        "source_target_copy": 65
+      },
+      "training_updates": 1600
+    }
+  },
+  "paired_correct_differences": {
+    "B-A": {
+      "T0": 0,
+      "T1G": 0,
+      "T2G": 0,
+      "T1L": 0,
+      "T2L": 1,
+      "REPHRASE_DIAGNOSTIC": 0
+    },
+    "C-B": {
+      "T0": -2,
+      "T1G": -9,
+      "T2G": -16,
+      "T1L": -1,
+      "T2L": -2,
+      "REPHRASE_DIAGNOSTIC": -7
+    }
+  },
+  "per_edit": {
+    "A": {
+      "E001": {
+        "T1L": {
+          "INCORRECT": 16,
+          "CORRECT": 19
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "T2L": {
+          "CORRECT": 1,
+          "INCORRECT": 1
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E002": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E003": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E004": {
+        "T1L": {
+          "CORRECT": 3,
+          "INCORRECT": 9
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E005": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 2,
+          "INCORRECT": 2
+        },
+        "T1G": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E006": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E007": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "ABSTAIN": 1,
+          "CORRECT": 2,
+          "INCORRECT": 1
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E008": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1L": {
+          "CORRECT": 2
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E009": {
+        "T2L": {
+          "CORRECT": 1,
+          "INCORRECT": 2
+        },
+        "T1L": {
+          "CORRECT": 9,
+          "UNCERTAIN": 25,
+          "INCORRECT": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 3,
+          "INCORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E010": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 3,
+          "UNCERTAIN": 1
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      }
+    },
+    "B": {
+      "E001": {
+        "T1L": {
+          "INCORRECT": 16,
+          "CORRECT": 19
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "T2L": {
+          "INCORRECT": 2
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E002": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E003": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "ABSTAIN": 1,
+          "CORRECT": 3
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E004": {
+        "T1L": {
+          "CORRECT": 3,
+          "INCORRECT": 9
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E005": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 3,
+          "UNCERTAIN": 1
+        },
+        "T1G": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E006": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E007": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "UNCERTAIN": 1,
+          "CORRECT": 2,
+          "INCORRECT": 1
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E008": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1L": {
+          "CORRECT": 2
+        },
+        "T2G": {
+          "CORRECT": 3,
+          "UNCERTAIN": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E009": {
+        "T2L": {
+          "CORRECT": 3
+        },
+        "T1L": {
+          "CORRECT": 9,
+          "UNCERTAIN": 25,
+          "INCORRECT": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E010": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 3,
+          "UNCERTAIN": 1
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      }
+    },
+    "C": {
+      "E001": {
+        "T1L": {
+          "INCORRECT": 15,
+          "CORRECT": 19,
+          "ABSTAIN": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 2,
+          "INCORRECT": 1,
+          "UNCERTAIN": 1
+        },
+        "T2L": {
+          "INCORRECT": 1,
+          "UNCERTAIN": 1
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E002": {
+        "T0": {
+          "INCORRECT": 1
+        },
+        "T1G": {
+          "INCORRECT": 4
+        },
+        "T2G": {
+          "INCORRECT": 3,
+          "UNCERTAIN": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "INCORRECT": 4
+        }
+      },
+      "E003": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "UNCERTAIN": 1,
+          "CORRECT": 3
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E004": {
+        "T1L": {
+          "CORRECT": 3,
+          "INCORRECT": 9
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 4
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E005": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 2,
+          "UNCERTAIN": 2
+        },
+        "T1G": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E006": {
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "CORRECT": 2,
+          "UNCERTAIN": 2
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E007": {
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T2G": {
+          "UNCERTAIN": 1,
+          "CORRECT": 1,
+          "INCORRECT": 2
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E008": {
+        "T1G": {
+          "CORRECT": 3,
+          "INCORRECT": 1
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T1L": {
+          "INCORRECT": 1,
+          "CORRECT": 1
+        },
+        "T2G": {
+          "ABSTAIN": 1,
+          "INCORRECT": 2,
+          "CORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E009": {
+        "T2L": {
+          "CORRECT": 1,
+          "INCORRECT": 2
+        },
+        "T1L": {
+          "CORRECT": 9,
+          "INCORRECT": 17,
+          "UNCERTAIN": 9
+        },
+        "T1G": {
+          "CORRECT": 4
+        },
+        "T0": {
+          "CORRECT": 1
+        },
+        "T2G": {
+          "CORRECT": 3,
+          "INCORRECT": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT": 4
+        }
+      },
+      "E010": {
+        "T1G": {
+          "UNCERTAIN": 4
+        },
+        "T2G": {
+          "UNCERTAIN": 2,
+          "ABSTAIN": 2
+        },
+        "T0": {
+          "UNCERTAIN": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "UNCERTAIN": 3,
+          "CORRECT": 1
+        }
+      }
+    }
+  },
+  "independent_confirmation": false,
+  "natural_routing_evaluated": false,
+  "review": "Assistant fixed-reference review, not independent clinical adjudication",
+  "cost": {
+    "forwards": 62830,
+    "backwards": 4815,
+    "updates": 4800,
+    "generations": 828,
+    "vision_forwards": 426,
+    "query_keys": 0,
+    "GPU_process_seconds": 3556.4803624153137,
+    "LM_forward_breakdown": {
+      "OFF_generation": 9344,
+      "A_generation": 4848,
+      "B_generation": 4981,
+      "C_generation": 38752,
+      "source_training_and_terminal_checks": 4830,
+      "real_mechanical_admission": 75
+    },
+    "model_consumer_elapsed_seconds_from_original_start": 1346.6101658344269
+  },
+  "scoring": {
+    "unique": 480,
+    "frozen_reuse": 401,
+    "new_assistant_verdicts": 79,
+    "new_labels": {
+      "INCORRECT": 44,
+      "ABSTAIN": 4,
+      "UNCERTAIN": 23,
+      "CORRECT": 8
+    }
+  },
+  "generation": {
+    "A": {
+      "outputs": 216,
+      "at_cap": 1,
+      "empty": 0,
+      "tokens": 4848
+    },
+    "B": {
+      "outputs": 216,
+      "at_cap": 1,
+      "empty": 0,
+      "tokens": 4981
+    },
+    "C": {
+      "outputs": 216,
+      "at_cap": 34,
+      "empty": 2,
+      "tokens": 38752
+    }
+  },
+  "retirement": {
+    "edits": 10,
+    "files": 60,
+    "bytes": 2005320,
+    "remaining_weights": 0
+  },
+  "paired_audit": {
+    "B-A": {
+      "role_transitions": {
+        "T1L": {
+          "INCORRECT -> INCORRECT": 26,
+          "CORRECT -> CORRECT": 33,
+          "UNCERTAIN -> UNCERTAIN": 25
+        },
+        "T1G": {
+          "CORRECT -> CORRECT": 37
+        },
+        "T2G": {
+          "CORRECT -> CORRECT": 31,
+          "CORRECT -> ABSTAIN": 1,
+          "INCORRECT -> CORRECT": 3,
+          "INCORRECT -> UNCERTAIN": 1,
+          "ABSTAIN -> UNCERTAIN": 1,
+          "CORRECT -> INCORRECT": 1,
+          "CORRECT -> UNCERTAIN": 1,
+          "UNCERTAIN -> UNCERTAIN": 1
+        },
+        "T2L": {
+          "CORRECT -> INCORRECT": 1,
+          "INCORRECT -> INCORRECT": 1,
+          "CORRECT -> CORRECT": 1,
+          "INCORRECT -> CORRECT": 2
+        },
+        "T0": {
+          "CORRECT -> CORRECT": 10
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT -> CORRECT": 40
+        }
+      },
+      "T1L_copy_transitions": {
+        "True -> True": 82,
+        "False -> False": 2
+      },
+      "T1L_lost_copy_new_labels": {},
+      "at_cap_by_role": {
+        "T1L": {
+          "A": 0,
+          "B": 0
+        },
+        "T1G": {
+          "A": 0,
+          "B": 0
+        },
+        "T2G": {
+          "A": 1,
+          "B": 1
+        },
+        "T2L": {
+          "A": 0,
+          "B": 0
+        },
+        "T0": {
+          "A": 0,
+          "B": 0
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "A": 0,
+          "B": 0
+        }
+      }
+    },
+    "C-B": {
+      "role_transitions": {
+        "T1L": {
+          "INCORRECT -> INCORRECT": 25,
+          "CORRECT -> CORRECT": 32,
+          "INCORRECT -> ABSTAIN": 1,
+          "CORRECT -> INCORRECT": 1,
+          "UNCERTAIN -> INCORRECT": 16,
+          "UNCERTAIN -> UNCERTAIN": 9
+        },
+        "T1G": {
+          "CORRECT -> CORRECT": 28,
+          "CORRECT -> INCORRECT": 5,
+          "CORRECT -> UNCERTAIN": 4
+        },
+        "T2G": {
+          "CORRECT -> CORRECT": 18,
+          "CORRECT -> INCORRECT": 7,
+          "CORRECT -> UNCERTAIN": 7,
+          "ABSTAIN -> UNCERTAIN": 1,
+          "UNCERTAIN -> UNCERTAIN": 2,
+          "INCORRECT -> INCORRECT": 1,
+          "CORRECT -> ABSTAIN": 2,
+          "UNCERTAIN -> INCORRECT": 1,
+          "UNCERTAIN -> ABSTAIN": 1
+        },
+        "T2L": {
+          "INCORRECT -> INCORRECT": 1,
+          "INCORRECT -> UNCERTAIN": 1,
+          "CORRECT -> CORRECT": 1,
+          "CORRECT -> INCORRECT": 2
+        },
+        "T0": {
+          "CORRECT -> CORRECT": 8,
+          "CORRECT -> INCORRECT": 1,
+          "CORRECT -> UNCERTAIN": 1
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "CORRECT -> CORRECT": 33,
+          "CORRECT -> INCORRECT": 4,
+          "CORRECT -> UNCERTAIN": 3
+        }
+      },
+      "T1L_copy_transitions": {
+        "True -> True": 65,
+        "False -> False": 2,
+        "True -> False": 17
+      },
+      "T1L_lost_copy_new_labels": {
+        "INCORRECT": 17
+      },
+      "at_cap_by_role": {
+        "T1L": {
+          "B": 0,
+          "C": 15
+        },
+        "T1G": {
+          "B": 0,
+          "C": 2
+        },
+        "T2G": {
+          "B": 1,
+          "C": 12
+        },
+        "T2L": {
+          "B": 0,
+          "C": 4
+        },
+        "T0": {
+          "B": 0,
+          "C": 0
+        },
+        "REPHRASE_DIAGNOSTIC": {
+          "B": 0,
+          "C": 1
+        }
+      }
+    }
+  },
+  "training_final_CE_ranges": {
+    "A": {
+      "min": 0.0007801369647495449,
+      "max": 0.005940506234765053
+    },
+    "B": {
+      "min": 0.0007178207160905004,
+      "max": 0.006310946308076382
+    },
+    "C": {
+      "min": 0.006336049642413855,
+      "max": 1.2419456243515015
+    }
+  }
+}
