@@ -1,8 +1,8 @@
 """NLL response controller; margin measured but never used for acceptance/radius."""
 import math
 SCALES=(1.,.5,.25)
-def admission(cost,linear,cap,bias):
- return all(math.isfinite(x) for x in [cost,*linear,bias]) and 0<cost<=1.01*cap and linear[0]<-1e-5 and abs(bias+linear[2])<=.01
+def admission(cost,linear,cap,bias, *, check_null_prediction=True):
+ return all(math.isfinite(x) for x in [cost,*linear,bias]) and 0<cost<=1.01*cap and linear[0]<-1e-5 and (not check_null_prediction or abs(bias+linear[2])<=.01)
 def response(before,after,margin_before,margin_after,linear):
  gain=before-after;mg=margin_after-margin_before;rn=gain/(-linear[0]) if linear[0]<0 else None
  rm=mg/linear[1] if linear[1]!=0 else None
