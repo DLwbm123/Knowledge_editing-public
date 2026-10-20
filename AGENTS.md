@@ -1,3 +1,8 @@
+## 最新论文适配：源内资格完成，HPSE有限轨迹准备
+
+revision3报告41bdc057：P语义/源忠实/联合资格2/3，R语义3/3但源忠实/资格0/3，缺失0；六目标一次，322forward/25.958870秒/39运行和71离线复核PASS/恢复退出，12实际Judge payload一次，两个零调用入口失败保留不重判。R不写入、不调提示再生成；全部匿名公开并核远端/匿名。
+下一独立hpse2协议已冻结：仅源资格E01/E03，教师精确原P源条件提示和不可累积W0；8-token gated hybrid prefix(.3/2)和top16 teacher→student KL+原fullNLL系数1/1，旧F0/源fullNLL守卫/null原基座.01/trust/secant不改；每例512编辑forward含所有rollout，64步三尺度，最多14完整T0/locality输出，3200forward/1800秒/整体4h/256MiB，缺失和失败保留。先CPU KL/位置/教师异常恢复检查，启动后唯一pure-w原位跟进；当前尚未新GPU启动，勿重放旧R/F或旧评分。协议reports/vigor_hpse2_v1_20261020/PROTOCOL_ZH.md，代码hpse2*.py。
+
 ## 最新固定F已完成公开交付
 
 reports/vigor_factF3_v1_20261020/completion：F语义0/3、B/N均1/3；同六题无关支持各损伤1/18但项不同，近边界0 NA；不能将原null门当真实保留。F1230编辑forward，B/N旧算法661/1350、必要重建613/1308单列。2439运行+4403离线审计PASS，主GPU903.226851秒/5526forward，含首失败/Base资格合计962.680753秒/5981forward，全部恢复退出。post8新输入一次盲分/57端点评分齐全，私有取证已保存；严禁重启旧run/评分。报告e4020650已代理推送且远端/匿名核验通过；固定0.5/0.5分支结束，不调权重救分；根据正文研读独立冻结源内核验修订与普通改写对照，不从评估QA取标签。全局持续自主和唯一pure-w保持。
