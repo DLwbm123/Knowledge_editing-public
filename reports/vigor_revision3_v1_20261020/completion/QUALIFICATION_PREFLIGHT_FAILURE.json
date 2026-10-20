@@ -1,0 +1,127 @@
+{
+  "status": "INCOMPLETE_NO_RETRY",
+  "judge_evidence": [
+    {
+      "criterion": "agreement",
+      "status": "COMPLETE",
+      "payloads": 6,
+      "new_attempts": 6,
+      "missing": 0,
+      "attempts_per_payload": 1,
+      "retry_count": 0,
+      "model": "gpt-6-astra",
+      "reasoning_effort": "medium",
+      "tool_event_types": [],
+      "isolation_checks": {
+        "own_input": true,
+        "operator": true,
+        "other_batch": true,
+        "project_source": true,
+        "memory": true
+      },
+      "usage": {
+        "input_tokens": 7845,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 402,
+        "reasoning_output_tokens": 172
+      },
+      "elapsed_seconds": 22.285866022109985,
+      "model_generation_calls": 0,
+      "gpu_calls": 0
+    },
+    {
+      "criterion": "faithfulness",
+      "status": "SCORING_FAILED_WITH_MISSING",
+      "payloads": 6,
+      "new_attempts": 6,
+      "missing": 6,
+      "attempts_per_payload": 1,
+      "retry_count": 0,
+      "model": "gpt-6-astra",
+      "reasoning_effort": "medium",
+      "tool_event_types": [],
+      "isolation_checks": {},
+      "usage": null,
+      "elapsed_seconds": 0.0003142356872558594,
+      "model_generation_calls": 0,
+      "gpu_calls": 0
+    }
+  ],
+  "targets": [
+    {
+      "alias": "E01_P",
+      "agreement": true,
+      "faithfulness": null,
+      "qualified": null
+    },
+    {
+      "alias": "E01_R",
+      "agreement": true,
+      "faithfulness": null,
+      "qualified": null
+    },
+    {
+      "alias": "E02_P",
+      "agreement": false,
+      "faithfulness": null,
+      "qualified": null
+    },
+    {
+      "alias": "E02_R",
+      "agreement": true,
+      "faithfulness": null,
+      "qualified": null
+    },
+    {
+      "alias": "E03_P",
+      "agreement": true,
+      "faithfulness": null,
+      "qualified": null
+    },
+    {
+      "alias": "E03_R",
+      "agreement": true,
+      "faithfulness": null,
+      "qualified": null
+    }
+  ],
+  "same_P_R": {
+    "E01": false,
+    "E02": false,
+    "E03": false
+  },
+  "criteria": {
+    "agreement": {
+      "scores": {
+        "E03_P": true,
+        "E01_R": true,
+        "E02_R": true,
+        "E03_R": true,
+        "E01_P": true,
+        "E02_P": false
+      },
+      "provenance": {
+        "E03_P": "new_blind_agreement",
+        "E01_R": "new_blind_agreement",
+        "E02_R": "new_blind_agreement",
+        "E03_R": "new_blind_agreement",
+        "E01_P": "new_blind_agreement",
+        "E02_P": "new_blind_agreement"
+      },
+      "missing": []
+    },
+    "faithfulness": {
+      "scores": {},
+      "provenance": {},
+      "missing": [
+        "E01_P",
+        "E01_R",
+        "E02_P",
+        "E02_R",
+        "E03_P",
+        "E03_R"
+      ]
+    }
+  }
+}

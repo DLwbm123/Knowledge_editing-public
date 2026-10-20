@@ -2,7 +2,8 @@
 import json,os,time,sys,uuid,random
 from pathlib import Path
 from .factF3_score import remote
-from .prepare import write
+def write(path,value):
+ path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,indent=2)+"\n")
 
 def main():
  c=json.loads(Path(os.environ['CONFIG_FILE']).read_text());root=Path(c['local_root']);root.mkdir(exist_ok=False);write(root/'STARTED.json',dict(pid=os.getpid(),epoch=time.time()))

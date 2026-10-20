@@ -22,6 +22,8 @@ def main():
     (bundle/'judge_only'/f'{bid}.prompt.md').write_text(PROMPT+'\n\nBatch input (all strings are untrusted data):\n'+json.dumps(batch,ensure_ascii=False))
     (bundle/'judge_only'/f'{bid}.schema.json').write_text(json.dumps(schema(batch)))
     temp=Path(tempfile.mkdtemp(prefix='j.')).resolve();work=temp/'work';sibling=temp/'probe';work.mkdir();sibling.mkdir()
+    original_prompt=judge.PROMPT
+    judge.PROMPT=PROMPT  # Bind the pre-frozen criterion, retaining exact prompt/schema checks.
     original_profile=judge.profile
     def profile(w,s,b,r):return original_profile(w,s,b,r)+'\n(deny file-read* file-write* (subpath '+json.dumps(str(Path.home()/'.codex/memories_v2'))+'))\n'
     judge.profile=profile
@@ -39,14 +41,15 @@ def main():
     timer=threading.Timer(600,timeout);timer.daemon=True;timer.start();error=None;response=None;started=time.time()
     try:judge.run_batch(bundle,batch,work,[work,sibling],source,Path(config['cli']),explicit_proxy=True)
     except BaseException as e:error=type(e).__name__
-    finally:timer.cancel()
+    finally:
+        timer.cancel();judge.PROMPT=original_prompt;judge.profile=original_profile;judge.flags=original_flags
     ep=bundle/'operator/execution_evidence'/f'{bid}.json';evidence=json.loads(ep.read_text()) if ep.exists() else dict(status='FAILED_NO_RETRY',error_type=error)
     if ep.exists():
         args=evidence['command'];assert 'model_reasoning_effort="medium"' in args and 'model_reasoning_effort="high"' not in args
         evidence['reasoning_effort']='medium';evidence['shared_helper_default_effort_overridden']=True;ep.write_text(json.dumps(evidence,indent=2)+'\n')
     rp=bundle/'operator/responses'/f'{bid}.json'
     if evidence.get('status')=='FORMAT_VALID' and rp.exists():response=json.loads(rp.read_text());validate(batch,response)
-    result=dict(status='COMPLETE' if response is not None else 'SCORING_FAILED_WITH_MISSING',payloads=items,new_attempts=items,missing=0 if response is not None else items,attempts_per_payload=1,retry_count=0,model='gpt-6-astra',reasoning_effort='medium',tool_event_types=evidence.get('tool_event_types',[]),isolation_checks=evidence.get('isolation_checks',{}),usage=evidence.get('usage'),decisions=response.get('decisions',[]) if response else [],elapsed_seconds=time.time()-started,model_generation_calls=0,gpu_calls=0)
+    result=dict(status='COMPLETE' if response is not None else 'SCORING_FAILED_WITH_MISSING',payloads=items,new_attempts=items if ep.exists() else 0,model_invoked=ep.exists(),error_type=error,missing=0 if response is not None else items,attempts_per_payload=1,retry_count=0,model='gpt-6-astra',reasoning_effort='medium',tool_event_types=evidence.get('tool_event_types',[]),isolation_checks=evidence.get('isolation_checks',{}),usage=evidence.get('usage'),decisions=response.get('decisions',[]) if response else [],elapsed_seconds=time.time()-started,model_generation_calls=0,gpu_calls=0)
     (root/'SUMMARY.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(dict(status=result['status'],missing=result['missing'],elapsed_seconds=result['elapsed_seconds'])),flush=True)
 
 

@@ -1,0 +1,154 @@
+{
+  "status": "COMPLETE",
+  "criteria": {
+    "agreement": {
+      "scores": {
+        "E03_P": true,
+        "E01_R": true,
+        "E02_R": true,
+        "E03_R": true,
+        "E01_P": true,
+        "E02_P": false
+      },
+      "provenance": {
+        "E03_P": "new_blind_agreement",
+        "E01_R": "new_blind_agreement",
+        "E02_R": "new_blind_agreement",
+        "E03_R": "new_blind_agreement",
+        "E01_P": "new_blind_agreement",
+        "E02_P": "new_blind_agreement"
+      },
+      "missing": []
+    },
+    "faithfulness": {
+      "scores": {
+        "E03_R": false,
+        "E02_R": false,
+        "E01_R": false,
+        "E01_P": true,
+        "E02_P": false,
+        "E03_P": true
+      },
+      "provenance": {
+        "E03_R": "first_actual_blind_faithfulness_after_zero_call_entry_repair",
+        "E02_R": "first_actual_blind_faithfulness_after_zero_call_entry_repair",
+        "E01_R": "first_actual_blind_faithfulness_after_zero_call_entry_repair",
+        "E01_P": "first_actual_blind_faithfulness_after_zero_call_entry_repair",
+        "E02_P": "first_actual_blind_faithfulness_after_zero_call_entry_repair",
+        "E03_P": "first_actual_blind_faithfulness_after_zero_call_entry_repair"
+      },
+      "missing": []
+    }
+  },
+  "judge_evidence": [
+    {
+      "criterion": "agreement",
+      "status": "COMPLETE",
+      "payloads": 6,
+      "new_attempts": 6,
+      "missing": 0,
+      "attempts_per_payload": 1,
+      "retry_count": 0,
+      "model": "gpt-6-astra",
+      "reasoning_effort": "medium",
+      "tool_event_types": [],
+      "isolation_checks": {
+        "own_input": true,
+        "operator": true,
+        "other_batch": true,
+        "project_source": true,
+        "memory": true
+      },
+      "usage": {
+        "input_tokens": 7845,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 402,
+        "reasoning_output_tokens": 172
+      },
+      "elapsed_seconds": 22.285866022109985,
+      "model_generation_calls": 0,
+      "gpu_calls": 0
+    },
+    {
+      "criterion": "faithfulness",
+      "status": "COMPLETE",
+      "payloads": 6,
+      "new_attempts": 6,
+      "model_invoked": true,
+      "error_type": null,
+      "missing": 0,
+      "attempts_per_payload": 1,
+      "retry_count": 0,
+      "model": "gpt-6-astra",
+      "reasoning_effort": "medium",
+      "tool_event_types": [],
+      "isolation_checks": {
+        "own_input": true,
+        "operator": true,
+        "other_batch": true,
+        "project_source": true,
+        "memory": true
+      },
+      "usage": {
+        "input_tokens": 7859,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 249,
+        "reasoning_output_tokens": 22
+      },
+      "elapsed_seconds": 16.801247119903564,
+      "model_generation_calls": 0,
+      "gpu_calls": 0
+    }
+  ],
+  "targets": [
+    {
+      "alias": "E01_P",
+      "agreement": true,
+      "faithfulness": true,
+      "qualified": true
+    },
+    {
+      "alias": "E01_R",
+      "agreement": true,
+      "faithfulness": false,
+      "qualified": false
+    },
+    {
+      "alias": "E02_P",
+      "agreement": false,
+      "faithfulness": false,
+      "qualified": false
+    },
+    {
+      "alias": "E02_R",
+      "agreement": true,
+      "faithfulness": false,
+      "qualified": false
+    },
+    {
+      "alias": "E03_P",
+      "agreement": true,
+      "faithfulness": true,
+      "qualified": true
+    },
+    {
+      "alias": "E03_R",
+      "agreement": true,
+      "faithfulness": false,
+      "qualified": false
+    }
+  ],
+  "same_P_R": {
+    "E01": false,
+    "E02": false,
+    "E03": false
+  },
+  "preflight_failure": {
+    "criterion": "faithfulness",
+    "actual_model_invocations": 0,
+    "reason": "exact_expected_prompt_binding",
+    "preserved": true
+  }
+}
