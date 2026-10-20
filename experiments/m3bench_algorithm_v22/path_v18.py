@@ -32,7 +32,7 @@ def violation(initial,values):
     assert len(initial)==len(values) and len(initial)%2==0
     return max(max((initial[j+1]-initial[j])-(values[j+1]-values[j]) for j in range(0,len(initial),2)),max(values[j]-initial[j] for j in range(0,len(initial),2)))
 
-def same(a,b):return a.keys()==b.keys() and all(torch.equal(a[k],b[k]) for k in a)
+def same(a,b):return a.keys()==b.keys() and all(torch.equal(a[k].cpu(),b[k].cpu()) for k in a)
 
 def first_feasible(rows):
     for row in rows:
