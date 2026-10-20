@@ -15,6 +15,22 @@ for qid,q in old['queries'].items():
  if f.exists() and sid in scores:
   v=json.loads(f.read_text())
   if v['status']=='COMPLETE':cache.append(dict(question=q['question'],gold_answer=q['reference'],raw_base_answer=v['raw_answer'],score=scores[sid],provenance='formal_Base_exact_input'))
+# Add all previously scored formal post outputs and recent development outputs.
+for task in old['tasks']:
+ for event in task['panel']:
+  qid=event['query'];q=old['queries'][qid];f=p/'private/outputs'/task['alias']/(qid+'.json');sid=task['alias']+'_'+qid
+  if f.exists() and sid in scores:
+   v=json.loads(f.read_text())
+   if v['status']=='COMPLETE':cache.append(dict(question=q['question'],gold_answer=q['reference'],raw_base_answer=v['raw_answer'],score=scores[sid],provenance='formal_post_exact_input'))
+for parent_name in ['vigor-controllerBC3-v1-20261020','vigor-controllerN3-v1-20261020']:
+ cp=Path('/data/bmw/Knowledge_editing/outputs')/parent_name/'run/private/scoring'
+ if not (cp/'PRIVATE_INPUT.json').exists():continue
+ ci=json.loads((cp/'PRIVATE_INPUT.json').read_text());cs=json.loads((cp/'SUMMARY.json').read_text())['scores']
+ for rec in ci['records']:
+  vals=[cs[a] for a in ci['mapping'][rec['opaque_query_id']] if a in cs]
+  if vals:
+   assert all(v==vals[0] for v in vals)
+   cache.append(dict(question=rec['question'],gold_answer=rec['gold_answer'],raw_base_answer=rec['raw_base_answer'],score=vals[0],provenance='previous_development_exact_input'))
 rows=[]
 if phase=='base':
  r=m/'basequalify';assert json.loads((r/'ENDED.json').read_text())['status']=='COMPLETE';pool=json.loads((m/'private/LOCALITY_CANDIDATES.json').read_text())['rows']
@@ -31,7 +47,12 @@ else:
   x=next(x for x in panel if x['alias']==event['panel_id']);v=json.loads((r/'private'/(event['alias']+'_GENERATION.json')).read_text()) if event['status']=='COMPLETE' else {};rows.append(dict(alias=event['alias'],status=event['status'],question=x['query']['question'],gold_answer=x['query']['reference'],raw_base_answer=v.get('raw_answer','')))
 print(json.dumps(dict(rows=rows,cache=cache)))
 """
- data=remote(code,dict(phase=phase));key=lambda x:(x['question'],x['gold_answer'],x['raw_base_answer']);cache={key(x):x for x in data['cache']};records=[];mapping={};bykey={};scores={};provenance={};missing=[]
+ data=remote(code,dict(phase=phase));key=lambda x:(x['question'],x['gold_answer'],x['raw_base_answer']);cache={}
+ for x in data['cache']:
+  k=key(x)
+  if k in cache and cache[k]['score']!=x['score']:raise ValueError('Conflicting existing exact-input grades, no rejudge')
+  cache[k]=x
+ records=[];mapping={};bykey={};scores={};provenance={};missing=[]
  for x in data['rows']:
   alias=x['alias']
   if x['status']!='COMPLETE':missing.append(alias);continue
