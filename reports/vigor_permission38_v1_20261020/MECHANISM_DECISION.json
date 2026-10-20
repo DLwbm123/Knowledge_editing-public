@@ -1,0 +1,33 @@
+{
+  "A": {
+    "status": "STATIC_DESIGN_DISTINCT_CPU_QUALIFICATION_DESIGN_POSSIBLE_NOT_ADMITTED",
+    "joint_two_endpoint_variables": true,
+    "full_model_native_success": "UNKNOWN",
+    "source_only_interface": "CURRENT_SOURCE_AND_PRIOR_ALLOWED_PARAMETER_STATISTICS_ONLY",
+    "old_S_A32_continuation": false,
+    "needs": [
+      "fully fixed source-basis and constrained solver",
+      "native diversity rule and dedup",
+      "coefficient gradient/optimizer isolation and recovery CPU checks",
+      "memory/runtime bound",
+      "legal source and relation package"
+    ],
+    "gpu_admitted": false
+  },
+  "B": {
+    "status": "REJECTED_FOR_IMPLEMENTATION_RESOURCE_AND_INTERFACE_GAP",
+    "dual_discrete_variables": 117440512,
+    "nonlinear_full_model_constraints": true,
+    "bounded_solver_available": false,
+    "not_mathematical_impossibility": true
+  },
+  "integer_sizes": {
+    "matrix_parameters": 58720256,
+    "FP32_single_matrix_bytes": 234881024,
+    "two_full_parameter_Adam_states_bytes": 1409286144,
+    "illustrative_r2_basis_bytes": 147456,
+    "illustrative_r2_two_coefficients_bytes": 32,
+    "illustrative_r2_coefficient_and_Adam_bytes": 96
+  },
+  "numerical_solver_runs": 0
+}

@@ -1,0 +1,52 @@
+{
+  "layers": [
+    {
+      "layer": "file_and_annotation_availability",
+      "status": "PRIOR_201_AUDIT_VERIFIED_not_repeated"
+    },
+    {
+      "layer": "identity_to_original_role",
+      "status": "RESOLVED_25_auxiliary_fit_13_inventory_only"
+    },
+    {
+      "layer": "historical_allowed_purpose",
+      "status": "EXPLICIT_OLD_AUXILIARY_PROTECTION_USE_NOT_NATIVE_EDIT",
+      "evidence": [
+        "original TASKS fields U_new/U_expanded",
+        "worker_r2.teacher and loss full_vocab_kl",
+        "DATA_ACCESS_POLICY.allowed_fit inherited U_old/U_new"
+      ]
+    },
+    {
+      "layer": "current_edit_source_permission",
+      "status": "UNKNOWN_ALL38_NO_AFFIRMATIVE_SOURCE_SPECIFIC_BASIS"
+    },
+    {
+      "layer": "independent_confirmation_and_medical_scope",
+      "status": "UNKNOWN_NOT_CERTIFIED"
+    }
+  ],
+  "evidence_counts": {
+    "registered_index_files": 108,
+    "TASKS_read": 16,
+    "historical_run_metadata": 11,
+    "scoped_policy_documents": 2
+  },
+  "policy_fields": {
+    "allowed_fit": [
+      "native",
+      "S_fit",
+      "inherited U_old/U_new",
+      "audited U_bg"
+    ],
+    "future_edit_support_prohibited": true,
+    "purpose_enum_required": true
+  },
+  "interpretation": "Old support usage not reassigned. Ambiguous future_edit_support flag is not treated as proof of permanent prohibition of every future purpose.",
+  "public_code_pointers": [
+    "experiments/scope_m3bench_exposure_audit_20261001/audit_roles.py:task_roles",
+    "experiments/textjoint_r2_20260925/worker_r2.py:new_u and full_vocab_kl",
+    "experiments/scope_safe_residual_20260929/audit_data.py:policy"
+  ],
+  "old_task_file_check": "existing registered path and declared byte length; not a new cryptographic or bytewise verification"
+}
