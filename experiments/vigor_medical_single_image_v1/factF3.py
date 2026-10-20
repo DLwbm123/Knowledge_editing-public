@@ -13,7 +13,7 @@ from .nll_control import SCALES,admission,response as nll_response
 from .factF3_ops import objectives,read as fact_read
 from .factF3_rebuild import rebuild
 
-AUTH=dict(samples=['E01','E02','E03'],arms=['F'],independent_base=True,steps_max=64,trials_per_step=3,scales=list(SCALES),initial_radius=1.,cost_cap=5.368434395105091e-13,metric='F0',native_null_gate=.01,trust=.001,response_min=.1,progress_floor=1e-5,arm_edit_forward_max=512,per_generation_forward_max=128,arm_secant_max=64,forward_max=20000,seconds=7200,generation_max=111,judge_payload_max=111,checkpoint=0,retry=0)
+AUTH=dict(samples=['E01','E02','E03'],arms=['F'],full_weight=.5,fact_weight=.5,independent_base=True,steps_max=64,trials_per_step=3,scales=list(SCALES),initial_radius=1.,cost_cap=5.368434395105091e-13,metric='F0',native_null_gate=.01,trust=.001,response_min=.1,progress_floor=1e-5,arm_edit_forward_max=512,per_generation_forward_max=128,arm_secant_max=64,forward_max=20000,seconds=7200,generation_max=111,judge_payload_max=111,checkpoint=0,retry=0)
 
 class EngineeringStop(RuntimeError):pass
 class ArmBudget(RuntimeError):pass
@@ -215,3 +215,13 @@ def main(c):
             except BaseException:state['status']='RESTORE_FAILED_STOPPED'
         if hook is not None:hook.remove()
         state['model_forward_calls']=calls;emit();write(root/'ENDED.json',dict(epoch=time.time(),resident_seconds=time.time()-start,model_forward_calls=calls,peak_allocated_bytes=torch.cuda.max_memory_allocated() if torch.cuda.is_available() else None,status=state['status']))
+
+
+def run_checks():
+    from .factF3_ops import run_checks as fact_checks
+    c=fact_checks()
+    a=response(2.,1.9,0.,-1.,[-.2,-1.,0.],3.,2.8,-.3)
+    assert a['passed'] and next_radius(.5,a)==.5
+    assert not response(2.,2.1,0.,1.,[-.2,1.,0.],3.,2.8,-.3)['passed']
+    assert not response(2.,1.9,0.,1.,[-.2,1.,0.],3.,3.1,-.3)['passed']
+    return dict(c,full_guard=True,weighted_guard=True,margin_diagnostic_only=True,source_weights=[.5,.5])
