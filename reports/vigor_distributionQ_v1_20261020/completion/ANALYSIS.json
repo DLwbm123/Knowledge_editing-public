@@ -1,0 +1,101 @@
+{
+  "qualification": {
+    "complete": true,
+    "work_points": 24,
+    "discernible": 24,
+    "factor_two": 14,
+    "factor_two_fraction": 0.5833333333333334,
+    "serious_C_underestimates": [],
+    "blind_H_underestimates": [],
+    "correlations": {
+      "C": {
+        "audit": 0.9104347826086957,
+        "F0": 0.8947826086956522,
+        "norm_squared": -0.4408695652173913,
+        "misaligned_audit": -0.3826086956521739
+      },
+      "H": {
+        "audit": 0.9017391304347826,
+        "F0": 0.8956521739130435,
+        "norm_squared": -0.4373913043478261,
+        "misaligned_audit": -0.39565217391304347
+      }
+    },
+    "gates": {
+      "N": false,
+      "H": true,
+      "I": false
+    },
+    "PASS": false,
+    "editor_started": false
+  },
+  "costs": {
+    "resident_seconds": 379.809529542923,
+    "model_forwards": 2396,
+    "formal_statistic_VJPs": 768,
+    "smoke_VJPs": 2,
+    "reference_VJPs": 4,
+    "backward_total": 774,
+    "native_perturbation_forwards": 2304,
+    "native_baseline_forwards": 32,
+    "proxy_statistic_forwards": 24,
+    "proxy_smoke_forwards": 2,
+    "smoke_restore_forwards": 2,
+    "final_restore_forwards": 32,
+    "vision_preparations": 32,
+    "vision_preprocessing_seconds": 1.577592372894287,
+    "peak_allocated_bytes": 25694223872,
+    "Judge": 0,
+    "editor": 0,
+    "checkpoint": 0
+  },
+  "direction_geometry": {
+    "rank": 16,
+    "eigenvalues": [
+      102.6975614406767,
+      143.26955844047313,
+      194.18974698270048,
+      257.8800049917951,
+      285.4046158972836,
+      331.74205595755507,
+      382.8831823918429,
+      466.85588705435777,
+      609.9226380895012,
+      762.1415721246091,
+      914.6678506283391,
+      1186.261678654952,
+      1576.1929223973957,
+      2451.456894684089,
+      4491.921600599797,
+      10182.338357281742
+    ],
+    "condition": 99.14878420130331,
+    "blind_residuals": [
+      3.499540017626905e-11,
+      2.4260762528408144e-11,
+      3.039705230964091e-11,
+      3.732471846086786e-11
+    ],
+    "only_fit_statistics_used": true,
+    "all_directions_frozen_before_audit": true
+  },
+  "smoke": [
+    {
+      "record": 1,
+      "bridge_KL": 3.5984239286815842e-06,
+      "positions": 3,
+      "vocab": 32000,
+      "gradient_norm": 8.768701553344727
+    },
+    {
+      "record": 2,
+      "bridge_KL": 1.1612654787169506e-06,
+      "positions": 3,
+      "vocab": 32000,
+      "gradient_norm": 2.3762052059173584
+    }
+  ],
+  "partial_or_nonqualifying_preserved": true,
+  "heldout_is_training_validation": true,
+  "medical_behavior_protection_not_tested": true
+}
