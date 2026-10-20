@@ -82,7 +82,9 @@ def summarize(root):
                 result['paired_role_transitions'].setdefault(role,Counter())[transition]+=1
             for a,p in paths.items():
                 x=read(p);tok=x['raw_token_ids'];g=result['generation_diagnostics'][a]
-                g['consumers']+=1;g['tokens']+=len(tok);g['at_cap']+=len(tok)>=1024;g['empty']+=not tok;g['EOS']+=x.get('EOS',False)
+                g['consumers']+=1;g['tokens']+=len(tok);g['at_cap']+=len(tok)>=1024;g['empty_token_sequence']+=not tok;g['empty_decoded_answer']+=not x['raw_answer'].strip();g['EOS']+=x.get('EOS',False)
+                g['repeated_4gram_excess']+=x.get('generation_diagnostics',{}).get('repeated_4gram_excess',0)
+                g['consumers_with_repeated_4gram']+=x.get('generation_diagnostics',{}).get('repeated_4gram_excess',0)>0
                 if 'T1L' in row['roles']:
                     copy_source=norm(x['raw_answer'])==norm(task['source']['reference'])
                     result['T1L_copy_label_cross'][a][('COPY' if copy_source else 'NONCOPY')+':'+labels[a]]+=1
