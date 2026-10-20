@@ -1,3 +1,7 @@
+## 最新独立参数教师资格TQ3完成
+
+reports/vigor_ftmq3_v1_20261020/completion：三源独立参数教师agreement/严格faithfulness/联合资格均3/3，缺失0，无学生写入、不作性能/泛化/locality结论。layer6单down_proj、Adam .0005/最多25/loss<.01停，实际14/16/9更新；FP32选择层+nativeFP16生成，原source完整NLL。GPU25.037350秒/98forward（fit42+生成36+控制20），39backward，恢复退出；CPU5检查、161离线复核PASS。资格5新payload一次/1严格缓存，30.836581秒，工具0五隔离PASS，评分进程已退出，私有取证保存。原4h/内部256MiB保持，不重启资格模型/评分；完成公开交付后独立冻结受保护学生on-policy蒸馏，必要教师重建全计且不重生成/重判teacher。唯一pure-w持续自主、无subagent，H及所有历史失败NA不改写。
+
 ## 最新HPSE适配H：已完成，无新增语义收益
 
 reports/vigor_hpse2_v1_20261020/completion：H语义1/2、无关损伤1/12，与同例旧N相同，源资格覆盖2/3，近边界0 NA。E01接受15/466编辑forward停无合格候选；E03接受15/512停预算；共978编辑、1588总forward、138.185222 GPU秒，恢复退出。14评分齐全，12严格缓存/2新payload一次、工具0隔离PASS；711离线审计PASS。报告094542b6已代理推送，远端SHA与匿名HTTP200核验；回执见PUBLICATION.json。此固定8token/1+1/top16配方结束，不扫权重/前缀/换teacher/加步，不重启H或评分。唯一pure-w新控制会话01a15813-1325-76c2-a910-0f4a07f9e216继续自主研究；后继先核独立FT-M教师的实现与准入可行性，完整冻结不同必要机制后才新实验。未完成step教师细分NA、原失败成本与正式八例保持；无subagent。

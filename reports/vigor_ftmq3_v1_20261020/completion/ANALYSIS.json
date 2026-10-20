@@ -1,0 +1,67 @@
+{
+  "rows": [
+    {
+      "sample": "E01",
+      "agreement": true,
+      "faithfulness": true,
+      "qualified": true,
+      "fit_forwards": 15,
+      "backwards": 14,
+      "generation_forwards": 12,
+      "native_NLL": 0.009672537446022034,
+      "final_FP32_selected_layer_loss": 0.009694729931652546,
+      "stop": "SOURCE_NLL_THRESHOLD"
+    },
+    {
+      "sample": "E02",
+      "agreement": true,
+      "faithfulness": true,
+      "qualified": true,
+      "fit_forwards": 17,
+      "backwards": 16,
+      "generation_forwards": 16,
+      "native_NLL": 0.009415785782039165,
+      "final_FP32_selected_layer_loss": 0.0093843387439847,
+      "stop": "SOURCE_NLL_THRESHOLD"
+    },
+    {
+      "sample": "E03",
+      "agreement": true,
+      "faithfulness": true,
+      "qualified": true,
+      "fit_forwards": 10,
+      "backwards": 9,
+      "generation_forwards": 8,
+      "native_NLL": 0.009892350994050503,
+      "final_FP32_selected_layer_loss": 0.00986737571656704,
+      "stop": "SOURCE_NLL_THRESHOLD"
+    }
+  ],
+  "denominator": 3,
+  "agreement": 3,
+  "faithfulness": 3,
+  "qualified": 3,
+  "missing": 0,
+  "source_context_P_prior_qualification": {
+    "correct": 2,
+    "denominator": 3,
+    "reused": true
+  },
+  "student_edits": 0,
+  "locality_support": 0,
+  "locality_damage": null,
+  "costs": {
+    "GPU_seconds": 25.037349700927734,
+    "total_forwards": 98,
+    "fit_forwards": 42,
+    "backwards": 39,
+    "generation_forwards": 36,
+    "control_restore": 20,
+    "peak_allocated_bytes": 18921225216,
+    "checkpoint": 0,
+    "new_judge_payloads": 5,
+    "judge_seconds": 30.836580991744995,
+    "per_teacher_seconds": null
+  },
+  "scope": "Source-only teacher qualification; no student distillation, independent generalization or locality claim"
+}
