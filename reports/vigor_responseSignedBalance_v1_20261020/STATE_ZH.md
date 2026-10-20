@@ -1,3 +1,3 @@
 # 状态
 
-FROZEN_NOT_STARTED：固定前轮刷新方向和raw native子集，唯一正侧镜像null贡献平衡，最终候选最多1，尚无实际结果。
+RUNNING：固定前轮方向和幅度的正侧镜像native null贡献平衡，CPU/存储/显存准入通过，尚无候选实际结果。
