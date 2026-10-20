@@ -1,3 +1,7 @@
+## 最新L6-N终态：固定layer6未改善语义
+
+reports/vigor_layer6N3_v1_20261020/completion：语义0/3、损伤1/18 E01-L006，旧N1/3同损伤；21评分全、2新一次+19精确缓存，工具0隔离PASS。接受10/64/19步、编辑63/353/97，共513forward/293backward/4secant；GPU118.212220秒/1394forward，全部layer6/基座恢复、layer0未动，进程退出/992离线复核PASS。共享gate/correction显式module_name，旧默认layer0 CPU精确兼容，原32层F0的layer6绑定复用不重校准。本固定位置对照结束，不加步/扫层/重启旧模型评分。95预测拒绝中5个仅null预测失败、实际未测NA，不能当安全更新；完整公开后才独立冻结预测预筛对照，实际null/trust/source收益/rho和secant保持，旧候选NA不回填。唯一pure-w持续、无subagent，不复活旧146。
+
 ## 最新A3终态：语义未迁移，固定配方结束
 
 reports/vigor_alignA3_v1_20261020/completion：A语义0/3、无关损伤0/18，旧N1/3损伤1/18，预设有用性失败；21评分全、3新payload一次/18精确缓存，工具0隔离PASS。三源各512编辑forward，接受7/5/8步，全因预算停；重建teacher54（fit42）及完整rollout1176都计入1536编辑，总2452forward/116.824591 GPU秒，119backward（含teacher39）、0新secant。原步数/teacher native损失绑定、全部基座/双矩阵恢复退出、351离线审计PASS。两个本地检查入口和一次离线统计入口零真实模型/评分错误完整保留，时钟不重置。此固定参数/轨迹/控制器配方结束，不追加步数/扫权重长度/换层续跑或重判。完整公开后下一动作只读核对既有32层训练F0是否含layer6及门/补偿硬编码，再独立冻结必要固定位置诊断；不扫描层、不复活旧146/重做teacher资格。唯一pure-w持续，无subagent。
