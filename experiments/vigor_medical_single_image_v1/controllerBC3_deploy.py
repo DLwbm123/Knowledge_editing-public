@@ -167,12 +167,12 @@ def remote_controllerBC3(payload):
     if checked.returncode:
         raise RuntimeError('CPU trial lifecycle check failed')
     write('public/CPU_CHECK.json',dict(json.loads(checked.stdout.strip().splitlines()[-1]),elapsed_seconds=cpu_elapsed))
-    uuid,free = subprocess.check_output(['nvidia-smi','-i','5','--query-gpu=uuid,memory.free',
+    uuid,free = subprocess.check_output(['nvidia-smi','-i','2','--query-gpu=uuid,memory.free',
         '--format=csv,noheader,nounits'],text=True).strip().split(', ')
-    if uuid!='GPU-4924bbd8-4082-3f4c-b4fb-78ca930122ca' or int(free)<48*1024:
+    if uuid!='GPU-4b56ab28-a018-652c-b8f6-2d9dc3dc45d2' or int(free)<48*1024:
         raise RuntimeError('GPU peak-memory margin unavailable')
-    env.update(CUDA_VISIBLE_DEVICES='5',M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES='5',
-        M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES='5',M3BENCH_FORMAL_EXPECTED_GPU_UUID=uuid,
+    env.update(CUDA_VISIBLE_DEVICES='2',M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES='2',
+        M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES='2',M3BENCH_FORMAL_EXPECTED_GPU_UUID=uuid,
         M3BENCH_LLAVA_SOURCE=str(parent/'private/official_llava'),
         M3BENCH_EXPECTED_LLAVA_SOURCE=str(parent/'private/official_llava'),CONFIG_FILE=str(root/'private/config.json'))
     config.pop('trajectory_steps',None)
@@ -184,7 +184,7 @@ def remote_controllerBC3(payload):
     with (root/'logs/worker.log').open('x') as log:
         process = subprocess.Popen(['/data/bmw/envs/v0/bin/python','-u',str(entry)],env=env,
             stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-    receipt=dict(pid=process.pid,epoch=time.time(),root=str(root),physical_gpu=5,implementation_commit=payload['commit'])
+    receipt=dict(pid=process.pid,epoch=time.time(),root=str(root),physical_gpu=2,implementation_commit=payload['commit'])
     write('private/LAUNCH.json',receipt)
     return receipt
 
