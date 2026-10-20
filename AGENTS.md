@@ -1,3 +1,7 @@
+## 最新人工授权：从基座E01固定控制器B/C比较
+
+reports/vigor_controllerBC_v1_20261020/PROTOCOL_ZH.md已冻结。普通旧F0/null投影NLL方向 vs 同方向native坐标双收益筛选及signed中心；相同控制器/8步/三候选回溯，原门和旧secant保持，每臂编辑180forward/生成96forward、全900秒600forward、生成原配置1024不降低，Judge0，完整语义评分NA。独立从原基座，不选择旧只读半步，不扩样本；本轮用户明确授权有界算法回溯，不把旧单候选禁止追溯覆盖到新协议。复核/恢复/数值/全局预算失败停整轮不重试。
+
 ## 最新终态：固定增量只读分解完成，无待启动候选
 
 reports/vigor_responseSignedRead_v1_20261020/completion：582检查PASS，519forward/88.673986秒，19/20诊断forward、全恢复退出。全步F有限NLL变化+.021308661/native+.021849036，margin均退.1953125；固定q全步Q0，NLL执行E+.000540376/null E−.003023386。反号已在可编辑层FP32参考链路内出现，R非纯曲率，不能称全链路FP32。半步只读原门通过但不接受/不生成，禁止据诊断挑尺度或改称新编辑成功。最后安全终点仍OrthantBalance；当前没有新必要已冻结GPU候选，保持监测，不重复模型调用。
