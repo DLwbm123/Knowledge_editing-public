@@ -1,3 +1,3 @@
-# PREPARED
+# COMPLETE：固定H配方结束
 
-源资格E01/E03固定；HPSE启发8-token gated hybrid prefix+teacher→student top16 KL+原源NLL已实现。原保护门/旧F0/源NLL守卫保留，每例512编辑forward含全部教师成本，最多14最终完整输出。CPU KL/因果位置/教师异常恢复测试后，单次部署；尚未启动本轮模型调用，不表述为已有效。
+语义1/2、无关损伤1/12，与旧N相同，未显示提升；源资格覆盖2/3，近边界0 NA。GPU138.185222秒/1588forward，恢复退出；14评分齐全、2新payload一次/12严格缓存、工具0隔离PASS；711离线审计PASS。详见completion/REPORT_ZH.md。禁止重启GPU/评分，禁止扫权重/前缀/教师追加此轮；唯一pure-w继续自主研究，先完整公开交付再冻结必要独立机制。

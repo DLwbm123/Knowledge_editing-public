@@ -1,0 +1,92 @@
+{
+  "rows": [
+    {
+      "sample": "E01",
+      "arm": "H",
+      "semantic_T0": false,
+      "locality_damage": 1,
+      "locality_denominator": 6,
+      "locality_missing": 0,
+      "damaged_panel": [
+        "L006"
+      ],
+      "accepted_steps": 15,
+      "editing_forwards_including_teacher": 466,
+      "backward_calls": 74,
+      "secant_calls": 5,
+      "native_source_NLL": 2.3749430179595947,
+      "tracked_margin": -9.3515625,
+      "original_base_null_drift": -0.009438276290893555,
+      "endpoint_F0_cost": 1.6563851886296777e-11,
+      "status": "STOPPED_NO_ELIGIBLE_TRIAL",
+      "all_accepted_original_gates": true
+    },
+    {
+      "sample": "E03",
+      "arm": "H",
+      "semantic_T0": true,
+      "locality_damage": 0,
+      "locality_denominator": 6,
+      "locality_missing": 0,
+      "damaged_panel": [],
+      "accepted_steps": 15,
+      "editing_forwards_including_teacher": 512,
+      "backward_calls": 82,
+      "secant_calls": 11,
+      "native_source_NLL": 0.9738898873329163,
+      "tracked_margin": -7.1015625,
+      "original_base_null_drift": -0.0075833797454833984,
+      "endpoint_F0_cost": 5.0004380877366284e-11,
+      "status": "STOPPED_EDIT_FORWARD_CAP",
+      "all_accepted_original_gates": true
+    }
+  ],
+  "H": {
+    "semantic_correct": 1,
+    "semantic_denominator": 2,
+    "semantic_missing": 0,
+    "damage": 1,
+    "locality_denominator": 12,
+    "locality_missing": 0,
+    "editing_forwards": 978,
+    "backward_calls": 156,
+    "secant_calls": 16
+  },
+  "N_baseline": {
+    "semantic_correct": 1,
+    "semantic_denominator": 2,
+    "damage": 1,
+    "locality_denominator": 12,
+    "editing_forwards": 1024,
+    "reconstruction_not_repeated": true,
+    "source": "previous_N3_T0_and_F3_fixed_trace_locality_binding"
+  },
+  "source_teacher_eligibility": {
+    "qualified": 2,
+    "denominator": 3,
+    "excluded": [
+      "E02"
+    ]
+  },
+  "completed_prefix_tokens": 256,
+  "teacher_gated_tokens": 19,
+  "teacher_call_breakdown_partial_steps": "NA: unfinished rollout accounting is included in total edit forward cap",
+  "costs": {
+    "GPU_seconds": 138.1852216720581,
+    "total_forwards": 1588,
+    "editing_including_teacher": 978,
+    "final_T0_and_locality_generation": 598,
+    "control_restore": 12,
+    "peak_allocated_bytes": 23649092096,
+    "new_judge_payloads": 2,
+    "cached_endpoints": 12,
+    "source_qualification_prior_GPU_seconds": 25.958869695663452,
+    "source_qualification_prior_forwards": 322,
+    "source_qualification_prior_judge_payloads": 12,
+    "checkpoint": 0,
+    "per_arm_seconds": null
+  },
+  "near_locality_support": 0,
+  "distinct_unrelated_queries": 6,
+  "scope": "Two exposed source-qualified development edits; not an independent generalization or full HPSE reproduction"
+}

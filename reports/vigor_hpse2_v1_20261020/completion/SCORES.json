@@ -1,0 +1,71 @@
+{
+  "status": "COMPLETE",
+  "phase": "post",
+  "scores": {
+    "E01_H_L001": true,
+    "E01_H_L002": true,
+    "E01_H_L003": true,
+    "E01_H_L004": true,
+    "E01_H_L005": true,
+    "E01_H_L006": false,
+    "E03_H_L001": true,
+    "E03_H_L002": true,
+    "E03_H_L003": true,
+    "E03_H_L004": true,
+    "E03_H_L005": true,
+    "E03_H_L006": true,
+    "E01_H_T0": false,
+    "E03_H_T0": true
+  },
+  "provenance": {
+    "E01_H_L001": "qualified_current_Base_exact_input",
+    "E01_H_L002": "previous_F_exact_input",
+    "E01_H_L003": "qualified_current_Base_exact_input",
+    "E01_H_L004": "qualified_current_Base_exact_input",
+    "E01_H_L005": "qualified_current_Base_exact_input",
+    "E01_H_L006": "previous_F_exact_input",
+    "E03_H_L001": "previous_F_exact_input",
+    "E03_H_L002": "qualified_current_Base_exact_input",
+    "E03_H_L003": "qualified_current_Base_exact_input",
+    "E03_H_L004": "previous_F_exact_input",
+    "E03_H_L005": "qualified_current_Base_exact_input",
+    "E03_H_L006": "qualified_current_Base_exact_input",
+    "E01_H_T0": "new_blind_score",
+    "E03_H_T0": "new_blind_score"
+  },
+  "new_payloads": 2,
+  "batches": 1,
+  "missing": [],
+  "attempts_per_payload": 1,
+  "retries": 0,
+  "judge_evidence": [
+    {
+      "status": "COMPLETE",
+      "payloads": 2,
+      "new_attempts": 2,
+      "missing": 0,
+      "attempts_per_payload": 1,
+      "retry_count": 0,
+      "model": "gpt-6-astra",
+      "reasoning_effort": "medium",
+      "tool_event_types": [],
+      "isolation_checks": {
+        "own_input": true,
+        "operator": true,
+        "other_batch": true,
+        "project_source": true,
+        "memory": true
+      },
+      "usage": {
+        "input_tokens": 7348,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 158,
+        "reasoning_output_tokens": 36
+      },
+      "elapsed_seconds": 18.050440788269043,
+      "model_generation_calls": 0,
+      "gpu_calls": 0
+    }
+  ]
+}
