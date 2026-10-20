@@ -35,8 +35,8 @@ def secant_multiplier(rho,eta):
     return alpha if math.isfinite(alpha) and alpha>0 and min(1,second)<=alpha<=max(1,second) else None
 
 
-def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compensate=False, solve_factor=None):
-    layer=runtime.get_module('model.layers.0.mlp.down_proj')
+def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compensate=False, solve_factor=None, module_name='model.layers.0.mlp.down_proj'):
+    layer=runtime.get_module(module_name)
     original=layer.weight.detach().clone()
     pair=paired_batches(runtime,record)
     before=native_losses(runtime,pair)
@@ -124,8 +124,8 @@ def correction(runtime,record,factor,base_null, *, evaluate_rounded=False, compe
         fp32_update=fp_metrics,native_update=native_metrics,quantization=quant,**extra)
 
 
-def gates(runtime,pair,factor,start_weight,start_losses,base_null):
-    layer=runtime.get_module('model.layers.0.mlp.down_proj')
+def gates(runtime,pair,factor,start_weight,start_losses,base_null, *, module_name='model.layers.0.mlp.down_proj'):
+    layer=runtime.get_module(module_name)
     losses=native_losses(runtime,pair)
     delta=layer.weight.detach().float()-start_weight.float()
     a,b=(factor[k].to(layer.weight.device).double() for k in ('a','b'))
