@@ -1,0 +1,83 @@
+{
+  "status": "NO_ADMITTED_COMPARABLE_MULTI_ENDPOINT_GENERATOR",
+  "candidate_catalog": [
+    {
+      "id": "TQ_T",
+      "process": "fixed teacher fit",
+      "endpoints_per_process": 1,
+      "source": "ftmq_ops.py:fit",
+      "numeric_feasibility": "not guaranteed; original T null 0/3",
+      "new_generator_admitted": false
+    },
+    {
+      "id": "I",
+      "process": "one identity-metric rewrite of fixed teacher",
+      "endpoints_per_process": 1,
+      "source": "equiv3_ops.py:rewrite",
+      "numeric_feasibility": "not guaranteed; old I null 0/3",
+      "new_generator_admitted": false
+    },
+    {
+      "id": "U",
+      "process": "one fixed diagonal-metric rewrite",
+      "endpoints_per_process": 1,
+      "source": "equiv3_ops.py:rewrite",
+      "numeric_feasibility": "not guaranteed; old U null 0/3",
+      "new_generator_admitted": false
+    },
+    {
+      "id": "S",
+      "process": "fixed first-null-pass repair",
+      "endpoints_per_process": 1,
+      "source": "scalar3_ops.py:repair",
+      "numeric_feasibility": "at most one null+trust feasible state per fixed path",
+      "new_generator_admitted": false
+    },
+    {
+      "id": "A32",
+      "process": "fixed first-null-pass response-anchor repair",
+      "endpoints_per_process": 1,
+      "source": "anchors3_ops.py:repair",
+      "numeric_feasibility": "at most one null+trust feasible state per fixed path",
+      "new_generator_admitted": false
+    },
+    {
+      "id": "OLD_N_L6_CONTROLLERS",
+      "process": "historical accepted trajectories",
+      "endpoints_per_process": "multiple numerical states structurally possible",
+      "source": "nll_control.py and closed branch executors",
+      "numeric_feasibility": "semantic correctness and native distinctness not certified for multiple states; closed recipes not reactivated",
+      "new_generator_admitted": false
+    }
+  ],
+  "source_code_evidence": [
+    {
+      "file": "experiments/vigor_medical_single_image_v1/scalar3_ops.py",
+      "repair_line": 11,
+      "first_null_pass_stops": true,
+      "trust_reject_rolls_back_and_stops": true,
+      "full_gate_distinct_state_upper_bound_per_fixed_trajectory": 1
+    },
+    {
+      "file": "experiments/vigor_medical_single_image_v1/anchors3_ops.py",
+      "repair_line": 74,
+      "first_null_pass_stops": true,
+      "trust_reject_rolls_back_and_stops": true,
+      "full_gate_distinct_state_upper_bound_per_fixed_trajectory": 1
+    }
+  ],
+  "abstract_trajectories_checked": 18724,
+  "abstract_max_null_trust_states": 1,
+  "proof": "initial null pass ends immediately; all preceding trusted states fail null; first passing trusted state ends; trust failure rejects and rolls back",
+  "extra_source_visual_semantics_can_only_reduce_set": true,
+  "abstract_check_not_real_model_experiment": true,
+  "different_files_steps_or_seeds_not_native_distinctness_proof": true,
+  "no_historical_recipe_pooling": true,
+  "native_weights_not_persisted_or_compared": true,
+  "four_sources_with_two_correct_compliant_states": "NOT_ESTABLISHED",
+  "impossibility_claim_scope": "fixed first-null-pass paths only; not all mechanisms or Pure-W",
+  "model": 0,
+  "GPU": 0,
+  "Judge": 0,
+  "old_training_extended": false
+}
