@@ -5,19 +5,19 @@ from .t0probe import token_stat
 
 def bind_groups(runtime,batch,annotation):
  labels=batch.labels[0,1:];positions=torch.where(labels!=-100)[0];ids=labels[positions].tolist();eos=runtime.adapter.tokenizer.eos_token_id
- content=[(i,t) for i,t in enumerate(ids) if t!=eos];text=annotation['source_target'];tokens=[];prefix=[];old=0
+ content=[(i,t) for i,t in enumerate(ids) if t!=eos];text=annotation['source_target'];expected=text+' ';tokens=[];prefix=[];old=0
  for ordinal,tid in content:
   prefix.append(tid);decoded=runtime.adapter.tokenizer.decode(prefix,skip_special_tokens=False,clean_up_tokenization_spaces=False).lstrip()
-  if not text.startswith(decoded) or len(decoded)<old:raise ValueError('Source prefix/token alignment')
+  if not expected.startswith(decoded) or len(decoded)<old:raise ValueError('Source prefix/token alignment')
   tokens.append((ordinal,old,len(decoded)));old=len(decoded)
- if decoded!=text:raise ValueError('Complete teacher labels differ from frozen source')
+ if decoded!=expected:raise ValueError('Teacher labels differ from source plus exact Mistral template space')
  groups=[]
  for span in annotation['groups']:
   g=[i for i,start,end in tokens if max(start,span['start'])<min(end,span['end'])]
   if not g:raise ValueError('Empty source fact group')
   groups.append(g)
  if sum(map(len,groups))!=len(set(i for g in groups for i in g)):raise ValueError('Token straddles distinct facts')
- return groups,dict(group_count=len(groups),tokens_per_group=list(map(len,groups)),valid_tokens=len(ids),EOS_tokens=sum(t==eos for t in ids),content_tokens=len(content),source_prefix_binding=True)
+ return groups,dict(group_count=len(groups),tokens_per_group=list(map(len,groups)),valid_tokens=len(ids),EOS_tokens=sum(t==eos for t in ids),content_tokens=sum(start<len(text) and end>start for _,start,end in tokens),template_space_tokens=sum(start>=len(text) for _,start,end in tokens),exact_template_suffix_binding=True,source_prefix_binding=True)
 
 def objectives(logits,labels,groups):
  ce=F.cross_entropy(logits[:,:-1].float().reshape(-1,logits.shape[-1]),labels[:,1:].reshape(-1),ignore_index=-100,reduction='none').reshape(labels.shape[0],-1)
