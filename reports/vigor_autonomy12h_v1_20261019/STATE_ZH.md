@@ -55,3 +55,5 @@
 第十七轮BalancedRefresh单侧前提停止：新raw gNull dot+.057524318使原基座预测+.051665896，R非正；最终候选形成/写入评估0，实际NA。500forward/99.690812秒，恢复退出。新方向与幅度已冻结，下一必要不同机制仅带符号镜像同侧null删除，不重求方向/改尺度。
 
 第十八轮SignedBalance已后台启动：17轮刷新方向/幅度/raw子集完全冻结不重求，唯一正侧镜像null贡献平衡，仍稳定一次累计前缀/目标原基座0；CPU镜像性质通过，尚无新候选实际读数。
+
+第十八轮SignedBalance按实际NLL失败停止：预测NLL/margin双收益但实际升NLL.021849036、margin退.1953125、原基座null−.017372847，visual/null拒绝trust过，未接受。候选评估1/新secant生成0，528核验PASS，503forward/88.945162秒，恢复退出。最后安全终点仍OrthantBalance，不以新轮名重试或盲目缩步。

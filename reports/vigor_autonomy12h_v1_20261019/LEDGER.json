@@ -195,7 +195,7 @@
     },
     {
       "name": "responseSignedBalance",
-      "status": "RUNNING",
+      "status": "STOPPED_MAIN_ACTUAL_NLL_FAILED",
       "gpu_seconds_reserved": 900,
       "new_disk_bytes_reserved": 52428800,
       "candidate_max": 1,
@@ -205,18 +205,20 @@
       "cost_matching_max": 0,
       "subset_search": false,
       "frozen_excursion_side": "positive",
-      "source_commit": "1ad7f3aa927febf94070c8a3154504cf4c6eac60"
+      "source_commit": "1ad7f3aa927febf94070c8a3154504cf4c6eac60",
+      "gpu_seconds_actual": 88.94516158103943,
+      "remote_trial_bytes": 2365740
     }
   ],
-  "cumulative_gpu_seconds_actual": 1430.6825218200684,
+  "cumulative_gpu_seconds_actual": 1519.6276834011078,
   "cumulative_new_disk_bytes_actual": null,
   "temporary_entry_files_bytes": null,
   "local_baseline_allocated_bytes": 346255360,
   "internal_byte_ceiling": 18000000000,
   "rounds_max": 24,
   "disk_accounting": {
-    "measurement": "allocated KiB via du; seventeen completed own rounds plus local net growth and temp allowance",
-    "local_repository_net_growth_bytes": 15851520,
+    "measurement": "allocated KiB via du; eighteen completed own rounds plus local net growth and temp allowance",
+    "local_repository_net_growth_bytes": 16912384,
     "round1_remote_allocated_bytes": 1687552,
     "round1_remote_temp_allocated_bytes": 12288,
     "unmeasured_local_temp_allowance_bytes": 1000000,
@@ -233,7 +235,7 @@
     "round6_remote_temp_allocated_bytes": 12288,
     "round7_remote_allocated_bytes": 2015232,
     "round7_remote_temp_allocated_bytes": 12288,
-    "accounted_usage_plus_live_round_reservation_bytes": 106545728,
+    "accounted_usage_plus_live_round_reservation_bytes": 58057280,
     "round8_remote_allocated_bytes": 2084864,
     "round8_remote_temp_allocated_bytes": 12288,
     "round9_remote_allocated_bytes": 2158592,
@@ -254,6 +256,7 @@
     "round16_remote_temp_allocated_bytes": 12288,
     "round17_remote_allocated_bytes": 2760704,
     "round17_remote_temp_allocated_bytes": 12288,
-    "round18_reserved_bytes": 52428800
+    "round18_remote_allocated_bytes": 2867200,
+    "round18_remote_temp_allocated_bytes": 12288
   }
 }

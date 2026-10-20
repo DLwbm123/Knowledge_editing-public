@@ -1,3 +1,7 @@
+## 最新终态：正侧镜像平衡有限更新反号
+
+reports/vigor_responseSignedBalance_v1_20261020/completion：528检查PASS，原基座与共同终点恢复退出。候选1实际NLL1.315047860（升.021849036）、margin−3.9296875（退.1953125）、null原基座漂移−.017372847，visual/null拒绝trust过；新secant/生成0，官方翻转NA。局部dot[-.129379879,+1.103625957,+.005858401]及预测中心通过不代表有限步安全；最后安全终点仍OrthantBalance。不得自动改前缀/规则/幅度重试，必要独立机制验证先冻结且保留本轮失败与成本。
+
 ## 当前自主轮：同已冻结刷新方向的正侧镜像平衡
 
 reports/vigor_responseSignedBalance_v1_20261020/PROTOCOL_ZH.md：17轮单侧停止保留，直接复用其refreshed_seed_analytic系数、不重求方向/幅度，raw native子集成本/dot/坐标数及正预测+.051665896绑定。唯一变更为按偏差符号删除同侧null贡献，本轮已知正侧；margin损失/同侧恢复稳定排序、首个完整累计前缀，目标原基座0不变。候选1/解析0/匹配0/新尺度0，native预测与实际原门/双收益/全路径要求保持，900秒/600forward/50MiB，失败恢复停不追加。旧raw前向0/最终候选旧NA不补，不声称原null切空间或全局最优。
