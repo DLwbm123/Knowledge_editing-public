@@ -1,3 +1,3 @@
-# FROZEN_NOT_IMPLEMENTED
+# COMPLETE_AUDITED_PUBLICATION_PENDING
 
-I/U已完整公开。已结合用户最新Pro分析冻结源/null作用分离与强层作用可行性诊断，无新CPU数值/GPU/Judge。强层作用不可行不等于原null NLL门无解；先最小CPU、绑定/结构准入再单次运行，禁止旧I/U和旧控制器重放。
+3/3精确共享键强层作用矛盾，双数值检查一致拒绝；原标量null NLL可行性未测试不可推断无解。35.417646秒/107forward/39backward，Judge0/新候选0/无关生成0，6组远端CPU与116审计PASS，全部恢复退出。禁止joint3_deploy重放；先完整交付，再决定原标量null约束下的新机制。
