@@ -1,3 +1,3 @@
-# IMPLEMENTED_LOCAL_PREFLIGHT_PASS
+# COMPLETE_AUDITED_PUBLICATION_PENDING
 
-最小I/U约束求解、完整生成K采集与原生端点执行器已实现。静态训练隔离14条查询与32训练记录的题目/图像组排除核对通过。4项本机预算/42缓存缺失/25+17双批隔离复原路径PASS（无真实模型/Judge）。原首次CPU clock已记录；源码推送后远端小矩阵/KKT/退化/异常CPU先过才单次GPU，最终门不放宽。
+I/U各源3/3且完整原教师输出精确保留，原null均0/3 trust3/3、真实损伤各13/18与T相同，预设有用失败。42端点无缺分、24缓存16新唯一一次（另2批内映射）；4本机+6组远端CPU、153离线PASS，恢复退出全true。GPU55.365344秒/803forward/39backward，原clock不重置。禁止部署评分重放，固定I/U结束；完整公开后才冻结源/null联合可行性诊断，不扫度量或旧控制器。
