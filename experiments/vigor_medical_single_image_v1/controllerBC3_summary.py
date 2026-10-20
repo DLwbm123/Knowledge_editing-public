@@ -29,15 +29,16 @@ def summarize(result,ended,score,lifecycle):
                     ck(admission(t['cost'],t['linear'],5.368434395105091e-13*t['scale']**2,previous[1]-case['base']['native_nll'][1]),key+'.native_admission')
                     actual=response(previous[0],t['main_gate']['native_nll'][0],pm,t['main_margin']['margin'],t['linear']);ck(actual==t['actual_response'],key+'.main_response')
                     for g,want in [('visual',t['main_gate']['native_nll'][0]<previous[0]),('null',abs(t['main_gate']['native_nll'][1]-case['base']['native_nll'][1])<=.01),('trust',0<=t['main_gate']['combined_native_fisher_cost']<=.001)]:ck(t['main_gate']['gates'][g]==want,key+'.gate_'+g)
+                    if t.get('correction') is not None:secants+=1
                     if t['status']=='ACCEPTED':
                         final=response(previous[0],t['final_gate']['native_nll'][0],pm,t['final_margin']['margin'],t['linear'])
                         ck(final==t['final_response'] and final['passed'] and t['final_gate']['accepted'] and all(t['final_gate']['gates'].values()),key+'.final_accept')
                         if t.get('correction') is not None:
-                            secants+=1;ck(actual['passed'] and not t['main_gate']['gates']['null'] and t['correction']['status']=='APPLIED',key+'.secant_eligibility')
+                            ck(actual['passed'] and not t['main_gate']['gates']['null'] and t['correction']['status']=='APPLIED',key+'.secant_eligibility')
                         previous=t['final_gate']['native_nll'];pm=t['final_margin']['margin'];radius=next_radius(t['scale'],final)
                         accepted.append(dict(step=step['step'],editing_forward=step['editing_forward_at_accept'],native_nll=previous,margin=pm,rank=t['final_margin']['rank'],probability=t['final_margin']['probability'],original_base_null=previous[1]-case['base']['native_nll'][1],step_F0_cost=t['final_gate']['combined_native_fisher_cost'],endpoint_F0_cost=None,endpoint_F0_cost_note='not_recorded_at_intermediate_checkpoint'))
             ck(len(accepted)==arm['accepted_steps']<=64,key+'.step_count')
-            ck(secants==arm['secant_calls']<=64,key+'.secant_count')
+            ck(arm['secant_calls']<=64 and (secants==arm['secant_calls'] or (arm['status']=='STOPPED_EDIT_FORWARD_CAP' and arm['secant_calls']==secants+1)),key+'.secant_count_with_at_most_one_budget_interrupted_call')
             ck(arm['base_restored'] and arm['editing_forwards']<=512,key+'.arm_restore_budget')
             ck(previous==arm['last_accepted']['native_nll'] and pm==arm['last_accepted']['margin']['margin'],key+'.last_accepted')
             equal_steps={str(n):next((r for r in accepted if r['step']==n),None) for n in [8,16,32]}

@@ -21,6 +21,14 @@ else:
   old=Path('/data/bmw/Knowledge_editing/outputs/vigor-controllerBC-semantic-v1-20261020/run/private');op=json.loads((old/'PACKETS.json').read_text());oscores={d['opaque_query_id']:d['is_correct'] for d in json.loads((old/'SUMMARY').read_text())['decisions']}
   for p in op['records']:
    if p['opaque_query_id'] in oscores:cache.append(dict(question=p['question'],gold_answer=p['gold_answer'],raw_base_answer=p['raw_base_answer'],score=oscores[p['opaque_query_id']],provenance='prior_E01_semantic'))
+  fs=json.loads((prior/'private/scoring/SUMMARY.json').read_text())['scores']
+  for t in m['tasks'][:3]:
+   qid=next(e['query'] for e in t['panel'] if e['task']=='T0');qr=m['queries'][qid]
+   for phase,sid in [('base','B_'+qid),(t['alias'],t['alias']+'_'+qid)]:
+    f=prior/'private/outputs'/phase/(qid+'.json')
+    if f.exists() and sid in fs:
+     out=json.loads(f.read_text())
+     if out['status']=='COMPLETE':cache.append(dict(question=qr['question'],gold_answer=qr['reference'],raw_base_answer=out['raw_answer'],score=fs[sid],provenance='prior_formal_exact_input'))
   for case in result['cases']:
    t=next(t for t in m['tasks'] if t['alias']==case['sample']);row=m['queries'][next(e['query'] for e in t['panel'] if e['task']=='T0')]
    for arm in case['arms']:
