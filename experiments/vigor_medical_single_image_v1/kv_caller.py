@@ -2,8 +2,54 @@
 import copy
 import inspect
 import math
+from contextlib import contextmanager, nullcontext
+from types import MethodType
 
 import torch
+
+
+@contextmanager
+def full_prefix_no_cache(model):
+    """Retain the official visual prefix while HF drives greedy decoding.
+
+    Transformers 4.51 forces cache on for inputs_embeds. Override preparation
+    locally so every actual forward recomputes prefix plus full continuation.
+    """
+    had_override = 'prepare_inputs_for_generation' in model.__dict__
+    previous = model.__dict__.get('prepare_inputs_for_generation')
+    prefix = None
+    calls = 0
+
+    def prepare(self, input_ids, past_key_values=None, inputs_embeds=None, **kwargs):
+        nonlocal prefix, calls
+        if inputs_embeds is None or input_ids.shape[0] != 1:
+            raise RuntimeError('Full visual prefix required')
+        if calls == 0:
+            if input_ids.shape[1] != 0:
+                raise RuntimeError('Expected continuation-only generation')
+            prefix = inputs_embeds
+        if inputs_embeds is not prefix or input_ids.shape[1] != calls:
+            raise RuntimeError('Visual prefix or continuation changed unexpectedly')
+        if cache_length(past_key_values) != 0:
+            raise RuntimeError('Unexpected populated cache in full-prefix decode')
+        embeds = torch.cat((prefix, self.get_input_embeddings()(input_ids)), dim=1)
+        mask = kwargs.get('attention_mask')
+        if mask is None or tuple(mask.shape) != tuple(embeds.shape[:2]):
+            raise RuntimeError('Full-prefix attention mask mismatch')
+        positions = mask.long().cumsum(-1) - 1
+        positions.masked_fill_(mask == 0, 1)
+        calls += 1
+        return dict(inputs_embeds=embeds, attention_mask=mask,
+                    position_ids=positions, past_key_values=None, use_cache=False)
+
+    model.prepare_inputs_for_generation = MethodType(prepare, model)
+    try:
+        yield
+    finally:
+        if had_override:
+            model.prepare_inputs_for_generation = previous
+        else:
+            del model.prepare_inputs_for_generation
 
 
 def cache_length(past):
@@ -106,7 +152,7 @@ def paired_kv_generation(runtime, raw, budget, reserve):
         try:
             pre = runtime.model.register_forward_pre_hook(observer.before, with_kwargs=True)
             post = runtime.model.register_forward_hook(observer.after, with_kwargs=True)
-            with torch.inference_mode():
+            with torch.inference_mode(), (nullcontext() if cached else full_prefix_no_cache(runtime.model)):
                 generated = runtime.adapter.generate_prepared_with_result(raw, dict(config, use_cache=cached))
             ids = tuple(generated.raw_token_ids)
             if not ids or ids[-1] not in eos or len(ids) > 1024:
