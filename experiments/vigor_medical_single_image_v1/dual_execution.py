@@ -14,6 +14,10 @@ from .dual_solver import Budget, endpoint_native, solve_pair_comparison
 from .editor import nll
 
 ARMS = ('IND2', 'JOINT2')
+FREEZES = {
+    'PUREW_IND2_JOINT2_CORE_V1': 'reports/vigor_dualStable_v1_20261021/FREEZE.json',
+    'PUREW_FEASIBLE_PAIR_V1': 'reports/vigor_feasiblePair_v1_20261021/FREEZE.json',
+}
 
 def validate_source(source):
     if source.get('mode') == 'existing_development_source':
@@ -81,7 +85,7 @@ class Journal:
 
 
 def validate_manifest(manifest, config, record):
-    frozen_path = Path(__file__).resolve().parents[2] / 'reports/vigor_dualStable_v1_20261021/FREEZE.json'
+    frozen_path = Path(__file__).resolve().parents[2] / FREEZES[config['version']]
     frozen = json.loads(frozen_path.read_text())
     if {k: v for k, v in config.items() if k != 'source_binding'} != {k: v for k, v in frozen.items() if k != 'source_binding'}:
         raise PermissionError('Frozen method parameters changed')
@@ -170,7 +174,11 @@ def run_bound_comparison(runtime, layer, record, pair, factor, config, manifest,
     try:
         runtime.model.eval()
         admission = dict(source_bound=True, input_bound=True, F0_bound=True, KV_smoke_pass=True, resource_guard_ready=True)
-        result = solve_pair_comparison(runtime, layer, pair, factor, config, admission, journal.event, budget=budget)
+        solver = solve_pair_comparison
+        if config['version'] == 'PUREW_FEASIBLE_PAIR_V1':
+            from .feasible_pair import solve
+            solver = solve
+        result = solver(runtime, layer, pair, factor, config, admission, journal.event, budget=budget)
         public_arms = {}
         u, v = result['basis_private']
         for arm in ARMS:

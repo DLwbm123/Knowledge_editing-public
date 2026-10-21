@@ -7,20 +7,20 @@ import time
 
 import torch
 
-from .dual_execution import run_bound_comparison
+from .dual_execution import run_bound_comparison, FREEZES
 from .dual_guard import spawn_guard
 from .editor import paired_batches
 from .real_smoke import GPU, MODULE, validate_binding
 
 
-def main():
+def main(version='PUREW_IND2_JOINT2_CORE_V1'):
     root = Path(os.environ['RUN_PARENT'])
     manifest = json.loads((root / 'private/binding.json').read_text())
     validate_binding(manifest)
     kv = json.loads(Path(os.environ['RUN_KV_RECEIPT']).read_text())
     if kv['status'] != 'PASS' or kv['source_binding'] != manifest['source']['binding_id']:
         raise PermissionError('Actual same-source smoke PASS required')
-    config = json.loads((Path(__file__).resolve().parents[2] / 'reports/vigor_dualStable_v1_20261021/FREEZE.json').read_text())
+    config = json.loads((Path(__file__).resolve().parents[2] / FREEZES[version]).read_text())
     config['source_binding'] = manifest['source']['binding_id']
     start = time.time()
     with (root / 'private/DUAL_RESERVED.json').open('x') as f:
