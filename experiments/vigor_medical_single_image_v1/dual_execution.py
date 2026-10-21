@@ -15,6 +15,7 @@ from .editor import nll
 
 ARMS = ('IND2', 'JOINT2')
 FREEZES = {
+    'PUREW_CONTRAST_BASIS_V1': 'reports/vigor_contrastBasis_v1_20261021/FREEZE.json',
     'PUREW_IND2_JOINT2_CORE_V1': 'reports/vigor_dualStable_v1_20261021/FREEZE.json',
     'PUREW_BRC_PAIR_V1': 'reports/vigor_brcPair_v1_20261021/FREEZE.json',
     'PUREW_SOC_PAIR_V1': 'reports/vigor_socPair_v1_20261021/FREEZE.json',
@@ -113,7 +114,7 @@ def validate_manifest(manifest, config, record):
     if (generation.get('do_sample') is not False or generation.get('num_beams') != 1
             or generation.get('max_new_tokens') != 1024 or generation.get('use_cache') is not True):
         raise PermissionError('Frozen complete generation config required')
-    if (config['arms'] != (['SOC2','BRC2'] if config['version']=='PUREW_BRC_PAIR_V1' else ['TANGENT2','SOC2'] if config['version']=='PUREW_SOC_PAIR_V1' else list(ARMS)) or len(config['init_Z_E11']) != 2
+    if (config['arms'] != (['SOURCE4','CONTRAST4'] if config['version']=='PUREW_CONTRAST_BASIS_V1' else ['SOC2','BRC2'] if config['version']=='PUREW_BRC_PAIR_V1' else ['TANGENT2','SOC2'] if config['version']=='PUREW_SOC_PAIR_V1' else list(ARMS)) or len(config['init_Z_E11']) != 2
             or config['complete_generation_requests_max'] != 4):
         raise PermissionError('Need fixed two arms/two endpoints')
     return binding
@@ -186,11 +187,15 @@ def run_bound_comparison(runtime, layer, record, pair, factor, config, manifest,
         if config['version'] == 'PUREW_BRC_PAIR_V1':
             from .brc_pair import solve
             solver = solve
+        if config['version'] == 'PUREW_CONTRAST_BASIS_V1':
+            from .contrast_basis import solve
+            solver = solve
         result = solver(runtime, layer, pair, factor, config, admission, journal.event, budget=budget)
         public_arms = {}
         u, v = result['basis_private']
         for arm in config['arms']:
             value = result['arms'][arm]
+            u,v = value.get('basis_private', result['basis_private'])
             public_arms[arm] = {k: value[k] for k in ('finals', 'native_distinct', 'native_distance', 'numeric_pair_pass')}
             public_arms[arm]['generations'] = []
             for endpoint, z in enumerate(value['coefficients_private']):

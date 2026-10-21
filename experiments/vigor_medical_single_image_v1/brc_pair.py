@@ -57,8 +57,8 @@ def joint_correction(source_gradient, null_gradient, source_residual, null_resid
     return finite(delta.reshape_as(null_gradient).float())
 
 
-def solve(runtime, layer, pair, factor, config, admission, progress, *, budget):
-    if config['version'] != 'PUREW_BRC_PAIR_V1' or not all(admission.values()):
+def solve(runtime, layer, pair, factor, config, admission, progress, *, budget, basis_builder=None):
+    if config['version'] not in ('PUREW_BRC_PAIR_V1', 'PUREW_CONTRAST_BASIS_V1') or not all(admission.values()):
         raise PermissionError('Frozen feasible-pair admission required')
     validate(runtime.model, layer)
     model = runtime.model
@@ -74,7 +74,9 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget):
         with editable_fp32(model,layer,readonly=True):
             gradient = finite(budget.grad(nll(model,pair[0]),(layer.weight,),1)[0].detach())
         a,b = (factor[k].to(base.device).float() for k in ('a','b'))
-        u,v = source_basis(gradient,a,b,config)
+        bases = basis_builder(model,layer,pair,gradient,a,b,config,budget,progress) if basis_builder else None
+        if bases is None:
+            u,v = source_basis(gradient,a,b,config)
         del gradient
         def evaluate(z):
             with endpoint_native(model,layer,base,u,v,z,config), torch.no_grad():
@@ -85,21 +87,24 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget):
             return dict(native_nll=losses,fisher_cost=cost,changed=changed,
                 protection_feasible=abs(losses[1]-baseline[1])<=config['null_abs_budget'] and cost<=config['trust_budget'],
                 numeric_feasible=losses[0]<=config['source_NLL_target'] and abs(losses[1]-baseline[1])<=config['null_abs_budget'] and cost<=config['trust_budget'])
-        seeds = []
-        for sign in config['init_Z_E11']:
-            z=torch.zeros((config['rank'],config['rank']),device=base.device)
-            z[0,0]=sign;seeds.append(z)
-        for trial in range(config['seed_backtracks']):
-            current=[z*(.5**trial) for z in seeds]
-            initial=[evaluate(z) for z in current]
-            first=compose(base,u,current[0]*math.sqrt(2*config['trust_budget']),v).half()
-            second=compose(base,u,current[1]*math.sqrt(2*config['trust_budget']),v).half()
-            distinct=not torch.equal(first,second)
-            progress(dict(status='SEED_ACCEPT' if all(x['protection_feasible'] and x['changed'] for x in initial) and distinct else 'SEED_REJECT',step=trial,pre_update_losses=[x['native_nll'] for x in initial],forwards=budget.forwards))
-            del first,second
-            if all(x['protection_feasible'] and x['changed'] for x in initial) and distinct:break
-        else:raise RuntimeError('No admissible common seed pair; no replacement')
-        for arm in config['arms']:
+        for arm_index,arm in enumerate(config['arms']):
+            if bases is not None:
+                u,v=bases[arm]
+            if bases is not None or arm_index==0:
+                seeds = []
+                for sign in config['init_Z_E11']:
+                    z=torch.zeros((config['rank'],config['rank']),device=base.device)
+                    z[0,0]=sign;seeds.append(z)
+                for trial in range(config['seed_backtracks']):
+                    current=[z*(.5**trial) for z in seeds]
+                    initial=[evaluate(z) for z in current]
+                    first=compose(base,u,current[0]*math.sqrt(2*config['trust_budget']),v).half()
+                    second=compose(base,u,current[1]*math.sqrt(2*config['trust_budget']),v).half()
+                    distinct=not torch.equal(first,second)
+                    progress(dict(status='SEED_ACCEPT' if all(x['protection_feasible'] and x['changed'] for x in initial) and distinct else 'SEED_REJECT',step=trial,pre_update_losses=[x['native_nll'] for x in initial],forwards=budget.forwards))
+                    del first,second
+                    if all(x['protection_feasible'] and x['changed'] for x in initial) and distinct:break
+                else:raise RuntimeError('No admissible common seed pair; no replacement')
             zs=[z.clone() for z in current]
             values=initial
             trace=[]
@@ -124,11 +129,11 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget):
                 for trial in range(config['step_backtracks']):
                     candidates=[(z+config['lr']*(.5**trial)*d).detach() for z,d in zip(zs,directions)]
                     proposed=[evaluate(z) for z in candidates]
-                    if arm in ('SOC2', 'BRC2'):
+                    if arm in ('SOC2', 'BRC2', 'SOURCE4', 'CONTRAST4'):
                         for i in range(2):
                             for correction in range(config['correction_steps']):
                                 residual = proposed[i]['native_nll'][1]-baseline[1]
-                                source_residual=max(0., proposed[i]['native_nll'][0]-values[i]['native_nll'][0]) if arm=='BRC2' else 0.
+                                source_residual=max(0., proposed[i]['native_nll'][0]-values[i]['native_nll'][0]) if arm in ('BRC2','SOURCE4','CONTRAST4') else 0.
                                 if abs(residual)<=config['null_abs_budget'] and source_residual==0:
                                     break
                                 point=candidates[i].detach().requires_grad_(True)
@@ -136,7 +141,7 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget):
                                     gs=finite(budget.grad(nll(model,pair[0]),(point,),1)[0].detach())
                                 with coefficient_forward(model,layer,u,point*math.sqrt(2*config['trust_budget']),v):
                                     gn=finite(budget.grad(nll(model,pair[1]),(point,),1)[0].detach())
-                                delta=joint_correction(gs,gn,source_residual,residual,config['correction_radius']) if arm=='BRC2' else normal_correction(gs,gn,residual,config['correction_radius'])
+                                delta=joint_correction(gs,gn,source_residual,residual,config['correction_radius']) if arm in ('BRC2','SOURCE4','CONTRAST4') else normal_correction(gs,gn,residual,config['correction_radius'])
                                 if delta is None:
                                     break
                                 candidates[i]=(point.detach()+delta).detach()
@@ -153,6 +158,8 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget):
             second=compose(base,u,zs[1].detach()*math.sqrt(2*config['trust_budget']),v).half()
             distance=math.sqrt(fisher_cost(first.float()-second.float(),a,b)/config['trust_budget'])
             result['arms'][arm]=dict(trace=trace,finals=values,native_distinct=not torch.equal(first,second),native_distance=distance,numeric_pair_pass=all(x['numeric_feasible'] for x in values) and not torch.equal(first,second) and distance>=config['diversity_min'],coefficients_private=[z.detach().clone() for z in zs])
+            if bases is not None:
+                result['arms'][arm]['basis_private']=(u,v)
             del first,second
         result.update(baseline=baseline,basis_private=(u,v))
         return result
