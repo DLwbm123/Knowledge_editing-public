@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "writer": {
+    "status": "PASS",
+    "model_calls": 0,
+    "real_pretrained_model_calls": 0,
+    "synthetic_random_Mistral_only": true,
+    "parameters": 7168,
+    "effective_rank": 4,
+    "original_A_three_step_exact": true,
+    "canonical_and_save_load": true,
+    "last_layer_logits_gradients_KV_equivalent": true,
+    "nonfinal_scope_can_differ": true
+  },
+  "joint_gradient": {
+    "status": "PASS",
+    "nonconflict_identity": true,
+    "zero_preserve_identity": true,
+    "opposing_gradients": true,
+    "nonfinite_rejected": true,
+    "model_calls": 0
+  },
+  "fixed_cases": 6,
+  "disjoint_train_eval_questions": true,
+  "same_relation_targets": true,
+  "equal_320_losses_per_arm": true,
+  "real_model_calls": 0
+}

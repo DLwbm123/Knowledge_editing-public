@@ -1,0 +1,27 @@
+{
+  "version": "V29",
+  "status": "FROZEN_BEFORE_BASE",
+  "arms": [
+    "JOINT",
+    "JOINT_EXPR"
+  ],
+  "cases": 6,
+  "parameters": 7168,
+  "steps": 160,
+  "supervised_relations_per_step": 2,
+  "schedule": "JOINT original pair every step; JOINT_EXPR original pair odd steps and alternate pair even steps",
+  "eval_questions": 24,
+  "base_generations": 24,
+  "method_generations": 48,
+  "source_correctness_gate": "Reuse V28 fixed 3/6 source opportunities; no new case filtering",
+  "budgets": {
+    "updates": 1920,
+    "backwards": 4000,
+    "forwards": 160000,
+    "generations": 72,
+    "gpu_hours": 2,
+    "wall_hours": 24,
+    "remote_bytes": 2000000000,
+    "local_bytes": 250000000
+  }
+}
