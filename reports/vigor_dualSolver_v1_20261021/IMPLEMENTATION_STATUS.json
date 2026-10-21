@@ -1,0 +1,26 @@
+{
+  "core": "IMPLEMENTED_NOT_VLM_QUALIFIED",
+  "code": "experiments/vigor_medical_single_image_v1/dual_solver.py",
+  "implemented": [
+    "source-only deterministic rank4 basis and F0 metric whitening",
+    "same two endpoint initializations and independent Adam states per arm",
+    "only JOINT2 diversity coupling differs",
+    "fixed final iterate with native-FP16 gates and distance",
+    "forward/backward/path/time counters with restore reserve",
+    "exception restoration and durable anonymous progress callback",
+    "fail-closed source/input/F0/KV/resource admission"
+  ],
+  "not_run": [
+    "actual basis construction on VLM gradient",
+    "optimizer trajectories",
+    "native merge and real generation/KV",
+    "semantic scoring"
+  ],
+  "remaining_integration": [
+    "source-specific outer execution manifest",
+    "independent neutral process guard and resource admission",
+    "existing official generation/once-only scorer orchestration with combined budget"
+  ],
+  "source_admission_blocks_execution_only": true,
+  "no_models_executed": true
+}

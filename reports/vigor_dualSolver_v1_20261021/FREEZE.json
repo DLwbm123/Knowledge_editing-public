@@ -1,0 +1,58 @@
+{
+  "version": "PUREW_IND2_JOINT2_CORE_V1",
+  "epoch": 1792562477.346451,
+  "status": "METHOD_FROZEN_IMPLEMENTATION_ONLY_NO_LAUNCH",
+  "module": "model.layers.6.mlp.down_proj",
+  "native_dtype": "float16",
+  "rank": 4,
+  "steps": 16,
+  "lr": 0.05,
+  "betas": [
+    0.9,
+    0.999
+  ],
+  "eps": 1e-08,
+  "weight_decay": 0,
+  "init_Z_E11": [
+    -0.01,
+    0.01
+  ],
+  "source_NLL_target": 0.01,
+  "null_abs_budget": 0.01,
+  "trust_budget": 0.001,
+  "constraint_penalty": 100.0,
+  "diversity_min": 0.2,
+  "joint_diversity_penalty": 1.0,
+  "source_normalizer_floor": 1e-06,
+  "basis_relative_rank_tol": 1e-06,
+  "metric_orthogonality_atol": 0.0001,
+  "model_forward_max": 800,
+  "work_forward_max": 780,
+  "restoration_forward_reserve": 20,
+  "backward_API_max": 40,
+  "model_gradient_paths_max": 144,
+  "work_seconds": 1080,
+  "TERM_seconds": 1140,
+  "KILL_seconds": 1200,
+  "whole_seconds": 3600,
+  "disk_bytes_max": 268435456,
+  "complete_generation_requests_max": 4,
+  "max_new_tokens": 1024,
+  "per_generation_forward_max": 128,
+  "Judge_unique_max": 4,
+  "retries": 0,
+  "arms": [
+    "IND2",
+    "JOINT2"
+  ],
+  "selection": "fixed final iterate only; no first-pass stop, no history best, no added endpoint",
+  "dual_success_precondition": false,
+  "source_binding": null,
+  "requires": [
+    "admitted current source and private manifest",
+    "actual KV smoke PASS",
+    "model/module/F0 binding and source exclusion",
+    "neutral argv, fixed GPU2 storage/memory admission and independent birthtick guard"
+  ],
+  "no_hyperparameter_search": true
+}
