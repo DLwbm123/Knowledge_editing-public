@@ -1,0 +1,15 @@
+# 双端点执行衔接：接口与边界
+
+科学配置沿用6c8aa410的FREEZE.json，不改rank4、16步、lr=.05、初始化、目标、罚项、门或800F/40API/144梯度路径硬限。dual_execution.validate_manifest将配置逐字段与冻结文件比较，仅允许source_binding由独立源清单填入。源码部署时须同时带上该冻结文件，缺文件拒绝；它不是放宽科学参数的入口。
+
+执行输入是已准入runtime、其实际layer6 down_proj、当前record、已制备visual/null pair及原F0因子。私有manifest需含source的current_use_permitted/reserved_exclusion_certified/fit_exclusion_certified、train split、binding_id及具体图像绝对路径/问题/参考；KV真烟测PASS、同源绑定、实际加载类、model snapshot/module/native dtype及完整generation配置；F0绑定须与KV运行一致。input含已冻结prompt_ids二维数组、attention_mask及既有image绑定。这里字段是未来执行契约，当前没有实际源清单，禁止把单元fixture当许可。
+
+原始start_epoch在加载前固定，worker必须先成为独立进程组，在已准入/data/bmw/tmp中创建中性临时目录并spawn_guard，再加载模型；不能先加载再重置时钟。guard入口w.py与解释器argv不得含用户名/项目/方法，以/proc start tick识别主/guard，开始前READY握手和ps核验。它独立于心跳，原时钟1140秒TERM/1200KILL，只作用本次进程组，pid复用则不发信号。实际显存/挂载/写读探针及GPU进程argv仍需launch前验证，本轮无spawn或远端操作。
+
+run_bound_comparison负责核对具体运行类、模块shape、生成配置和guard出生tick/原deadline，建立独占LAUNCH_RESERVED和私有EXECUTION_BINDING，挂同一个model forward计数器。核心改为可注入共享Budget，外层持有hook时核心不重挂；核心恢复阶段结束须恢复工作计数模式。两臂优化、最终门、四次完整生成、外层恢复全计同一800F/780工作/20恢复reserve和同一原始clock。core原141F加4×128生成及外层额外2F恢复，计划上界655F，较原653F计划多2F工程恢复，硬预算不变。预处理/模型加载与basis算子也计原墙钟；全模型forward计数不冒充独立vision编码调用计数。加载及输入制备发生在此函数外，未实现其独立vision计数。
+
+固定顺序IND2-0/1、JOINT2-0/1，每个原生合并后调用现有adapter.prepare_inputs(image,question,None)与generate_prepared_with_result；无参考提示。私有输入tokens/mask/既有image绑定必须精确匹配；每请求128F，max_new_tokens1024不降低。模型EOS终止才COMPLETE，长度终止或预算失败保留INCOMPLETE/预约，不补端点。源生成文字/token与U/V/Z不进入公开journal，仅匿名计数/数值状态。恢复native矩阵与NLL、生成配置/模式；TERM转异常尝试恢复，KILL无法保证Python finally执行，因此无终态时必须保留未知，不宣称恢复。
+
+评分为单独本机CPU阶段score_once：要求终态RESTORED，以及本次pid+birth的已退出/GPU不占用回执，不能拿旧PID状态充当；原1h还须留600秒。四个固定终态输出按(question,gold,raw answer)精确去重，UUID盲序，私有mapping持久化；SCORE_RESERVED独占写后才可一次调用既有factF3_judge/rubric，最多4新唯一payload，不读历史评分、不重判，恢复helper全局profile/flags/env。缺失保持None，H1仅由数值双端点门与两条完整语义判断形成；不补H2/H3。
+
+尚未自动接通：模型加载/实际KV烟测入口与源专属部署manifest、远端生成文件到本机评分的私有搬运、真实硬件峰值与分布式关闭回执核验。现有函数可由合格caller使用，但不能因此称完整GPU启动器已准入。数据不阻塞本轮实现；只在实际执行前要求合法源与真接口。

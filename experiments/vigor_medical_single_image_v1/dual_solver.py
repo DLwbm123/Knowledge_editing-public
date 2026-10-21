@@ -110,7 +110,7 @@ def endpoint_native(model, layer, base, u, v, z, config):
         yield
 
 
-def solve_pair_comparison(runtime, layer, pair, factor, config, admission, progress):
+def solve_pair_comparison(runtime, layer, pair, factor, config, admission, progress, *, budget=None):
     """Return private U/V/Z plus anonymous scalar traces; never run or score generations.
 
     Caller owns exclusive launch reservation, source/F0 binding, independent process
@@ -131,10 +131,12 @@ def solve_pair_comparison(runtime, layer, pair, factor, config, admission, progr
     if a.shape != (base.shape[1],) or b.shape != (base.shape[0],) or not bool((a > 0).all() and (b > 0).all()):
         raise ValueError('Invalid bound F0 factors')
     finite(a); finite(b)
-    budget = Budget(config)
+    owns_budget = budget is None
+    budget = Budget(config) if owns_budget else budget
+    previous_restoring = budget.restoring
     modes = [(module, module.training) for module in runtime.model.modules()]
     parameter_flags = [(parameter, parameter.requires_grad) for parameter in runtime.model.parameters()]
-    hook = runtime.model.register_forward_pre_hook(budget.before_forward)
+    hook = runtime.model.register_forward_pre_hook(budget.before_forward) if owns_budget else None
     result = {'arms': {}, 'semantic_correctness': 'NOT_EVALUATED'}
     try:
         runtime.model.eval()
@@ -198,7 +200,9 @@ def solve_pair_comparison(runtime, layer, pair, factor, config, admission, progr
                 if any(abs(x - y) > 1e-5 for x, y in zip(restored, baseline)):
                     raise RuntimeError('Baseline NLL restoration failed')
         finally:
-            hook.remove()
+            if hook is not None:
+                hook.remove()
+            budget.restoring = previous_restoring
             for parameter, flag in parameter_flags:
                 parameter.requires_grad_(flag)
             for module, mode in modes:
