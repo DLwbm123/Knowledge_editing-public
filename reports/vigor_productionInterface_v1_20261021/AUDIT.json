@@ -1,0 +1,13 @@
+{
+  "CPU_checks_passed": 16,
+  "counts_within_freeze": true,
+  "finite_difference_pass": true,
+  "active_ignore_token_coverage": "NOT_TESTED: only first label is -100, removed by causal shift; CPU comparison validates shift and reduction for remaining tokens, not active ignore masking",
+  "actual_KV_cache": "NOT_TESTED; one-token Linear shape is not cached Mistral decoding",
+  "CPU_native_comparison": "native merged Linear vs same matrix, not continuous FP32 vs merged VLM equivalence",
+  "null_overlap": "gradient sensitivity only, no feasible pair proof",
+  "parameter_distinctness": "exact duplicate equality sanity only; no candidate library or selection implementation",
+  "GPU_not_admitted": true,
+  "no_scientific_gain_claim": true,
+  "rerun": false
+}
