@@ -1,0 +1,3518 @@
+{
+  "status": "COMPLETE_ZERO_MODEL_FROZEN_LABEL_AUDIT",
+  "consumers": 216,
+  "unique_inputs": 180,
+  "edits": 10,
+  "new_model_calls": 0,
+  "new_judgments": 0,
+  "roles": {
+    "REPHRASE_DIAGNOSTIC": {
+      "consumers": 40,
+      "unique_inputs": 40,
+      "OFF": {
+        "INCORRECT": 34,
+        "ABSTAIN": 4,
+        "CORRECT": 2
+      },
+      "arms": {
+        "B": {
+          "classes": {
+            "CORRECT": 40
+          },
+          "expert_or_OFF_correct": 40,
+          "OFF_only_rescues": 0,
+          "neither_correct": 0,
+          "copy_classes": {
+            "CORRECT": 40
+          },
+          "at_cap": 0,
+          "decoded_empty": 0
+        },
+        "C160": {
+          "classes": {
+            "CORRECT": 33,
+            "INCORRECT": 4,
+            "UNCERTAIN": 3
+          },
+          "expert_or_OFF_correct": 33,
+          "OFF_only_rescues": 0,
+          "neither_correct": 7,
+          "copy_classes": {
+            "CORRECT": 33
+          },
+          "at_cap": 1,
+          "decoded_empty": 0
+        },
+        "C_STOP": {
+          "classes": {
+            "CORRECT": 35,
+            "UNCERTAIN": 4,
+            "INCORRECT": 1
+          },
+          "expert_or_OFF_correct": 35,
+          "OFF_only_rescues": 0,
+          "neither_correct": 5,
+          "copy_classes": {
+            "CORRECT": 35
+          },
+          "at_cap": 1,
+          "decoded_empty": 0
+        }
+      },
+      "three_writers_or_OFF_correct": 40,
+      "B_correct_C_STOP_noncorrect": 5,
+      "C160_to_C_STOP_repairs": 3,
+      "C160_to_C_STOP_losses": 1,
+      "B_C_STOP_or_OFF_correct": 40,
+      "B_C_STOP_correct_sets_equal": false
+    },
+    "T0": {
+      "consumers": 10,
+      "unique_inputs": 10,
+      "OFF": {
+        "INCORRECT": 9,
+        "ABSTAIN": 1
+      },
+      "arms": {
+        "B": {
+          "classes": {
+            "CORRECT": 10
+          },
+          "expert_or_OFF_correct": 10,
+          "OFF_only_rescues": 0,
+          "neither_correct": 0,
+          "copy_classes": {
+            "CORRECT": 10
+          },
+          "at_cap": 0,
+          "decoded_empty": 0
+        },
+        "C160": {
+          "classes": {
+            "CORRECT": 8,
+            "INCORRECT": 1,
+            "UNCERTAIN": 1
+          },
+          "expert_or_OFF_correct": 8,
+          "OFF_only_rescues": 0,
+          "neither_correct": 2,
+          "copy_classes": {
+            "CORRECT": 8
+          },
+          "at_cap": 0,
+          "decoded_empty": 0
+        },
+        "C_STOP": {
+          "classes": {
+            "CORRECT": 9,
+            "UNCERTAIN": 1
+          },
+          "expert_or_OFF_correct": 9,
+          "OFF_only_rescues": 0,
+          "neither_correct": 1,
+          "copy_classes": {
+            "CORRECT": 9
+          },
+          "at_cap": 0,
+          "decoded_empty": 0
+        }
+      },
+      "three_writers_or_OFF_correct": 10,
+      "B_correct_C_STOP_noncorrect": 1,
+      "C160_to_C_STOP_repairs": 1,
+      "C160_to_C_STOP_losses": 0,
+      "B_C_STOP_or_OFF_correct": 10,
+      "B_C_STOP_correct_sets_equal": false
+    },
+    "T1G": {
+      "consumers": 37,
+      "unique_inputs": 37,
+      "OFF": {
+        "INCORRECT": 33,
+        "ABSTAIN": 4
+      },
+      "arms": {
+        "B": {
+          "classes": {
+            "CORRECT": 37
+          },
+          "expert_or_OFF_correct": 37,
+          "OFF_only_rescues": 0,
+          "neither_correct": 0,
+          "copy_classes": {
+            "CORRECT": 37
+          },
+          "at_cap": 0,
+          "decoded_empty": 0
+        },
+        "C160": {
+          "classes": {
+            "CORRECT": 28,
+            "INCORRECT": 5,
+            "UNCERTAIN": 4
+          },
+          "expert_or_OFF_correct": 28,
+          "OFF_only_rescues": 0,
+          "neither_correct": 9,
+          "copy_classes": {
+            "CORRECT": 28
+          },
+          "at_cap": 2,
+          "decoded_empty": 0
+        },
+        "C_STOP": {
+          "classes": {
+            "CORRECT": 33,
+            "UNCERTAIN": 4
+          },
+          "expert_or_OFF_correct": 33,
+          "OFF_only_rescues": 0,
+          "neither_correct": 4,
+          "copy_classes": {
+            "CORRECT": 33
+          },
+          "at_cap": 0,
+          "decoded_empty": 0
+        }
+      },
+      "three_writers_or_OFF_correct": 37,
+      "B_correct_C_STOP_noncorrect": 4,
+      "C160_to_C_STOP_repairs": 5,
+      "C160_to_C_STOP_losses": 0,
+      "B_C_STOP_or_OFF_correct": 37,
+      "B_C_STOP_correct_sets_equal": false
+    },
+    "T1L": {
+      "consumers": 84,
+      "unique_inputs": 50,
+      "OFF": {
+        "INCORRECT": 72,
+        "ABSTAIN": 12
+      },
+      "arms": {
+        "B": {
+          "classes": {
+            "INCORRECT": 26,
+            "CORRECT": 33,
+            "UNCERTAIN": 25
+          },
+          "expert_or_OFF_correct": 33,
+          "OFF_only_rescues": 0,
+          "neither_correct": 51,
+          "copy_classes": {
+            "INCORRECT": 24,
+            "CORRECT": 33,
+            "UNCERTAIN": 25
+          },
+          "at_cap": 0,
+          "decoded_empty": 0
+        },
+        "C160": {
+          "classes": {
+            "INCORRECT": 42,
+            "CORRECT": 32,
+            "ABSTAIN": 1,
+            "UNCERTAIN": 9
+          },
+          "expert_or_OFF_correct": 32,
+          "OFF_only_rescues": 0,
+          "neither_correct": 52,
+          "copy_classes": {
+            "INCORRECT": 24,
+            "CORRECT": 32,
+            "UNCERTAIN": 9
+          },
+          "at_cap": 15,
+          "decoded_empty": 1
+        },
+        "C_STOP": {
+          "classes": {
+            "INCORRECT": 33,
+            "CORRECT": 33,
+            "UNCERTAIN": 18
+          },
+          "expert_or_OFF_correct": 33,
+          "OFF_only_rescues": 0,
+          "neither_correct": 51,
+          "copy_classes": {
+            "INCORRECT": 24,
+            "CORRECT": 33,
+            "UNCERTAIN": 18
+          },
+          "at_cap": 8,
+          "decoded_empty": 0
+        }
+      },
+      "three_writers_or_OFF_correct": 33,
+      "B_correct_C_STOP_noncorrect": 0,
+      "C160_to_C_STOP_repairs": 1,
+      "C160_to_C_STOP_losses": 0,
+      "B_C_STOP_or_OFF_correct": 33,
+      "B_C_STOP_correct_sets_equal": true
+    },
+    "T2G": {
+      "consumers": 40,
+      "unique_inputs": 40,
+      "OFF": {
+        "INCORRECT": 31,
+        "ABSTAIN": 4,
+        "UNCERTAIN": 5
+      },
+      "arms": {
+        "B": {
+          "classes": {
+            "CORRECT": 34,
+            "ABSTAIN": 1,
+            "UNCERTAIN": 4,
+            "INCORRECT": 1
+          },
+          "expert_or_OFF_correct": 34,
+          "OFF_only_rescues": 0,
+          "neither_correct": 6,
+          "copy_classes": {
+            "CORRECT": 29
+          },
+          "at_cap": 1,
+          "decoded_empty": 0
+        },
+        "C160": {
+          "classes": {
+            "CORRECT": 18,
+            "INCORRECT": 9,
+            "UNCERTAIN": 10,
+            "ABSTAIN": 3
+          },
+          "expert_or_OFF_correct": 18,
+          "OFF_only_rescues": 0,
+          "neither_correct": 22,
+          "copy_classes": {
+            "CORRECT": 18
+          },
+          "at_cap": 12,
+          "decoded_empty": 1
+        },
+        "C_STOP": {
+          "classes": {
+            "CORRECT": 29,
+            "INCORRECT": 4,
+            "UNCERTAIN": 7
+          },
+          "expert_or_OFF_correct": 29,
+          "OFF_only_rescues": 0,
+          "neither_correct": 11,
+          "copy_classes": {
+            "CORRECT": 29
+          },
+          "at_cap": 8,
+          "decoded_empty": 0
+        }
+      },
+      "three_writers_or_OFF_correct": 35,
+      "B_correct_C_STOP_noncorrect": 6,
+      "C160_to_C_STOP_repairs": 11,
+      "C160_to_C_STOP_losses": 0,
+      "B_C_STOP_or_OFF_correct": 35,
+      "B_C_STOP_correct_sets_equal": false
+    },
+    "T2L": {
+      "consumers": 5,
+      "unique_inputs": 5,
+      "OFF": {
+        "INCORRECT": 2,
+        "CORRECT": 3
+      },
+      "arms": {
+        "B": {
+          "classes": {
+            "INCORRECT": 2,
+            "CORRECT": 3
+          },
+          "expert_or_OFF_correct": 3,
+          "OFF_only_rescues": 0,
+          "neither_correct": 2,
+          "copy_classes": {},
+          "at_cap": 0,
+          "decoded_empty": 0
+        },
+        "C160": {
+          "classes": {
+            "INCORRECT": 3,
+            "UNCERTAIN": 1,
+            "CORRECT": 1
+          },
+          "expert_or_OFF_correct": 3,
+          "OFF_only_rescues": 2,
+          "neither_correct": 2,
+          "copy_classes": {},
+          "at_cap": 4,
+          "decoded_empty": 0
+        },
+        "C_STOP": {
+          "classes": {
+            "CORRECT": 2,
+            "UNCERTAIN": 2,
+            "INCORRECT": 1
+          },
+          "expert_or_OFF_correct": 4,
+          "OFF_only_rescues": 2,
+          "neither_correct": 1,
+          "copy_classes": {},
+          "at_cap": 2,
+          "decoded_empty": 0
+        }
+      },
+      "three_writers_or_OFF_correct": 4,
+      "B_correct_C_STOP_noncorrect": 2,
+      "C160_to_C_STOP_repairs": 1,
+      "C160_to_C_STOP_losses": 0,
+      "B_C_STOP_or_OFF_correct": 4,
+      "B_C_STOP_correct_sets_equal": false
+    }
+  },
+  "per_edit": {
+    "REPHRASE_DIAGNOSTIC": {
+      "E001": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E002": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "INCORRECT": 4
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 4,
+            "copy_classes": {},
+            "at_cap": 1,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "UNCERTAIN": 4
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 4,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 4,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E003": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E004": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "ABSTAIN": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E005": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 2,
+          "CORRECT": 2
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E006": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E007": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E008": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E009": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E010": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "UNCERTAIN": 3,
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 3,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 3,
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 1,
+        "C160_to_C_STOP_repairs": 3,
+        "C160_to_C_STOP_losses": 1,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": false
+      }
+    },
+    "T0": {
+      "E001": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E002": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 1,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E003": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E004": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "ABSTAIN": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E005": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E006": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E007": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E008": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E009": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E010": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 1,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      }
+    },
+    "T1G": {
+      "E001": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E002": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "INCORRECT": 4
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 4,
+            "copy_classes": {},
+            "at_cap": 1,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "UNCERTAIN": 4
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 4,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 4,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E003": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E004": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "ABSTAIN": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E005": {
+        "consumers": 1,
+        "unique_inputs": 1,
+        "OFF": {
+          "INCORRECT": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E006": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E007": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E008": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 3,
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 1,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E009": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E010": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "UNCERTAIN": 4
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 4,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 4,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      }
+    },
+    "T1L": {
+      "E001": {
+        "consumers": 35,
+        "unique_inputs": 35,
+        "OFF": {
+          "INCORRECT": 35
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "INCORRECT": 16,
+              "CORRECT": 19
+            },
+            "expert_or_OFF_correct": 19,
+            "OFF_only_rescues": 0,
+            "neither_correct": 16,
+            "copy_classes": {
+              "INCORRECT": 15,
+              "CORRECT": 19
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "INCORRECT": 15,
+              "CORRECT": 19,
+              "ABSTAIN": 1
+            },
+            "expert_or_OFF_correct": 19,
+            "OFF_only_rescues": 0,
+            "neither_correct": 16,
+            "copy_classes": {
+              "INCORRECT": 15,
+              "CORRECT": 19
+            },
+            "at_cap": 0,
+            "decoded_empty": 1
+          },
+          "C_STOP": {
+            "classes": {
+              "INCORRECT": 16,
+              "CORRECT": 19
+            },
+            "expert_or_OFF_correct": 19,
+            "OFF_only_rescues": 0,
+            "neither_correct": 16,
+            "copy_classes": {
+              "INCORRECT": 15,
+              "CORRECT": 19
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 19,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 19,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E002": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E003": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E004": {
+        "consumers": 12,
+        "unique_inputs": 12,
+        "OFF": {
+          "ABSTAIN": 12
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 3,
+              "INCORRECT": 9
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 9,
+            "copy_classes": {
+              "CORRECT": 3,
+              "INCORRECT": 9
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 3,
+              "INCORRECT": 9
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 9,
+            "copy_classes": {
+              "CORRECT": 3,
+              "INCORRECT": 9
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 3,
+              "INCORRECT": 9
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 9,
+            "copy_classes": {
+              "CORRECT": 3,
+              "INCORRECT": 9
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 3,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 3,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E005": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E006": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E007": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E008": {
+        "consumers": 2,
+        "unique_inputs": 2,
+        "OFF": {
+          "INCORRECT": 2
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 2
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "INCORRECT": 1,
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 2
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 2,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 1,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 2,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E009": {
+        "consumers": 35,
+        "unique_inputs": 35,
+        "OFF": {
+          "INCORRECT": 35
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 9,
+              "UNCERTAIN": 25,
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 9,
+            "OFF_only_rescues": 0,
+            "neither_correct": 26,
+            "copy_classes": {
+              "CORRECT": 9,
+              "UNCERTAIN": 25
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 9,
+              "INCORRECT": 17,
+              "UNCERTAIN": 9
+            },
+            "expert_or_OFF_correct": 9,
+            "OFF_only_rescues": 0,
+            "neither_correct": 26,
+            "copy_classes": {
+              "CORRECT": 9,
+              "UNCERTAIN": 9
+            },
+            "at_cap": 14,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 9,
+              "INCORRECT": 8,
+              "UNCERTAIN": 18
+            },
+            "expert_or_OFF_correct": 9,
+            "OFF_only_rescues": 0,
+            "neither_correct": 26,
+            "copy_classes": {
+              "CORRECT": 9,
+              "UNCERTAIN": 18
+            },
+            "at_cap": 8,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 9,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 9,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E010": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      }
+    },
+    "T2G": {
+      "E001": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 2,
+              "INCORRECT": 1,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 2,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 2,
+              "INCORRECT": 1,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 2,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 2,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E002": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "INCORRECT": 3,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 4,
+            "copy_classes": {},
+            "at_cap": 3,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 2,
+              "UNCERTAIN": 1,
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 2,
+        "C160_to_C_STOP_repairs": 2,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E003": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "ABSTAIN": 1,
+          "INCORRECT": 2,
+          "UNCERTAIN": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "ABSTAIN": 1,
+              "CORRECT": 3
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "UNCERTAIN": 1,
+              "CORRECT": 3
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "UNCERTAIN": 1,
+              "CORRECT": 3
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 3,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 3,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E004": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "UNCERTAIN": 3,
+          "ABSTAIN": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E005": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 3,
+          "ABSTAIN": 1
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 3,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 2,
+              "UNCERTAIN": 2
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 2,
+              "UNCERTAIN": 2
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 3,
+        "B_correct_C_STOP_noncorrect": 1,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 3,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E006": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 2,
+              "UNCERTAIN": 2
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 2,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E007": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "ABSTAIN": 1,
+          "INCORRECT": 3
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "UNCERTAIN": 1,
+              "CORRECT": 2,
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 2,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "UNCERTAIN": 1,
+              "CORRECT": 1,
+              "INCORRECT": 2
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 3,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 3,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "UNCERTAIN": 1,
+              "CORRECT": 1,
+              "INCORRECT": 2
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 3,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 3,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 2,
+        "B_correct_C_STOP_noncorrect": 1,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 2,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E008": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "UNCERTAIN": 1,
+          "INCORRECT": 3
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 3,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 2
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "ABSTAIN": 1,
+              "INCORRECT": 2,
+              "CORRECT": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 3,
+            "copy_classes": {
+              "CORRECT": 1
+            },
+            "at_cap": 3,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 3,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E009": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 3,
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 4
+            },
+            "expert_or_OFF_correct": 4,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {
+              "CORRECT": 4
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 4,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 1,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 4,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E010": {
+        "consumers": 4,
+        "unique_inputs": 4,
+        "OFF": {
+          "INCORRECT": 4
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 3,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "UNCERTAIN": 2,
+              "ABSTAIN": 2
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 4,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 1
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 3,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {
+              "CORRECT": 3
+            },
+            "at_cap": 1,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 3,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 3,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 3,
+        "B_C_STOP_correct_sets_equal": true
+      }
+    },
+    "T2L": {
+      "E001": {
+        "consumers": 2,
+        "unique_inputs": 2,
+        "OFF": {
+          "INCORRECT": 2
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "INCORRECT": 2
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "INCORRECT": 1,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 2,
+            "copy_classes": {},
+            "at_cap": 1,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1,
+              "UNCERTAIN": 1
+            },
+            "expert_or_OFF_correct": 1,
+            "OFF_only_rescues": 0,
+            "neither_correct": 1,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 1,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 1,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 1,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E002": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E003": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E004": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E005": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E006": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E007": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E008": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      },
+      "E009": {
+        "consumers": 3,
+        "unique_inputs": 3,
+        "OFF": {
+          "CORRECT": 3
+        },
+        "arms": {
+          "B": {
+            "classes": {
+              "CORRECT": 3
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {
+              "CORRECT": 1,
+              "INCORRECT": 2
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 2,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 3,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {
+              "CORRECT": 1,
+              "UNCERTAIN": 1,
+              "INCORRECT": 1
+            },
+            "expert_or_OFF_correct": 3,
+            "OFF_only_rescues": 2,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 2,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 3,
+        "B_correct_C_STOP_noncorrect": 2,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 3,
+        "B_C_STOP_correct_sets_equal": false
+      },
+      "E010": {
+        "consumers": 0,
+        "unique_inputs": 0,
+        "OFF": {},
+        "arms": {
+          "B": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C160": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          },
+          "C_STOP": {
+            "classes": {},
+            "expert_or_OFF_correct": 0,
+            "OFF_only_rescues": 0,
+            "neither_correct": 0,
+            "copy_classes": {},
+            "at_cap": 0,
+            "decoded_empty": 0
+          }
+        },
+        "three_writers_or_OFF_correct": 0,
+        "B_correct_C_STOP_noncorrect": 0,
+        "C160_to_C_STOP_repairs": 0,
+        "C160_to_C_STOP_losses": 0,
+        "B_C_STOP_or_OFF_correct": 0,
+        "B_C_STOP_correct_sets_equal": true
+      }
+    }
+  },
+  "locality": {
+    "B": {
+      "base_correct": 3,
+      "lost": 0,
+      "explicit_I": 0
+    },
+    "C160": {
+      "base_correct": 3,
+      "lost": 2,
+      "explicit_I": 2
+    },
+    "C_STOP": {
+      "base_correct": 3,
+      "lost": 2,
+      "explicit_I": 1
+    }
+  },
+  "T1L_wrong_copy_intersections": {
+    "B&C160": 24,
+    "B&C_STOP": 24,
+    "C160&C_STOP": 24
+  },
+  "T1L_source_reference_equal": 21,
+  "T1L_three_writer_correct_sets_identical": false,
+  "support_admission": {
+    "support_rows": 8,
+    "stored_support_groups": 8,
+    "synthetic_negation_rows": 8,
+    "overlap_evaluation_query_ids": 0,
+    "overlap_route_query_ids": 0,
+    "overlap_stored_group_strings": 0,
+    "nominal_relation_counts": {
+      "NO": 89,
+      "YES": 127,
+      "UNKNOWN": 1584
+    },
+    "clinical_applicability_label_field_present": false,
+    "independent_confirmation": false,
+    "boundary_support_admission": "NOT_ESTABLISHED_IN_INSPECTED_FROZEN_ARTIFACTS",
+    "patient_independence": "UNKNOWN_NOT_INFERRED_FROM_IMAGE_GROUPS",
+    "remaining_136": "DEFERRED_NOT_OPENED",
+    "note": "Stored group string overlap is not a patient-independence or derived-image grouping certificate; synthetic negation is not a clinical boundary negative.",
+    "canonical_support_groups": 5,
+    "canonical_overlap_route_groups": 1,
+    "route_inputs_sharing_support_canonical_groups": 10,
+    "canonical_DEV_overlap": 0,
+    "canonical_HELDOUT_overlap": 10,
+    "sharing_input_roles": {
+      "REPHRASE_DIAGNOSTIC": 4,
+      "T1G": 1,
+      "T2G": 4,
+      "T0": 1
+    },
+    "native_sources_in_overlap": 1,
+    "stored_canonical_group_mismatches": 6
+  },
+  "interpretation": "Oracle uses exposed frozen correctness, not a trained router or continuous-gate bound. Current judgments are fixed-reference assistant review, not independent clinical adjudication."
+}
