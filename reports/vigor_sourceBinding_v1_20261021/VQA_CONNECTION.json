@@ -1,0 +1,22 @@
+{
+  "status": "METADATA_IDENTITY_JOIN_PASS",
+  "rule": "original qid exact string equality; Path(image_name).stem equals role image_id; original names unique per stem",
+  "statistics": {
+    "rows": 2248,
+    "qid_one_to_one_missing": 0,
+    "stem_mismatch": 0,
+    "image_groups": 314,
+    "stem_to_multiple_image_names": 0,
+    "non_test_only_images": 111,
+    "non_test_only_reserved_images": 4,
+    "non_test_only_fit_images": 13,
+    "after_test_reserved_exclusion_images": 107,
+    "after_test_reserved_and_fit_exclusion_images": 98,
+    "after_test_reserved_and_fit_exclusion_rows": 628
+  },
+  "limitations": [
+    "metadata identity, not new pixel or patient identity verification",
+    "remaining counts are candidate bounds, not permission or full exposure certification"
+  ],
+  "source_admitted": false
+}
