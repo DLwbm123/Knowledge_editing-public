@@ -16,6 +16,7 @@ from .editor import nll
 ARMS = ('IND2', 'JOINT2')
 FREEZES = {
     'PUREW_IND2_JOINT2_CORE_V1': 'reports/vigor_dualStable_v1_20261021/FREEZE.json',
+    'PUREW_SOC_PAIR_V1': 'reports/vigor_socPair_v1_20261021/FREEZE.json',
     'PUREW_FEASIBLE_PAIR_V1': 'reports/vigor_feasiblePair_v1_20261021/FREEZE.json',
 }
 
@@ -111,7 +112,7 @@ def validate_manifest(manifest, config, record):
     if (generation.get('do_sample') is not False or generation.get('num_beams') != 1
             or generation.get('max_new_tokens') != 1024 or generation.get('use_cache') is not True):
         raise PermissionError('Frozen complete generation config required')
-    if (config['arms'] != list(ARMS) or len(config['init_Z_E11']) != 2
+    if (config['arms'] != (['TANGENT2','SOC2'] if config['version']=='PUREW_SOC_PAIR_V1' else list(ARMS)) or len(config['init_Z_E11']) != 2
             or config['complete_generation_requests_max'] != 4):
         raise PermissionError('Need fixed two arms/two endpoints')
     return binding
@@ -178,10 +179,13 @@ def run_bound_comparison(runtime, layer, record, pair, factor, config, manifest,
         if config['version'] == 'PUREW_FEASIBLE_PAIR_V1':
             from .feasible_pair import solve
             solver = solve
+        if config['version'] == 'PUREW_SOC_PAIR_V1':
+            from .soc_pair import solve
+            solver = solve
         result = solver(runtime, layer, pair, factor, config, admission, journal.event, budget=budget)
         public_arms = {}
         u, v = result['basis_private']
-        for arm in ARMS:
+        for arm in config['arms']:
             value = result['arms'][arm]
             public_arms[arm] = {k: value[k] for k in ('finals', 'native_distinct', 'native_distance', 'numeric_pair_pass')}
             public_arms[arm]['generations'] = []

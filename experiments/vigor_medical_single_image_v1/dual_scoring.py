@@ -9,8 +9,8 @@ import uuid
 from .dual_execution import ARMS
 
 
-def prepare_packets(rows):
-    expected = {f'{arm}_{i}' for arm in ARMS for i in range(2)}
+def prepare_packets(rows, arms=ARMS):
+    expected = {f'{arm}_{i}' for arm in arms for i in range(2)}
     if len(rows) != 4 or {x['alias'] for x in rows} != expected:
         raise ValueError('Need exactly the four fixed final endpoints')
     records, mapping, keys, missing = [], {}, {}, []
@@ -33,6 +33,9 @@ def score_once(run_root, scorer_source, cli, closed_receipt):
     """Local CPU scorer stage only, explicitly invoked after GPU restoration receipt."""
     root = Path(run_root)
     execution = json.loads((root / 'private' / 'EXECUTION_BINDING.json').read_text())
+    arms = execution['config']['arms']
+    if arms not in [list(ARMS), ['TANGENT2', 'SOC2']]:
+        raise ValueError('Unrecognized frozen arms')
     guard = execution['manifest']['guard']
     if (closed_receipt.get('verified_exit') is not True or closed_receipt.get('gpu_absent') is not True
             or closed_receipt.get('pid') != guard['target_pid'] or closed_receipt.get('birth') != guard['target_birth']):
@@ -49,8 +52,8 @@ def score_once(run_root, scorer_source, cli, closed_receipt):
     with path.open('x') as f:
         json.dump({'attempts': 1, 'maximum_unique_payloads': 4}, f)
         f.flush(); os.fsync(f.fileno())
-    rows = [json.loads((root / 'private' / f'{arm}_{i}_GENERATION.json').read_text()) for arm in ARMS for i in range(2)]
-    records, mapping, missing = prepare_packets(rows)
+    rows = [json.loads((root / 'private' / f'{arm}_{i}_GENERATION.json').read_text()) for arm in arms for i in range(2)]
+    records, mapping, missing = prepare_packets(rows, arms)
     packet = root / 'private' / 'SCORE_PACKETS.json'
     with packet.open('x') as f:
         json.dump({'records': records}, f)
@@ -88,13 +91,13 @@ def score_once(run_root, scorer_source, cli, closed_receipt):
             if alias in scores:
                 raise ValueError('Duplicate semantic decision')
             scores[alias] = decision['is_correct']
-    arms = {}
-    for arm in ARMS:
+    arm_results = {}
+    for arm in arms:
         grades = [scores.get(f'{arm}_{i}') for i in range(2)]
         numeric = terminal['arms'][arm]['numeric_pair_pass']
         pair = False if not numeric or False in grades else None if None in grades else True
-        arms[arm] = {'numeric_pair_pass': numeric, 'semantic_scores': grades, 'H1_pair_pass': pair, 'H2': 'NOT_MEASURED', 'H3': 'NOT_MEASURED'}
-    public = {'status': summary['status'], 'arms': arms, 'unique_payloads': len(records), 'attempts_per_payload': 1, 'retries': 0, 'missing_endpoints': [f'{arm}_{i}' for arm in ARMS for i in range(2) if f'{arm}_{i}' not in scores]}
+        arm_results[arm] = {'numeric_pair_pass': numeric, 'semantic_scores': grades, 'H1_pair_pass': pair, 'H2': 'NOT_MEASURED', 'H3': 'NOT_MEASURED'}
+    public = {'status': summary['status'], 'arms': arm_results, 'unique_payloads': len(records), 'attempts_per_payload': 1, 'retries': 0, 'missing_endpoints': [f'{arm}_{i}' for arm in arms for i in range(2) if f'{arm}_{i}' not in scores]}
     with (root / 'public' / 'SCORES.json').open('x') as f:
         json.dump(public, f, indent=2)
     return public
