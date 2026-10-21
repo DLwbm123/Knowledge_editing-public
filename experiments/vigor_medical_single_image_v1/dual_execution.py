@@ -121,6 +121,10 @@ def validate_manifest(manifest, config, record):
     return binding
 
 
+class GenerationBudgetExhausted(TimeoutError):
+    pass
+
+
 class ExecutionBudget(Budget):
     def __init__(self, config, start_epoch):
         super().__init__(config)
@@ -133,7 +137,7 @@ class ExecutionBudget(Budget):
 
     def before_forward(self, model, args):
         if self.generating and self.request_forwards >= self.config['per_generation_forward_max']:
-            raise TimeoutError('Generation request forward cap')
+            raise GenerationBudgetExhausted('Generation request forward cap')
         super().before_forward(model, args)
         if self.generating:
             self.request_forwards += 1

@@ -49,7 +49,7 @@ def retract(y,u,v,rank,fixed):
     return ql@l[:,:rank],s[:rank],qr@r[:rank].T
 
 
-def run(runtime,layer,record,pair,factor,config,budget,root,*,replay_plan=None):
+def run(runtime,layer,record,pair,factor,config,budget,root,*,replay_plan=None,endpoint_consumer=None):
     validate(runtime.model,layer)
     model=runtime.model
     base=layer.weight.detach().clone()
@@ -166,7 +166,9 @@ def run(runtime,layer,record,pair,factor,config,budget,root,*,replay_plan=None):
             result['arms'][arm]=dict(accepted=accepted,stop=stop,edit_forwards=arm_f,backward_API=budget.backwards-start_b,trace=trace,stage4=milestone[1] if milestone else None,final=current,generations=[])
             event(dict(status='ARM_COMPLETE',arm=arm,stop=stop,accepted=accepted))
         # All optimization is sealed before the first complete generation.
-        for arm in arms:
+        if endpoint_consumer is not None:
+            endpoint_consumer(runtime,layer,states,result,weight,config,budget,root)
+        for arm in (arms if endpoint_consumer is None else []):
             for i,item in enumerate(states[arm]):
                 if replay_plan is not None and i==0:
                     continue  # The failed milestone request is never replayed.

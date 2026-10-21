@@ -13,14 +13,14 @@ from .editor import paired_batches
 from .real_smoke import GPU, MODULE, validate_binding
 
 
-def main():
+def main(config_name='vigor_rankReachability_v1_20261021', endpoint_consumer=None):
     root = Path(os.environ['RUN_PARENT'])
     manifest = json.loads((root / 'private/binding.json').read_text())
     validate_binding(manifest)
     kv = json.loads(Path(os.environ['RUN_KV_RECEIPT']).read_text())
     if kv['status'] != 'PASS' or kv['source_binding'] != manifest['source']['binding_id']:
         raise PermissionError('Actual same-source smoke PASS required')
-    config = json.loads((Path(__file__).resolve().parents[2] / 'reports/vigor_rankReachability_v1_20261021/FREEZE.json').read_text())
+    config = json.loads((Path(__file__).resolve().parents[2] / 'reports' / config_name / 'FREEZE.json').read_text())
     config['source_binding'] = manifest['source']['binding_id']
     continuation_file=root/'private/CONTINUATION.json'
     continuation=json.loads(continuation_file.read_text()) if continuation_file.exists() else None
@@ -73,7 +73,7 @@ def main():
             budget.requests=continuation['generation_requests']
         counter=runtime.model.register_forward_pre_hook(budget.before_forward)
         try:
-            run(runtime,runtime.get_module(MODULE),record,paired_batches(runtime,record),factor,config,budget,root,replay_plan=None if continuation is None else continuation['accepted_path'])
+            run(runtime,runtime.get_module(MODULE),record,paired_batches(runtime,record),factor,config,budget,root,replay_plan=None if continuation is None else continuation['accepted_path'],endpoint_consumer=endpoint_consumer)
         finally:
             counter.remove()
         peak = torch.cuda.max_memory_allocated()
