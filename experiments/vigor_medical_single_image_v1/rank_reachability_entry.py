@@ -22,7 +22,9 @@ def main():
         raise PermissionError('Actual same-source smoke PASS required')
     config = json.loads((Path(__file__).resolve().parents[2] / 'reports/vigor_rankReachability_v1_20261021/FREEZE.json').read_text())
     config['source_binding'] = manifest['source']['binding_id']
-    start = time.time()
+    continuation_file=root/'private/CONTINUATION.json'
+    continuation=json.loads(continuation_file.read_text()) if continuation_file.exists() else None
+    start = time.time() if continuation is None else continuation['start_epoch']
     with (root / 'private/RUN_RESERVED.json').open('x') as f:
         json.dump({'start_epoch': start}, f)
     guard = spawn_guard(os.environ['RUN_GUARD_DIR'], start, config)
@@ -64,9 +66,14 @@ def main():
             raise PermissionError('Generation configuration mismatch')
         (root/'private/EXECUTION_BINDING.json').write_text(json.dumps(dict(config=config,manifest=manifest)))
         budget=ReachBudget(config,start)
+        if continuation is not None:
+            budget.forwards=continuation['forwards']
+            budget.backwards=continuation['backward_API']
+            budget.gradient_paths=continuation['model_gradient_paths']
+            budget.requests=continuation['generation_requests']
         counter=runtime.model.register_forward_pre_hook(budget.before_forward)
         try:
-            run(runtime,runtime.get_module(MODULE),record,paired_batches(runtime,record),factor,config,budget,root)
+            run(runtime,runtime.get_module(MODULE),record,paired_batches(runtime,record),factor,config,budget,root,replay_plan=None if continuation is None else continuation['accepted_path'])
         finally:
             counter.remove()
         peak = torch.cuda.max_memory_allocated()

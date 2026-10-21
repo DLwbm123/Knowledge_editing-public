@@ -1,3 +1,7 @@
+## 最新rankReachability：源终态FIXED错、ADAPT对，尚无保留结论
+
+reports/vigor_rankReachability_v1_20261021：同rank4种子/原CE原门、1600编辑F每臂。FIXED14接受792F搜索停滞未证收敛；ADAPT27接受1600F预算未收敛，终态源一次盲评正确。ADAPT第4步生成128F到限NA，首进程失败保留；同原时钟预算只重建27接受路径（数值全复现）补原未调用终态，不重试失败。累计2989F1252B/665.429698秒，三新盲分/终态齐全、恢复退出；一次恢复入口0模型失败也保留。不能证明固定空间表达无解，也不能NLL/null门代替真实保留。完整公开后独立冻结同ADAPT终点原六无关题保留，只重建不新增训练，旧源评分不重判。唯一pure-w持续，无subagent。
+
 ## 最新L6-N终态：固定layer6未改善语义
 
 reports/vigor_layer6N3_v1_20261020/completion：语义0/3、损伤1/18 E01-L006，旧N1/3同损伤；21评分全、2新一次+19精确缓存，工具0隔离PASS。接受10/64/19步、编辑63/353/97，共513forward/293backward/4secant；GPU118.212220秒/1394forward，全部layer6/基座恢复、layer0未动，进程退出/992离线复核PASS。共享gate/correction显式module_name，旧默认layer0 CPU精确兼容，原32层F0的layer6绑定复用不重校准。本固定位置对照结束，不加步/扫层/重启旧模型评分。95预测拒绝中5个仅null预测失败、实际未测NA，不能当安全更新；完整公开后才独立冻结预测预筛对照，实际null/trust/source收益/rho和secant保持，旧候选NA不回填。唯一pure-w持续、无subagent，不复活旧146。

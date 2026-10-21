@@ -49,7 +49,7 @@ def retract(y,u,v,rank,fixed):
     return ql@l[:,:rank],s[:rank],qr@r[:rank].T
 
 
-def run(runtime,layer,record,pair,factor,config,budget,root):
+def run(runtime,layer,record,pair,factor,config,budget,root,*,replay_plan=None):
     validate(runtime.model,layer)
     model=runtime.model
     base=layer.weight.detach().clone()
@@ -104,12 +104,14 @@ def run(runtime,layer,record,pair,factor,config,budget,root):
         else:raise RuntimeError('No admissible common rank-four seed')
         result.update(baseline=baseline,seed=initial,seed_trial=trial,residual_ratio=ratio)
         states={}
-        for arm in config['arms']:
+        arms=config['arms'] if replay_plan is None else ['ADAPT']
+        for arm in arms:
             fixed=arm=='FIXED';state=seed;current=initial;accepted=0;trace=[];milestone=None
-            budget.arm_start=budget.forwards;start_b=budget.backwards
+            phase_start=budget.forwards
+            budget.arm_start=phase_start if replay_plan is None else None;start_b=budget.backwards
             stop='STEP_SAFETY_NOT_CONVERGED'
             try:
-                for step in range(config['steps_safety_max']):
+                for step in range(config['steps_safety_max'] if replay_plan is None else len(replay_plan)):
                     if current['native_nll'][0]<=config['source_target']:
                         stop='SOURCE_TARGET_REACHED';break
                     gs,gn=white_gradients(state)
@@ -122,7 +124,8 @@ def run(runtime,layer,record,pair,factor,config,budget,root):
                     d=d/max(float(d.norm()),1e-30)
                     del gs,gn,ps,pn
                     ok=False
-                    for trial in range(config['backtracks']):
+                    trials=range(config['backtracks']) if replay_plan is None else [replay_plan[step]['trial']]
+                    for trial in trials:
                         candidate=retract(dense(state)+config['lr']*.5**trial*d,pu,pv,config['rank'],fixed)
                         proposed=evaluate(candidate)
                         for repair in range(config['repair_steps']):
@@ -140,13 +143,17 @@ def run(runtime,layer,record,pair,factor,config,budget,root):
                             proposed=evaluate(candidate)
                         ok=proposed['protection_feasible'] and proposed['native_nll'][0]<current['native_nll'][0]
                         event(dict(status='ACCEPT' if ok else 'REJECT',arm=arm,step=step+1,trial=trial,projected_gradient_ratio=ratio,metrics=proposed))
+                        if replay_plan is not None:
+                            expected=replay_plan[step]['metrics']
+                            if not ok or any(abs(x-y)>1e-5 for x,y in zip(proposed['native_nll'],expected['native_nll'])) or abs(proposed['fisher_cost']-expected['fisher_cost'])>1e-6*max(expected['fisher_cost'],1e-30):
+                                raise RuntimeError('Accepted path reconstruction mismatch')
                         if ok:break
                     del d
                     if not ok:
                         stop='SEARCH_STALLED';break
                     gain=(current['native_nll'][0]-proposed['native_nll'][0])/max(current['native_nll'][0],1e-30)
                     state,current=candidate,proposed;accepted+=1
-                    trace.append(dict(accepted=accepted,source_relative_gain=gain,projected_gradient_ratio=ratio,arm_forwards=budget.forwards-budget.arm_start))
+                    trace.append(dict(accepted=accepted,source_relative_gain=gain,projected_gradient_ratio=ratio,arm_forwards=budget.forwards-phase_start))
                     if accepted==4:milestone=(state,current)
                     if ratio<=config['stationarity_ratio'] and len(trace)>=config['stationarity_window'] and all(x['source_relative_gain']<=config['relative_progress'] for x in trace[-config['stationarity_window']:]):
                         stop='LOCAL_STATIONARITY_PROXY';break
@@ -154,13 +161,15 @@ def run(runtime,layer,record,pair,factor,config,budget,root):
             except ArmBudgetExhausted:
                 stop='BUDGET_NOT_CONVERGED'
             finally:
-                arm_f=budget.forwards-budget.arm_start;budget.arm_start=None
+                arm_f=budget.forwards-phase_start;budget.arm_start=None
             states[arm]=(milestone,(state,current))
             result['arms'][arm]=dict(accepted=accepted,stop=stop,edit_forwards=arm_f,backward_API=budget.backwards-start_b,trace=trace,stage4=milestone[1] if milestone else None,final=current,generations=[])
             event(dict(status='ARM_COMPLETE',arm=arm,stop=stop,accepted=accepted))
         # All optimization is sealed before the first complete generation.
-        for arm in config['arms']:
+        for arm in arms:
             for i,item in enumerate(states[arm]):
+                if replay_plan is not None and i==0:
+                    continue  # The failed milestone request is never replayed.
                 alias=f'{arm}_{i}'
                 if item is None:
                     packet=dict(alias=alias,status='STAGE_NOT_REACHED')

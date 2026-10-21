@@ -46,7 +46,8 @@ def score_once(run_root, scorer_source, cli, closed_receipt):
         raise OSError('Scoring storage reserve unavailable')
     terminal = json.loads((root / 'private' / 'NUMERIC_TERMINAL.json').read_text())
     events = [json.loads(line) for line in (root / 'public' / 'EVENTS.jsonl').read_text().splitlines()]
-    if terminal['status'] != 'COMPLETE' or events[-1]['status'] != 'RESTORED':
+    terminal_ready = terminal['status'] == 'COMPLETE' or (arms == ['FIXED', 'ADAPT'] and terminal['status'] == 'PARTIAL_GENERATION_FAILURE' and terminal.get('restored') is True)
+    if not terminal_ready or events[-1]['status'] != 'RESTORED':
         raise PermissionError('Need terminal GPU restoration before scoring')
     path = root / 'private' / 'SCORE_RESERVED.json'
     with path.open('x') as f:
