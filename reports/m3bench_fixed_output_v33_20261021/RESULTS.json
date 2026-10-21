@@ -1,0 +1,109 @@
+{
+  "status": "COMPLETE_MANUAL_FIXED_OUTPUT_AUDIT",
+  "raw_bindings": 468,
+  "within_round_packet_rows": 336,
+  "cross_round_unique_case_question_reference_answer": 217,
+  "duplicate_packet_rows_removed": 119,
+  "case_image_clusters": 12,
+  "independent_patient_count": "NOT_ESTABLISHED",
+  "manual_review_count": 217,
+  "correct_controls": 116,
+  "all": {
+    "unique_nonC": 101,
+    "case_clusters": 12,
+    "primary": {
+      "FACT_VALUE": 58,
+      "OMISSION": 24,
+      "RELATION_MISMATCH": 6,
+      "UNSUPPORTED_EXTENSION": 8,
+      "GENERATION_FAILURE": 4,
+      "INTERNAL_CONTRADICTION": 1
+    },
+    "tag_case_coverage": {
+      "FACT_VALUE": 12,
+      "RELATION_MISMATCH": 4,
+      "OMISSION": 9,
+      "UNSUPPORTED_EXTENSION": 8,
+      "INTERNAL_CONTRADICTION": 1,
+      "GENERATION_FAILURE": 2
+    },
+    "reference_extension_unresolved": 27
+  },
+  "method": {
+    "unique_nonC": 25,
+    "case_clusters": 9,
+    "primary": {
+      "OMISSION": 6,
+      "RELATION_MISMATCH": 5,
+      "FACT_VALUE": 6,
+      "GENERATION_FAILURE": 4,
+      "UNSUPPORTED_EXTENSION": 3,
+      "INTERNAL_CONTRADICTION": 1
+    },
+    "tag_case_coverage": {
+      "FACT_VALUE": 6,
+      "RELATION_MISMATCH": 4,
+      "OMISSION": 4,
+      "UNSUPPORTED_EXTENSION": 4,
+      "INTERNAL_CONTRADICTION": 1,
+      "GENERATION_FAILURE": 2
+    },
+    "reference_extension_unresolved": 8
+  },
+  "base": {
+    "unique_nonC": 78,
+    "case_clusters": 12,
+    "primary": {
+      "FACT_VALUE": 53,
+      "OMISSION": 18,
+      "UNSUPPORTED_EXTENSION": 5,
+      "RELATION_MISMATCH": 2
+    },
+    "tag_case_coverage": {
+      "FACT_VALUE": 12,
+      "RELATION_MISMATCH": 1,
+      "OMISSION": 8,
+      "UNSUPPORTED_EXTENSION": 7,
+      "INTERNAL_CONTRADICTION": 0,
+      "GENERATION_FAILURE": 0
+    },
+    "reference_extension_unresolved": 20
+  },
+  "new_panel_method": {
+    "unique_nonC": 6,
+    "case_clusters": 3,
+    "primary": {
+      "RELATION_MISMATCH": 1,
+      "INTERNAL_CONTRADICTION": 1,
+      "FACT_VALUE": 1,
+      "OMISSION": 3
+    },
+    "tag_case_coverage": {
+      "FACT_VALUE": 2,
+      "RELATION_MISMATCH": 1,
+      "OMISSION": 2,
+      "UNSUPPORTED_EXTENSION": 2,
+      "INTERNAL_CONTRADICTION": 1,
+      "GENERATION_FAILURE": 0
+    },
+    "reference_extension_unresolved": 2
+  },
+  "model_calls": 0,
+  "training_runs": 0,
+  "labels_changed": 0,
+  "dedup_key": [
+    "source_group",
+    "image_basename",
+    "question_exact",
+    "reference_exact",
+    "answer_exact"
+  ],
+  "limitations": [
+    "Source/image clusters are not verified independent patients.",
+    "Primary and secondary taxonomy is descriptive, not a causal diagnosis.",
+    "Reference-only unsupported expansions retain unresolved truth status.",
+    "Base and method subsets can share identical answers and do not sum to all.",
+    "Three originally correct answers have extra specificity flagged for rubric consistency; no retrospective relabeling."
+  ],
+  "correct_extension_consistency_flags": 3
+}
