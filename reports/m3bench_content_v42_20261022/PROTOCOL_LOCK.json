@@ -1,0 +1,13 @@
+{
+  "version": "V42",
+  "time": 1792614430.933387,
+  "intervention": "Exclude exactly one final supervised EOS token from source CE mean; retain original labels and residual teacher masks",
+  "combination": "V37 logsumexp content source CE temperature 1",
+  "updates": 640,
+  "backwards_expected": 2570,
+  "backward_cap": 2600,
+  "new_outputs": 124,
+  "total_bindings": 310,
+  "gate": "Both-context heldout C > ADAPT12; zero new old-C loss vs JOINT/COVER/ADAPT per context source/heldout/clinical",
+  "source_validation": "One final EOS and at least one non-EOS token in each source; otherwise stop, no fallback"
+}
