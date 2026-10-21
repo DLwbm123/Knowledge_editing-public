@@ -57,8 +57,8 @@ def joint_correction(source_gradient, null_gradient, source_residual, null_resid
     return finite(delta.reshape_as(null_gradient).float())
 
 
-def solve(runtime, layer, pair, factor, config, admission, progress, *, budget, basis_builder=None):
-    if config['version'] not in ('PUREW_BRC_PAIR_V1', 'PUREW_CONTRAST_BASIS_V1') or not all(admission.values()):
+def solve(runtime, layer, pair, factor, config, admission, progress, *, budget, basis_builder=None, source_measure=None):
+    if config['version'] not in ('PUREW_BRC_PAIR_V1', 'PUREW_CONTRAST_BASIS_V1', 'PUREW_TOKEN_RISK_V1') or not all(admission.values()):
         raise PermissionError('Frozen feasible-pair admission required')
     validate(runtime.model, layer)
     model = runtime.model
@@ -80,13 +80,24 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget, 
         del gradient
         def evaluate(z):
             with endpoint_native(model,layer,base,u,v,z,config), torch.no_grad():
-                losses = [float(nll(model,batch)) for batch in pair]
+                if source_measure is None:
+                    losses = [float(nll(model,batch)) for batch in pair]
+                    objective = losses[0]
+                else:
+                    source, objective = source_measure(model,pair[0],arm,config)
+                    losses = [float(source),float(nll(model,pair[1]))]
+                    objective = float(objective)
                 delta = layer.weight.float()-base.float()
                 cost = fisher_cost(delta,a,b)
                 changed = bool(torch.count_nonzero(delta))
-            return dict(native_nll=losses,fisher_cost=cost,changed=changed,
+            result = dict(native_nll=losses,fisher_cost=cost,changed=changed,
                 protection_feasible=abs(losses[1]-baseline[1])<=config['null_abs_budget'] and cost<=config['trust_budget'],
                 numeric_feasible=losses[0]<=config['source_NLL_target'] and abs(losses[1]-baseline[1])<=config['null_abs_budget'] and cost<=config['trust_budget'])
+            if source_measure is not None:
+                result['source_objective']=objective
+            return result
+        def objective_values(records):
+            return [[x.get('source_objective',x['native_nll'][0]),x['native_nll'][1]] for x in records]
         for arm_index,arm in enumerate(config['arms']):
             if bases is not None:
                 u,v=bases[arm]
@@ -117,23 +128,23 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget, 
                 directions=[]
                 for i,z in enumerate(zs):
                     with coefficient_forward(model,layer,u,z*math.sqrt(2*config['trust_budget']),v):
-                        source=nll(model,pair[0])
+                        source=nll(model,pair[0]) if source_measure is None else source_measure(model,pair[0],arm,config)[1]
                         gs=finite(budget.grad(source,(z,),1)[0].detach())
                     # Separate coefficient contexts avoid a shared freed graph.
                     with coefficient_forward(model,layer,u,z*math.sqrt(2*config['trust_budget']),v):
                         null=nll(model,pair[1])
                         gn=finite(budget.grad(null,(z,),1)[0].detach())
                     directions.append(tangent_direction(gs/max(baseline[0],config['source_normalizer_floor'])+direct[i],gn))
-                old=merit([x['native_nll'] for x in values],zs,baseline,arm,config)
+                old=merit(objective_values(values),zs,baseline,arm,config)
                 accepted=False
                 for trial in range(config['step_backtracks']):
                     candidates=[(z+config['lr']*(.5**trial)*d).detach() for z,d in zip(zs,directions)]
                     proposed=[evaluate(z) for z in candidates]
-                    if arm in ('SOC2', 'BRC2', 'SOURCE4', 'CONTRAST4'):
+                    if arm in ('SOC2', 'BRC2', 'SOURCE4', 'CONTRAST4', 'MEAN4', 'RISK4'):
                         for i in range(2):
                             for correction in range(config['correction_steps']):
                                 residual = proposed[i]['native_nll'][1]-baseline[1]
-                                source_residual=max(0., proposed[i]['native_nll'][0]-values[i]['native_nll'][0]) if arm in ('BRC2','SOURCE4','CONTRAST4') else 0.
+                                source_residual=max(0., proposed[i]['native_nll'][0]-values[i]['native_nll'][0]) if arm in ('BRC2','SOURCE4','CONTRAST4','MEAN4','RISK4') else 0.
                                 if abs(residual)<=config['null_abs_budget'] and source_residual==0:
                                     break
                                 point=candidates[i].detach().requires_grad_(True)
@@ -141,13 +152,13 @@ def solve(runtime, layer, pair, factor, config, admission, progress, *, budget, 
                                     gs=finite(budget.grad(nll(model,pair[0]),(point,),1)[0].detach())
                                 with coefficient_forward(model,layer,u,point*math.sqrt(2*config['trust_budget']),v):
                                     gn=finite(budget.grad(nll(model,pair[1]),(point,),1)[0].detach())
-                                delta=joint_correction(gs,gn,source_residual,residual,config['correction_radius']) if arm in ('BRC2','SOURCE4','CONTRAST4') else normal_correction(gs,gn,residual,config['correction_radius'])
+                                delta=joint_correction(gs,gn,source_residual,residual,config['correction_radius']) if arm in ('BRC2','SOURCE4','CONTRAST4','MEAN4','RISK4') else normal_correction(gs,gn,residual,config['correction_radius'])
                                 if delta is None:
                                     break
                                 candidates[i]=(point.detach()+delta).detach()
                                 proposed[i]=evaluate(candidates[i])
                                 progress(dict(arm=arm,step=step+1,endpoint=i,status='NORMAL_CORRECTION',pre_update_losses=[proposed[i]['native_nll']],forwards=budget.forwards,backward_API=budget.backwards,model_gradient_paths=budget.gradient_paths))
-                    new=merit([x['native_nll'] for x in proposed],candidates,baseline,arm,config)
+                    new=merit(objective_values(proposed),candidates,baseline,arm,config)
                     accepted=all(x['protection_feasible'] for x in proposed) and all(x['native_nll'][0]<=oldx['native_nll'][0] for x,oldx in zip(proposed,values)) and new<old
                     progress(dict(arm=arm,step=step+1,endpoint=trial,status='STEP_ACCEPT' if accepted else 'STEP_REJECT',pre_update_losses=[x['native_nll'] for x in proposed],objective=new,forwards=budget.forwards,backward_API=budget.backwards,model_gradient_paths=budget.gradient_paths))
                     if accepted:

@@ -34,7 +34,7 @@ def score_once(run_root, scorer_source, cli, closed_receipt):
     root = Path(run_root)
     execution = json.loads((root / 'private' / 'EXECUTION_BINDING.json').read_text())
     arms = execution['config']['arms']
-    if arms not in [list(ARMS), ['TANGENT2', 'SOC2'], ['SOC2', 'BRC2'], ['SOURCE4', 'CONTRAST4']]:
+    if arms not in [list(ARMS), ['TANGENT2', 'SOC2'], ['SOC2', 'BRC2'], ['SOURCE4', 'CONTRAST4'], ['MEAN4', 'RISK4']]:
         raise ValueError('Unrecognized frozen arms')
     guard = execution['manifest']['guard']
     if (closed_receipt.get('verified_exit') is not True or closed_receipt.get('gpu_absent') is not True
