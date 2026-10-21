@@ -99,6 +99,28 @@ def pair_objective(losses, zs, baseline, arm, config):
     return finite(total)
 
 
+def separated_gradients(losses, zs, baseline, arm, config, budget):
+    # Apply large penalty adjoints in FP32, never across the FP16 model graph.
+    detached = [[x.detach().requires_grad_(True) for x in row] for row in losses]
+    objective = pair_objective(detached, zs, baseline, arm, config)
+    flat = [x for row in detached for x in row]
+    derivatives = torch.autograd.grad(objective, flat + zs, allow_unused=True)
+    gradients = []
+    for i, (row, z) in enumerate(zip(losses, zs)):
+        direct = derivatives[len(flat) + i]
+        total = torch.zeros_like(z) if direct is None else finite(direct).detach()
+        for j, loss in enumerate(row):
+            budget.check_time()
+            if budget.backwards >= budget.config['backward_API_max'] or budget.gradient_paths >= budget.config['model_gradient_paths_max']:
+                raise TimeoutError('Separated gradient budget exhausted')
+            budget.backwards += 1
+            budget.gradient_paths += 1
+            gradient = torch.autograd.grad(loss, z, retain_graph=(j == 0))[0]
+            total = total + finite(gradient).float() * finite(derivatives[2*i+j]).detach().float()
+        gradients.append(finite(total))
+    return objective.detach(), gradients
+
+
 def fisher_cost(delta, a, b):
     return float((delta.double().square() * b.double()[:, None] * a.double()[None, :]).sum()) / 2
 
@@ -160,8 +182,7 @@ def solve_pair_comparison(runtime, layer, pair, factor, config, admission, progr
                 for z in zs:
                     with coefficient_forward(runtime.model, layer, u, z * math.sqrt(2 * config['trust_budget']), v):
                         losses.append([nll(runtime.model, batch) for batch in pair])
-                objective = pair_objective(losses, zs, baseline, arm, config)
-                gradients = budget.grad(objective, zs, 4)
+                objective, gradients = separated_gradients(losses, zs, baseline, arm, config, budget)
                 trace.append({'step': step, 'pre_update_losses': [[float(x.detach()) for x in values] for values in losses], 'objective': float(objective.detach())})
                 for optimizer, z, gradient in zip(optimizers, zs, gradients):
                     optimizer.zero_grad(set_to_none=True)

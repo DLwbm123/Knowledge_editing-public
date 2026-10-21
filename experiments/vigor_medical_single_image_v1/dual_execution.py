@@ -81,7 +81,7 @@ class Journal:
 
 
 def validate_manifest(manifest, config, record):
-    frozen_path = Path(__file__).resolve().parents[2] / 'reports/vigor_dualSolver_v1_20261021/FREEZE.json'
+    frozen_path = Path(__file__).resolve().parents[2] / 'reports/vigor_dualStable_v1_20261021/FREEZE.json'
     frozen = json.loads(frozen_path.read_text())
     if {k: v for k, v in config.items() if k != 'source_binding'} != {k: v for k, v in frozen.items() if k != 'source_binding'}:
         raise PermissionError('Frozen method parameters changed')

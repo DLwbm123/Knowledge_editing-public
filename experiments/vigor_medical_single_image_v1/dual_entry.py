@@ -20,7 +20,7 @@ def main():
     kv = json.loads(Path(os.environ['RUN_KV_RECEIPT']).read_text())
     if kv['status'] != 'PASS' or kv['source_binding'] != manifest['source']['binding_id']:
         raise PermissionError('Actual same-source smoke PASS required')
-    config = json.loads((Path(__file__).resolve().parents[2] / 'reports/vigor_dualSolver_v1_20261021/FREEZE.json').read_text())
+    config = json.loads((Path(__file__).resolve().parents[2] / 'reports/vigor_dualStable_v1_20261021/FREEZE.json').read_text())
     config['source_binding'] = manifest['source']['binding_id']
     start = time.time()
     with (root / 'private/DUAL_RESERVED.json').open('x') as f:
