@@ -1,0 +1,22 @@
+{
+  "status": "CLOSED_NO_LAUNCH",
+  "epoch": 1792555407.070571,
+  "original_elapsed_seconds": 598.3014149665833,
+  "SSH_readonly_calls": 5,
+  "remote_writes_bytes": 0,
+  "GPU": 0,
+  "model": 0,
+  "Judge": 0,
+  "toy": 0,
+  "optimization": 0,
+  "generation": 0,
+  "checkpoint": 0,
+  "retries": 0,
+  "first_failure": "local display-only introspection attempted dict.keys on a list; no remote/model call, corrected by reading known schema",
+  "followup_reads": "initial two stages plus three separately frozen exact joins/loader followups, all within original 1h; no inventory census repetition",
+  "known_read_bytes_stages_2_to_5": 17909652,
+  "byte_budget_note": "per-stage bounds; stage3 counts compressed and uncompressed in-memory bytes, no remote copies; original first stage document bytes not separately metered, local buffers below bound",
+  "local_private_bytes": 846701,
+  "public_bytes_before_closure": 15813,
+  "scope_deviation": "The initial two-call review was extended by three exact followups, each frozen before reading. Aggregate metadata read accounting for stages2-5 alone is 17,909,652 bytes, above initial16MiB if interpreted as aggregate read ceiling. Do not claim whole-review16MiB input compliance; local storage remained below16MiB. No further reads or launch."
+}
