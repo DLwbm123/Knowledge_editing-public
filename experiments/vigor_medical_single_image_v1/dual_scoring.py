@@ -34,7 +34,7 @@ def score_once(run_root, scorer_source, cli, closed_receipt):
     root = Path(run_root)
     execution = json.loads((root / 'private' / 'EXECUTION_BINDING.json').read_text())
     arms = execution['config']['arms']
-    if arms not in [list(ARMS), ['TANGENT2', 'SOC2'], ['SOC2', 'BRC2'], ['SOURCE4', 'CONTRAST4'], ['MEAN4', 'RISK4']]:
+    if arms not in [list(ARMS), ['TANGENT2', 'SOC2'], ['SOC2', 'BRC2'], ['SOURCE4', 'CONTRAST4'], ['MEAN4', 'RISK4'], ['FIXED', 'ADAPT']]:
         raise ValueError('Unrecognized frozen arms')
     guard = execution['manifest']['guard']
     if (closed_receipt.get('verified_exit') is not True or closed_receipt.get('gpu_absent') is not True
@@ -94,6 +94,9 @@ def score_once(run_root, scorer_source, cli, closed_receipt):
     arm_results = {}
     for arm in arms:
         grades = [scores.get(f'{arm}_{i}') for i in range(2)]
+        if arms == ['FIXED', 'ADAPT']:
+            arm_results[arm] = {'stage4_correct': grades[0], 'final_correct': grades[1], 'protection_feasible': terminal['arms'][arm]['final']['protection_feasible'], 'H1': 'NOT_EVALUATED_SINGLE_TRAJECTORY'}
+            continue
         numeric = terminal['arms'][arm]['numeric_pair_pass']
         pair = False if not numeric or False in grades else None if None in grades else True
         arm_results[arm] = {'numeric_pair_pass': numeric, 'semantic_scores': grades, 'H1_pair_pass': pair, 'H2': 'NOT_MEASURED', 'H3': 'NOT_MEASURED'}
