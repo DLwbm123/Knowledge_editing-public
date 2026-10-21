@@ -1,0 +1,26 @@
+{
+  "status": "FROZEN_BEFORE_NEW_BASE",
+  "cases": 6,
+  "arms": [
+    "JOINT",
+    "JOINT_EXPR"
+  ],
+  "parameters": 7168,
+  "steps": 160,
+  "seed": "unchanged historical template",
+  "expr_alternate_even_steps": true,
+  "source_losses_per_step": 2,
+  "total_updates": 1920,
+  "total_backward_limit": 4000,
+  "total_forward_limit": 160000,
+  "total_generation_limit": 108,
+  "partitions": 2,
+  "per_worker_seconds": 3600,
+  "total_gpu_seconds_limit": 7200,
+  "wall_seconds_limit": 86400,
+  "source_evaluation": 12,
+  "heldout_evaluation": 24,
+  "primary_eligibility": "Source BASE UPDATE nonC and PRESERVE C, derived after blinded source verdicts; train/evaluate all six regardless.",
+  "promotion": "SOURCE and HELDOUT each zero JOINT-C to EXPR-nonC losses, no additional BASE-C PRESERVE damage; positive HELDOUT gain required, report all and qualified. No significance or clinical claim.",
+  "prohibited": "No old six, no score-driven selection, no retry/retune/extra seed; all frozen arms regardless Base outputs."
+}
