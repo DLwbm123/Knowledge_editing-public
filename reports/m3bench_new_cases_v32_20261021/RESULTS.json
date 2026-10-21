@@ -1,0 +1,533 @@
+{
+  "status": "COMPLETE_FIXED_REFERENCE_REVIEW",
+  "eligible_pairs": 2,
+  "parameters_per_edit": 7168,
+  "fp32_parameter_bytes": 28672,
+  "independent_confirmation": false,
+  "clinical_adjudication": false,
+  "arms": {
+    "BASE": {
+      "UPDATE": {
+        "n": 18,
+        "labels": {
+          "INCORRECT": 14,
+          "UNCERTAIN": 2,
+          "CORRECT": 2
+        }
+      },
+      "PRESERVE": {
+        "n": 18,
+        "labels": {
+          "UNCERTAIN": 5,
+          "INCORRECT": 9,
+          "CORRECT": 4
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 0,
+        "eos": 36,
+        "tokens": 1026
+      },
+      "strata": {
+        "SOURCE_all": {
+          "update_correct": 0,
+          "update_n": 6,
+          "preserve_correct": 2,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 0,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 6,
+          "labels": {
+            "INCORRECT": 7,
+            "UNCERTAIN": 3,
+            "CORRECT": 2
+          },
+          "UPDATE_labels": {
+            "INCORRECT": 4,
+            "UNCERTAIN": 2
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 1,
+            "CORRECT": 2,
+            "INCORRECT": 3
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 396
+          }
+        },
+        "SOURCE_source_qualified": {
+          "update_correct": 0,
+          "update_n": 2,
+          "preserve_correct": 2,
+          "preserve_n": 2,
+          "update_base_nonC": 2,
+          "update_repairs": 0,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 2,
+          "labels": {
+            "UNCERTAIN": 1,
+            "CORRECT": 2,
+            "INCORRECT": 1
+          },
+          "UPDATE_labels": {
+            "UNCERTAIN": 1,
+            "INCORRECT": 1
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 4,
+            "tokens": 118
+          }
+        },
+        "HELDOUT_all": {
+          "update_correct": 2,
+          "update_n": 12,
+          "preserve_correct": 2,
+          "preserve_n": 12,
+          "update_base_nonC": 10,
+          "update_repairs": 0,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 12,
+          "labels": {
+            "INCORRECT": 16,
+            "UNCERTAIN": 4,
+            "CORRECT": 4
+          },
+          "UPDATE_labels": {
+            "INCORRECT": 10,
+            "CORRECT": 2
+          },
+          "PRESERVE_labels": {
+            "INCORRECT": 6,
+            "UNCERTAIN": 4,
+            "CORRECT": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 24,
+            "tokens": 630
+          }
+        },
+        "HELDOUT_source_qualified": {
+          "update_correct": 0,
+          "update_n": 4,
+          "preserve_correct": 2,
+          "preserve_n": 4,
+          "update_base_nonC": 4,
+          "update_repairs": 0,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 4,
+          "labels": {
+            "INCORRECT": 6,
+            "CORRECT": 2
+          },
+          "UPDATE_labels": {
+            "INCORRECT": 4
+          },
+          "PRESERVE_labels": {
+            "INCORRECT": 2,
+            "CORRECT": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 8,
+            "tokens": 177
+          }
+        }
+      },
+      "cross_relation_exact_copy": 0
+    },
+    "JOINT": {
+      "UPDATE": {
+        "n": 18,
+        "labels": {
+          "CORRECT": 17,
+          "INCORRECT": 1
+        }
+      },
+      "PRESERVE": {
+        "n": 18,
+        "labels": {
+          "CORRECT": 15,
+          "INCORRECT": 1,
+          "UNCERTAIN": 2
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 0,
+        "eos": 36,
+        "tokens": 479
+      },
+      "strata": {
+        "SOURCE_all": {
+          "update_correct": 6,
+          "update_n": 6,
+          "preserve_correct": 6,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 6,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 6,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 12
+          },
+          "UPDATE_labels": {
+            "CORRECT": 6
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 6
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 117
+          }
+        },
+        "SOURCE_source_qualified": {
+          "update_correct": 2,
+          "update_n": 2,
+          "preserve_correct": 2,
+          "preserve_n": 2,
+          "update_base_nonC": 2,
+          "update_repairs": 2,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 2,
+          "pair_n": 2,
+          "labels": {
+            "CORRECT": 4
+          },
+          "UPDATE_labels": {
+            "CORRECT": 2
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 4,
+            "tokens": 33
+          }
+        },
+        "HELDOUT_all": {
+          "update_correct": 11,
+          "update_n": 12,
+          "preserve_correct": 9,
+          "preserve_n": 12,
+          "update_base_nonC": 10,
+          "update_repairs": 9,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 9,
+          "pair_n": 12,
+          "labels": {
+            "CORRECT": 20,
+            "INCORRECT": 2,
+            "UNCERTAIN": 2
+          },
+          "UPDATE_labels": {
+            "CORRECT": 11,
+            "INCORRECT": 1
+          },
+          "PRESERVE_labels": {
+            "INCORRECT": 1,
+            "CORRECT": 9,
+            "UNCERTAIN": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 24,
+            "tokens": 362
+          }
+        },
+        "HELDOUT_source_qualified": {
+          "update_correct": 4,
+          "update_n": 4,
+          "preserve_correct": 4,
+          "preserve_n": 4,
+          "update_base_nonC": 4,
+          "update_repairs": 4,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 4,
+          "pair_n": 4,
+          "labels": {
+            "CORRECT": 8
+          },
+          "UPDATE_labels": {
+            "CORRECT": 4
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 4
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 8,
+            "tokens": 107
+          }
+        }
+      },
+      "cross_relation_exact_copy": 0
+    },
+    "JOINT_EXPR": {
+      "UPDATE": {
+        "n": 18,
+        "labels": {
+          "CORRECT": 17,
+          "INCORRECT": 1
+        }
+      },
+      "PRESERVE": {
+        "n": 18,
+        "labels": {
+          "CORRECT": 14,
+          "UNCERTAIN": 4
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 0,
+        "eos": 36,
+        "tokens": 474
+      },
+      "strata": {
+        "SOURCE_all": {
+          "update_correct": 6,
+          "update_n": 6,
+          "preserve_correct": 6,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 6,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 6,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 12
+          },
+          "UPDATE_labels": {
+            "CORRECT": 6
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 6
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 117
+          }
+        },
+        "SOURCE_source_qualified": {
+          "update_correct": 2,
+          "update_n": 2,
+          "preserve_correct": 2,
+          "preserve_n": 2,
+          "update_base_nonC": 2,
+          "update_repairs": 2,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 2,
+          "pair_n": 2,
+          "labels": {
+            "CORRECT": 4
+          },
+          "UPDATE_labels": {
+            "CORRECT": 2
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 4,
+            "tokens": 33
+          }
+        },
+        "HELDOUT_all": {
+          "update_correct": 11,
+          "update_n": 12,
+          "preserve_correct": 8,
+          "preserve_n": 12,
+          "update_base_nonC": 10,
+          "update_repairs": 9,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 8,
+          "pair_n": 12,
+          "labels": {
+            "CORRECT": 19,
+            "UNCERTAIN": 4,
+            "INCORRECT": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 11,
+            "INCORRECT": 1
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 4,
+            "CORRECT": 8
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 24,
+            "tokens": 357
+          }
+        },
+        "HELDOUT_source_qualified": {
+          "update_correct": 4,
+          "update_n": 4,
+          "preserve_correct": 4,
+          "preserve_n": 4,
+          "update_base_nonC": 4,
+          "update_repairs": 4,
+          "preserve_base_C": 2,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 4,
+          "pair_n": 4,
+          "labels": {
+            "CORRECT": 8
+          },
+          "UPDATE_labels": {
+            "CORRECT": 4
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 4
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 8,
+            "tokens": 93
+          }
+        }
+      },
+      "cross_relation_exact_copy": 0
+    }
+  },
+  "paired": {
+    "SOURCE_UPDATE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 6
+      }
+    },
+    "SOURCE_UPDATE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 2
+      }
+    },
+    "SOURCE_PRESERVE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 6
+      }
+    },
+    "SOURCE_PRESERVE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 2
+      }
+    },
+    "HELDOUT_UPDATE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 11,
+        "INCORRECT->INCORRECT": 1
+      }
+    },
+    "HELDOUT_UPDATE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 4
+      }
+    },
+    "HELDOUT_PRESERVE_all": {
+      "repairs": 0,
+      "losses": 1,
+      "transitions": {
+        "INCORRECT->UNCERTAIN": 1,
+        "CORRECT->CORRECT": 8,
+        "UNCERTAIN->UNCERTAIN": 2,
+        "CORRECT->UNCERTAIN": 1
+      }
+    },
+    "HELDOUT_PRESERVE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 4
+      }
+    }
+  },
+  "promotion": "FAIL_HELDOUT_LOSS_AND_NO_GAIN",
+  "default_arm": "JOINT",
+  "execution": {
+    "outputs": 108,
+    "blind_unique": 79,
+    "blind_labels": {
+      "CORRECT": 44,
+      "INCORRECT": 24,
+      "UNCERTAIN": 11
+    },
+    "forwards": 5837,
+    "backwards": 3850,
+    "updates": 1920,
+    "generations": 108,
+    "vision_forwards": 100,
+    "gpu_worker_seconds": 1157.2240118980408,
+    "wall_to_model_complete_seconds": 768.7055108547211,
+    "retired_weights": 24,
+    "retired_bytes": 850512,
+    "remaining_weight_copies": 0,
+    "guard_exit": "ALL_REGISTERED_PROCESSES_EXITED",
+    "guard_trigger": null
+  }
+}
