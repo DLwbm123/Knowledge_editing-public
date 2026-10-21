@@ -1,0 +1,36 @@
+{
+  "read_files": [
+    "llava_runtime.py",
+    "run_realmodel_core.py"
+  ],
+  "total_source_bytes": 54175,
+  "SSH_calls": 1,
+  "model_calls": 0,
+  "observed": {
+    "batch_forward_use_cache": false,
+    "generate_accepts_explicit_use_cache": true,
+    "generate_returns_raw_tokens_and_sequence_contract": true,
+    "adapter_import": "m3bench_repro.inference.llava_med.LlavaMedAdapter"
+  },
+  "not_verified": [
+    "actual loaded LLaVA subclass and prepare_inputs_for_generation overrides",
+    "current source-specific canonical preprocessing",
+    "real hardware allocation and KV behavior"
+  ],
+  "no_full_runtime_pass_claim": true,
+  "targeted_followup": {
+    "SSH_calls": 1,
+    "bytes": 181459,
+    "transformers_version": "4.51.3",
+    "files_read": [
+      "adapter inference/llava_med.py",
+      "installed Cache implementation",
+      "installed Mistral implementation",
+      "benchmark README"
+    ],
+    "actual_adapter_forwards_use_cache": true,
+    "adapter_generation_sequence_contract": true,
+    "Mistral_constructs_DynamicCache_when_use_cache_and_no_past": true,
+    "Cache_get_seq_length_available": true
+  }
+}

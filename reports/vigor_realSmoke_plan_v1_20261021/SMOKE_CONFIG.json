@@ -1,0 +1,98 @@
+{
+  "version": "REAL_VLM_COEFFICIENT_KV_SMOKE_V1",
+  "status": "FROZEN_METHOD_SOURCE_BINDING_MISSING_NOT_EXECUTABLE",
+  "model": "LLaVA-Med-v1.5-Mistral-7B",
+  "runtime_commit": "2b3f308f2bcb442cd18e66ac98a83c1528c0692b",
+  "module": "model.layers.6.mlp.down_proj",
+  "shape": [
+    4096,
+    14336
+  ],
+  "native_dtype": "float16",
+  "source_count": 1,
+  "source_binding": null,
+  "dataset_purpose_evidence": null,
+  "optimization_steps": 0,
+  "teacher_fit": 0,
+  "Judge": 0,
+  "matrix_checkpoint": 0,
+  "coefficient_basis": {
+    "purpose": "one diagnostic direction, not editing rank hyperparameter",
+    "construction": "G full source NLL gradient at W0 through existing editable_fp32; j=first argmax column squared norm; u=G[:,j]/norm; v=G.T@u/norm; no SVD/power iteration/scan",
+    "diagnostic_rank": 1,
+    "coefficient_at_gradient_comparison": 0,
+    "nonzero_native_coefficient": "1e-4 * Frobenius_norm(W0)",
+    "stop_if_zero_or_nonfinite": true,
+    "retry_scales": 0
+  },
+  "tolerances": {
+    "W0_source_null_restoration_abs_NLL": 1e-05,
+    "A0_source_NLL_vs_original_FP32_path_abs": 1e-05,
+    "coefficient_gradient_vs_uT_G_v_atol": 1e-06,
+    "coefficient_gradient_vs_uT_G_v_rtol": 0.001,
+    "same_native_cached_vs_uncached_full_tokens": "exact match including terminal state; incomplete is failure",
+    "aligned_logits_max_abs": 0.05,
+    "aligned_logits_relative_RMS": 0.001,
+    "native_weight_restoration": "exact equality",
+    "dtype_flags_modes_hooks_grad_config_restoration": "exact original state",
+    "native_delta_nonzero_required": true
+  },
+  "generation": {
+    "entry": "runtime.generate(record,use_cache=True/False)",
+    "same_native_matrix": true,
+    "order": [
+      true,
+      false
+    ],
+    "do_sample": false,
+    "num_beams": 1,
+    "max_new_tokens": 1024,
+    "per_request_forward_cap": 128,
+    "complete_requests": 2,
+    "other_generation_config": "exact existing frozen runtime config, no prompt changes; store private before launch"
+  },
+  "cache_evidence": {
+    "model_observer": "with_kwargs read-only model pre/post observer, no retained graphs",
+    "required": [
+      "first prefill observed",
+      "subsequent decode nonempty past_key_values and single-token cached input",
+      "uncached path no nonempty past and increasing sequence input",
+      "aligned full token sequence identical"
+    ],
+    "cache_type": "installed transformers DynamicCache/Cache with get_seq_length(); legacy tuple only if actual custom implementation explicitly supports it, otherwise STOP_UNRESOLVED",
+    "natural_no_decode": "CACHE_NOT_EXERCISED stop, no prompt change"
+  },
+  "budgets": {
+    "total_forward_hard": 320,
+    "work_forward": 300,
+    "restoration_forward_reserve": 20,
+    "non_generation_work_max": 44,
+    "generation_max": 256,
+    "backward_hard": 4,
+    "GPU_work_seconds": 240,
+    "TERM_seconds": 270,
+    "KILL_seconds": 300,
+    "whole_seconds": 3600,
+    "root_bytes": 251658240,
+    "other_reserve_bytes": 16777216,
+    "internal_total_bytes": 268435456,
+    "minimum_GPU_free_GiB": 48,
+    "minimum_workspace_headroom_GiB": 12,
+    "max_owned_allocated_GiB": 36,
+    "GPU_physical": 2,
+    "GPU_UUID": "GPU-4b56ab28-a018-652c-b8f6-2d9dc3dc45d2",
+    "PID_birth_tick_guard": true,
+    "retries": 0
+  },
+  "launch_requires": [
+    "one current-purpose permitted source excluding all reserved/eval/calibration roles",
+    "source image/question/reference and preprocessing/generation binding in private manifest",
+    "actual loaded LLaVA class/override identity matches reviewed runtime and transformers4.51.3 cache behavior; unknown override -> stop",
+    "existing model/F0 binding and mount write/read probe + disk baseline",
+    "current GPU memory and neutral parent/child argv",
+    "independent guard and exclusive reservation"
+  ],
+  "dual_success_is_precondition": false,
+  "IND2_JOINT2_authorized_by_this_smoke": false,
+  "installed_transformers": "4.51.3"
+}

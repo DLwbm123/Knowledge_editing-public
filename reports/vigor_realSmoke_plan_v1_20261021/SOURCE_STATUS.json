@@ -1,0 +1,36 @@
+{
+  "status": "NO_ADMITTED_NEW_SOURCE",
+  "probe": "one registered config and direct data-root inventory only; no QA/image/score/role rescan",
+  "inventory": [
+    {
+      "name": "PadChest-GR",
+      "purpose_document_names": []
+    },
+    {
+      "name": "SLAKE",
+      "purpose_document_names": []
+    },
+    {
+      "name": "VQA-RAD",
+      "purpose_document_names": []
+    },
+    {
+      "name": "benchmark",
+      "purpose_document_names": [
+        "._README.md",
+        "README.md"
+      ]
+    }
+  ],
+  "interpretations": {
+    "SLAKE": "existing pool restrictions retained; not a new source batch",
+    "VQA-RAD": "directory exists; current-purpose grant, split/exposure/reserved exclusion and relation evidence unverified",
+    "PadChest-GR": "directory exists; same evidence gaps, no source admitted",
+    "benchmark": "README explicitly describes evaluation/task construction and underlying VQA-RAD/SLAKE/PadChest data acquisition; no new current source-purpose assignment or frozen source batch"
+  },
+  "new_source_count_admitted": 0,
+  "candidate_difficulty_used": false,
+  "other_data_access_or_download": false,
+  "limitations": "No proof of global source unavailability; a direct purpose/license name list is not an exhaustive search for nested documents.",
+  "targeted_followup": "only exact benchmark README discovered in inventory read, no QA/metadata tables"
+}

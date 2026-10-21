@@ -1,0 +1,1 @@
+先冻结本规则，再一次只读SSH：已登记runtime config提取source_root/commit/cpu_gate/source_image_root；仅在该source_root定位Llava runtime/loader及该runtime明确导入的adapter（共≤8文本/4MiB）；仅列既有source_image_root直接子目录≤8、用途或license文档名称。无QA/图像读取/模型加载/显存进程查询/远端写入/新下载，不重扫201/38角色。任何具体新来源必须有用途/划分/排除绑定才能准入；名称或train本身不当新用途证据。无新可定位来源则保存缺口，不能为凑运行造来源。整体1h、远端signal30秒/client45秒、一次不重试。通过源码核查后冻结真实设备烟测参数和停止条件，输入未绑定则不执行。
