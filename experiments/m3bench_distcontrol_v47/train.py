@@ -16,6 +16,10 @@ last_space=0.
 HARD_END=None
 GEN_CAP=None
 PRIOR_SECONDS=0.
+if (ROOT/'RECOVERY_PRIOR.json').exists():
+    prior=json.loads((ROOT/'RECOVERY_PRIOR.json').read_text())[str(PART)]
+    assert prior['counts']['updates']==prior['counts']['generations']==0
+    counts.update(prior['counts']);PRIOR_SECONDS=prior['seconds']
 
 
 def read(p):return json.loads(Path(p).read_text())
@@ -143,7 +147,7 @@ def main():
         budget();write(attempt,dict(time=time.time(),attempt=1));counts['generations']+=1
         answer,trace=r.s.fit.short.generate(runtime,hook,raw,expanded);tokens=list(answer.raw_token_ids)
         write(dest,dict(binding=binding,raw_answer=answer.decoded_text,raw_token_ids=tokens,
-                       EOS=bool(tokens) and tokens[-1]==runtime.coverer.tokenizer.eos_token_id,at_cap=len(tokens)>=1024))
+                       EOS=bool(tokens) and tokens[-1]==runtime.adapter.tokenizer.eos_token_id,at_cap=len(tokens)>=1024))
 
     try:
         write(OUT/'MODEL_READY.json',dict(time=time.time(),gpu=os.environ['CUDA_VISIBLE_DEVICES']))
@@ -168,7 +172,7 @@ def main():
         b=r.old.batch_on(runtime,first[0][1])
         with torch.no_grad():
             out=runtime.model(**b.forward_kwargs())
-            scored=answer_scores(out.logits,b.labels,runtime.coverer.tokenizer.eos_token_id)
+            scored=answer_scores(out.logits,b.labels,runtime.adapter.tokenizer.eos_token_id)
             assert abs(scored['mean_with_eos']+float(out.loss))<1e-4
         write(OUT/'SCORING_ADMISSION.json',dict(status='PASS',loss_matches_mean_token_nll=True,finite=True,source_only=True))
         # All original/SHORT Base outputs must reproduce before augmented training.

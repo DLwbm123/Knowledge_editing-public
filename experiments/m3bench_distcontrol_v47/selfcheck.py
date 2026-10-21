@@ -5,7 +5,12 @@ from protocol import source_rows, mean_gradient, swapped_rows, distribution_shif
 
 
 def main():
-    import torch
+    import torch,ast
+    from pathlib import Path
+    tree=ast.parse(Path(__file__).with_name('train.py').read_text())
+    attrs={x.attr for x in ast.walk(tree) if isinstance(x,ast.Attribute) and isinstance(x.value,ast.Name) and x.value.id=='runtime'}
+    assert 'adapter' in attrs and 'coverer' not in attrs
+    assert attrs <= {'model','generation_config','device','get_module','compute_loss','adapter'}
     rows=[dict(query_id=str(i),question='question '+str(i),reference='answer '+str(i),image_path='private',eval_group='SOURCE' if i<2 else 'HELDOUT') for i in range(3)]
     task=dict(train_rows=copy.deepcopy(rows[:2]),eval_rows=rows)
     result=source_rows(task)
