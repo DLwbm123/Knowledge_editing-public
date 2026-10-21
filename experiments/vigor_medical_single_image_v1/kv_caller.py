@@ -42,6 +42,9 @@ class Observer:
 
     def before(self, model, args, kwargs):
         bound = self.signature.bind_partial(*args, **kwargs).arguments
+        for name, parameter in self.signature.parameters.items():
+            if parameter.kind is inspect.Parameter.VAR_KEYWORD:
+                bound.update(bound.pop(name, {}))
         # Read cache length BEFORE forward: DynamicCache mutates in-place.
         length = cache_length(bound.get('past_key_values'))
         value = bound.get('inputs_embeds')

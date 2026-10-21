@@ -10,7 +10,7 @@ import time
 
 import torch
 from .coefficient_runtime import coefficient_forward, compose, native_weight, validate
-from .dual_execution import ExecutionBudget, Journal
+from .dual_execution import ExecutionBudget, Journal, validate_source
 from .dual_guard import spawn_guard, verify_guard
 from .editor import editable_fp32, finite, nll, paired_batches
 from .kv_caller import paired_kv_generation
@@ -40,9 +40,8 @@ class SmokeBudget(ExecutionBudget):
 
 def validate_binding(m):
     source = m.get('source', {})
-    if not all(source.get(k) is True for k in ('current_use_permitted', 'reserved_exclusion_certified', 'fit_exclusion_certified')):
-        raise PermissionError('Source admission missing')
-    if source.get('split') != 'train' or not source.get('binding_id'):
+    validate_source(source)
+    if not source.get('binding_id'):
         raise PermissionError('Concrete source binding missing')
     if not all(m.get('resources', {}).get(k) is True for k in ('mount_probe', 'disk_baseline', 'neutral_argv')):
         raise PermissionError('Resource receipts missing')
@@ -65,7 +64,8 @@ def run(manifest, output_root, neutral_directory):
     validate_binding(manifest)  # No model imports or GPU operations before rejection.
     if threading.current_thread() is not threading.main_thread():
         raise RuntimeError('Guarded worker requires main thread')
-    start = time.time()
+    repair = manifest.get('pre_dispatch_observer_repair')
+    start = repair['original_start_epoch'] if repair else time.time()
     journal = Journal(output_root, 256 * 1024**2)
     journal.private('LAUNCH_RESERVED.json', {'start_epoch': start, 'manifest': manifest})
     guard = spawn_guard(neutral_directory, start, CONFIG)
@@ -76,6 +76,14 @@ def run(manifest, output_root, neutral_directory):
         raise TimeoutError('Independent smoke guard TERM')
     signal.signal(signal.SIGTERM, terminate)
     budget = SmokeBudget(start)
+    if repair:
+        if (repair.get('reason') != 'VAR_KEYWORD_OBSERVER_BEFORE_FIRST_GENERATION_FORWARD'
+                or repair.get('prior_forwards') != 7 or repair.get('prior_backwards') != 2
+                or repair.get('prior_restored') is not True):
+            raise PermissionError('Unsupported repair receipt')
+        budget.forwards = 7
+        budget.backwards = budget.gradient_paths = 2
+        budget.non_generation = 6
     runtime = None
     try:
         # The existing launch PYTHONPATH supplies the pinned package and custom LLaVA.

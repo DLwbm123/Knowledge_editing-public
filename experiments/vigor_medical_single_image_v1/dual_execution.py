@@ -14,6 +14,20 @@ from .dual_solver import Budget, endpoint_native, solve_pair_comparison
 from .editor import nll
 
 ARMS = ('IND2', 'JOINT2')
+
+def validate_source(source):
+    if source.get('mode') == 'existing_development_source':
+        if (source.get('binding_id') != 'DEV_E01_20261021'
+                or source.get('original_edit_alias') != 'E01'
+                or source.get('current_use_permitted') is not True
+                or source.get('original_record_exact') is not True
+                or source.get('calibration_exclusion_certified') is not True
+                or source.get('independent_evaluation_claim') is not False):
+            raise PermissionError('Existing development source binding incomplete')
+        return
+    required = ('current_use_permitted', 'reserved_exclusion_certified', 'fit_exclusion_certified')
+    if not all(source.get(k) is True for k in required) or source.get('split') != 'train':
+        raise PermissionError('Source exclusion/use binding incomplete')
 PUBLIC_KEYS = {
     'arm', 'step', 'last_step', 'pre_update_losses', 'objective', 'forwards',
     'backward_API', 'model_gradient_paths', 'status', 'exception_type',
@@ -72,9 +86,7 @@ def validate_manifest(manifest, config, record):
     if {k: v for k, v in config.items() if k != 'source_binding'} != {k: v for k, v in frozen.items() if k != 'source_binding'}:
         raise PermissionError('Frozen method parameters changed')
     source, f0, kv = (manifest[k] for k in ('source', 'F0', 'KV'))
-    required = ('current_use_permitted', 'reserved_exclusion_certified', 'fit_exclusion_certified')
-    if not all(source.get(k) is True for k in required) or source.get('split') != 'train':
-        raise PermissionError('Source exclusion/use binding incomplete')
+    validate_source(source)
     binding = source.get('binding_id')
     if not binding or config['source_binding'] != binding or kv.get('source_binding') != binding:
         raise PermissionError('Source/KV/config binding mismatch')
