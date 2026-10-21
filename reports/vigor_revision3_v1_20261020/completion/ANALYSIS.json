@@ -1,0 +1,75 @@
+{
+  "summary": {
+    "P": {
+      "agreement": 2,
+      "faithful": 2,
+      "qualified": 2,
+      "denominator": 3,
+      "missing": 0
+    },
+    "R": {
+      "agreement": 3,
+      "faithful": 0,
+      "qualified": 0,
+      "denominator": 3,
+      "missing": 0
+    }
+  },
+  "same_P_R": {
+    "E01": false,
+    "E02": false,
+    "E03": false
+  },
+  "targets": [
+    {
+      "alias": "E01_P",
+      "agreement": true,
+      "faithfulness": true,
+      "qualified": true
+    },
+    {
+      "alias": "E01_R",
+      "agreement": true,
+      "faithfulness": false,
+      "qualified": false
+    },
+    {
+      "alias": "E02_P",
+      "agreement": false,
+      "faithfulness": false,
+      "qualified": false
+    },
+    {
+      "alias": "E02_R",
+      "agreement": true,
+      "faithfulness": false,
+      "qualified": false
+    },
+    {
+      "alias": "E03_P",
+      "agreement": true,
+      "faithfulness": true,
+      "qualified": true
+    },
+    {
+      "alias": "E03_R",
+      "agreement": true,
+      "faithfulness": false,
+      "qualified": false
+    }
+  ],
+  "costs": {
+    "gpu_seconds": 25.958869695663452,
+    "forward_calls": 322,
+    "target_generation_forward": 308,
+    "control_restore_forward": 14,
+    "peak_allocated_bytes": 15513947648,
+    "new_Judge_payloads": 12,
+    "judge_seconds": 39.08711314201355,
+    "checkpoint": 0,
+    "new_edits": 0
+  },
+  "qualification_is_edit_performance": false,
+  "clinical_image_verification": false,
+  "decision": "Only jointly qualified source targets may enter a separately frozen writer comparison; no repair resampling"
+}

@@ -1,0 +1,171 @@
+{
+  "status": "STOPPED_SMALL_NATIVE_ADMISSION_FAILED",
+  "recorded_checks": 469,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true
+  },
+  "costs": {
+    "forward": 495,
+    "extra_forward": 27,
+    "seconds": 81.0329110622406,
+    "new_secant": 0,
+    "native_match_attempts": 0,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1976604,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": false,
+  "candidate_evaluated": false,
+  "analytic": null,
+  "matching": null,
+  "main_gate": null,
+  "main_margin": null,
+  "main_conditions": null,
+  "main_margin_gain": null,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "write_feasibility_decomposition": {
+    "quantity_order": [
+      "NLL",
+      "fixed_competitor_margin",
+      "null"
+    ],
+    "old_analytic_NLL": -1.05e-05,
+    "old_materialized_delta_dot": [
+      -1.0499938011160074e-05,
+      0.1520440168009719,
+      3.803447860481479e-10
+    ],
+    "old_FP32_addition_effective_dot": [
+      -1.0499547774701862e-05,
+      0.15204399802827498,
+      -2.8426665752215308e-11
+    ],
+    "old_FP16_written_effective_dot": [
+      0.00017080917532345474,
+      0.12624122830635065,
+      -0.0007264048712333428
+    ],
+    "NLL_materialization_gap": 6.198883992546763e-11,
+    "NLL_FP32_addition_gap": 3.902364582124003e-10,
+    "NLL_FP16_parameter_write_gap": 0.0001813087230981566,
+    "NLL_write_loss_dot_difference": 0.0001813091133346148,
+    "NLL_write_loss_tensor_dot": 0.00018130911333408284,
+    "loss_tensor_closure": -5.3196379593001275e-16,
+    "scalar_closure": 0.0,
+    "old_candidate_forward_calls": 0,
+    "reference_chain": "same_editable_layer_FP32_gradient_no_candidate_forward"
+  },
+  "quantized_reserve_rule": {
+    "base_continuous_NLL_floor": 1.05e-05,
+    "measured_positive_write_loss": 0.0001813091133346148,
+    "new_continuous_NLL_floor": 0.0001918091133346148,
+    "rule": "base_floor_plus_positive_old_native_minus_materialized_NLL_dot",
+    "uniform_error_bound": false,
+    "reserve_search": false
+  },
+  "small_analytic": {
+    "NLL_energy": 127743022556.61002,
+    "margin_energy": 4885179189169.799,
+    "cross": 99372340493.48022,
+    "cost": 2.4043746118789385e-15,
+    "NLL_floor": 0.0001918091133346148,
+    "required_margin_gain": 0.0,
+    "minimum_NLL_cost": 1.4400291781849415e-19,
+    "free_linear_NLL_change": 0.0031177503324839157,
+    "constraint_active": true,
+    "perpendicular_energy": 4807876633949.798,
+    "status": "ELIGIBLE",
+    "predicted_NLL_change": -0.0001918091133346148,
+    "predicted_margin_gain": 0.1518984416513637,
+    "NLL_scale": -1.501523210393848e-15,
+    "perpendicular_scale": 3.162469903105119e-14
+  },
+  "small_native_admission": {
+    "actual_native_F0_cost": 2.1315143593081207e-15,
+    "cap": 2.4043746118789385e-15,
+    "not_equality_matching": true,
+    "native_linear_change": [
+      1.1745868332265673e-05,
+      0.1261449961999362,
+      -0.0007228193304900673
+    ],
+    "predicted_original_base_null": -0.003096276285446122,
+    "cost_pass": true,
+    "NLL_pass": false,
+    "margin_pass": true,
+    "null_pass": true
+  },
+  "continuation_start": {
+    "native_nll": [
+      1.3546538352966309,
+      3.703401803970337
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.3546538352966309,
+      "margin": -4.6015625,
+      "nll": 4.761768817901611,
+      "probability": 0.008550471626222134,
+      "rank": 3,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 4.6015625,
+      "fixed_competitor_margin": -4.6015625,
+      "strongest_competitor_changed": false
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "rows": [
+    {
+      "sample": "E01",
+      "source_rank": 606,
+      "null_rank": 607,
+      "null_positions": 607,
+      "remaining_input_dimensions": 13730,
+      "projected_fraction": 0.90121860971271,
+      "perpendicular_fraction": 0.43336476265073776,
+      "per_column_perpendicular_fraction": {
+        "min": 6.256261951538491e-14,
+        "median": 0.3564874147718414,
+        "max": 0.8832615010488949
+      },
+      "fixed_null_action_norm": 101.04740810430498,
+      "perpendicular_rank": 602,
+      "perpendicular_condition_retained": 5489.579571236079,
+      "joint_rank": 1208,
+      "separated_relative_residual": 0.04095456801263388,
+      "joint_relative_residual": 0.023525125197654338,
+      "numerical_status": "INCONSISTENT_STRONG_SUBPROBLEM",
+      "exact_shared_key_contradiction": true,
+      "exact_nonzero_action_absolute": 0.0004053146461657775
+    },
+    {
+      "sample": "E02",
+      "source_rank": 616,
+      "null_rank": 617,
+      "null_positions": 617,
+      "remaining_input_dimensions": 13720,
+      "projected_fraction": 0.9000673310282452,
+      "perpendicular_fraction": 0.4357508457999497,
+      "per_column_perpendicular_fraction": {
+        "min": 5.826435801402001e-14,
+        "median": 0.36810908972054057,
+        "max": 0.8864373823686418
+      },
+      "fixed_null_action_norm": 84.29228936729143,
+      "perpendicular_rank": 612,
+      "perpendicular_condition_retained": 5644.340776218908,
+      "joint_rank": 1228,
+      "separated_relative_residual": 0.04605044133315783,
+      "joint_relative_residual": 0.0283209250252133,
+      "numerical_status": "INCONSISTENT_STRONG_SUBPROBLEM",
+      "exact_shared_key_contradiction": true,
+      "exact_nonzero_action_absolute": 0.000752721891601027
+    },
+    {
+      "sample": "E03",
+      "source_rank": 604,
+      "null_rank": 605,
+      "null_positions": 605,
+      "remaining_input_dimensions": 13732,
+      "projected_fraction": 0.9281630819497481,
+      "perpendicular_fraction": 0.37217374075214876,
+      "per_column_perpendicular_fraction": {
+        "min": 7.207336255129285e-14,
+        "median": 0.3128305472878639,
+        "max": 0.8989420466792839
+      },
+      "fixed_null_action_norm": 85.8666581506008,
+      "perpendicular_rank": 600,
+      "perpendicular_condition_retained": 4102.454564720389,
+      "joint_rank": 1204,
+      "separated_relative_residual": 0.04086766996377837,
+      "joint_relative_residual": 0.02317241110725837,
+      "numerical_status": "INCONSISTENT_STRONG_SUBPROBLEM",
+      "exact_shared_key_contradiction": true,
+      "exact_nonzero_action_absolute": 0.001093162274120374
+    }
+  ],
+  "summary": {
+    "exact_strict_action_contradictions": 3,
+    "denominator": 3,
+    "source_output_binding": 3,
+    "new_candidates": 0,
+    "new_judge_calls": 0,
+    "locality_new_support": 0,
+    "scalar_null_NLL_feasibility": "UNTESTED_NOT_INFERRED",
+    "new_semantic_performance_claim": false
+  },
+  "costs": {
+    "GPU_seconds": 35.41764569282532,
+    "total_forwards": 107,
+    "teacher_fit": 42,
+    "teacher_source_generation": 36,
+    "control_null_capture_binding_restore": 29,
+    "backwards": 39,
+    "peak_allocated_bytes": 19038671872,
+    "checkpoint": 0,
+    "judge": 0
+  },
+  "scope": "Only exact successful source layer action plus unchanged null layer action is inconsistent; original scalar null NLL gate and semantic-equivalent Pure-W feasibility remain open"
+}

@@ -1,0 +1,260 @@
+"""A/H endpoints are memory-only anchors; one new S is the only possible write."""
+import math
+import torch
+import torch.nn.functional as F
+from .editor import editable_fp32,direction,finite,nll
+from .finite_null import gates,correction,native_losses
+from .marginab_ops import fisher_cost,read_margin
+from .bdecompose_ops import weight_guard,StopRound
+from .hdecompose_ops import reconstruct_h,RATIO
+from .hybridH_ops import match_once,conditions,COST,FLOOR,MAIN_MARGIN,FINAL_MARGIN
+from .responseS_model import calibrate_vectors,solve_geometry,materialize_solution
+from .response3_model import calibrate_vectors as calibrate_three
+from .responseQuad_model import fit as fit_quadratic,solve as solve_quadratic,admissibility
+
+
+def evaluate(rt,record,layer,pair,factor,identity,history,base_null,start_losses,margin0,data,emit,checks,generate):
+    original=layer.weight.detach().clone();w=original.float();a,b=(factor[k].to(layer.weight.device) for k in ('a','b'))
+    A=history['AB']['arms']['A'];H=history['H']['hybrid'];data.update(candidate_formulated=False,candidate_written=False,candidate_evaluated=False,matching_applications=0,new_secant=0,historical_endpoint_forward_calls=0,accepted=False,local_flip=None,historical_weight_direct_comparison=None);emit()
+    def near(got,expected,label,relative=False,tolerance=1e-5):
+        error=abs(got/expected-1) if relative else abs(got-expected)
+        checks.append(dict(field=label,**{'relative_difference' if relative else 'absolute_difference':error},tolerance=tolerance));emit()
+        if not math.isfinite(error) or error>tolerance:raise StopRound('STOPPED_RECHECK_'+label)
+    def same(ok,label):
+        checks.append(dict(field=label,passed=bool(ok)));emit()
+        if not ok:raise StopRound('STOPPED_BINDING_'+label)
+    near(start_losses[0],1.5107299089431763,'S.endpoint_visual');near(start_losses[1],3.70239520072937,'S.endpoint_null');near(margin0['mean_nll'],start_losses[0],'S.endpoint_repeat')
+    same(A['proposal']['native_before']==start_losses,'S.A_common_native_start')
+    same(history['H']['method']['final_accepted_native_nll']==start_losses,'S.H_common_native_start')
+    same(H['matching']['ratio']==RATIO,'S.H_frozen_ratio');same(H['analytic']['energy_fractions']==[.75,.25],'S.H_frozen_fraction')
+    near(A['proposal']['native_update']['fisher_cost'],COST,'S.A_cost',True);near(A['proposal']['native_gain'],FLOOR,'S.A_NLL_floor');near(A['main_margin']['margin'],MAIN_MARGIN,'S.A_main_margin');near(A['final_margin']['margin'],FINAL_MARGIN,'S.A_final_margin')
+    try:
+        with editable_fp32(rt.model,layer,readonly=True):
+            with weight_guard(layer,w,'S.base_gradient',checks,emit):
+                output=rt.model(**pair[0].forward_kwargs());logits=output.logits.float();_,target,j,absolute=identity;v=logits[0,absolute]
+                margin=v[target]-v[j];loss=F.cross_entropy(logits[:,:-1].reshape(-1,logits.shape[-1]),pair[0].labels[:,1:].reshape(-1),ignore_index=-100,reduction='mean')
+                gm=finite(torch.autograd.grad(margin,layer.weight,retain_graph=True)[0].detach());gn=finite(torch.autograd.grad(loss,layer.weight)[0].detach());f0=float(loss.detach());m0=float(margin.detach());del output,logits,v,margin,loss
+            with weight_guard(layer,w,'S.base_null_gradient',checks,emit):
+                loss0=nll(rt.model,pair[1]);g0=finite(torch.autograd.grad(loss0,layer.weight)[0].detach());n0=float(loss0.detach());del loss0
+            qn,geo_n=direction(gn,g0,a,b);neg_qm,geo_m=direction(-gm,g0,a,b)
+            data['original_geometry']=dict(fp32_before=[f0,n0],fp32_margin=m0,NLL_geometry=geo_n,margin_geometry=geo_m);emit()
+            near(f0,A['proposal']['fp32_before'][0],'S.historical_F_visual');near(n0,A['proposal']['fp32_before'][1],'S.historical_F_null');near(m0,H['geometry']['fp32_margin'],'S.historical_F_margin')
+            if qn is None or neg_qm is None:raise StopRound('STOPPED_ANCHOR_DIRECTION_DEGENERATE')
+            near(geo_n['E'],A['proposal']['E'],'S.historical_NLL_energy',True);near(geo_m['E'],H['analytic']['margin_energy'],'S.historical_margin_energy',True)
+            near(float((gn.double()*(-neg_qm).double()).sum()),H['analytic']['cross'],'S.historical_cross',True)
+            # Reconstruct only tensors. Neither anchor is installed or forwarded.
+            da=finite(-A['proposal']['effective_reduction']/A['proposal']['E']*qn)
+            aw=w.clone();aw.add_(da);roundedA=aw.half();qA=roundedA.float()-w
+            dh=reconstruct_h(qn,-neg_qm,H['analytic']);roundedH=(w+RATIO*dh).half();qH=roundedH.float()-w
+            anchor_data={}
+            for name,q,ref in [('A',qA,A['proposal']['native_update']),('H',qH,dict(fisher_cost=H['matching']['actual_native_F0_cost'],visual_linear_change=H['matching']['native_linear_NLL_change'],null_linear_change=H['matching']['native_linear_null_change']))]:
+                cost=fisher_cost(q,a,b);nl=float((gn.double()*q.double()).sum());nu=float((g0.double()*q.double()).sum())
+                anchor_data[name]=dict(F0_cost=cost,NLL_directional=nl,null_directional=nu,margin_directional=float((gm.double()*q.double()).sum()),l2=float(torch.linalg.vector_norm(q.double())))
+                data['anchor_checks']=anchor_data;emit();near(cost,ref['fisher_cost'],'S.'+name+'_cost',True);near(nl,ref['visual_linear_change'],'S.'+name+'_NLL_directional');near(nu,ref['null_linear_change'],'S.'+name+'_null_directional')
+            near(anchor_data['A']['l2'],A['proposal']['quantization']['native_delta_l2'],'S.A_native_norm',True);near(anchor_data['H']['l2'],H['matching']['native_delta_l2'],'S.H_native_norm',True);near(anchor_data['H']['margin_directional'],H['matching']['native_linear_margin_gain'],'S.H_margin_directional')
+            responses=[[A['main_gate']['native_nll'][0]-start_losses[0],H['main_gate']['native_nll'][0]-start_losses[0]],[A['main_margin']['margin']-margin0['margin'],H['main_margin']['margin']-margin0['margin']],[A['main_gate']['native_nll'][1]-start_losses[1],H['main_gate']['native_nll'][1]-start_losses[1]]]
+            # Reconstruct the terminated Sreserve increment using its frozen ratio,
+            # with no installation, new native matching, or historical forward.
+            R=history['R']['response']
+            same(R['candidate_evaluated'] and history['R']['status']=='STOPPED_MAIN_ACTUAL_NLL_FAILED','R3.historical_R_terminal')
+            same(history['R']['method']['final_accepted_native_nll']==start_losses,'R3.common_start')
+            def save_two(v):data['historical_two_calibration']=v;emit()
+            bn2,bm2,b02=calibrate_vectors([gn,gm,g0],[qA,qH],responses,a,b,save_two)
+            qr_n,qr_gn=direction(bn2,b02,a,b);qr_m_neg,qr_gm=direction(-bm2,b02,a,b)
+            if qr_n is None or qr_m_neg is None:raise StopRound('STOPPED_R_ANCHOR_DEGENERATE')
+            qr_m=-qr_m_neg
+            cross2=float((bn2.double()*qr_m.double()).sum())
+            analytic2=solve_geometry(qr_gn['E'],qr_gm['E'],cross2,COST,1.05*FLOOR,.4453125)
+            deltaR=materialize_solution(qr_n,qr_m,analytic2)
+            ratioR=R['matching']['ratio']
+            roundedR=finite((w+ratioR*deltaR).half());qR=roundedR.float()-w
+            near(ratioR,.9885765253507064,'R3.frozen_ratio')
+            near(fisher_cost(qR,a,b),R['matching']['actual_native_F0_cost'],'R3.anchor_cost',True)
+            near(float(torch.linalg.vector_norm(qR.double())),R['matching']['native_delta_l2'],'R3.anchor_norm',True)
+            for vec,key in [(bn2,'NLL_change'),(bm2,'margin_gain'),(b02,'null_change')]:
+                near(float((vec.double()*qR.double()).sum()),R['matching']['native_calibrated_'+key],'R3.anchor_'+key)
+            data['third_anchor_reconstruction']=dict(ratio=ratioR,F0_cost=fisher_cost(qR,a,b),l2=float(torch.linalg.vector_norm(qR.double())),forward_calls=0,direct_historical_weight_comparison=None);emit()
+            responses[0].append(R['main_gate']['native_nll'][0]-start_losses[0])
+            responses[1].append(R['main_margin']['margin']-margin0['margin'])
+            responses[2].append(R['main_gate']['native_nll'][1]-start_losses[1])
+            del qr_n,qr_m,qr_m_neg,deltaR,bn2,bm2,b02
+            def save_cal(v):data['calibration']=v;emit()
+            bn,bm,b0=calibrate_three([gn,gm,g0],[qA,qH,qR],responses,a,b,save_cal)
+            qln,caln=direction(bn,b0,a,b);neg_qlm,calm=direction(-bm,b0,a,b)
+            data['calibrated_geometry']=dict(NLL=caln,margin=calm);emit()
+            if qln is None or neg_qlm is None:raise StopRound('STOPPED_CALIBRATED_DIRECTION_DEGENERATE')
+            qm=-neg_qlm;cross=float((bn.double()*qm.double()).sum());analytic=solve_geometry(caln['E'],calm['E'],cross,COST,1.05*FLOOR,.4453125)
+            data['solver_reserve_factor']=1.05;data['actual_NLL_floor']=FLOOR;data['analytic']=analytic;emit()
+            if analytic['status']!='ELIGIBLE':raise StopRound(analytic['status'])
+            delta=materialize_solution(qln,qm,analytic);data['candidate_formulated']=False
+            data['analytic_recheck']=dict(F0_cost=fisher_cost(delta,a,b),calibrated_NLL=float((bn.double()*delta.double()).sum()),calibrated_margin=float((bm.double()*delta.double()).sum()),normalized_null=abs(float((b0.double()*delta.double()).sum()))/math.sqrt(2*COST*caln['k00']));emit()
+            near(data['analytic_recheck']['F0_cost'],COST,'S.analytic_cost',True)
+            if data['analytic_recheck']['calibrated_NLL']>-1.05*FLOOR+1e-5 or data['analytic_recheck']['calibrated_margin']<=.4453125+1e-5 or data['analytic_recheck']['normalized_null']>1e-4:raise StopRound('STOPPED_ANALYTIC_CONSTRAINT_RECHECK')
+            old3=history['R3']['response']
+            same(history['R3']['status']=='COMPLETE' and old3['accepted'],'follow.R3_terminal')
+            same(history['R3']['method']['final_accepted_native_nll']==start_losses,'follow.common_start')
+            ratio3=old3['matching']['ratio']
+            near(ratio3,.9856479649560461,'follow.frozen_ratio')
+            rounded=finite((w+ratio3*delta).half());q3=rounded.float()-w
+            for vec,key in [(bn,'NLL_change'),(bm,'margin_gain'),(b0,'null_change')]:
+                near(float((vec.double()*q3.double()).sum()),old3['matching']['native_calibrated_'+key],'follow.R3_'+key)
+            near(fisher_cost(q3,a,b),old3['matching']['actual_native_F0_cost'],'follow.R3_cost',True)
+            near(float(torch.linalg.vector_norm(q3.double())),old3['matching']['native_delta_l2'],'follow.R3_norm',True)
+            data['historical_R3_matching']=old3['matching'];data['historical_R3_forward_calls']=0;emit()
+        same(layer.weight.dtype==original.dtype and torch.equal(layer.weight,original),'S.no_historical_endpoint_write')
+        # One mandatory R3 endpoint control before local-gradient response refresh.
+        with torch.no_grad():layer.weight.copy_(rounded)
+        with weight_guard(layer,rounded,'follow.control_R3',checks,emit,expected_calls=3):
+            step_start=native_losses(rt,pair)
+            step_margin,_=read_margin(rt,pair[0],identity[0],identity[2])
+        data['historical_R3_forward_calls']=3
+        data['continuation_start']=dict(native_nll=step_start,margin=step_margin)
+        for i,x in enumerate(step_start):near(x,old3['final_gate']['native_nll'][i],'follow.control_loss_'+str(i))
+        near(step_margin['margin'],old3['final_margin']['margin'],'follow.control_margin')
+        near(step_margin['mean_nll'],step_start[0],'follow.control_repeat')
+        same(step_margin['strongest_competitor_changed']==old3['final_margin']['strongest_competitor_changed'],'follow.control_competitor')
+        step_original=rounded.detach().clone();step_w=step_original.float()
+        main_reference=step_margin['margin']+.4453125
+        final_reference=step_margin['margin']+.4375
+        failed_rounded=finite((step_original.float()+q3).half())
+        q_follow=failed_rounded.float()-step_w
+        old_follow=history['Follow']['response']
+        same(history['Follow']['status']=='STOPPED_MAIN_ACTUAL_NLL_FAILED','refresh.failed_history_terminal')
+        same(old_follow['continuation_start']['native_nll']==step_start,'refresh.failed_history_start')
+        near(fisher_cost(q_follow,a,b),old_follow['continuation_preview']['actual_F0_cost'],'refresh.failed_increment_cost',True)
+        # The failed endpoint is never installed or forwarded in this round.
+        responses1=[[old_follow['main_gate']['native_nll'][0]-step_start[0]],
+                    [old_follow['main_margin']['margin']-step_margin['margin']],
+                    [old_follow['main_gate']['native_nll'][1]-step_start[1]]]
+        data['historical_R3_calibration']=data.pop('calibration')
+        data['historical_R3_analytic']=data.pop('analytic')
+        data['historical_R3_analytic_recheck']=data.pop('analytic_recheck')
+        data['historical_R3_calibrated_geometry']=data.pop('calibrated_geometry')
+        with editable_fp32(rt.model,layer,readonly=True):
+            with weight_guard(layer,step_w,'refresh.local_visual_gradient',checks,emit):
+                output=rt.model(**pair[0].forward_kwargs());logits=output.logits.float();_,target,j,absolute=identity;v=logits[0,absolute]
+                margin=v[target]-v[j]
+                loss=F.cross_entropy(logits[:,:-1].reshape(-1,logits.shape[-1]),pair[0].labels[:,1:].reshape(-1),ignore_index=-100,reduction='mean')
+                gm_local=finite(torch.autograd.grad(margin,layer.weight,retain_graph=True)[0].detach())
+                gn_local=finite(torch.autograd.grad(loss,layer.weight)[0].detach())
+                local_F_NLL=float(loss.detach());local_F_margin=float(margin.detach());del output,logits,v,margin,loss
+            with weight_guard(layer,step_w,'refresh.local_null_gradient',checks,emit):
+                loss0=nll(rt.model,pair[1]);g0_local=finite(torch.autograd.grad(loss0,layer.weight)[0].detach());local_F_null=float(loss0.detach());del loss0
+            local_dot=[float((g.double()*q_follow.double()).sum()) for g in [gn_local,gm_local,g0_local]]
+            old_dot=[float((g.double()*q_follow.double()).sum()) for g in [gn,gm,g0]]
+            data['local_gradient_forward_calls']=2
+            data['local_gradient_diagnostic']=dict(F_baseline=[local_F_NLL,local_F_null],F_margin=local_F_margin,original_endpoint_dot=old_dot,local_endpoint_dot=local_dot,observed_native_response=[x[0] for x in responses1],local_native_minus_linear=[x[0]-v for x,v in zip(responses1,local_dot)],failed_endpoint_new_forward_calls=0);emit()
+            N=history['N']['response'];RF=history['Refresh']['response']
+            for tag,entry in [('N',history['N']),('Refresh',history['Refresh'])]:
+                same(entry['status']=='STOPPED_MAIN_ACTUAL_NLL_FAILED','quad.'+tag+'_terminal')
+                same(entry['response']['continuation_start']['native_nll']==step_start,'quad.'+tag+'_common_start')
+            qn_local,geo_local_n=direction(gn_local,g0_local,a,b)
+            if qn_local is None:raise StopRound('STOPPED_QUAD_N_ANCHOR_DEGENERATE')
+            delta_n=finite(-math.sqrt(2*COST/geo_local_n['E'])*qn_local)
+            roundedN=finite((step_w+N['matching']['ratio']*delta_n).half());qN=roundedN.float()-step_w
+            near(N['matching']['ratio'],.9978326557816087,'quad.N_frozen_ratio')
+            near(fisher_cost(qN,a,b),N['matching']['actual_native_F0_cost'],'quad.N_cost',True)
+            near(float(torch.linalg.vector_norm(qN.double())),N['matching']['native_delta_l2'],'quad.N_norm',True)
+            for vec,key in [(gn_local,'NLL_change'),(gm_local,'margin_gain'),(g0_local,'null_change')]:
+                near(float((vec.double()*qN.double()).sum()),N['matching']['native_linear_'+key],'quad.N_'+key)
+            def save_rf(v):data['historical_Refresh_fit']=v;emit()
+            bn_rf,bm_rf,b0_rf=calibrate_three([gn_local,gm_local,g0_local],[q_follow],responses1,a,b,save_rf)
+            qrfn,geon=direction(bn_rf,b0_rf,a,b);qrfm_neg,geom=direction(-bm_rf,b0_rf,a,b)
+            if qrfn is None or qrfm_neg is None:raise StopRound('STOPPED_QUAD_REFRESH_ANCHOR_DEGENERATE')
+            qrfm=-qrfm_neg;cross=float((bn_rf.double()*qrfm.double()).sum())
+            ar=solve_geometry(geon['E'],geom['E'],cross,COST,1.05*FLOOR,.4453125)
+            delta_rf=materialize_solution(qrfn,qrfm,ar)
+            near(RF['matching']['ratio'],.9971336372809206,'quad.Refresh_frozen_ratio')
+            roundedRF=finite((step_w+RF['matching']['ratio']*delta_rf).half());qRF=roundedRF.float()-step_w
+            near(fisher_cost(qRF,a,b),RF['matching']['actual_native_F0_cost'],'quad.Refresh_cost',True)
+            near(float(torch.linalg.vector_norm(qRF.double())),RF['matching']['native_delta_l2'],'quad.Refresh_norm',True)
+            for vec,key in [(bn_rf,'NLL_change'),(bm_rf,'margin_gain'),(b0_rf,'null_change')]:
+                near(float((vec.double()*qRF.double()).sum()),RF['matching']['native_calibrated_'+key],'quad.Refresh_'+key)
+            vectors=[qN,qRF]
+            Gram=[[float((x.double()*y.double()*b.double()[:,None]*a.double()[None,:]).sum()) for y in vectors] for x in vectors]
+            G=torch.tensor(Gram,dtype=torch.float64);norm=G.diag().sqrt();eigen=torch.linalg.eigvalsh(G/norm[:,None]/norm[None,:]);condition=float(eigen[-1]/eigen[0]) if eigen[0]>0 else float('inf')
+            data['quadratic_Gram']=dict(Gram=Gram,normalized_condition=condition if math.isfinite(condition) else None,eigenvalues=eigen.tolist());emit()
+            if not math.isfinite(condition) or condition>1e4:raise StopRound('STOPPED_QUADRATIC_SPAN_ILL_CONDITIONED')
+            linear=[[float((g.double()*q.double()).sum()) for q in vectors] for g in [gn_local,gm_local,g0_local]]
+            axes=[[N['main_gate']['native_nll'][0]-step_start[0],RF['main_gate']['native_nll'][0]-step_start[0]],
+                  [N['main_margin']['margin']-step_margin['margin'],RF['main_margin']['margin']-step_margin['margin']],
+                  [N['main_gate']['native_nll'][1]-step_start[1],RF['main_gate']['native_nll'][1]-step_start[1]]]
+            C=history['Center']['response'];transfer=history['Transfer']
+            same(history['Center']['status']=='COMPLETE' and C['accepted'],'path.center_terminal')
+            near(C['correction']['compensation']['multiplier'],1.5660931117171595,'path.frozen_center_alpha')
+            tangent_c,geometry_c=direction(g0_local,gn_local,a,b)
+            if tangent_c is None:raise StopRound('STOPPED_CENTER_RECONSTRUCTION_DEGENERATE')
+            near(geometry_c['E'],C['correction']['null_correction_energy'],'path.center_energy',True)
+            residual_c=step_start[1]-base_null
+            near(residual_c,C['correction']['residual'],'path.center_residual')
+            delta_c=finite(-residual_c/geometry_c['E']*tangent_c)
+            center_rounded=finite((step_w+delta_c*C['correction']['compensation']['multiplier']).half())
+            center_q=center_rounded.float()-step_w
+            near(fisher_cost(center_q,a,b),C['correction']['native_update']['fisher_cost'],'path.center_cost',True)
+            near(float(torch.linalg.vector_norm(center_q.double())),C['correction']['quantization']['native_delta_l2'],'path.center_norm',True)
+            near(float((gn_local.double()*center_q.double()).sum()),C['correction']['native_update']['visual_linear_change'],'path.center_NLL_dot')
+            near(float((g0_local.double()*center_q.double()).sum()),C['correction']['native_update']['null_linear_change'],'path.center_null_dot')
+            near(fisher_cost(center_rounded.float()-original.float(),a,b),C['final_gate']['combined_native_fisher_cost'],'path.center_cumulative_cost',True)
+            data['memory_center_reconstruction']=dict(frozen_alpha=C['correction']['compensation']['multiplier'],new_secant_calls=0,direct_historical_weight_comparison=None);emit()
+        same(torch.equal(layer.weight,step_original) and layer.weight.dtype==step_original.dtype,'path.R3_control_restored')
+        with torch.no_grad():layer.weight.copy_(center_rounded)
+        with weight_guard(layer,center_rounded,'path.center_control',checks,emit,expected_calls=3):
+            center_losses=native_losses(rt,pair)
+            center_margin,_=read_margin(rt,pair[0],identity[0],identity[2])
+        for i,x in enumerate(center_losses):near(x,C['final_gate']['native_nll'][i],'path.center_control_loss_'+str(i))
+        near(center_margin['margin'],C['final_margin']['margin'],'path.center_control_margin')
+        near(center_margin['mean_nll'],center_losses[0],'path.center_repeat')
+        same(center_margin['strongest_competitor_changed']==C['final_margin']['strongest_competitor_changed'],'path.center_competitor')
+        data['uncentered_R3_control']=data['continuation_start']
+        step_original=center_rounded.clone();step_start=center_losses;step_margin=center_margin
+        data['continuation_start']=dict(native_nll=step_start,margin=step_margin)
+        data['center_control_forward_calls']=3
+        same(transfer['status']=='ELIGIBLE_FP32_REPRESENTATION','path.offline_solver_qualified')
+        same(transfer['dataset_solver_invocations']==1 and transfer['source_CPU_stop_preserved'],'path.one_solver_preserved_stop')
+        same(transfer['frozen_old_model']==history['Quad']['response']['quadratic_model'],'path.frozen_model_binding')
+        near(step_start[1]-base_null,transfer['center_null_bias'],'path.measured_center_bias')
+        for i in range(2):
+            for j in range(2):near(Gram[i][j],transfer['Gram'][i][j],'path.frozen_Gram',True)
+        coefficients=transfer['materialization_FP32_coefficients'];raw_coefficients=transfer['raw_solver_coefficients']
+        delta_new=finite(coefficients[0]*qN+coefficients[1]*qRF)
+        raw_delta=finite(raw_coefficients[0]*qN+raw_coefficients[1]*qRF)
+        same(torch.equal(delta_new,raw_delta),'path.raw_and_FP32_coefficient_delta_equal')
+        target_cost=fisher_cost(delta_new,a,b)
+        if not math.isfinite(target_cost) or target_cost<=0 or target_cost>COST*(1+1e-5):raise StopRound('STOPPED_PATH_TARGET_COST')
+        data['candidate_formulated']=True;data['matching_applications']=1;data['offline_transfer']=transfer;emit()
+        rounded,match=match_once(step_original,delta_new,target_cost,a,b,gn_local,gm_local,g0_local)
+        matched_coefficients=[match['ratio']*x for x in coefficients]
+        matched_check=admissibility(transfer['frozen_old_model']['models'],matched_coefficients,step_start[1]-base_null,1e-5,0.,Gram,COST)
+        match.update(prediction_model='old_uncentered_quadratic_transferred_to_measured_center',gradient_diagnostic_origin='uncentered_R3_not_new_center_gradient',matched_coefficients=matched_coefficients,quadratic_recheck=matched_check,target_cost_selected_by_single_offline_solver=True)
+        data['matching']=match;data['analytic_recheck']=None;emit()
+        if not math.isfinite(match['relative_error']) or match['relative_error']>.01:raise StopRound('STOPPED_NATIVE_MATCH_FAILED')
+        if not all(matched_check[k] for k in ['in_hull','NLL_pass','margin_pass','null_pass','cost_pass']):raise StopRound('STOPPED_TRANSFER_MATCHED_PREDICTION_FAILED')
+        if torch.equal(rounded,step_original) or torch.equal(rounded,roundedN) or torch.equal(rounded,roundedRF) or torch.equal(rounded,failed_rounded):raise StopRound('STOPPED_PATH_DUPLICATE')
+        same(torch.equal(layer.weight,step_original) and layer.weight.dtype==step_original.dtype,'path.center_control_restored')
+        native_cost=match['actual_native_F0_cost']
+        def progress_conditions(losses,margin):
+            gain=step_start[0]-losses[0];mg=margin-step_margin['margin']
+            return dict(actual_NLL_gain=gain,NLL_floor=1e-5,NLL_pass=gain>1e-5,margin=margin,margin_reference=step_margin['margin']+1e-5,margin_gain=mg,margin_pass=mg>1e-5,criterion='new_monotone_path_not_old_fixed_per_step_A_comparison')
+        data['candidate_formulated']=True
+        with torch.no_grad():layer.weight.copy_(rounded)
+        data['candidate_written']=True;emit()
+        with weight_guard(layer,rounded,'S.native_main',checks,emit,expected_calls=3):
+            data['main_gate']=gates(rt,pair,factor,step_original,step_start,base_null);data['main_margin'],_=read_margin(rt,pair[0],identity[0],identity[2])
+        data['candidate_evaluated']=True;emit();near(data['main_margin']['mean_nll'],data['main_gate']['native_nll'][0],'S.main_native_repeat')
+        near(data['main_gate']['combined_native_fisher_cost'],native_cost,'S.native_commit_cost',True,tolerance=1e-10)
+        data['main_conditions']=progress_conditions(data['main_gate']['native_nll'],data['main_margin']['margin']);data['main_margin_gain']=data['main_margin']['margin']-step_margin['margin'];emit()
+        if not data['main_conditions']['NLL_pass']:raise StopRound('STOPPED_MAIN_ACTUAL_NLL_FAILED')
+        if not data['main_conditions']['margin_pass']:raise StopRound('STOPPED_MAIN_MARGIN_FAILED')
+        if not data['main_gate']['gates']['trust']:raise StopRound('STOPPED_MAIN_TRUST_FAILED')
+        data['correction']=None
+        if not data['main_gate']['gates']['null']:
+            data['new_secant']=1;emit();data['correction']=correction(rt,record,factor,base_null,compensate='secant');emit()
+        data['final_gate']=gates(rt,pair,factor,step_original,step_start,base_null);data['final_margin'],_=read_margin(rt,pair[0],identity[0],identity[2]);emit()
+        near(data['final_margin']['mean_nll'],data['final_gate']['native_nll'][0],'S.final_native_repeat')
+        data['final_conditions']=progress_conditions(data['final_gate']['native_nll'],data['final_margin']['margin']);data['final_margin_gain']=data['final_margin']['margin']-step_margin['margin'];data['overall_conditions']=conditions(start_losses[0]-data['final_gate']['native_nll'][0],data['final_margin']['margin'],FINAL_MARGIN);data['accepted']=data['overall_conditions']['NLL_pass'] and data['overall_conditions']['margin_pass'] and data['final_gate']['accepted'] and data['final_conditions']['NLL_pass'] and data['final_conditions']['margin_pass'] and (data['correction'] is None or data['correction']['status']=='APPLIED');emit()
+        if not data['accepted']:raise StopRound('STOPPED_FINAL_CONDITIONS_FAILED')
+        data['cumulative_F0_cost']=fisher_cost(layer.weight.detach().float()-original.float(),a,b);generate(data);data['status']='COMPLETE_ACCEPTED_MONOTONE_PATH';emit()
+    finally:
+        with torch.no_grad():layer.weight.data=original.clone()
+        data['endpoint_restore_nll']=native_losses(rt,pair);data['endpoint_restored']=layer.weight.dtype==original.dtype and torch.equal(layer.weight,original) and data['endpoint_restore_nll']==start_losses;emit()
+        if not data['endpoint_restored']:raise StopRound('STOPPED_S_ENDPOINT_RESTORE_FAILED')

@@ -1,0 +1,62 @@
+{
+  "status": "COMPLETE",
+  "check_count": 341,
+  "failed_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true
+  },
+  "costs": {
+    "forward": 482,
+    "diagnostic_forward": 14,
+    "seconds": 75.62566900253296,
+    "peak_allocated_bytes": 20214007296,
+    "new_disk_bytes": 1145371,
+    "checkpoint_count": 0,
+    "generation": 0,
+    "judge": 0,
+    "new_cost_matching": 0,
+    "new_secant": 0,
+    "new_edit_candidates": 0
+  },
+  "budget_checks": {
+    "forward": true,
+    "diagnostic_forward": true,
+    "seconds": true,
+    "new_disk_bytes": true,
+    "checkpoint_count": true,
+    "generation": true,
+    "judge": true,
+    "new_cost_matching": true,
+    "new_secant": true,
+    "new_edit_candidates": true
+  },
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "decomposition": {
+    "P_old": -0.1516953133602808,
+    "P": -0.1516953174411827,
+    "D": -4.0809018941878605e-09,
+    "R": 0.3295181457340294,
+    "Q": -0.0030531883239746094,
+    "Q_lin": 0.0009227063914574402,
+    "Q_rem": -0.003975894715432049,
+    "E": -0.0001214742660522461,
+    "delta_native": 0.17464816570281982,
+    "delta_F_unrounded": 0.17782282829284668,
+    "delta_F_rounded": 0.17476963996887207,
+    "closure_error": 0.0,
+    "historical_gap_closure_error": 0.0
+  },
+  "interpretation": "UNROUNDED_FIXED_CHAIN_ALREADY_REVERSES_DESCENT",
+  "historical_weight_direct_comparison": null,
+  "limitations": [
+    "F is editable-layer FP32 with the original remaining mixed chain",
+    "R is not pure curvature; Q includes finite-response interactions",
+    "No new accepted edit, generation result, T0 performance or safe-B claim"
+  ]
+}

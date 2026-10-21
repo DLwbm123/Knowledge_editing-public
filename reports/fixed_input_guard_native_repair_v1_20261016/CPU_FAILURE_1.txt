@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "<stdin>", line 9, in <module>
+  File "<checkout>/experiments/fixed_input_guard_v1/native_check.py", line 54, in run
+    assert receipt['accepted'], receipt
+           ~~~~~~~^^^^^^^^^^^^
+AssertionError: {'accepted': False, 'reason': 'NATIVE_PROJECTION_REJECTED', 'residual': 1.0595649735551663e-05, 'limit': 7.742083952934222e-06, 'update_norm': 7.642083952934222, 'relative_residual': 1.3864869583751959e-06, 'ideal_residual': 2.936577070362012e-15, 'initial_native_residual': 0.020853192416799615, 'relative_direction_distortion': 0.03700231130322791, 'repair': {'corrected_rows': 4096, 'maximum_coordinate_steps': 283}, 'seed': 2026, 'weight_scale': 0.02, 'update_ratio': 0.05, 'seconds': 13.10527391708456}

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<stdin>", line 9, in <module>
+  File "<checkout>/experiments/fixed_input_guard8_v1/cpu_check.py", line 95, in run
+    anchor = scope['teacher'](z.detach()+.2, y, torch.zeros(2, 11))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<checkout>/experiments/purew_he_hm146_v1/source_loss.py", line 70, in teacher
+    keep=la>=math.log(ALPHA)
+             ^^^^
+NameError: name 'math' is not defined. Did you forget to import 'math'

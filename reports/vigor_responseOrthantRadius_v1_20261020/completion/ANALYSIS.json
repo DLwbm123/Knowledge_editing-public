@@ -1,0 +1,140 @@
+{
+  "status": "STOPPED_ORTHANT_NATIVE_ADMISSION_FAILED",
+  "recorded_checks": 477,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true
+  },
+  "costs": {
+    "forward": 495,
+    "extra_forward": 27,
+    "seconds": 80.94093227386475,
+    "new_secant": 0,
+    "native_match_attempts": 0,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 2114434,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": false,
+  "candidate_evaluated": false,
+  "analytic": null,
+  "matching": null,
+  "main_gate": null,
+  "main_margin": null,
+  "main_conditions": null,
+  "main_margin_gain": null,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "historical_radius": {
+    "original_small_cap": 2.4043746118789385e-15,
+    "historical_reference_cap": 5.368434395105091e-13,
+    "scale": 14.94248258401418,
+    "new_scale_choices": 1,
+    "scale_search": false,
+    "small_subset_forward_calls": 0,
+    "reference_continuous_cost": 5.368434231217659e-13,
+    "equality_cost_matching": false
+  },
+  "native_subset": {
+    "rule": "nonzero_native_coordinate_with_NLL_dot_negative_and_margin_dot_positive",
+    "selected_elements": 14668796,
+    "old_changed_elements": 29858288,
+    "selected_fraction": 0.49128054495287876,
+    "new_direction_solves": 0,
+    "new_reserve": 0,
+    "old_candidate_forward_calls": 0,
+    "old_native_F0_cost": 5.399714166894263e-13,
+    "old_native_linear_change": [
+      8.304060558979049e-05,
+      2.2561636961050837,
+      -0.001531372601555434
+    ],
+    "null_tangent_projection_preserved": false
+  },
+  "native_admission": {
+    "actual_native_F0_cost": 2.677829342170709e-13,
+    "cap": 5.368434395105091e-13,
+    "not_equality_matching": true,
+    "native_linear_change": [
+      -0.1044484993382552,
+      1.05398260601175,
+      -0.02801895018629446
+    ],
+    "predicted_original_base_null": -0.030392407141250515,
+    "cost_pass": true,
+    "NLL_pass": true,
+    "margin_pass": true,
+    "null_pass": false
+  },
+  "continuation_start": {
+    "native_nll": [
+      1.3546538352966309,
+      3.703401803970337
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.3546538352966309,
+      "margin": -4.6015625,
+      "nll": 4.761768817901611,
+      "probability": 0.008550471626222134,
+      "rank": 3,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 4.6015625,
+      "fixed_competitor_margin": -4.6015625,
+      "strongest_competitor_changed": false
+    }
+  }
+}

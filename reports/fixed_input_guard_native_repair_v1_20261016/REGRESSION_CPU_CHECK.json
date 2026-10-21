@@ -1,0 +1,217 @@
+{
+  "scope": "CPU_SYNTHETIC_ONLY",
+  "torch": "2.6.0",
+  "tolerance": {
+    "absolute": 1e-07,
+    "relative": 1e-06
+  },
+  "checks": {
+    "fixed_token_selection_zero_and_extreme_inputs": true,
+    "constant_storage_2000_edits": [
+      {
+        "edits": 1,
+        "tensor_bytes": 114728,
+        "checkpoint_bytes": 116748
+      },
+      {
+        "edits": 146,
+        "tensor_bytes": 114728,
+        "checkpoint_bytes": 116748
+      },
+      {
+        "edits": 1000,
+        "tensor_bytes": 114728,
+        "checkpoint_bytes": 116748
+      },
+      {
+        "edits": 2000,
+        "tensor_bytes": 114728,
+        "checkpoint_bytes": 116748
+      }
+    ],
+    "fd_covariance_oracle": {
+      "minimum": -2.6251140468053556e-12,
+      "maximum": 17.04200312077996,
+      "discarded_bound": 17.24758803844452
+    },
+    "restore_write_equivalence": {
+      "accepted": true,
+      "reason": "ACCEPTED",
+      "residual": 9.88502855989605e-07,
+      "limit": 2.332214209281052e-06,
+      "update_norm": 2.232214209281052,
+      "relative_residual": 4.428351239229771e-07,
+      "ideal_residual": 2.9307302705404113e-15,
+      "initial_native_residual": 9.88502855989605e-07,
+      "relative_direction_distortion": 5.104321510543902e-07,
+      "repair": {
+        "corrected_rows": 0,
+        "reason": "NOT_NEEDED"
+      }
+    },
+    "failed_edit_not_admitted": true,
+    "146_native_fp32_writes": {
+      "accepted": 146,
+      "max_residual_over_limit": 0.5454320308264003
+    },
+    "native_dtypes": {
+      "torch.float32": {
+        "aligned_nonzero_write": {
+          "accepted": true,
+          "reason": "ACCEPTED",
+          "residual": 0.0,
+          "limit": 2.3686744611310977e-06,
+          "update_norm": 2.268674461131098,
+          "relative_residual": 0.0,
+          "ideal_residual": 0.0,
+          "initial_native_residual": 0.0,
+          "relative_direction_distortion": 2.6990501239712105e-07,
+          "repair": {
+            "corrected_rows": 0,
+            "reason": "NOT_NEEDED"
+          }
+        },
+        "general_subspace": {
+          "accepted": true,
+          "reason": "ACCEPTED",
+          "residual": 1.010028448709136e-06,
+          "limit": 2.3017246154122255e-06,
+          "update_norm": 2.2017246154122256,
+          "relative_residual": 4.587442233414962e-07,
+          "ideal_residual": 2.9131359111543368e-15,
+          "initial_native_residual": 1.010028448709136e-06,
+          "relative_direction_distortion": 5.223803391993807e-07,
+          "repair": {
+            "corrected_rows": 0,
+            "reason": "NOT_NEEDED"
+          }
+        }
+      },
+      "torch.float16": {
+        "aligned_nonzero_write": {
+          "accepted": true,
+          "reason": "ACCEPTED",
+          "residual": 0.0,
+          "limit": 2.4028810176069503e-06,
+          "update_norm": 2.3028810176069507,
+          "relative_residual": 0.0,
+          "ideal_residual": 0.0,
+          "initial_native_residual": 0.0,
+          "relative_direction_distortion": 0.002196931968004924,
+          "repair": {
+            "corrected_rows": 0,
+            "reason": "NOT_NEEDED"
+          }
+        },
+        "general_subspace": {
+          "accepted": false,
+          "reason": "NATIVE_PROJECTION_REJECTED",
+          "residual": 0.007716793784963836,
+          "limit": 2.3870784658765598e-06,
+          "update_norm": 2.28707846587656,
+          "relative_residual": 0.003374083530626156,
+          "ideal_residual": 3.010289854431292e-15,
+          "initial_native_residual": 0.007716793784963836,
+          "relative_direction_distortion": 0.003905690381828986,
+          "repair": {
+            "corrected_rows": 0,
+            "reason": "INSUFFICIENT_CORRECTION_COLUMNS"
+          }
+        }
+      },
+      "torch.bfloat16": {
+        "aligned_nonzero_write": {
+          "accepted": true,
+          "reason": "ACCEPTED",
+          "residual": 0.0,
+          "limit": 2.4615986687175234e-06,
+          "update_norm": 2.3615986687175234,
+          "relative_residual": 0.0,
+          "ideal_residual": 0.0,
+          "initial_native_residual": 0.0,
+          "relative_direction_distortion": 0.01628179123548437,
+          "repair": {
+            "corrected_rows": 0,
+            "reason": "NOT_NEEDED"
+          }
+        },
+        "general_subspace": {
+          "accepted": false,
+          "reason": "NATIVE_PROJECTION_REJECTED",
+          "residual": 0.06706242178518837,
+          "limit": 2.36087324472128e-06,
+          "update_norm": 2.2608732447212803,
+          "relative_residual": 0.029662176745983742,
+          "ideal_residual": 2.944562338260558e-15,
+          "initial_native_residual": 0.06706242178518837,
+          "relative_direction_distortion": 0.033811443012324076,
+          "repair": {
+            "corrected_rows": 0,
+            "reason": "INSUFFICIENT_CORRECTION_COLUMNS"
+          }
+        }
+      }
+    },
+    "invalid_zero_corrupt_rejection": true,
+    "native_overflow_no_mutation": true,
+    "full_dimensions": {
+      "shape": [
+        4096,
+        14336
+      ],
+      "tensor_bytes": 12845096,
+      "checkpoint_bytes": 12847116,
+      "native_fp16_write": {
+        "accepted": true,
+        "reason": "ACCEPTED",
+        "residual": 0.0,
+        "limit": 8.100116435678684e-06,
+        "update_norm": 8.000116435678683,
+        "relative_residual": 0.0,
+        "ideal_residual": 0.0,
+        "initial_native_residual": 0.0,
+        "relative_direction_distortion": 0.0008138483411777582,
+        "repair": {
+          "corrected_rows": 0,
+          "reason": "NOT_NEEDED"
+        }
+      },
+      "general_fp16_accepted": {
+        "accepted": true,
+        "reason": "ACCEPTED",
+        "residual": 7.668193727217548e-07,
+        "limit": 0.0007629167899400694,
+        "update_norm": 762.8167899400695,
+        "relative_residual": 1.0052471089185122e-09,
+        "ideal_residual": 2.3804586594695286e-13,
+        "initial_native_residual": 0.10684038400008311,
+        "relative_direction_distortion": 0.007013866668427048,
+        "repair": {
+          "corrected_rows": 4096,
+          "reason": "BOUNDED_TWO_BANK_REPAIR"
+        }
+      },
+      "general_fp32_accepted": {
+        "accepted": true,
+        "reason": "ACCEPTED",
+        "residual": 1.3194730305575672e-05,
+        "limit": 0.0007628990133518643,
+        "update_norm": 762.7990133518643,
+        "relative_residual": 1.729778103355936e-08,
+        "ideal_residual": 2.3804586594695286e-13,
+        "initial_native_residual": 1.3194730305575672e-05,
+        "relative_direction_distortion": 2.5916439992723063e-07,
+        "repair": {
+          "corrected_rows": 0,
+          "reason": "NOT_NEEDED"
+        }
+      },
+      "sketch_compressed": true
+    }
+  },
+  "status": "PASS",
+  "elapsed_seconds": 11.064842583844438,
+  "practical_low_precision_readiness": "CPU_SYNTHETIC_ONLY_REAL_MODEL_PENDING",
+  "experiment_started": false,
+  "process_peak_rss_bytes": 3128213504
+}

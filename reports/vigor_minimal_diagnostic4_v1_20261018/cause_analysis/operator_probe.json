@@ -1,0 +1,145 @@
+{
+  "probe": {
+    "rows": [
+      {
+        "repeat": 0,
+        "deterministic": false,
+        "attention_backend": "sdpa",
+        "attention_ops": [
+          "ScaledDotProductFlashAttentionBackward0",
+          "aten::_flash_attention_backward",
+          "aten::_flash_attention_forward",
+          "aten::_scaled_dot_product_flash_attention",
+          "aten::_scaled_dot_product_flash_attention_backward",
+          "aten::scaled_dot_product_attention",
+          "autograd::engine::evaluate_function: ScaledDotProductFlashAttentionBackward0"
+        ],
+        "losses": [
+          4.921504020690918,
+          4.466132164001465
+        ],
+        "geometry": {
+          "status": "OK",
+          "E": 65192135903.683395,
+          "kvv": 87877023457.11937,
+          "k00": 97806459555.96309,
+          "kv0": 47103381376.64068,
+          "null_directional_derivative": -1270.8810282945633
+        },
+        "relative_E_difference": -0.00025709554904895793
+      },
+      {
+        "repeat": 1,
+        "deterministic": false,
+        "attention_backend": "sdpa",
+        "attention_ops": [
+          "ScaledDotProductFlashAttentionBackward0",
+          "aten::_flash_attention_backward",
+          "aten::_flash_attention_forward",
+          "aten::_scaled_dot_product_flash_attention",
+          "aten::_scaled_dot_product_flash_attention_backward",
+          "aten::scaled_dot_product_attention",
+          "autograd::engine::evaluate_function: ScaledDotProductFlashAttentionBackward0"
+        ],
+        "losses": [
+          4.921504020690918,
+          4.466132164001465
+        ],
+        "geometry": {
+          "status": "OK",
+          "E": 65198004491.06093,
+          "kvv": 87922894010.93294,
+          "k00": 97801158252.21164,
+          "kv0": 47143615858.75236,
+          "null_directional_derivative": 1396.6382014155388
+        },
+        "relative_E_difference": -0.00016709882615417726,
+        "gradient_relative_l2": [
+          0.0014630110235884786,
+          0.0013528941199183464
+        ],
+        "gradient_equal": [
+          false,
+          false
+        ]
+      },
+      {
+        "repeat": 2,
+        "deterministic": true,
+        "attention_backend": "sdpa",
+        "attention_ops": [
+          "ScaledDotProductFlashAttentionBackward0",
+          "aten::_flash_attention_backward",
+          "aten::_flash_attention_forward",
+          "aten::_scaled_dot_product_flash_attention",
+          "aten::_scaled_dot_product_flash_attention_backward",
+          "aten::scaled_dot_product_attention",
+          "autograd::engine::evaluate_function: ScaledDotProductFlashAttentionBackward0"
+        ],
+        "losses": [
+          4.921504020690918,
+          4.466132164001465
+        ],
+        "geometry": {
+          "status": "OK",
+          "E": 65214837377.33204,
+          "kvv": 87904585369.7157,
+          "k00": 97846928143.25989,
+          "kv0": 47118172093.015434,
+          "null_directional_derivative": 547.2825600504875
+        },
+        "relative_E_difference": 9.103903629958943e-05,
+        "gradient_relative_l2": [
+          0.0014863945543766022,
+          0.0015474013052880764
+        ],
+        "gradient_equal": [
+          false,
+          false
+        ]
+      },
+      {
+        "repeat": 3,
+        "deterministic": true,
+        "attention_backend": "sdpa",
+        "attention_ops": [
+          "ScaledDotProductFlashAttentionBackward0",
+          "aten::_flash_attention_backward",
+          "aten::_flash_attention_forward",
+          "aten::_scaled_dot_product_flash_attention",
+          "aten::_scaled_dot_product_flash_attention_backward",
+          "aten::scaled_dot_product_attention",
+          "autograd::engine::evaluate_function: ScaledDotProductFlashAttentionBackward0"
+        ],
+        "losses": [
+          4.921504020690918,
+          4.466132164001465
+        ],
+        "geometry": {
+          "status": "OK",
+          "E": 65214837377.33204,
+          "kvv": 87904585369.7157,
+          "k00": 97846928143.25989,
+          "kv0": 47118172093.015434,
+          "null_directional_derivative": 547.2825600504875
+        },
+        "relative_E_difference": 9.103903629958943e-05,
+        "gradient_relative_l2": [
+          0.0,
+          0.0
+        ],
+        "gradient_equal": [
+          true,
+          true
+        ]
+      }
+    ],
+    "torch": "2.7.1+cu128",
+    "attention_class": "MistralAttention",
+    "tf32": false,
+    "fp16_reduced": true,
+    "deterministic": true
+  },
+  "resident_seconds": 29.7979633808136,
+  "process_exited": true
+}

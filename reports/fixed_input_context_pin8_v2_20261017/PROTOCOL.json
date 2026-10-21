@@ -1,0 +1,151 @@
+{
+  "version": "FIXED_INPUT_CONTEXT_PIN8_V2_20261017",
+  "arms": {
+    "U": "H_ONLY_NO_PROTECTION",
+    "P": "H_ONLY_CONTEXT_FIXED_NATIVE_PINS"
+  },
+  "orders": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "seeds": [
+    1442709718,
+    39524989,
+    4278467101,
+    2255805473,
+    225034559,
+    173959200,
+    958324087,
+    1907321266
+  ],
+  "slots_per_edit": 20,
+  "prefixes": [
+    0,
+    4,
+    8
+  ],
+  "native_dtype": "float16",
+  "bf16": "CPU_COMPATIBILITY_ONLY_NO_EXTRA_EXPERIMENT_ARM",
+  "optimizer": {
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.0,
+    "amsgrad": false,
+    "gradient_clip": 5.0,
+    "state_scope": "CONTINUOUS_WITHIN_ARM",
+    "candidate_checks_per_slot": 1,
+    "backtracking": false,
+    "Armijo": 0.0001
+  },
+  "H": {
+    "alpha": 0.95,
+    "teacher": "ORIGINAL_BASE",
+    "views": 5,
+    "slot_views": "original plus FIT[(slot-1)%4]",
+    "E_weight": 0
+  },
+  "guard": {
+    "bytes_cap": 16777216,
+    "base_rank": 32,
+    "history_rank": 64,
+    "sketch_rows": 128,
+    "inputs_per_edit_max": 32,
+    "atol": 1e-07,
+    "rtol": 1e-06,
+    "max_direction_distortion": 0.05,
+    "pinned_columns": 32,
+    "pinned_sources_max": 8,
+    "pinned_per_source_max": 4,
+    "pinned_eviction": false,
+    "persistent_bytes": 14680120,
+    "sampling": "visual_prompt_answer_stratified_first_and_final_predictors_required"
+  },
+  "budgets": {
+    "per_arm": {
+      "attempt_slots": 160,
+      "admission_slots": 1,
+      "backwards": 161,
+      "candidate_checks": 161,
+      "committed_updates": 161,
+      "forwards": 200000,
+      "generation_attempts": 512,
+      "new_Judge": 512
+    },
+    "global_caps": {
+      "attempt_slots": 320,
+      "admission_slots": 2,
+      "backwards": 322,
+      "candidate_checks": 322,
+      "committed_updates": 322,
+      "forwards": 400000,
+      "generation_attempts": 1024,
+      "new_Judge": 1024
+    },
+    "GPU_hours_per_arm": null,
+    "GPU_hours_total": null,
+    "wall_hours_total": null,
+    "active_checkpoint_MiB_cap": 1280,
+    "owned_generated_checkpoint_GiB_cap": 3,
+    "total_run_disk_GiB_cap": 16,
+    "host_available_GiB_admission_target": 32,
+    "GPU_free_MiB_admission": null
+  },
+  "evaluation": {
+    "protection_count": 54,
+    "per_arm_panel_upper_counts": {
+      "prefix0": 126,
+      "prefix4": 90,
+      "prefix8": 126,
+      "insertion": 40,
+      "base_identity": 3,
+      "reload": 2
+    },
+    "generation_upper_bound": 387,
+    "judge_upper_bound": 382,
+    "missing": "UNKNOWN_FAIL_CLOSED",
+    "Judge_attempts_per_payload": 1
+  },
+  "policy": {
+    "scientific_failure": "RECORD_AND_CONTINUE",
+    "mechanical_failure": "STOP_NO_AUTOMATIC_REPLAY",
+    "checkpoint": "SOURCE_BOUNDARY_OR_COOPERATIVE_STOP",
+    "automatic146": false
+  },
+  "readiness": {
+    "CPU": "PASS",
+    "live_admission": "PENDING"
+  },
+  "authorization": {
+    "execution": true,
+    "model_calls": true,
+    "hardware": true,
+    "Judge": true,
+    "resume": false,
+    "monitoring": true,
+    "resource_gate_waiver": true
+  },
+  "comparison": {
+    "reference": "FIXED_INPUT_GUARD8_V1_20261016",
+    "same_order": true,
+    "same_seeds": true,
+    "same_optimizer_loss_native_tolerance": true,
+    "primary_inspection": [
+      "source6 insertion_to_final T0 and T2G",
+      "protection54 damage at4 and8",
+      "1024_token_cap_hit_count and output_lengths"
+    ],
+    "report_all_sources": true,
+    "old_results_immutable": true,
+    "score_reuse": "only identical full Judge payload; historical missing permanent"
+  }
+}

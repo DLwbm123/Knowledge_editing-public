@@ -1,0 +1,126 @@
+{
+  "status": "STOPPED_TRANSFER_MATCHED_PREDICTION_FAILED",
+  "recorded_checks": 415,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true,
+    "center_control": true,
+    "representation_delta_identity": true
+  },
+  "costs": {
+    "forward": 485,
+    "extra_forward": 17,
+    "seconds": 112.80505990982056,
+    "new_secant": 0,
+    "native_match_attempts": 1,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1659377,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": false,
+  "candidate_evaluated": false,
+  "analytic": null,
+  "matching": {
+    "seed_native_F0_cost": 6.724196124598781e-14,
+    "target_native_F0_cost": 6.85146725701001e-14,
+    "ratio": 1.0094193072940176,
+    "ratio_applications": 1,
+    "actual_native_F0_cost": 6.804098335843273e-14,
+    "relative_error": 0.006913690073943157,
+    "tolerance": 0.01,
+    "native_linear_NLL_change": -0.10805873036944089,
+    "native_linear_margin_gain": 0.8917869386965234,
+    "native_linear_null_change": -0.0006265923441085798,
+    "native_delta_l2": 0.015247537485770513,
+    "changed_elements": 16448847,
+    "prediction_model": "old_uncentered_quadratic_transferred_to_measured_center",
+    "gradient_diagnostic_origin": "uncentered_R3_not_new_center_gradient",
+    "matched_coefficients": [
+      0.0,
+      0.3606216407704153
+    ],
+    "quadratic_recheck": {
+      "coefficients": [
+        0.0,
+        0.3606216407704153
+      ],
+      "predicted_NLL": -0.06404678924912863,
+      "predicted_margin": 0.5833685086089831,
+      "predicted_null": -0.011910086461155364,
+      "predicted_base_null": -0.010216122456638763,
+      "continuous_F0_cost": 6.981147273901556e-14,
+      "in_hull": true,
+      "NLL_pass": true,
+      "margin_pass": true,
+      "null_pass": false,
+      "cost_pass": true
+    },
+    "target_cost_selected_by_single_offline_solver": true
+  },
+  "main_gate": null,
+  "main_margin": null,
+  "main_conditions": null,
+  "main_margin_gain": null,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "center_control_forward_calls": 3,
+  "memory_center_reconstruction": {
+    "frozen_alpha": 1.5660931117171595,
+    "new_secant_calls": 0,
+    "direct_historical_weight_comparison": null
+  },
+  "step_criterion": "monotone_path_not_old_fixed_per_step_A_comparison"
+}

@@ -1,0 +1,65 @@
+{
+  "authorization": {
+    "layer": "model.layers.6.mlp.down_proj",
+    "build": 24,
+    "heldout": 8,
+    "fit": 16,
+    "audit": 16,
+    "vocab": 32000,
+    "fit_seed": 314159001,
+    "audit_seed": 271828001,
+    "random_seeds": [
+      101,
+      102,
+      103,
+      104
+    ],
+    "mis_seed": 424242,
+    "scales": [
+      0.25,
+      0.5,
+      1.0
+    ],
+    "work_norm": 17.58567032970479,
+    "forward_max": 2600,
+    "work_forward_max": 2500,
+    "backward_max": 774,
+    "seconds": 14400,
+    "work_seconds": 13800,
+    "TERM_seconds": 14100,
+    "disk_max": 251658240,
+    "judge_max": 0,
+    "checkpoint": 0,
+    "retries": 0,
+    "chunk": 262144
+  },
+  "split": {
+    "original_order": true,
+    "build_first": 24,
+    "heldout_last": 8,
+    "source_groups_unique": 32,
+    "model_reads_before_freeze": 0
+  },
+  "direction_aliases": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "B1",
+    "B2",
+    "B3",
+    "B4"
+  ],
+  "native_points": 72,
+  "KL_measurements": 2304,
+  "formal_VJPs": 768,
+  "extra_reference_VJPs": 4,
+  "extra_smoke_VJPs": 2,
+  "grouping_verified_from_existing_private_manifest": true,
+  "fit_and_audit_independent_seed_domains": true,
+  "no_editor_before_qualification": true
+}

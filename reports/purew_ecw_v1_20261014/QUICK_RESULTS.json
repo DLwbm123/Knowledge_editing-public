@@ -1,0 +1,103 @@
+{
+  "status": "QUICK_MECHANICAL_COMPLETE",
+  "diagnostic_only": true,
+  "scientific_success": false,
+  "full_ECW_authorized": false,
+  "source_diagnostics": [
+    {
+      "source_position": 1,
+      "slots": 20,
+      "accepted": 16,
+      "rejected": 4,
+      "zero_native_fraction": 0.2,
+      "rejected_slot_flags": {
+        "ACTUAL_SOURCE_ARMIJO": 4
+      },
+      "quantization_bound_blocked_slots": 0,
+      "first_source_CE": 3.528819931458504,
+      "last_source_CE": 3.522323536253632,
+      "last_native_risk_bound": 0.0,
+      "last_residual_energy": 0.0,
+      "freezing_flag": false
+    },
+    {
+      "source_position": 2,
+      "slots": 20,
+      "accepted": 5,
+      "rejected": 15,
+      "zero_native_fraction": 0.75,
+      "rejected_slot_flags": {
+        "NATIVE_RESIDUAL_ENVELOPE": 15
+      },
+      "quantization_bound_blocked_slots": 15,
+      "first_source_CE": 3.1434327817068786,
+      "last_source_CE": 3.12778170935876,
+      "last_native_risk_bound": 0.009989020155176415,
+      "last_residual_energy": 0.01997721569828465,
+      "freezing_flag": false
+    },
+    {
+      "source_position": 3,
+      "slots": 20,
+      "accepted": 0,
+      "rejected": 20,
+      "zero_native_fraction": 1.0,
+      "rejected_slot_flags": {
+        "NATIVE_RESIDUAL_ENVELOPE": 20
+      },
+      "quantization_bound_blocked_slots": 20,
+      "first_source_CE": 3.647870306166234,
+      "last_source_CE": 3.6273555713286925,
+      "last_native_risk_bound": 0.009989020155176415,
+      "last_residual_energy": 0.019977215698284652,
+      "freezing_flag": true
+    }
+  ],
+  "real_VLM_admission": {
+    "status": "PASS",
+    "real_native_write": true,
+    "upstream_exact": true,
+    "parameters_unchanged": true,
+    "temporary_updates": 1
+  },
+  "medical_mechanical": {
+    "status": "MECHANICAL_ONLY",
+    "answer": {
+      "block": "answer",
+      "rows": 4,
+      "projected_trace": 0.06308645868211185,
+      "full_probe_mass": 3383.40758706179
+    },
+    "evidence": {
+      "block": "evidence",
+      "rows": 4,
+      "projected_trace": 3.96035704363181e-05,
+      "full_probe_mass": 1.85818635981944
+    },
+    "parameters": 7566219264,
+    "added_parameters": 0
+  },
+  "native_reload": {
+    "status": "PASS",
+    "outputs": 2,
+    "scientific_scored": false
+  },
+  "actual_counts": {
+    "forwards": 761,
+    "vision_forwards": 32,
+    "backwards": 172,
+    "committed_updates": 23,
+    "attempt_slots": 60,
+    "generation_attempts": 7
+  },
+  "GPU_process_hours": 0.08251820749706693,
+  "new_Judge": 0,
+  "failures": 0,
+  "T2G": "UNATTEMPTED_NO_JUDGE",
+  "T1L_T2L_damage": "UNKNOWN_NOT_PASS",
+  "permanent_missing_not_substituted": true,
+  "original146": "PAUSED",
+  "original_M": "PAUSED",
+  "OL": "WAITING",
+  "FS": "CONTINUES_GPU6"
+}

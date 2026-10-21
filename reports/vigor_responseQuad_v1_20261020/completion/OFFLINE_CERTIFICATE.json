@@ -1,0 +1,44 @@
+{
+  "scope": "only_frozen_empirical_quadratic_model_not_true_network",
+  "model_calls": 0,
+  "solver_restarts": 0,
+  "null_positive_matrix": [
+    [
+      0.19669626890711206,
+      0.08570444841401895
+    ],
+    [
+      0.08570444841401895,
+      0.08732725957375784
+    ]
+  ],
+  "NLL_positive_matrix": [
+    [
+      0.7220196681156092,
+      0.506855647970287
+    ],
+    [
+      0.506855647970287,
+      0.36056264909571684
+    ]
+  ],
+  "null_matrix_eigenvalues": [
+    0.04034737751336584,
+    0.24367615096750406
+  ],
+  "NLL_matrix_eigenvalues": [
+    0.003178306102522934,
+    1.079404011108803
+  ],
+  "base_null_bias": -0.007897377014160156,
+  "null_lower_bound_headroom": 0.002102622985839844,
+  "ellipsoid_center": [
+    0.011987452244825083,
+    -0.020550285681160005
+  ],
+  "ellipsoid_radius_squared": 0.002125541768521291,
+  "NLL_gain_upper_bound": 0.06053980035542216,
+  "required_NLL_gain": 0.07246601581573486,
+  "model_infeasible_at_required_NLL": true,
+  "derivation": "Null lower bound implies (x-c)^T A(x-c)<=r2; PSD NLL quadratic implies gain<=d^T x<=d^T c+sqrt(r2*d^T A^-1*d). Hull/cost/upper-null restrictions were dropped, so this is an upper bound for the smaller model feasible region."
+}

@@ -1,0 +1,7 @@
+# 模型调用前临时路径表示修复
+
+首启动在隔离预检阶段停止：own_input/operator/project_source/memory四边界符合预期，但other_batch拒读未命中，评分未启动。共享helper先写execution_evidence再Popen模型；现场execution_evidence为0、final不存在，因此无模型请求或已评分payload，无推理成本，原RESERVED/缺评分SUMMARY完整保留，不伪称两条已调用。
+
+具体原因：临时目录使用macOS的/var路径别名，而sandbox检查使用实际规范路径。唯一工程修复为临时根Path.resolve()，工作/其他batch路径使用同一规范表示；不删除任何deny规则，不放宽权限，不换模型、rubric、输入或评分标准。规范路径的原五项隔离CPU预检已PASS。
+
+按用户全局约定，零训练/零模型调用的入口配置故障可修复启动，并保留原失败。本修订只允许一次该路径修复，以原两条绑定输入执行首次实际模型评分；不是网络重试、语义重判或失败模型重跑。原2条预检保留计数与实际调用计数分别报告。后续如有模型调用或修复后仍失败，则缺评分停止，不重试、不fallback。

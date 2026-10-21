@@ -1,0 +1,41 @@
+{
+  "status": "CPU_PASS_NO_EXPERIMENT",
+  "scope": "Sampling bug fix only; no experiment or deployment",
+  "problem": "Per-stratum linspace lists were truncated by a shared quota, biasing selected positions toward segment starts.",
+  "change": "Allocate balanced final counts over disjoint visual/prompt/answer-predictor strata before sampling each full span. Preserve answer endpoints; redistribute exhausted short-stratum capacity.",
+  "five_view_quotas": [
+    7,
+    7,
+    6,
+    6,
+    6
+  ],
+  "total_sample_budget": 32,
+  "fixed_anchor_selector": "UNCHANGED",
+  "persistent_protection_bytes": 14680120,
+  "cap_bytes": 16777216,
+  "unchanged": [
+    "optimizer",
+    "learning_rate",
+    "loss",
+    "projection_tolerances",
+    "native_dtype",
+    "pinned_state_schema",
+    "fixed_anchor_capacity"
+  ],
+  "checks": [
+    "actual quotas 6/7 and calibration quota32 span endpoints",
+    "five-view total32",
+    "short-answer redistribution",
+    "insufficient distinct positions",
+    "padding exclusion and uniqueness",
+    "determinism",
+    "fixed anchor positions",
+    "existing CPU executor/checkpoint/native-write checks"
+  ],
+  "historical_results": "Immutable; existing deployed experiment still uses its original source snapshot. No replay or resume with changed sampling.",
+  "scientific_claim": "CPU checks do not establish retention improvement.",
+  "new_experiment_authorized": false,
+  "validation": "CPU_CHECK.json",
+  "collection_note": "First CPU process exited 0 but mixed stdout could not be parsed as pure JSON; reran with explicit result marker and retained stdout/stderr locally. Published receipt is from the successful collection."
+}

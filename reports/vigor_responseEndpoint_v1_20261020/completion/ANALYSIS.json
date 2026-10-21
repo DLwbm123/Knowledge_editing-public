@@ -1,0 +1,158 @@
+{
+  "status": "COMPLETE",
+  "recorded_checks": 450,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true
+  },
+  "costs": {
+    "forward": 494,
+    "extra_forward": 26,
+    "seconds": 98.48758006095886,
+    "new_secant": 0,
+    "native_match_attempts": 0,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 0,
+    "disk_bytes": 1775603,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": false,
+  "candidate_written": false,
+  "candidate_evaluated": false,
+  "analytic": null,
+  "matching": null,
+  "main_gate": null,
+  "main_margin": null,
+  "main_conditions": null,
+  "main_margin_gain": null,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "endpoint_direction_diagnostic": {
+    "gradient_chain": "editable_layer_FP32_not_full_chain_FP32",
+    "quantity_order": [
+      "NLL",
+      "fixed_competitor_margin",
+      "null"
+    ],
+    "F_baseline": [
+      1.3613537549972534,
+      3.7067060470581055
+    ],
+    "F_margin": -4.671875,
+    "directions": [
+      {
+        "direction": "existing_Refresh_effective_increment",
+        "F0_cost": 5.368132537887978e-13,
+        "R3_endpoint_dot": [
+          -0.3076277640706924,
+          2.565325429201166,
+          -0.0015344442989228234
+        ],
+        "new_endpoint_dot": [
+          -0.115030643526817,
+          1.2580594036807904,
+          -0.0760754411646104
+        ],
+        "new_NLL_descent": true,
+        "new_fixed_competitor_margin_ascent": true,
+        "finite_step_response_at_new_endpoint": null
+      },
+      {
+        "direction": "previous_Native_main_effective_increment",
+        "F0_cost": 6.724196124598781e-14,
+        "R3_endpoint_dot": [
+          -0.10732271814103145,
+          0.8863997117818256,
+          -0.0006230237251731662
+        ],
+        "new_endpoint_dot": [
+          -0.04035755641405104,
+          0.4317826048759586,
+          -0.026567529172601176
+        ],
+        "new_NLL_descent": true,
+        "new_fixed_competitor_margin_ascent": true,
+        "finite_step_response_at_new_endpoint": null
+      }
+    ],
+    "new_endpoint_gradient_forward_calls": 2,
+    "Center_gradient_dot": null,
+    "causal_interpretation": "local_derivatives_not_finite_step_acceptance"
+  },
+  "memory_native_reconstruction": {
+    "frozen_alpha": 1.4634371306169494,
+    "new_secant_calls": 0,
+    "historical_direct_weight_comparison": null,
+    "control_forward_calls": 3,
+    "gradient_forward_calls": 2
+  },
+  "accepted_endpoint_control": {
+    "native_nll": [
+      1.3609756231307983,
+      3.7059593200683594
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.3609756231307983,
+      "margin": -4.671875,
+      "nll": 4.8243513107299805,
+      "probability": 0.008031762205064297,
+      "rank": 3,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 4.671875,
+      "fixed_competitor_margin": -4.671875,
+      "strongest_competitor_changed": false
+    }
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "status": "STOPPED_SMALL_NATIVE_ADMISSION_FAILED",
+  "recorded_checks": 457,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "S_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true,
+    "historical_endpoint_forward_calls": true
+  },
+  "costs": {
+    "forward": 495,
+    "extra_forward": 27,
+    "seconds": 79.94531440734863,
+    "new_secant": 0,
+    "native_match_attempts": 0,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1905724,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": false,
+  "candidate_evaluated": false,
+  "analytic": null,
+  "matching": null,
+  "main_gate": null,
+  "main_margin": null,
+  "main_conditions": null,
+  "main_margin_gain": null,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null,
+  "calibration": null,
+  "anchor_checks": {
+    "A": {
+      "F0_cost": 5.368434395105091e-13,
+      "NLL_directional": -0.30462159422541646,
+      "null_directional": 2.4416887286465632e-05,
+      "margin_directional": 1.6459236408741293,
+      "l2": 0.043265182705398794
+    },
+    "H": {
+      "F0_cost": 5.368539246330151e-13,
+      "NLL_directional": -0.26377901406357784,
+      "null_directional": -0.0005208826715252218,
+      "margin_directional": 2.8740037902207276,
+      "l2": 0.04274850859910107
+    }
+  },
+  "calibrated_geometry": null,
+  "analytic_recheck": null,
+  "historical_endpoint_forward_calls": 0,
+  "new_local_geometry": {
+    "F_baseline": [
+      1.3536099195480347,
+      3.7011146545410156
+    ],
+    "F_margin": -4.6015625,
+    "gradient_forward_calls": 2,
+    "chain": "editable_layer_FP32_not_full_chain_FP32"
+  },
+  "small_analytic": {
+    "NLL_energy": 127743022556.61002,
+    "margin_energy": 4885179189169.799,
+    "cross": 99372340493.48022,
+    "cost": 2.4043746118789385e-15,
+    "NLL_floor": 1.05e-05,
+    "required_margin_gain": 0.0,
+    "minimum_NLL_cost": 4.315304186228336e-22,
+    "free_linear_NLL_change": 0.0031177503324839157,
+    "constraint_active": true,
+    "perpendicular_energy": 4807876633949.798,
+    "status": "ELIGIBLE",
+    "predicted_NLL_change": -1.05e-05,
+    "predicted_margin_gain": 0.15204402327348235,
+    "NLL_scale": -8.219627021387308e-17,
+    "perpendicular_scale": 3.16256432695359e-14
+  },
+  "local_geometry": {
+    "NLL": {
+      "status": "OK",
+      "E": 127743022556.61002,
+      "kvv": 128069945139.05682,
+      "k00": 823899402876.7563,
+      "kv0": 16411922743.859186,
+      "null_directional_derivative": -708.8637473583221
+    },
+    "margin": {
+      "status": "OK",
+      "E": 4885179189169.799,
+      "kvv": 5204106470981.049,
+      "k00": 823899402876.7563,
+      "kv0": 512605113220.5243,
+      "null_directional_derivative": -10777.032307624817
+    },
+    "cross": 99372340493.48022,
+    "cost_upper_bound": 2.4043746118789385e-15
+  },
+  "small_native_admission": {
+    "actual_native_F0_cost": 2.1304450197927124e-15,
+    "cap": 2.4043746118789385e-15,
+    "not_equality_matching": true,
+    "native_linear_change": [
+      0.00017080917532345474,
+      0.12624122830635065,
+      -0.0007264048712333428
+    ],
+    "predicted_original_base_null": -0.0030998618261893975,
+    "cost_pass": true,
+    "NLL_pass": false,
+    "margin_pass": true,
+    "null_pass": true
+  },
+  "continuation_start": {
+    "native_nll": [
+      1.3546538352966309,
+      3.703401803970337
+    ],
+    "margin": {
+      "target_position": 1,
+      "mean_nll": 1.3546538352966309,
+      "margin": -4.6015625,
+      "nll": 4.761768817901611,
+      "probability": 0.008550471626222134,
+      "rank": 3,
+      "top1_matches_target": false,
+      "top1_margin_over_target": 4.6015625,
+      "fixed_competitor_margin": -4.6015625,
+      "strongest_competitor_changed": false
+    }
+  }
+}

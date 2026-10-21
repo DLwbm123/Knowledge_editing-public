@@ -1,0 +1,22 @@
+{
+  "status": "OUTER_EXECUTION_COMPONENTS_IMPLEMENTED_NOT_DEVICE_QUALIFIED",
+  "shared_method_budget": true,
+  "four_final_generation_caller": true,
+  "independent_guard_code": true,
+  "once_only_score_bridge": true,
+  "control_path_checks": 17,
+  "actual_guard_tested": false,
+  "actual_runtime_KV_verified": false,
+  "source_manifest_bound": false,
+  "GPU_launch_admitted": false,
+  "method_hyperparameters_changed": false,
+  "planned_cost_upper_bound_full_model_forwards": 655,
+  "forward_hard_cap": 800,
+  "remaining": [
+    "admitted loading/KV caller",
+    "concrete private source/model/F0/resource receipts",
+    "private remote-to-local scorer handoff",
+    "actual hardware/runtime qualification"
+  ],
+  "next_work": "implement necessary real runtime/KV and loading caller integration; no repeated data census"
+}

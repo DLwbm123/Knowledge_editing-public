@@ -1,0 +1,297 @@
+{
+  "version": "PUREW_ECW_CONSISTENT3_V1_20261015",
+  "status": "FROZEN_AUTHORIZED",
+  "execution_authorized": true,
+  "authorization": "2026-10-15 user: analyze existing logs then execute finite GPU2 contrast and monitor every30 minutes",
+  "reference": {
+    "B": "immutable BCD B161 outputs; existing full-bound scores only; two unattempted consumers are not requested separately",
+    "publication": "736ba7b9847986154e6db0016e04b2e11fc505d0",
+    "C": "old C first-source training diagnostics only; no prefix3 output",
+    "new_experiment_independent_activation": true
+  },
+  "calibration": {
+    "pool": "existing source-qualified61 SLAKE train QAs/31 image groups; historically selected training Base-correct",
+    "selected_questions": 8,
+    "selected_groups": 8,
+    "selection_quotas": {
+      "Organ": 4,
+      "Modality": 2,
+      "Plane": 1,
+      "Quantity": 1
+    },
+    "selection_rule": "quota order, earliest existing BASIS order, distinct source groups; then original pool order",
+    "binding": "988b3b5065f93eded1b9453c256eb2d74c45b5bc54be30e72540e58eaa5f9129",
+    "source_audit_status": "PASS_SOURCE_AVAILABILITY_LIMITED_COVERAGE",
+    "collision_checks": 1,
+    "evaluation_or_edit_group_overlap": 0,
+    "input_text_overlap": 0,
+    "selection_repair": false,
+    "native_Base_factor_rows": 16,
+    "rows_per_source": 2,
+    "scaling": "sqrt(1/(8*T))/sqrt(2)",
+    "probe_seed": "20260912+200000+fixed calibration order",
+    "prefix": "fresh native Base actual answer, exact historical native Base8 comparison before statistics",
+    "one_pre_edit_pass": true,
+    "new_base_generations": 8,
+    "no_calibration_QA_image_features_teacher_in_edit_learner": true,
+    "KG_coverage": 0,
+    "XRay_coverage": 0,
+    "patient_independence": "UNKNOWN",
+    "clinical_confirmation": false,
+    "teacher_or_factor_computed": false,
+    "shared_initial_parameter_statistics_N_J_NJ": true,
+    "normalized_Fisher": "sum_i w_i F_i / mu_i^2; w_i=1/(8*T_source); raw native-Base top1-top2 probability gap at fixed actual-answer prefix",
+    "nonpositive_nonfinite_gap_action": "SCIENCE_STOP_NO_FLOOR_SUBSET_OR_REPLACEMENT",
+    "same_16_Gaussian_draws_for_plain_and_normalized": true,
+    "calibration_backwards": 32
+  },
+  "cohort": {
+    "original_first3": true,
+    "original_order_per_edit_seed": true,
+    "original_native_FIT_only": true,
+    "attempt_slots_per_source": 20,
+    "new_arms": [
+      "N",
+      "J",
+      "NJ"
+    ],
+    "formal_slots_per_new_arm": 60,
+    "new_total_formal_slots": 180
+  },
+  "arms": {
+    "N": {
+      "Base_rows": 16,
+      "answer_probe_rows_per_source": 4,
+      "legacy_scalar_evidence_rows": 4,
+      "Base_unit": "margin_normalized_KL",
+      "current_KL_linear_constraints": false,
+      "maximum_parameter_rows": 32
+    },
+    "J": {
+      "Base_rows": 16,
+      "answer_probe_rows_per_source": 4,
+      "legacy_scalar_evidence_rows": 4,
+      "Base_unit": "absolute_KL",
+      "current_KL_linear_constraints": true,
+      "maximum_parameter_rows": 46
+    },
+    "NJ": {
+      "Base_rows": 16,
+      "answer_probe_rows_per_source": 4,
+      "legacy_scalar_evidence_rows": 4,
+      "Base_unit": "margin_normalized_KL",
+      "current_KL_linear_constraints": true,
+      "maximum_parameter_rows": 46
+    }
+  },
+  "training": {
+    "layer": "model.layers.21.mlp.down_proj.weight",
+    "native": "FP16",
+    "gradient_master": "FP32",
+    "statistics": "FP64",
+    "loss": ".5 native CE + .5 cyclic original FIT CE + existing qualified removed-view soft KL weight1",
+    "history_case_replay": false,
+    "eta": 0.01,
+    "gradient_cap": 5,
+    "loss_scale": 128,
+    "proposal_norm_cap": 0.05,
+    "Gamma": "IDENTITY",
+    "Base_proxy_epsilon": 0.01,
+    "historical_proxy_epsilon": 0.01,
+    "J_NJ_removed_proxy_epsilon": 0.01,
+    "J_NJ_relative_margin_epsilon": 0.01,
+    "J_NJ_current_removed_KL_per_view_cap": 0.01,
+    "risk_units": "N/NJ Base normalized decision-risk .01; J Base absolute KL .01; units differ explicitly; other independent block budgets remain .01",
+    "Base_q_v_born_before_any_formal_write": true,
+    "history_q_v_not_reanchored": true,
+    "complete_factors_no_FD_or_isotropic_completion": true,
+    "actual_native_delta": "FP64(candidate FP16 minus old FP16)",
+    "Armijo": 0.0001,
+    "maximum_candidate_backtracks": 8,
+    "maximum_dual_iterations": 48,
+    "maximum_dual_line_search": 8,
+    "finite_dual_failure_consumes_slot": true,
+    "reject_zero_discard_candidate_master_native": true,
+    "added_inference_parameters": 0,
+    "added_inference_branches": 0,
+    "current_linear_constraints": "J/NJ: K_j(current)+grad K_j(current)^T d<=.01 for all5 source1 removed views; true per-view native check remains final",
+    "affine_gradients": "current source only; ephemeral CPU parameter gradients retired every slot; never saved as old sample features"
+  },
+  "medical": {
+    "region_gate_orders": [
+      1
+    ],
+    "KG_region_off_orders": [
+      2
+    ],
+    "missing_region_off_orders": [
+      3
+    ],
+    "source_only_coarse_boxes": 2,
+    "concept_spans": 2,
+    "prompt_variants": 5,
+    "per_concept_per_prompt_margin_rows": 10,
+    "mask": "same qualified union boxes, gray128, padding0",
+    "new_labels_or_negative_answers": 0,
+    "J_NJ_scope_soft_loss_unchanged_from_B": true,
+    "J_NJ_removed_pre_edit_fisher_anchor": "source1 theta0; advance from first write; no post-edit q/v reset",
+    "J_NJ_direct_current_removed_KL": "each of five views independently <=.01",
+    "margin": "concept-token mean logprob full minus removed, birth after source1; ten finite positive margins required",
+    "nonpositive_margin_action": "Only that J/NJ arm scientific stop after source1 diagnostics; no abs, floor, subset, replacement or extra slots",
+    "margin_certificate": "frozen-linear conditional; nonlinear Hessian/path bounds not established",
+    "diagnosis_decision_margin": "NOT_ESTABLISHED_NO_CLINICIAN_VERIFIED_ALTERNATIVE_SET",
+    "source_end_diagnostic_before_exception": true,
+    "source_end_gate_order": [
+      "persist ten anonymous margin counts/min/max and complete source CE",
+      "if CE>=.1: EDIT_NOT_FIT",
+      "else if not ten finite strictly positive: EVIDENCE_MARGIN_NOT_ADMITTED",
+      "otherwise normalize all ten rows; no floor or subset"
+    ],
+    "independent_arm_scientific_stop": true
+  },
+  "nonlinear": {
+    "sampling_operator_error": "UNKNOWN; probe-count contrast is not a universal upper certificate",
+    "shadow_KL_bound": ".5||F-Fhat||op||delta||^2+L||delta||^3/6+numeric",
+    "evidence_lower_bound": "m*(1-sqrt(2 epsilon_margin)) - M||delta||^2/2",
+    "L_M_certified": false,
+    "FP16_activation_kernel_C3_certificate": false,
+    "uniform_big_remainder_not_inserted": true,
+    "unknown_remainder_not_claimed_zero": true,
+    "current_window_actual_linear_gap_diagnostics_only": true,
+    "cumulative_path_moments": "A0..A3 conditional on valid L; not an empirical global certificate",
+    "no_old_case_refresh": true
+  },
+  "failure_criteria": {
+    "high_loss_frozen": "source-end complete native/FIT weighted CE>=.1 and all last10 actual native writes zero",
+    "low_loss_zero_is_not_early_freeze": true,
+    "source_CE_success_threshold": 0.1,
+    "numeric_dominance_fraction": 0.01,
+    "numeric_stop": "five consecutive dominance-caused rejections with current source CE>=.1",
+    "individual_Base_protection_damage_allowed": 0,
+    "unknown_protection_fails": true,
+    "all_T0_insertion_and_final": true,
+    "all_T1G": true,
+    "per_edit_T2G_shared_lower_bound_nonnegative": true,
+    "full_scoring_required": true,
+    "no_slot_refill_tuning_seed_search": true
+  },
+  "evaluation": {
+    "prefixes": [
+      1,
+      3
+    ],
+    "new_total_consumers": 483,
+    "A_reused_consumers": 0,
+    "all_methods_total_consumers": 644,
+    "insertion_per_arm": 15,
+    "fixed_protection_per_arm": 36,
+    "fixed_protection_tasks": {
+      "T2L": 34,
+      "T1L": 2
+    },
+    "Base_canaries_per_arm": 3,
+    "fresh_reload_questions_per_arm": 2,
+    "new_generations_breakdown": {
+      "evaluation": 483,
+      "canaries": 9,
+      "reload": 6,
+      "calibration_Base": 8
+    },
+    "Judge": "gpt-6-astra medium original Stage17 isolated one attempt per new payload",
+    "failed_Judge_retry": false,
+    "consecutive_new_transport_failure_stop": 3,
+    "new_Judge_waits_all_trajectories_reload_Final_consumed_closed_leases": true,
+    "paired_bootstrap": 10000,
+    "seed": 20260912,
+    "units": [
+      "edit",
+      "source"
+    ],
+    "primary_contrasts": [
+      "N-B",
+      "J-B",
+      "NJ-J",
+      "NJ-N"
+    ],
+    "shared_missing_exact_bounds": true,
+    "unattempted_not_permanent_missing": true,
+    "K_matched_first3": "NA_NO_REBUILD",
+    "B_external_historical_consumers": 161,
+    "new_consumers_per_completed_arm": 161,
+    "new_consumers_per_source1_stop_arm": 87,
+    "historical_B_unattempted": "remain UNKNOWN_UNATTEMPTED unless a genuinely new generated identical full-binding payload independently obtains a score",
+    "early_stop_outputs": "actual insertion5+prefix1 46+fixed36; no prefix3; last native fixed2-question reload before retirement; no fictional terminal panels",
+    "new_Judge_waits_all_actual_terminal_trajectories_reload": true
+  },
+  "budgets": {
+    "maximum_formal_attempt_slots": 180,
+    "maximum_committed_updates": 183,
+    "maximum_backwards": 1500,
+    "maximum_generations": 506,
+    "maximum_new_Judge": 483,
+    "GPU_process_hours": 8,
+    "wall_hours": 24,
+    "owned_matrix_limit_bytes": 103079215104,
+    "minimum_free_bytes": 8589934592,
+    "owned_GPU_memory_limit_MiB": 46080,
+    "minimum_free_GPU_MiB": 46080,
+    "cached_reservation_GiB": 43,
+    "largest_factor_rows": 46,
+    "parameter_dimension_reference": 58720256,
+    "largest_factor_FP64_bytes": 21609054208,
+    "planning_host_RAM_minimum_GiB": 96,
+    "activation_epoch": null,
+    "deadline_epoch": null,
+    "activation_begins_only_after_new_explicit_launch_authorization": false,
+    "old_budget_borrowing": false,
+    "maximum_forward_calls": 200000,
+    "forward_count_convention": "forward counter includes vision forwards; do not double count vision subset",
+    "maximum_ephemeral_current_KL_gradients": 5,
+    "calibration_two_initial_factors": true
+  },
+  "lifecycle": {
+    "one_new_future_activation": true,
+    "serial_arms": [
+      "calibration plain+normalized",
+      "all native Base/mechanical admissions",
+      "N",
+      "N reload",
+      "J",
+      "J actual-terminal reload",
+      "NJ",
+      "NJ actual-terminal reload",
+      "all actual registered outputs scoring",
+      "publication"
+    ],
+    "save_every_slots": 20,
+    "save_source_boundary_evaluation_and_cooperative_stop": true,
+    "hard_interrupt_unaccounted_replay": false,
+    "source_windows_retired": "before later source/arm; no old sample buffers in learner state",
+    "original146": "PAUSED_RETAINED_OWNER101_STEP1",
+    "M": "PAUSED_RETAINED_OWNER4_SLOT51",
+    "OL": "WAIT_ORIGINAL_FULL_PREDECESSOR",
+    "new_installation_queue_monitor_started": false,
+    "automatic146": false,
+    "GPU_route": "pro5000 physicalGPU2 GPU-4b56ab28-a018-652c-b8f6-2d9dc3dc45d2"
+  },
+  "readiness": {
+    "production_executor": "IMPLEMENTED",
+    "CPU": "PASS",
+    "real_VLM_admission": "PENDING_ONCE_GPU2",
+    "GPU_activated": false
+  },
+  "limitations": [
+    "Eight source groups are not independent patients",
+    "Image-only CT/MRI calibration: no KG or XRay coverage",
+    "Inherited pool was selected on historical training-source Base correctness; no independent confirmation",
+    "C-B changes two coupled medical enforcement components; no separate component attribution",
+    "4/16 probes do not prove uniform adaptive-direction Fisher accuracy",
+    "Linear evidence contrast is not clinical decision correctness",
+    "Finite68-row diagnostic is not scalable146 or fixed-rank lifelong guarantee",
+    "Pooled parameter statistics are not a privacy guarantee",
+    "Normalized Base proxy changes risk units; not equivalent absolute threshold",
+    "Local true-KL linearization has no global nonlinear curvature certificate; actual native hard gate remains authoritative",
+    "Historical B solver/runtime is not a numerically exact new-arm paired rerun",
+    "Scientific-stop cohorts and complete3 cohorts are not interchangeable; partial is explicit"
+  ]
+}

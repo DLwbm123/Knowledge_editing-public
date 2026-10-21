@@ -1,0 +1,1 @@
+F0/F1固定探针轮完成：13参考+4探针，133参考差异0，182审计PASS，57.783298秒，全部恢复退出。两方向D收益均低于A；null差F1恶化而F0减轻，F0两端仍原门拒绝，不作为救援。完整报告completion/REPORT_ZH.md，公开报告ebe3905远端及匿名HTTP200已核验。NEXT_MINIMAL_ZH.md冻结两端四固定探针null一阶耦合分解，尚未启动；不重放本轮或旧轮。pure-w监测ACTIVE。

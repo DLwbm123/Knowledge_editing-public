@@ -1,0 +1,39 @@
+{
+  "status": "IMPLEMENTED_PRODUCTION_CPU_PASS_NOT_LAUNCHED",
+  "at_utc": "2026-10-16T04:25:36.917948+00:00",
+  "user_authorization": "实现执行器和生产路径CPU检查，保持单因素、原预算和通过门不变，暂不启动GPU实验",
+  "executor": "experiments/purew_hinge_removed_soft_first1_v1",
+  "base_runtime_commit": "348519d2963a0110128713b43a71d0638070b99a",
+  "single_factor": "HM plus unit removed full-vocabulary forward KL",
+  "budget_and_scientific_gates_unchanged": true,
+  "production_CPU_attempts": [
+    {
+      "local_receipt": ".local_run/hinge_removed_soft_first1_v1_20261016/CPU_1792124467.json",
+      "epoch": 1792124467.0466912,
+      "returncode": 0,
+      "wall_seconds": 5.497029781341553
+    },
+    {
+      "local_receipt": ".local_run/hinge_removed_soft_first1_v1_20261016/CPU_1792124646.json",
+      "epoch": 1792124646.4981298,
+      "returncode": 0,
+      "wall_seconds": 9.194380044937134
+    }
+  ],
+  "production_CPU": "PASS",
+  "real_VLM": "NOT_RUN",
+  "storage_GPU_admission": "NOT_RUN",
+  "installation": "NOT_STARTED",
+  "scorers": "NOT_STARTED",
+  "monitoring": "NOT_STARTED",
+  "CUDA_calls": 0,
+  "real_model_calls": 0,
+  "Judge_calls": 0,
+  "public_push": "NOT_PERFORMED_PREPARATION_ONLY",
+  "historical_results_and_executors": "UNCHANGED",
+  "remaining": [
+    "Explicit execution authorization and hardware binding",
+    "Publish source before deploy, per deploy guard",
+    "Storage/GPU admission, Base3 and real-VLM temporary write admission before formal slots"
+  ]
+}

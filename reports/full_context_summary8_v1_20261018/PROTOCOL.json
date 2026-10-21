@@ -1,0 +1,89 @@
+{
+  "version": "FULL_CONTEXT_SUMMARY8_V1_20261018",
+  "arms": [
+    "B",
+    "C",
+    "N",
+    "D",
+    "E"
+  ],
+  "historical_reference": "V3 P only; not concurrent A",
+  "sources": 8,
+  "slots_per_source": 20,
+  "formal_slots_per_arm": 160,
+  "seeds": [
+    1442709718,
+    39524989,
+    4278467101,
+    2255805473,
+    225034559,
+    173959200,
+    958324087,
+    1907321266
+  ],
+  "optimizer": {
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0
+  },
+  "loss": "Original Base H; unchanged",
+  "native_dtype": "float16",
+  "projection": {
+    "ATOL": 1e-07,
+    "RTOL": 1e-06,
+    "max_relative_direction_distortion": 0.05
+  },
+  "summary": {
+    "buffer_rows": 1024,
+    "history_rank": 64,
+    "pin_columns": 32,
+    "base_rank": 32,
+    "mix_uniform": 0.5,
+    "svd_dtype": "float64",
+    "persistent_dtype": "float32",
+    "residual_zero_atol": 1e-06,
+    "compression": "delta=sigma_65^2; retain sqrt(sigma_j^2-delta)*v_j for j<=64; 1-based",
+    "summary_only_qualified_CE_below": 0.1,
+    "nonzero_only_weight_population": true,
+    "energy_match": "V3 selected nonzero energy before Base residualization",
+    "shuffle_seed": "62018000+source_order*10+view_index; private torch.Generator; within visual/answer/other nonzero strata",
+    "max_context_positions_per_view": 4096,
+    "max_supervised_tokens_per_view": 1024,
+    "per_arm_summary_forward_cap": 50,
+    "per_arm_summary_VJP_cap": 51200,
+    "VJP_scale": 128,
+    "exact_oracle_scope": "D current source1 original view only; max1024 positions; C/N/D/E same state; no historical oracle"
+  },
+  "diagnostic": {
+    "source": 6,
+    "states": "after source6 and each accepted source7/8 update",
+    "max_states_per_arm": 41,
+    "training_feedback": false,
+    "persist": "all per-position response norms, target margins, fixed/current competitors and full generated tokens; no redundant per-channel response matrices"
+  },
+  "evaluation": {
+    "prefixes": [
+      0,
+      4,
+      8
+    ],
+    "insertions": "T0 and T2G each source",
+    "protection": 54,
+    "consumers_per_arm": 382,
+    "generation_cap_per_arm": 512,
+    "new_judge_cap_per_arm": 512,
+    "new_judge_total_cap": 2560,
+    "judge": "gpt-6-astra medium, unchanged full-binding one attempt",
+    "historical_missing_preserved": true
+  },
+  "storage_limit_bytes": 9000000000,
+  "total_new_storage_below_bytes": 10000000000,
+  "local_scoring_and_source_reserve_bytes": 750000000,
+  "storage_scope": "new run, native temporary files, diagnostics, scoring and implementation; excludes pre-existing shared Base/data/env",
+  "run_sequentially": true,
+  "scientific_changes_or_expansion": false
+}

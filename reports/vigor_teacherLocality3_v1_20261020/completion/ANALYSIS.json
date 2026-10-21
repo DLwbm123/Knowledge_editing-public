@@ -1,0 +1,119 @@
+{
+  "rows": [
+    {
+      "sample": "E01",
+      "source_agreement_reused": true,
+      "source_faithfulness_reused": true,
+      "source_output_exact_binding": true,
+      "fit_forwards": 15,
+      "backwards": 14,
+      "native_source_NLL": 0.009672537446022034,
+      "native_null_NLL": 0.01796599291265011,
+      "base_null_NLL": 3.705775260925293,
+      "null_drift": -3.687809268012643,
+      "endpoint_F0_cost": 2.0274310613807423e-06,
+      "endpoint_gates": {
+        "null": false,
+        "visual": true,
+        "trust": true
+      },
+      "allowed_endpoint_submission": false,
+      "locality_damage": 6,
+      "locality_denominator": 6,
+      "locality_missing": 0,
+      "damaged_panel": [
+        "L001",
+        "L002",
+        "L003",
+        "L004",
+        "L005",
+        "L006"
+      ]
+    },
+    {
+      "sample": "E02",
+      "source_agreement_reused": true,
+      "source_faithfulness_reused": true,
+      "source_output_exact_binding": true,
+      "fit_forwards": 17,
+      "backwards": 16,
+      "native_source_NLL": 0.009415785782039165,
+      "native_null_NLL": 0.010900686495006084,
+      "base_null_NLL": 3.0059871673583984,
+      "null_drift": -2.9950864808633924,
+      "endpoint_F0_cost": 2.1563756732356975e-06,
+      "endpoint_gates": {
+        "null": false,
+        "visual": true,
+        "trust": true
+      },
+      "allowed_endpoint_submission": false,
+      "locality_damage": 2,
+      "locality_denominator": 6,
+      "locality_missing": 0,
+      "damaged_panel": [
+        "L001",
+        "L005"
+      ]
+    },
+    {
+      "sample": "E03",
+      "source_agreement_reused": true,
+      "source_faithfulness_reused": true,
+      "source_output_exact_binding": true,
+      "fit_forwards": 10,
+      "backwards": 9,
+      "native_source_NLL": 0.009892350994050503,
+      "native_null_NLL": 0.1289583295583725,
+      "base_null_NLL": 3.939028263092041,
+      "null_drift": -3.8100699335336685,
+      "endpoint_F0_cost": 1.3169403843722091e-06,
+      "endpoint_gates": {
+        "null": false,
+        "visual": true,
+        "trust": true
+      },
+      "allowed_endpoint_submission": false,
+      "locality_damage": 5,
+      "locality_denominator": 6,
+      "locality_missing": 0,
+      "damaged_panel": [
+        "L001",
+        "L002",
+        "L003",
+        "L004",
+        "L005"
+      ]
+    }
+  ],
+  "summary": {
+    "source_qualified": 3,
+    "source_denominator": 3,
+    "source_new_judge_calls": 0,
+    "locality_damage": 13,
+    "locality_denominator": 18,
+    "locality_missing": 0,
+    "endpoint_null_pass": 0,
+    "endpoint_trust_pass": 3,
+    "endpoint_eligible": 0,
+    "candidate_better_on_development_panel": false,
+    "protected_success": false
+  },
+  "costs": {
+    "GPU_seconds": 36.83783459663391,
+    "total_forwards": 383,
+    "teacher_fit": 42,
+    "backwards": 39,
+    "final_generation": 315,
+    "control_binding_restore": 26,
+    "peak_allocated_bytes": 19038665728,
+    "new_judge_payloads": 16,
+    "cached_locality_endpoints": 0,
+    "checkpoint": 0,
+    "student_edits": 0
+  },
+  "historical_TQ3_locality_remains_NA": true,
+  "near_locality_support": 0,
+  "distinct_unrelated_queries": 6,
+  "scope": "Independent fixed reconstructed teacher endpoint diagnosis; no old controller variant or teacher tuning"
+}

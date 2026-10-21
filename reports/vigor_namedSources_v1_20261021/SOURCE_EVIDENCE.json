@@ -1,0 +1,93 @@
+{
+  "VQA_RAD": {
+    "total_rows": 2248,
+    "non_test_phrase_rows": 1797,
+    "test_phrase_rows": 451,
+    "non_test_images": 313,
+    "test_images": 203,
+    "overlap_images": 202,
+    "non_test_only_images_upper_bound": 111,
+    "roles": {
+      "record_role_counts_overlapping": {
+        "BASE_QUERY_INVENTORY": 2248,
+        "BENCHMARK_METADATA": 2248,
+        "FROZEN_FIT_SOURCE": 297,
+        "POOL_INVENTORY": 195,
+        "FORMAL_OR_RESERVED_SOURCE": 116,
+        "CAL_CHECK_SUPPORT_RESERVED": 76
+      },
+      "image_groups": 314,
+      "groups_any_reserved": 14,
+      "groups_any_fit": 37,
+      "groups_no_reserved_or_fit": 277
+    },
+    "purpose_terms": "OSF official endpoint blocked; not verified in this review",
+    "joint_train_role_exclusion": "UNRESOLVED: no certified image-name to role-image-ID join; 111 and 277 cannot be combined as admitted count",
+    "admitted": 0
+  },
+  "PadChest_GR": {
+    "table_rows": 8787,
+    "table_split_rows": {
+      "train": 6153,
+      "validation": 872,
+      "test": 1762
+    },
+    "unique": {
+      "ImageID": {
+        "train": 3185,
+        "validation": 455,
+        "test": 915
+      },
+      "StudyID": {
+        "train": 3185,
+        "validation": 455,
+        "test": 915
+      },
+      "PatientID": {
+        "train": 3123,
+        "validation": 443,
+        "test": 893
+      }
+    },
+    "cross_split_overlap": {
+      "ImageID": {
+        "train__test": 0,
+        "train__validation": 0,
+        "test__validation": 0
+      },
+      "StudyID": {
+        "train__test": 0,
+        "train__validation": 0,
+        "test__validation": 0
+      },
+      "PatientID": {
+        "train__test": 0,
+        "train__validation": 0,
+        "test__validation": 0
+      }
+    },
+    "flags": {
+      "study_is_benchmark": {
+        "True": 8787
+      },
+      "study_is_validation": {
+        "False": 8787
+      },
+      "patient_is_benchmark": {
+        "True": 8787
+      }
+    },
+    "flag_semantics": "dataset-internal benchmark flags, NOT project reserved-role grant or ban; do not exclude every train row merely because True",
+    "official_purpose": "research-only terms linked directly by official PadChest-GR page; report-generation dataset",
+    "local_access_provenance": "NOT_BOUND",
+    "project_reserved_exclusion": "NOT_CERTIFIED; zero matching ledger rows does not certify absence",
+    "editing_QA_input": "UNBOUND: existing annotations are findings/reports, no frozen QA conversion",
+    "admitted": 0
+  },
+  "public_sources": [
+    "https://bimcv.cipf.es/bimcv-projects/padchest-gr/",
+    "https://bimcv.cipf.es/bimcv-projects/padchest/padchest-dataset-research-use-agreement/",
+    "https://arxiv.org/abs/2411.05085",
+    "https://osf.io/89kps/"
+  ]
+}

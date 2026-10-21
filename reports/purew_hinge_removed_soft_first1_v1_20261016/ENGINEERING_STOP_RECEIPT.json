@@ -1,0 +1,74 @@
+{
+  "status": "ENGINEERING_STOP_BEFORE_FORMAL_SLOT",
+  "scientific_result": "NOT_AVAILABLE",
+  "runtime_source_commit": "18d0262f58cb91c750fdbab1e93d49a9ffe8fb55",
+  "failure": {
+    "action": "learn_HR_1",
+    "exception": "UnboundLocalError",
+    "cause": "local diagnostic assignment shadows module context manager",
+    "formal_slots_attempted": 0,
+    "formal_updates": 0,
+    "active_checkpoint": false,
+    "final_native": false
+  },
+  "admission": {
+    "BASE_IDENTITY_HR.json": {
+      "status": "PASS",
+      "outputs": 3
+    },
+    "REAL_VLM_ADMISSION_HR.json": {
+      "status": "PASS",
+      "real_native_write": true,
+      "upstream_exact": true,
+      "parameters_unchanged": true,
+      "temporary_updates": 1
+    },
+    "REAL_VLM_ADMISSION_ALL.json": {
+      "status": "PASS",
+      "arms": 1,
+      "temporary_native_writes": 1,
+      "formal_slots": 0,
+      "physical_GPU": 3
+    }
+  },
+  "counts": {
+    "attempt_slots": 0,
+    "committed_updates": 1,
+    "forwards": 204,
+    "vision_forwards": 23,
+    "backwards": 21,
+    "generation_attempts": 3,
+    "candidate_checks": 0
+  },
+  "GPU_seconds_used": 73.24508452415466,
+  "Judge_attempts": 0,
+  "HR_required_consumers": 87,
+  "HR_scored_consumers": 0,
+  "historical_consumers_unchanged": 522,
+  "clock": {
+    "starting_epoch": 1792128293.5797498,
+    "deadline_epoch": 1792214693.5797498,
+    "GPU_seconds_limit": 7200,
+    "Judge_limit": 87,
+    "min_free_bytes": 8589934592,
+    "owned_weight_limit_bytes": 103079215104
+  },
+  "closed_GPU_leases": 3,
+  "controller_alive": false,
+  "worker_alive": false,
+  "fix": {
+    "local_variable": "margin_diagnostic",
+    "symtable_scope_regression": "PASS",
+    "production_CPU": "PASS",
+    "real_VLM_revalidation": "NOT_RUN",
+    "deployed_to_failed_run": false
+  },
+  "recovery": {
+    "restart": false,
+    "reinstall": false,
+    "budget_reset": false,
+    "reason": "No resumable checkpoint; frozen mechanical-failure stop and zero replay allowance",
+    "failure_state_retained": true,
+    "automatic_next_experiment": false
+  }
+}

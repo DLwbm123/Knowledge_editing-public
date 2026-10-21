@@ -1,0 +1,58 @@
+{
+  "status": "RUNNING_INITIAL_CHECK_PASS",
+  "progress": {
+    "stage": "base_U_0",
+    "status": "RUNNING",
+    "epoch": 1792205723.1993406
+  },
+  "calibration": {
+    "status": "PASS",
+    "records": 32,
+    "shape": [
+      32,
+      14336
+    ]
+  },
+  "failure_count": 0,
+  "neutral_controller_and_child_argv": true,
+  "GPU_process_verified": true,
+  "storage_read_write_probe": true,
+  "storage_mount": "/data",
+  "data_admission": {
+    "status": "PASS",
+    "training_records": 32,
+    "distinct_training_source_groups": 32,
+    "no_eval_group_overlap": true,
+    "protection_count": 54,
+    "original_order_and_seeds": true
+  },
+  "budget_counts": {
+    "U/evaluation-budget.json": {
+      "attempt_slots": 0,
+      "admission_slots": 0,
+      "backwards": 0,
+      "candidate_checks": 0,
+      "committed_updates": 0,
+      "forwards": 358,
+      "generation_attempts": 10,
+      "new_Judge": 0
+    },
+    "P/budget.json": {
+      "attempt_slots": 0,
+      "admission_slots": 0,
+      "backwards": 0,
+      "candidate_checks": 0,
+      "committed_updates": 0,
+      "forwards": 64,
+      "generation_attempts": 0,
+      "new_Judge": 0
+    }
+  },
+  "completed_gpu_seconds": 18.21405601501465,
+  "monitor_interval_minutes": 30,
+  "wall_clock_gate": false,
+  "GPU_time_gate": false,
+  "VRAM_gate": false,
+  "formal_training_started_at_check": false,
+  "old_run_preserved": true
+}

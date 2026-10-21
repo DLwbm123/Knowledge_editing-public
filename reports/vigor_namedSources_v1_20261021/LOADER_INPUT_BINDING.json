@@ -1,0 +1,44 @@
+{
+  "dispatch": "LlavaMedEditorRuntime official_native -> load_frozen_backbone -> llava.model.builder.load_pretrained_model",
+  "configured_class": "llava.model.language_model.llava_mistral.LlavaMistralForCausalLM",
+  "class_bases": [
+    "MistralForCausalLM",
+    "LlavaMetaForCausalLM"
+  ],
+  "config_model_type": "llava_mistral",
+  "registered_official_code_commit": "30697ca50b5c29a8e955c99330b259776aef27b9",
+  "registered_model_snapshot": "91bb16c122001ddc9cf1fd36ce1dae09448943a2",
+  "registered_vision_snapshot": "ce19dc912ca5cd21c8a653c79e251e808ccabcd1",
+  "runtime_source_commit": "2b3f308f2bcb442cd18e66ac98a83c1528c0692b",
+  "transformers": "4.51.3",
+  "config_dtype_tag": "bfloat16",
+  "frozen_runtime_dtype": "float16",
+  "actual_instance_verified": false,
+  "package_resolution": "registered launch PYTHONPATH supplies pinned official_llava; bare CPU find_spec false is not production package absence",
+  "cache_compatibility_risk": "wrapper drops cache_position and logits_to_keep; actual cached path must be observed, not inferred from use_cache=True",
+  "input_binding": {
+    "status": "UNBOUND_NO_ADMITTED_SOURCE",
+    "required_private_fields": [
+      "source-purpose evidence and split",
+      "canonical image/source identity and exclusion joins",
+      "existing local image path and preprocessing contract",
+      "question and reference supervision separately",
+      "official tokenizer/image processor and special-image-token contract",
+      "attention mask/padding and source full NLL target boundary",
+      "exact generation config and runtime class/override identity"
+    ],
+    "prompt": "native mistral_instruct image plus question only; no target answer",
+    "generation": {
+      "do_sample": false,
+      "num_beams": 1,
+      "max_new_tokens": 1024,
+      "output_contract": "continuation_only",
+      "gold_length_truncation": false,
+      "teacher_forcing": false,
+      "order_use_cache": [
+        true,
+        false
+      ]
+    }
+  }
+}

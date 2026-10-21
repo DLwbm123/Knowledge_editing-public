@@ -1,0 +1,130 @@
+{
+  "status": "STOPPED_MAIN_ACTUAL_NLL_FAILED",
+  "recorded_checks": 339,
+  "failed_engineering_checks": [],
+  "restoration": {
+    "endpoint_restored": true,
+    "base_weight_restored": true,
+    "dtype_restored": true,
+    "base_losses_restored": true,
+    "hooks_restored": true,
+    "flags_restored": true,
+    "generation_config_restored": true,
+    "H_endpoint_restored": true
+  },
+  "budget_checks": {
+    "forward": true,
+    "extra_forward": true,
+    "seconds": true,
+    "new_secant": true,
+    "native_match_attempts": true,
+    "generation": true,
+    "judge": true,
+    "candidates": true,
+    "disk_bytes": true,
+    "checkpoint_count": true
+  },
+  "costs": {
+    "forward": 480,
+    "extra_forward": 12,
+    "seconds": 79.1955235004425,
+    "new_secant": 0,
+    "native_match_attempts": 1,
+    "generation": 0,
+    "judge": 0,
+    "candidates": 1,
+    "disk_bytes": 1214792,
+    "checkpoint_count": 0
+  },
+  "candidate_formulated": true,
+  "candidate_written": true,
+  "candidate_evaluated": true,
+  "analytic": {
+    "NLL_energy": 88272486894.01126,
+    "margin_energy": 10525906004628.346,
+    "cross": -476130710069.37573,
+    "perpendicular_energy": 7957716741496.255,
+    "energy_fractions": [
+      0.75,
+      0.25
+    ],
+    "target_cost": 5.368434395105091e-13,
+    "status": "FORMULATED",
+    "actual_perpendicular_energy": 7957716726081.282,
+    "NLL_component_cost": 4.0263258721043423e-13,
+    "margin_component_cost": 1.3421085259784854e-13,
+    "continuous_total_cost": 5.368434300171391e-13,
+    "F0_orthogonal_residual": 2.129323963454888e-08,
+    "NLL_orthogonal_residual": 2.2124576443591123e-08,
+    "NLL_component_cost_relative_error": 1.882001821051915e-08,
+    "margin_component_cost_relative_error": 5.424135374187955e-08,
+    "continuous_cost_relative_error": 1.7683684405689348e-08,
+    "perpendicular_energy_relative_error": 1.9371100279386155e-09,
+    "predicted_NLL_change": -0.26661349881160296,
+    "predicted_margin_gain": 2.8995939855828348,
+    "NLL_component_linear_NLL": -0.26661350213184615,
+    "margin_component_linear_NLL": 3.4062559181135925e-09,
+    "normalized_null_residual": 3.059213340469306e-11
+  },
+  "matching": {
+    "seed_native_F0_cost": 5.396198882377762e-13,
+    "target_native_F0_cost": 5.368434395105091e-13,
+    "ratio": 0.9974240855956152,
+    "ratio_applications": 1,
+    "actual_native_F0_cost": 5.368539246330151e-13,
+    "relative_error": 1.9531062008582012e-05,
+    "tolerance": 0.01,
+    "native_linear_NLL_change": -0.26377901406357784,
+    "native_linear_margin_gain": 2.8740037902207276,
+    "native_linear_null_change": -0.0005208826715252218,
+    "native_delta_l2": 0.04274850859910107,
+    "changed_elements": 29138338
+  },
+  "main_gate": {
+    "native_nll": [
+      1.5984095335006714,
+      3.589655876159668
+    ],
+    "cumulative_null_change": -0.116119384765625,
+    "combined_native_fisher_cost": 5.368539246330151e-13,
+    "gates": {
+      "null": false,
+      "visual": false,
+      "trust": true
+    },
+    "accepted": false
+  },
+  "main_margin": {
+    "target_position": 1,
+    "mean_nll": 1.5984095335006714,
+    "margin": -5.4453125,
+    "nll": 5.568976879119873,
+    "probability": 0.003814381081610918,
+    "rank": 6,
+    "top1_matches_target": false,
+    "top1_margin_over_target": 5.4453125,
+    "fixed_competitor_margin": -5.4453125,
+    "strongest_competitor_changed": false
+  },
+  "main_conditions": {
+    "actual_NLL_gain": -0.08767962455749512,
+    "NLL_floor": 0.07246601581573486,
+    "NLL_pass": false,
+    "margin": -5.4453125,
+    "margin_reference": -5.421875,
+    "margin_pass": false
+  },
+  "main_margin_gain": 0.421875,
+  "correction_status": null,
+  "final_gate": null,
+  "final_margin": null,
+  "final_conditions": null,
+  "final_margin_gain": null,
+  "numerically_accepted": false,
+  "official_generation": null,
+  "local_flip": null,
+  "round_completed_and_accepted": false,
+  "process_exited": true,
+  "gpu_process_exited": true,
+  "historical_weight_direct_comparison": null
+}

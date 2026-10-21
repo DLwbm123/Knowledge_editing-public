@@ -1,0 +1,18 @@
+{
+  "status": "ROOT_CAUSE_VERIFIED_FIX_CPU_PASS",
+  "error": "ModuleNotFoundError: astra_report",
+  "root_cause": "Standalone runpy report entry omitted its source/tools import directories; CPU fixtures had masked this by setting sys.path",
+  "fix": "Resolve source/tools at the report entry before imports; no numerical/scientific/scoring changes",
+  "regression": "Fresh subprocess with empty PYTHONPATH imports production entry; actual retained-data dry report reaches write barrier",
+  "model_calls": 0,
+  "Judge_calls": 0,
+  "failed_Judge_not_retried": true,
+  "one_failed_batch_payloads": 15,
+  "new_failed_payload_consumers": 18,
+  "J_terminal_consumers": 87,
+  "J_valid": 69,
+  "J_permanent_missing": 18,
+  "report_failure_before_RESULT_WRITE": true,
+  "CPU_failure_cost": "Original tail traceback and attempted publication state retained; no result publication attempted before fix",
+  "epoch": 1792061250.479074
+}

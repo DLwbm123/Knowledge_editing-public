@@ -1,0 +1,213 @@
+{
+  "rows": [
+    {
+      "sample": "E01",
+      "arm": "S",
+      "semantic_T0": true,
+      "source_exact_teacher": true,
+      "source_action_error": 1.2155369483709085e-13,
+      "repair_status": "NULL_TARGET_REACHED",
+      "repair_steps": 7,
+      "repair_backwards": 7,
+      "accepted_updates": 7,
+      "native_action_relative_error": 4.336387358829341e-05,
+      "actual_layer_output_relative_error": 0.000300441199215129,
+      "actual_layer_output_max_abs": 0.00048828125,
+      "fixed_prefix_logits_max_abs": 0.01904296875,
+      "fixed_prefix_logits_relative_error": 0.0009365381556563079,
+      "native_source_NLL": 0.009665400721132755,
+      "null_drift": 0.009627342224121094,
+      "endpoint_F0_cost": 3.321840583749291e-06,
+      "endpoint_gates": {
+        "null": true,
+        "visual": true,
+        "trust": true
+      },
+      "allowed_endpoint_submission": true,
+      "damage": 6,
+      "damaged_panel": [
+        "L001",
+        "L002",
+        "L003",
+        "L004",
+        "L005",
+        "L006"
+      ],
+      "locality_denominator": 6,
+      "locality_missing": 0
+    },
+    {
+      "sample": "E02",
+      "arm": "S",
+      "semantic_T0": true,
+      "source_exact_teacher": true,
+      "source_action_error": 1.573801740133598e-13,
+      "repair_status": "NULL_TARGET_REACHED",
+      "repair_steps": 17,
+      "repair_backwards": 17,
+      "accepted_updates": 17,
+      "native_action_relative_error": 5.677310142983208e-05,
+      "actual_layer_output_relative_error": 0.00034448239603079855,
+      "actual_layer_output_max_abs": 0.00048828125,
+      "fixed_prefix_logits_max_abs": 0.0546875,
+      "fixed_prefix_logits_relative_error": 0.0011982996948063374,
+      "native_source_NLL": 0.009436183609068394,
+      "null_drift": -0.0022134780883789062,
+      "endpoint_F0_cost": 3.7486865107030015e-06,
+      "endpoint_gates": {
+        "null": true,
+        "visual": true,
+        "trust": true
+      },
+      "allowed_endpoint_submission": true,
+      "damage": 2,
+      "damaged_panel": [
+        "L001",
+        "L005"
+      ],
+      "locality_denominator": 6,
+      "locality_missing": 0
+    },
+    {
+      "sample": "E03",
+      "arm": "S",
+      "semantic_T0": true,
+      "source_exact_teacher": true,
+      "source_action_error": 8.872000652382652e-14,
+      "repair_status": "NULL_TARGET_REACHED",
+      "repair_steps": 16,
+      "repair_backwards": 16,
+      "accepted_updates": 16,
+      "native_action_relative_error": 4.952444491097029e-05,
+      "actual_layer_output_relative_error": 0.00030994322150945663,
+      "actual_layer_output_max_abs": 0.00048828125,
+      "fixed_prefix_logits_max_abs": 0.056884765625,
+      "fixed_prefix_logits_relative_error": 0.0019762476440519094,
+      "native_source_NLL": 0.009908439591526985,
+      "null_drift": -0.002471923828125,
+      "endpoint_F0_cost": 3.3863952439390323e-06,
+      "endpoint_gates": {
+        "null": true,
+        "visual": true,
+        "trust": true
+      },
+      "allowed_endpoint_submission": true,
+      "damage": 5,
+      "damaged_panel": [
+        "L001",
+        "L002",
+        "L003",
+        "L004",
+        "L005"
+      ],
+      "locality_denominator": 6,
+      "locality_missing": 0
+    }
+  ],
+  "summary": {
+    "S": {
+      "semantic_correct": 3,
+      "semantic_denominator": 3,
+      "semantic_missing": 0,
+      "strict_function_preserved": 3,
+      "null_pass": 3,
+      "trust_pass": 3,
+      "endpoint_eligible": 3,
+      "damage": 13,
+      "locality_denominator": 18,
+      "locality_missing": 0,
+      "prespecified_useful": false
+    }
+  },
+  "source_spaces": [
+    {
+      "sample": "E01",
+      "input_dimension": 14336,
+      "positions": 606,
+      "rank": 606,
+      "remaining_input_freedom": 13730,
+      "singular_max": 67.79714484098177,
+      "singular_min": 0.0027702855060480714,
+      "singular_min_retained": 0.0027702855060480714,
+      "discarded_nonzero": 0,
+      "orthogonality_residual": 8.910230790431772e-14,
+      "coverage": {
+        "prefill_positions": 595,
+        "decode_calls": 11,
+        "all_decode_positions": 11,
+        "all_positions": 606
+      }
+    },
+    {
+      "sample": "E02",
+      "input_dimension": 14336,
+      "positions": 616,
+      "rank": 616,
+      "remaining_input_freedom": 13720,
+      "singular_max": 65.96496738044885,
+      "singular_min": 0.002751496646725508,
+      "singular_min_retained": 0.002751496646725508,
+      "discarded_nonzero": 0,
+      "orthogonality_residual": 9.295896818181016e-14,
+      "coverage": {
+        "prefill_positions": 601,
+        "decode_calls": 15,
+        "all_decode_positions": 15,
+        "all_positions": 616
+      }
+    },
+    {
+      "sample": "E03",
+      "input_dimension": 14336,
+      "positions": 604,
+      "rank": 604,
+      "remaining_input_freedom": 13732,
+      "singular_max": 61.66766387255915,
+      "singular_min": 0.00542371175515738,
+      "singular_min_retained": 0.00542371175515738,
+      "discarded_nonzero": 0,
+      "orthogonality_residual": 8.123339699846542e-14,
+      "coverage": {
+        "prefill_positions": 597,
+        "decode_calls": 7,
+        "all_decode_positions": 7,
+        "all_positions": 604
+      }
+    }
+  ],
+  "T_baseline": {
+    "source_qualified": 3,
+    "source_denominator": 3,
+    "source_new_judge_calls": 0,
+    "locality_damage": 13,
+    "locality_denominator": 18,
+    "locality_missing": 0,
+    "endpoint_null_pass": 0,
+    "endpoint_trust_pass": 3,
+    "endpoint_eligible": 0,
+    "candidate_better_on_development_panel": false,
+    "protected_success": false
+  },
+  "costs": {
+    "GPU_seconds": 65.37914490699768,
+    "total_forwards": 547,
+    "teacher_fit": 42,
+    "teacher_backwards": 39,
+    "repair_backwards": 40,
+    "repair_gradient_forwards": 40,
+    "repair_native_gate_forwards": 80,
+    "teacher_source_binding_generation": 36,
+    "candidate_source_generation": 36,
+    "candidate_locality_generation": 269,
+    "control_binding_prefix_restore": 44,
+    "peak_allocated_bytes": 21163916800,
+    "new_judge_payloads": 10,
+    "cached_endpoints": 10,
+    "checkpoint": 0,
+    "old_T_panel_reconstruction_forwards": 0
+  },
+  "historical_NA_unchanged": true,
+  "near_locality_support": 0,
+  "distinct_unrelated_queries": 6,
+  "scope": "Fixed 25-step projected Adam of scalar null loss inside the successful source-action class; not strict null hidden-action preservation or old source controller"
+}

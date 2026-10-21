@@ -1,0 +1,79 @@
+{
+  "status": "COMPLETE_WITH_HISTORICAL_MISSING",
+  "scientific_protection_success": false,
+  "source_commit": "4dd23af65aaba459a6ad7552fc6a455b20b4a044",
+  "calibration": {
+    "status": "PASS",
+    "records": 32,
+    "shape": [
+      32,
+      14336
+    ]
+  },
+  "arms": {
+    "U": {
+      "admission": "PASS",
+      "native_dtype": "torch.float16",
+      "budget_counts": {
+        "attempt_slots": 160,
+        "admission_slots": 1,
+        "backwards": 161,
+        "candidate_checks": 161,
+        "committed_updates": 38,
+        "forwards": 824,
+        "generation_attempts": 0,
+        "new_Judge": 0
+      },
+      "reload": {
+        "status": "PASS",
+        "two_outputs_exact": true
+      },
+      "optimizer_retirement": {
+        "bytes": 954224240,
+        "reason": "All insertion/prefix/native-reload consumers durable",
+        "retained": "current native export",
+        "regeneration_requires_training": true
+      }
+    },
+    "P": {
+      "admission": "PASS",
+      "native_dtype": "torch.float16",
+      "budget_counts": {
+        "attempt_slots": 160,
+        "admission_slots": 1,
+        "backwards": 161,
+        "candidate_checks": 161,
+        "committed_updates": 27,
+        "forwards": 888,
+        "generation_attempts": 0,
+        "new_Judge": 0
+      },
+      "reload": {
+        "status": "PASS",
+        "two_outputs_exact": true
+      },
+      "optimizer_retirement": {
+        "bytes": 954224240,
+        "reason": "All insertion/prefix/native-reload consumers durable",
+        "retained": "current native export",
+        "regeneration_requires_training": true
+      }
+    }
+  },
+  "gpu_sessions_closed": 43,
+  "gpu_seconds_ledger": 4502.084821462631,
+  "gpu_seconds_timestamp_sum": 4502.084810256958,
+  "judge_attempts": 160,
+  "queue_terminal": {
+    "FORMAT_VALID": 532,
+    "MISSING": 3,
+    "PENDING": 0,
+    "RESERVED": 0
+  },
+  "worker_done": 4,
+  "batch_archives": 5,
+  "historical_exact_reuse_valid": 372,
+  "historical_exact_missing": 3,
+  "old_run_unchanged": true,
+  "retry_or_next_experiment": false
+}

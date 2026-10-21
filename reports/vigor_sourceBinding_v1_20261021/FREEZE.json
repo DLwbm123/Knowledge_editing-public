@@ -1,0 +1,25 @@
+{
+  "version": "SOURCE_BINDING_TARGETED_JOIN_V1",
+  "epoch": 1792561764.642307,
+  "whole_seconds": 3600,
+  "aggregate_research_read_bytes_max": 33554432,
+  "definition": "All local research inputs, all remote file bytes opened and ZIP uncompressed bytes if used; repeated reads charged again, stderr/stdout and source scripts charged; administrative git/handoff/instruction reads separately logged, no budget reset/followup extension",
+  "remote_calls_max": 2,
+  "remote_seconds_each": 30,
+  "client_seconds_each": 45,
+  "documents_max": 16,
+  "document_bytes_max": 524288,
+  "directory_entries_max": 64,
+  "datasets": [
+    "VQA-RAD",
+    "PadChest-GR"
+  ],
+  "source_selection": "none unless explicit purpose, split and image/project reserved exclusion plus private input bind; stable source order, never scores",
+  "GPU": 0,
+  "model": 0,
+  "Judge": 0,
+  "toy": 0,
+  "remote_write": 0,
+  "retry": 0,
+  "stop": "before reading when upper bound would exceed aggregate cap; unavailable binding remains UNKNOWN; no additional followup cap, no inventory census"
+}

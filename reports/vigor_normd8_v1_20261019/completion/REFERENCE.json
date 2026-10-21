@@ -1,0 +1,159 @@
+{
+  "checks": [
+    {
+      "field": "baseline.native",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "baseline.fp32",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "anchor.E",
+      "relative_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.first.proposal.native_before",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.first.proposal.native_after",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.first.proposal.fp32_before",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.first.proposal.fp32_after",
+      "absolute_difference": 0.0,
+      "tolerance": 1e-05
+    },
+    {
+      "field": "reference.first.proposal.E",
+      "relative_difference": 0.0,
+      "tolerance": 1e-05
+    }
+  ],
+  "baseline": {
+    "native": [
+      4.87589693069458,
+      4.468581199645996
+    ],
+    "fp32": [
+      4.874164581298828,
+      4.466132164001465
+    ],
+    "anchor": {
+      "visual_nll": 4.874164581298828,
+      "null_nll": 4.466132164001465,
+      "E": 62427527361.62659
+    },
+    "repeats": [
+      {
+        "visual_nll": 4.874164581298828,
+        "null_nll": 4.466132164001465,
+        "E": 62427527361.62659
+      },
+      {
+        "visual_nll": 4.874164581298828,
+        "null_nll": 4.466132164001465,
+        "E": 62427527361.62659
+      }
+    ],
+    "E_relative_difference": 0.0,
+    "NLL_absolute_differences": {
+      "visual_nll": 0.0,
+      "null_nll": 0.0
+    },
+    "status": "PASS"
+  },
+  "trial": {
+    "requested_reduction": 0.3069690012931824,
+    "status": "ACCEPTED",
+    "correction": null,
+    "proposal": {
+      "requested_reduction": 0.3069690012931824,
+      "effective_reduction": 0.3069690012931824,
+      "clipped": false,
+      "E": 62427527361.62659,
+      "native_before": [
+        4.87589693069458,
+        4.468581199645996
+      ],
+      "native_after": [
+        4.569253921508789,
+        4.4684553146362305
+      ],
+      "fp32_before": [
+        4.874164581298828,
+        4.466132164001465
+      ],
+      "fp32_after": [
+        4.56797456741333,
+        4.465493679046631
+      ],
+      "fp32_update": {
+        "fisher_cost": 7.547149391403435e-13,
+        "visual_linear_change": -0.30696901167326585,
+        "null_linear_change": 1.4098221110502018e-09,
+        "normalized_null_residual": 3.6684638902198027e-09
+      },
+      "native_update": {
+        "fisher_cost": 7.653427631795308e-13,
+        "visual_linear_change": -0.30454328207190007,
+        "null_linear_change": 0.0005769269704961372,
+        "normalized_null_residual": 0.0014907480720946957
+      },
+      "quantization": {
+        "absolute_rounding_l2": 0.004235847853124142,
+        "relative_rounding_l2": 0.09817334655375433,
+        "delta_cosine": 0.9952066540718079,
+        "changed_elements": 40808912,
+        "fp32_delta_l2": 0.04314661771059036,
+        "native_delta_l2": 0.0433114655315876
+      },
+      "native_gain": 0.306643009185791,
+      "native_gain_ratio": 0.9989380292276482,
+      "native_null_change": -0.000125885009765625,
+      "fp32_gain_ratio": 0.9974623254973543,
+      "fp32_null_change": -0.0006384849548339844
+    },
+    "proposal_verdict": {
+      "native_nll": [
+        4.569253921508789,
+        4.4684553146362305
+      ],
+      "cumulative_null_change": -0.000125885009765625,
+      "combined_native_fisher_cost": 7.653427631795308e-13,
+      "gates": {
+        "null": true,
+        "visual": true,
+        "trust": true
+      },
+      "accepted": true
+    },
+    "final_verdict": {
+      "native_nll": [
+        4.569253921508789,
+        4.4684553146362305
+      ],
+      "cumulative_null_change": -0.000125885009765625,
+      "combined_native_fisher_cost": 7.653427631795308e-13,
+      "gates": {
+        "null": true,
+        "visual": true,
+        "trust": true
+      },
+      "accepted": true
+    }
+  },
+  "status": "PASS",
+  "base_restored": true
+}
