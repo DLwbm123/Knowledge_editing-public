@@ -1,0 +1,151 @@
+{
+  "status": "COMPLETE_FIXED_REFERENCE_DIAGNOSIS",
+  "qualified_cases": 1,
+  "independent_confirmation": false,
+  "clinical_expert_review": false,
+  "groups": {
+    "SOURCE": {
+      "n": 8,
+      "base_labels": {
+        "INCORRECT": 5,
+        "CORRECT": 3
+      },
+      "joint_labels": {
+        "CORRECT": 8
+      },
+      "base_C_support": 3,
+      "base_C_lost": 0,
+      "repairs": 5,
+      "roles": {
+        "PRESERVE": {
+          "n": 4,
+          "base_correct": 1,
+          "joint_correct": 4,
+          "base_C_lost": 0
+        },
+        "UPDATE": {
+          "n": 4,
+          "base_correct": 2,
+          "joint_correct": 4,
+          "base_C_lost": 0
+        }
+      },
+      "source_qualified": {
+        "n": 2,
+        "joint_correct": 2
+      }
+    },
+    "HELDOUT": {
+      "n": 16,
+      "base_labels": {
+        "INCORRECT": 11,
+        "CORRECT": 4,
+        "UNCERTAIN": 1
+      },
+      "joint_labels": {
+        "CORRECT": 10,
+        "INCORRECT": 4,
+        "UNCERTAIN": 2
+      },
+      "base_C_support": 4,
+      "base_C_lost": 1,
+      "repairs": 7,
+      "roles": {
+        "PRESERVE": {
+          "n": 8,
+          "base_correct": 1,
+          "joint_correct": 4,
+          "base_C_lost": 1
+        },
+        "UPDATE": {
+          "n": 8,
+          "base_correct": 3,
+          "joint_correct": 6,
+          "base_C_lost": 0
+        }
+      },
+      "source_qualified": {
+        "n": 4,
+        "joint_correct": 2
+      }
+    },
+    "LOCALITY_CLINICAL": {
+      "n": 3,
+      "base_labels": {
+        "INCORRECT": 2,
+        "CORRECT": 1
+      },
+      "joint_labels": {
+        "INCORRECT": 2,
+        "CORRECT": 1
+      },
+      "base_C_support": 1,
+      "base_C_lost": 0,
+      "repairs": 0,
+      "roles": {
+        "UNTRAINED_CLINICAL": {
+          "n": 3,
+          "base_correct": 1,
+          "joint_correct": 1,
+          "base_C_lost": 0
+        }
+      },
+      "source_qualified": {
+        "n": 1,
+        "joint_correct": 0
+      }
+    },
+    "LOCALITY_TECHNICAL": {
+      "n": 4,
+      "base_labels": {
+        "CORRECT": 2,
+        "INCORRECT": 2
+      },
+      "joint_labels": {
+        "CORRECT": 2,
+        "INCORRECT": 2
+      },
+      "base_C_support": 2,
+      "base_C_lost": 0,
+      "repairs": 0,
+      "roles": {
+        "UNTRAINED_TECHNICAL": {
+          "n": 4,
+          "base_correct": 2,
+          "joint_correct": 2,
+          "base_C_lost": 0
+        }
+      },
+      "source_qualified": {
+        "n": 1,
+        "joint_correct": 1
+      }
+    }
+  },
+  "diagnostic_cells": {
+    "BASE": {
+      "free_nonC_candidate_top": 5,
+      "free_nonC_candidate_not_top": 7,
+      "free_C_candidate_top": 3,
+      "free_C_candidate_not_top": 1
+    },
+    "JOINT": {
+      "free_C_candidate_top": 10,
+      "free_nonC_candidate_top": 4,
+      "free_nonC_candidate_not_top": 2
+    }
+  },
+  "heldout_all_four_correct_cases": 1,
+  "stability": {
+    "BASE": {
+      "empty": 0,
+      "cap": 0,
+      "eos": 31
+    },
+    "JOINT": {
+      "empty": 0,
+      "cap": 0,
+      "eos": 31
+    }
+  }
+}
