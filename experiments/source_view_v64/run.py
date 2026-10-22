@@ -3,6 +3,8 @@ import os,json,time,signal,sys,traceback,shutil,gc
 from pathlib import Path
 ROOT=Path(os.environ['V64_ROOT']);P=Path(os.environ['PARENT_RUN']);OLD=Path(os.environ['V62_PARENT']);START=time.time()
 counts=dict(forwards=0,backwards=0,updates=0,generations=0,vision_forwards=0,prefix_extractions=0)
+if (ROOT/'PREVIOUS_COUNTS.json').exists():counts.update(json.loads((ROOT/'PREVIOUS_COUNTS.json').read_text()))
+prior_counts=dict(counts)
 
 def read(p):return json.loads(Path(p).read_text())
 def write(p,x):
@@ -95,11 +97,16 @@ def main():
   h.set_layout(lay);h.teacher(b.labels,b.forward_kwargs().get('attention_mask'))
   with torch.no_grad(),intervention(layer,lay['prefix_length']-1,d):out=runtime.model(**b.forward_kwargs())
   p=lay['prefix_length'];result=out.logits[0,p-1:p+1].detach().cpu().double();del out;return result
- def emit(h,item,dest):
+ def emit(h,item,dest,zero=False):
   assert not dest.exists() and not layer._forward_pre_hooks
   counts['generations']+=1
   if h:h.set_layout(layout(item[2],item[3]))
-  answer,trace=r.s.fit.short.generate(runtime,h,item[2],item[3]);tokens=list(answer.raw_token_ids)
+  if zero:
+   assert h is not None and h.expert.G1.count_nonzero()==0
+   with h.generation_request():answer,_=r.s.fit.short.generate(runtime,None,item[2],item[3])
+   trace=list(h.last_generation_trace);assert trace and all(x['active_residual_norm']==0 for x in trace)
+  else:answer,trace=r.s.fit.short.generate(runtime,h,item[2],item[3])
+  tokens=list(answer.raw_token_ids)
   out=dict(binding=item[4],raw_answer=answer.decoded_text,raw_token_ids=tokens,EOS=bool(tokens) and tokens[-1]==eos,at_cap=len(tokens)>=1024,generation_trace=trace,state_intervention_events=0)
   write(dest,out);return out
  def same(a,b):return a[0]==b[0] and torch.equal(a[1],b[1])
@@ -115,7 +122,7 @@ def main():
    try:
     assert all(torch.equal(ref,logits(h,b,lay)) for ref,b,lay in zip(base,bs,lays)),'ZERO_BASE_LOGITS'
     if task['order']==1:
-     zero=emit(h,items[0],dest/'ZERO_SOURCE.json')
+     zero=emit(h,items[0],dest/'ZERO_SOURCE.json',zero=True)
      assert zero['raw_token_ids']==basegen['raw_token_ids']==read(OLD/'0/ZERO_SMOKE.json')['raw_token_ids']
     rng=torch.get_rng_state().clone();cuda_rng=torch.cuda.get_rng_state().clone()
     for nonzero in (False,True):
@@ -163,7 +170,7 @@ def main():
    del bs,items;gc.collect()
  finally:h.detach()
  del ex;gc.collect();torch.cuda.empty_cache()
- assert counts['backwards']==180 and counts['generations']==2
+ assert counts['backwards']-prior_counts['backwards']==180 and counts['generations']-prior_counts['generations']==2
  write(ROOT/'REAL_ADMISSION.json',dict(status='PASS',counts=dict(counts),time=time.time(),all10_all3_bindings=True))
  # Full TT A replay is a barrier before B.
  for arm in ('A_NATIVE','B_VIEW_CE'):
@@ -209,7 +216,7 @@ def main():
    finally:h.detach()
    del ex;gc.collect();torch.cuda.empty_cache()
   if arm=='A_NATIVE':write(ROOT/'A_REPLAY_BARRIER.json',dict(status='PASS',TT_only=True,each_160_curve_all10=True,each_219_raw_tokens=True,time=time.time()))
- assert counts['updates']==3200 and counts['backwards']==6580 and counts['generations']==440
+ assert counts['updates']-prior_counts['updates']==3200 and counts['backwards']-prior_counts['backwards']==6580 and counts['generations']-prior_counts['generations']==440
  write(ROOT/'MAIN_COMPLETE.json',dict(status='MAIN_OUTPUTS_COMPLETE_SCORING_PENDING',counts=dict(counts),time=time.time(),state_injection_tested=False))
  fh.remove();vh.remove()
 
