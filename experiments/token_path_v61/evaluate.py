@@ -17,7 +17,10 @@ def collect(root):
    assert read(root/str(i)/t['key']/'COMPLETE.json')['save_load_exact']
    for r in t['eval_rows']:
     path=root/str(i)/t['key']/'outputs'/(r['query_id']+'.json');o=read(path);b=read(root/'base'/(r['query_id']+'.json'))
-    assert o['binding']==b['binding']
+    if o['binding']!=b['binding']:
+     alias=read(root/'PATH_ALIAS_ADMISSION.json');assert alias['status']=='PASS'
+     assert any(v['query_id']==r['query_id'] and set(v['paths'])=={o['binding']['image_path'],b['binding']['image_path']} for v in alias['pairs'])
+     assert {k:v for k,v in o['binding'].items() if k!='image_path'}=={k:v for k,v in b['binding'].items() if k!='image_path'}
     assert o['binding']['question']==r['question'] and o['binding']['reference']==r['reference'] and o['binding']['image_sha256']==r['image_sha256']
     rows.append(dict(arm=arm,owner=t['order'],query=r['query_id'],roles=r['roles'],source=t['source']['reference'],output=o))
  for q,r in qmap.items():
@@ -33,9 +36,15 @@ def packet(root):
  assert not (root/'BLIND_PACKET.json').exists()
  cfg,rows=collect(root);unique=sorted({signature(r) for r in rows});random.Random(610022).shuffle(unique)
  keys={x:f'J{i:04}' for i,x in enumerate(unique)}
- write(root/'BLIND_PACKET.json',[dict(id=keys[x],question=x[0],reference=x[1],answer=x[2]) for x in unique])
+ full_packet=[dict(id=keys[x],question=x[0],reference=x[1],answer=x[2]) for x in unique]
+ write(root/'BLIND_PACKET.json',full_packet)
+ prior=read(root/'PRIOR_SEMANTIC_VERDICTS.json') if (root/'PRIOR_SEMANTIC_VERDICTS.json').exists() else []
+ accepted={(x['question'],x['reference'],x['answer']):x['verdict'] for x in prior}
+ reused={keys[x]:accepted[x] for x in unique if x in accepted}
+ write(root/'EXACT_LABEL_REUSE.json',reused)
+ write(root/'BLIND_NEW_PACKET.json',[x for x in full_packet if x['id'] not in reused])
  write(root/'BLIND_MAPPING.json',[dict(arm=r['arm'],owner=r['owner'],query=r['query'],blind_id=keys[signature(r)]) for r in rows])
- audit=dict(status='PASS',bound_outputs=len(rows),unique_blind=len(unique),counts=[read(root/str(i)/'EXIT.json') for i in range(3)],EOS=sum(bool(r['output']['EOS']) for r in rows),at_cap=sum(bool(r['output']['at_cap']) for r in rows))
+ audit=dict(status='PASS',bound_outputs=len(rows),unique_blind=len(unique),exact_semantic_reuse=len(reused),new_blind=len(unique)-len(reused),counts=[read(root/str(i)/'EXIT.json') for i in range(3)],EOS=sum(bool(r['output']['EOS']) for r in rows),at_cap=sum(bool(r['output']['at_cap']) for r in rows))
  write(root/'PACKET_ADMISSION.json',audit);return {k:v for k,v in audit.items() if k!='counts'}
 
 def norm(s):return re.sub(r'[^\w\u4e00-\u9fff]+','',s.casefold())
@@ -67,7 +76,7 @@ def summary(root):
      echo_rows.append(dict(owner=t['order'],query=q,incorrect_exact_source_echo=is_echo,label=l))
   table[a]={role:dict(total=sum(v.values()),correct=v['CORRECT'],labels=dict(v)) for role,v in values.items()}
   table[a]['Base_correct_locality']={role:dict(denominator=base_n[role],lost=sum(x[2]==role for x in loss),fraction=sum(x[2]==role for x in loss)/base_n[role] if base_n[role] else None) for role in ['T1L','T2L']}
-  losses[a]=set(loss);source_sets[a]=src;echo[a]=dict(denominator=len(echo_rows),incorrect_exact_source_echo=sum(r['incorrect_exact_source_echo'] for r in echo_rows));transitions[a]={k:dict(v) for k,v in tr.items()}
+  losses[a]=set(loss);source_sets[a]=src;echo[a]=dict(denominator=len(echo_rows),unique_inputs=len({r['query'] for r in echo_rows}),incorrect_exact_source_echo=sum(r['incorrect_exact_source_echo'] for r in echo_rows));transitions[a]={k:dict(v) for k,v in tr.items()}
  A=arms[0];decisions={}
  for a in arms[1:]:
   delta=sum(table[a][r]['correct']-table[A][r]['correct'] for r in ['T1G','T2G'])
@@ -82,7 +91,12 @@ def summary(root):
    decode.extend(t['active_residual_norm'] for t in trace[1:])
   norms[a]=dict(mean_prefill_residual_RMS=sum(vals)/len(vals),max_decode_residual_norm=max(decode,default=0.))
  exits=[read(root/str(i)/'EXIT.json') for i in range(3)]
- result=dict(status='DEVELOPMENT_SIGNAL_REQUIRES_CONFIRMATION' if any(v['development_signal'] for v in decisions.values()) else 'NO_DEVELOPMENT_SIGNAL',table=table,transitions=transitions,source_echo=echo,decisions=decisions,residuals=norms,costs=dict(GPU_process_hours=sum(x['seconds'] for x in exits)/3600,counts={k:sum(x['counts'][k] for x in exits) for k in exits[0]['counts']}),packet=read(root/'PACKET_ADMISSION.json'))
+ phase_cost={}
+ for i,a in enumerate(arms):
+  start=read(root/'BASE_COMPLETE.json') if i==0 else read(root/str(i)/'STAGE0_READY.json')
+  finish=read(root/str(i)/'MODEL_COMPLETE.json')
+  phase_cost[a]=dict(method_phase_seconds=finish['time']-start['time'],counts={k:exits[i]['counts'][k]-start['counts'][k] for k in exits[i]['counts']},note='Method phase excludes shared Base and admission; small coordination/preparation overhead included')
+ result=dict(status='DEVELOPMENT_SIGNAL_REQUIRES_CONFIRMATION' if any(v['development_signal'] for v in decisions.values()) else 'NO_DEVELOPMENT_SIGNAL',table=table,transitions=transitions,source_echo=echo,decisions=decisions,residuals=norms,costs=dict(method_phases=phase_cost,shared_Base_charged_to_worker0=True,GPU_process_hours=sum(x['seconds'] for x in exits)/3600,counts={k:sum(x['counts'][k] for x in exits) for k in exits[0]['counts']}),packet=read(root/'PACKET_ADMISSION.json'))
  write(root/'SUMMARY.json',result);return result
 if __name__=='__main__':
  import argparse
