@@ -1,0 +1,16 @@
+{
+  "scope": "Local-only source-disjoint support-coverage feasibility following V59",
+  "hard_end": 1792685766,
+  "no_hinge": true,
+  "no_hyperparameter_search": true,
+  "old_B_D_E_training_forbidden": true,
+  "old_source_all_panels_excluded_from_new_cohort": true,
+  "inventory": "Existing local PMC-VQA train/train_2/test/test_2 metadata and existing extracted images or local image archives only; no external retrieval. Search all CT caption records with lymph-node or esophageal-lesion evidence, then inspect actual local images and exact question/reference binding.",
+  "candidate_selection": "Freeze all matching local-image records and source identities before pixel or Base screening; lexical retrieval is not qualification. Exclude previously recorded sources including V58 reviewed cohort. Sort source IDs numerically, alternate source groups between TRAIN_SUPPORT and EVAL; roles fixed before Base outputs, no replacements after failure.",
+  "task": "Thoracic CT arrow-target recognition: enlarged/swollen lymph nodes versus non-node lesion targets, with local-caption-supported original references. Do not infer absence from a missing caption mention; do not invent negatives or use answer-containing questions.",
+  "minimum_data": "At least two distinct source groups in TRAIN_SUPPORT with at least two positive and two negative admissible images overall, and at least two disjoint EVAL source groups with at least two positive and two negative admissible images overall. Existing Base-correct organ retention stays separate and is insufficient for a disease-preservation claim.",
+  "base_screen": "Only after frozen rows pass pixel/caption qualification; report every Base output without performance-based replacement. One fixed two-arm comparison only if dataset gate passes and Base leaves an editing target; otherwise close with negative evidence.",
+  "conditional_training": "Reuse V59 fixed structure, seed 225034559, rank4 layer21, 7168 parameters, 160 updates and optimizer, ordinary CE. SOURCE_ONLY positive support and JOINT_CE positive+negative support with matched per-step backwards; freeze exact support schedule and budgets before any model calls. No old B/D/E transfer to training.",
+  "interpretation": "Local metadata history exclusion does not establish globally unseen data or patient independence; no independent clinical confirmation claim.",
+  "stop": "Insufficient qualified support/evaluation or original deadline ends this branch; preserve V59 failure, publish aggregate evidence, close monitor."
+}
