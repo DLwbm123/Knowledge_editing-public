@@ -11,7 +11,7 @@ try:
  import module_run as m
  from alignment import TT,snapshot
  from token_hook import TokenHook,layout
- from anchor import prefix_kwargs,divergence
+ from anchor import prefix_kwargs
  m.c.budget=lambda:None
  torch.use_deterministic_algorithms(True);torch.backends.cuda.enable_flash_sdp(False);torch.backends.cuda.enable_mem_efficient_sdp(False);torch.backends.cuda.enable_math_sdp(True);torch.backends.cuda.matmul.allow_tf32=False
  runtime=load_real_runtime(SimpleNamespace(cpu_gate=p/'private/cpu_gate'));runtime.model.eval();m.old.fp32(runtime)
@@ -27,7 +27,7 @@ try:
  h=TokenHook(runtime.get_module('model.layers.21.mlp.down_proj'),ex,'ALL_TOKENS');h.set_layout(lay);h.attach()
  try:
   with h.generation_request():out=runtime.model(**kw)
-  logits=out.logits[0,-1];kl32=divergence(logits,base.float().log_softmax(-1).detach());g32=torch.autograd.grad(kl32,tuple(ex.parameters()),retain_graph=True);counts['backwards']+=1
+  logits=out.logits[0,-1];kl32=torch.nn.functional.kl_div(logits.float().log_softmax(-1),base.float().log_softmax(-1).detach(),log_target=True,reduction='sum');g32=torch.autograd.grad(kl32,tuple(ex.parameters()),retain_graph=True);counts['backwards']+=1
   kl64=torch.nn.functional.kl_div(logits.double().log_softmax(-1),base.double().log_softmax(-1),log_target=True,reduction='sum');g64=torch.autograd.grad(kl64,tuple(ex.parameters()));counts['backwards']+=1
   a=torch.cat([z.detach().double().flatten() for z in g32]);c=torch.cat([z.detach().double().flatten() for z in g64]);diff=(logits.detach().double()-base.double())
   result=dict(owner=8,root_value=.001,kl32=float(kl32.detach()),kl64=float(kl64.detach()),gradient32_norm=float(a.norm()),gradient64_norm=float(c.norm()),finite_gradients=bool(torch.isfinite(a).all() and torch.isfinite(c).all()),logit_max_abs_change=float(diff.abs().max()),logit_changed_elements=int(diff.count_nonzero()),counts=counts,seconds=time.time()-START)
