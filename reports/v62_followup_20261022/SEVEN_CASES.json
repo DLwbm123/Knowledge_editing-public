@@ -1,0 +1,93 @@
+[
+  {
+    "case": "D01",
+    "owner": 3,
+    "TT_label": "ABSTAIN",
+    "LoRA_label": "ABSTAIN",
+    "TT_EOS": true,
+    "LoRA_EOS": true,
+    "TT_at_cap": false,
+    "LoRA_at_cap": false,
+    "TT_empty": false,
+    "LoRA_empty": false,
+    "explanation": "Both decline image identification; neither gives the target finding."
+  },
+  {
+    "case": "D02",
+    "owner": 5,
+    "TT_label": "UNCERTAIN",
+    "LoRA_label": "ABSTAIN",
+    "TT_EOS": true,
+    "LoRA_EOS": true,
+    "TT_at_cap": false,
+    "LoRA_at_cap": false,
+    "TT_empty": false,
+    "LoRA_empty": false,
+    "explanation": "TT identifies finding but omits side; LoRA declines both side and finding."
+  },
+  {
+    "case": "D03",
+    "owner": 7,
+    "TT_label": "UNCERTAIN",
+    "LoRA_label": "CORRECT",
+    "TT_EOS": true,
+    "LoRA_EOS": true,
+    "TT_at_cap": false,
+    "LoRA_at_cap": false,
+    "TT_empty": false,
+    "LoRA_empty": false,
+    "explanation": "TT eventually affirms contrast but omits both routes; LoRA supplies both."
+  },
+  {
+    "case": "D04",
+    "owner": 7,
+    "TT_label": "INCORRECT",
+    "LoRA_label": "CORRECT",
+    "TT_EOS": true,
+    "LoRA_EOS": true,
+    "TT_at_cap": false,
+    "LoRA_at_cap": false,
+    "TT_empty": false,
+    "LoRA_empty": false,
+    "explanation": "TT reverses contrast polarity; LoRA has correct polarity and both routes."
+  },
+  {
+    "case": "D05",
+    "owner": 8,
+    "TT_label": "UNCERTAIN",
+    "LoRA_label": "CORRECT",
+    "TT_EOS": false,
+    "LoRA_EOS": true,
+    "TT_at_cap": true,
+    "LoRA_at_cap": false,
+    "TT_empty": false,
+    "LoRA_empty": false,
+    "explanation": "TT gives full list then malformed numeric continuation reaches cap; LoRA terminates normally."
+  },
+  {
+    "case": "D06",
+    "owner": 8,
+    "TT_label": "UNCERTAIN",
+    "LoRA_label": "CORRECT",
+    "TT_EOS": true,
+    "LoRA_EOS": true,
+    "TT_at_cap": false,
+    "LoRA_at_cap": false,
+    "TT_empty": false,
+    "LoRA_empty": false,
+    "explanation": "TT gives one of three unranked causes; LoRA gives full list. Singular main-cause wording is ambiguous."
+  },
+  {
+    "case": "D07",
+    "owner": 10,
+    "TT_label": "INCORRECT",
+    "LoRA_label": "ABSTAIN",
+    "TT_EOS": true,
+    "LoRA_EOS": true,
+    "TT_at_cap": false,
+    "LoRA_at_cap": false,
+    "TT_empty": false,
+    "LoRA_empty": true,
+    "explanation": "TT substitutes a different symptom list; LoRA has empty decoded answer with EOS."
+  }
+]

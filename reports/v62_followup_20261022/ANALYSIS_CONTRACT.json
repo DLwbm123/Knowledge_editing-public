@@ -1,0 +1,23 @@
+{
+  "time": 1792679071.964564,
+  "status": "EXPLORATORY_POST_RESULT_SUPPLEMENT",
+  "prior_scores_immutable": true,
+  "basis": "Question and reference only; no new image/clinical adjudication; no output-dependent eligibility.",
+  "categories": {
+    "APPLICABLE": "Source facts or queried component supported by reference.",
+    "EXPLICITLY_INAPPLICABLE": "Explicit negation, mutually exclusive answer to the same identified target, or explicit contraindication; absence from a list alone is insufficient.",
+    "UNDETERMINED": "Cannot establish applicability/exclusion; includes nonexhaustive or different target lists."
+  },
+  "propagation": "Only affirmative use of an explicitly excluded source fact counts as confirmed mispropagation; mere text mention/definition/negation is insufficient. Per-consumer indicator, no causal attribution beyond paired edit-associated transition.",
+  "no_eligible_denominator": "NA, never zero percent",
+  "reference_target_diagnostic": "Separately count substitution of brain source findings for the liver/kidney target list; not a clinical noncoexistence claim.",
+  "scope_counts": {
+    "APPLICABLE": 53,
+    "UNDETERMINED": 36
+  },
+  "unknown_counts": {
+    "DISJOINT_REFERENCE_TARGET": 2,
+    "DIFFERENT_TREATMENT_LIST": 9,
+    "UNSPECIFIED_TUMOR_SUBTYPE": 25
+  }
+}
