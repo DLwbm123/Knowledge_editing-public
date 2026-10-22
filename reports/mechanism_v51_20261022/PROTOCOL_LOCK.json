@@ -1,0 +1,44 @@
+{
+  "version": "V51",
+  "prepared_at": 1792642566.0,
+  "hard_end": 1792685766.0,
+  "data": "same four exposed cases for paired localization only; new boundary admission separately",
+  "writer_arms": [
+    "W0_FIXED21",
+    "W0_LOC"
+  ],
+  "seed": 225034559,
+  "steps": 160,
+  "parameters": 7168,
+  "target": "same-shape down_proj; forced on; no routing",
+  "selected_layers": [
+    29,
+    31,
+    18,
+    31
+  ],
+  "selection": "V50 frozen Base first UPDATE source first target token, candidate zero-based16..31; reuse exact probe receipt, no reselection",
+  "primary": "complete free-answer paired correctness and damage, source/heldout/clinical both original and SHORT; common-correct and case-complete secondary",
+  "decision": "strict no source/heldout/clinical per-question new loss and at least one correction or reduced Base-C damage across both contexts for a development recommendation; tradeoffs reported, not weighted into winner",
+  "controls": "fixed21 full exact output parity with V50W0; paired identical initialization; inherited ADAPT source-only weights and native precision/greedy1024",
+  "gauge": "CPU actual canonicalizer, full-size TT synthetic states and nontrivial gamma; raw/canonical identity vs diagonal vs transported full-rank4 matrix. Separate coordinate jump from actual update; never changes experimental writer. Add same diagnostic at final trained control without extra model calls.",
+  "boundary": "fixed existing-source inventory first; target8..12 task packs but no fabricated facts. New support requires traceable image/question/reference, semantic applicability, cluster and split separation. Old scored holdouts never become training. Unverified negatives/ROI remain UNKNOWN.",
+  "training_updates": 1280,
+  "backwards": 5120,
+  "generations_expected": 194,
+  "localizer_efficacy_independent_of_router": true,
+  "no_layer_seed_threshold_search": true,
+  "storage": {
+    "remote_hard": 2000000000,
+    "remote_soft": 1500000000,
+    "local": 500000000
+  },
+  "last_weight_consumers": [
+    "full paired original and SHORT generation",
+    "save/load",
+    "final trained-state no-model gauge diagnostic",
+    "frozen scoring and conditional follow-up decision"
+  ],
+  "admission_not_clinician_confirmation": true,
+  "admission_backwards": 16
+}
