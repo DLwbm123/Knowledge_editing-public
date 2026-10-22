@@ -1,0 +1,63 @@
+{
+  "version": "V62 finite native-only structure x source-stop",
+  "structures": [
+    "TT",
+    "NORMALIZED_LORA_R1"
+  ],
+  "states": [
+    "FIXED160",
+    "SOURCE_STOP"
+  ],
+  "selection": "Same original benchmark first10 and restored V61 full consumers; all exposed DEV",
+  "training": "One native image/question/target per edit; CE including EOS only. No FIT, locality, new support, hinge, output-based training or threshold search.",
+  "steps": 160,
+  "checks": [
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140,
+    160
+  ],
+  "stop": "First registered check with every teacher target including EOS strictly top1 (min margin >0), then actual greedy raw continuation exactly target_token_ids and normal EOS below cap. No pass =>160. No semantic judge used for stopping.",
+  "trajectory": "One deterministic trajectory per edit/structure reaches160; inspect without mutation and restore all RNG. Save selected source-only state and160. No eval outputs read before selection.",
+  "seed": 225034559,
+  "target_layer": 21,
+  "target_module": "mlp.down_proj",
+  "mask": "ALL_TOKENS",
+  "TT": {
+    "parameters": 7168,
+    "effective_rank": 4,
+    "initialization": "V61 exact canonical zero-root state",
+    "update": "V61 exact two-scalar canonical RMS, clip1, output group1e-3 input group1e-4"
+  },
+  "LoRA": {
+    "parameters": 18432,
+    "rank": 1,
+    "initialization": "Seeded random unit-norm A, B zero; input RMS normalization epsilon1e-6, scale1",
+    "update": "Same scalar second-moment formula beta2=.999 eps1e-8, clip1, B1e-3 A1e-4, no first moment; no TT-specific gauge canonicalization",
+    "claim": "Normalized rank-one fixed-recipe structural reference, not standard LoRA or equal parameters or LoRA performance ceiling"
+  },
+  "runtime": "V61 MATH_FP32_FROZEN_FP16_PREFILL, greedy EOS max_new_tokens1024, same frozen backbone and layer21",
+  "base": "Reuse V61 Base183 only after source zero-token equality and complete input/runtime/generation bindings match. No old semantic labels reused.",
+  "replay": "TT160 curve and all raw output tokens must reproduce V61 ALL_TOKENS. Mismatch stops scientific comparison without adaptive retuning.",
+  "admission": "CPU stop/EOS/RNG and LoRA gradient checks; real zero exact, nonzero gradients, frozen-prefix-cache exact CE/gradient, teacher-vs-greedy KV logits parity, source-only checkpoint check preserves weights/scalar/RNG, save/load exact.",
+  "evaluation": "219 per arm: T0 10,T1G40,T2G40,T1L84,T2L5,rephrase40;183 Base; same-state outputs may be bound-reused only when source-stop=160",
+  "decision": "TT_SOURCE_STOP candidate versus TT_FIXED160: preserve every correct T0 and T1G consumer; T2G net>=2 and net-positive per-edit delta in>=2 edits; no additional Base-correct locality loss. If failure, retain TT160 and close this stop-rule candidate. Report LoRA all contrasts regardless; if both benefit do not claim TT-specific stop benefit. No threshold/step/rank/loss followup.",
+  "cost": "Report actual full experiment cost separately from hypothetical selected-stop training cost plus required check overhead. This paired design itself does not save training updates.",
+  "budget": {
+    "formal_updates": 3200,
+    "max_backwards": 3400,
+    "max_new_generations": 1040,
+    "max_forwards": 1000000,
+    "remote_hard_bytes": 3000000000,
+    "local_reserved_bytes": 300000000,
+    "worker_seconds": 7200,
+    "hard_end": 1792685766
+  },
+  "monitor": "No monitor restoration; finite execution within original window",
+  "lifecycle": "Retain up to40 tiny states only through registered eval/save-load/scoring/decision; retire exact files after all consumers complete; raw private evidence kept",
+  "prior_results": "V61/V60 closed immutable; no score rewriting or independent-confirmation claim"
+}
