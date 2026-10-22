@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "real_model_calls": 0,
+  "synthetic_random_Mistral": true,
+  "masks_and_KV": true,
+  "text_only_exact": true,
+  "results": [
+    {
+      "arm": "ALL_TOKENS",
+      "gradient_norm": 0.04225404577600985,
+      "trace": [
+        {
+          "sequence_length": 6,
+          "absolute_offset": 0,
+          "active_predictor_count": 6,
+          "first_active_predictor": 0,
+          "active_residual_norm": 0.005964002572000027
+        },
+        {
+          "sequence_length": 1,
+          "absolute_offset": 6,
+          "active_predictor_count": 1,
+          "first_active_predictor": 0,
+          "active_residual_norm": 0.0033646314404904842
+        }
+      ]
+    },
+    {
+      "arm": "PREFILL_ONLY",
+      "gradient_norm": 0.03213226942175321,
+      "trace": [
+        {
+          "sequence_length": 6,
+          "absolute_offset": 0,
+          "active_predictor_count": 6,
+          "first_active_predictor": 0,
+          "active_residual_norm": 0.005964002572000027
+        },
+        {
+          "sequence_length": 1,
+          "absolute_offset": 6,
+          "active_predictor_count": 0,
+          "first_active_predictor": null,
+          "active_residual_norm": 0.0
+        }
+      ]
+    },
+    {
+      "arm": "VISUAL_ONLY",
+      "gradient_norm": 0.00266346678837715,
+      "trace": [
+        {
+          "sequence_length": 6,
+          "absolute_offset": 0,
+          "active_predictor_count": 3,
+          "first_active_predictor": 1,
+          "active_residual_norm": 0.0041058799251914024
+        },
+        {
+          "sequence_length": 1,
+          "absolute_offset": 6,
+          "active_predictor_count": 0,
+          "first_active_predictor": null,
+          "active_residual_norm": 0.0
+        }
+      ]
+    }
+  ]
+}
