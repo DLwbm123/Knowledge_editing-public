@@ -118,68 +118,75 @@ def main():
   out=dict(binding=item[4],raw_answer=answer.decoded_text,raw_token_ids=tokens,EOS=bool(tokens) and tokens[-1]==eos,at_cap=len(tokens)>=1024,generation_trace=trace,state_intervention_events=0,writer_mask="FINAL_PROMPT_AND_ANSWER")
   write(dest,out);return out
  def same(a,b):return a[0]==b[0] and torch.equal(a[1],b[1])
- # All10 edits x all3 view bindings x 2 root states x 3 evaluations =180 backwards.
- ex=new_ex(0);initial=snapshot(ex);h=TokenHook(module,ex,'ALL_TOKENS');root=ex.G1
- try:
-  for task in cfg['tasks']:
-   items=batches(task);bs=[r.old.batch_on(runtime,i[1]) for i in items];lays=[layout(i[2],i[3]) for i in items]
-   dest=ROOT/'admission'/task['key'];dest.mkdir(parents=True,exist_ok=True)
-   ex.load_state_dict(initial);base=[logits(h,b,lay) for b,lay in zip(bs,lays)]
-   if task['order']==1:basegen=emit(None,items[0],dest/'BASE_SOURCE.json')
-   h.attach()
-   try:
-    assert all(torch.equal(ref,logits(h,b,lay)) for ref,b,lay in zip(base,bs,lays)),'ZERO_BASE_LOGITS'
-    if task['order']==1:
-     zero=emit(h,items[0],dest/'ZERO_SOURCE.json',zero=True)
-     assert zero['raw_token_ids']==basegen['raw_token_ids']==read(OLD/'0/ZERO_SMOKE.json')['raw_token_ids']
-    rng=torch.get_rng_state().clone();cuda_rng=torch.cuda.get_rng_state().clone()
-    for nonzero in (False,True):
+ if (ROOT/'INHERITED_REAL_ADMISSION.json').exists():
+  inherited=read(ROOT/'INHERITED_REAL_ADMISSION.json')
+  assert inherited['status']=='PASS' and inherited['no_training_in_parent'] and inherited['unchanged_original_CE_mechanics']
+  assert inherited['data']==cfg and inherited['views']==read(ROOT/'VIEWS_FROZEN.json')
+  write(ROOT/'REAL_ADMISSION.json',dict(inherited['receipt'],inherited=True,parent_source=inherited['source_commit'],no_new_original_admission_calls=True))
+ else:
+  # All10 edits x all3 view bindings x 2 root states x 3 evaluations =180 backwards.
+  ex=new_ex(0);initial=snapshot(ex);h=TokenHook(module,ex,'ALL_TOKENS');root=ex.G1
+  try:
+   for task in cfg['tasks']:
+    items=batches(task);bs=[r.old.batch_on(runtime,i[1]) for i in items];lays=[layout(i[2],i[3]) for i in items]
+    dest=ROOT/'admission'/task['key'];dest.mkdir(parents=True,exist_ok=True)
+    ex.load_state_dict(initial);base=[logits(h,b,lay) for b,lay in zip(bs,lays)]
+    if task['order']==1:basegen=emit(None,items[0],dest/'BASE_SOURCE.json')
+    h.attach()
+    try:
+     assert all(torch.equal(ref,logits(h,b,lay)) for ref,b,lay in zip(base,bs,lays)),'ZERO_BASE_LOGITS'
+     if task['order']==1:
+      zero=emit(h,items[0],dest/'ZERO_SOURCE.json',zero=True)
+      assert zero['raw_token_ids']==basegen['raw_token_ids']==read(OLD/'0/ZERO_SMOKE.json')['raw_token_ids']
+     rng=torch.get_rng_state().clone();cuda_rng=torch.cuda.get_rng_state().clone()
+     for nonzero in (False,True):
+      ex.load_state_dict(initial)
+      if nonzero:
+       with torch.no_grad():root.fill_(.001)
+      refs=[value(ex,h,b,lay) for b,lay in zip(bs,lays)]
+      assert all(v[1].norm()>0 for v in refs)
+      if not nonzero:
+       offset=0
+       for name,param in ex.named_parameters():
+        n=param.numel()
+        if param is root:assert all(v[1][offset:offset+n].norm()>0 for v in refs)
+        offset+=n
+      saved=snapshot(ex)
+      with PrefixCache(runtime,bs,21):
+       for b,lay,ref in zip(bs,lays,refs):
+        a=value(ex,h,b,lay);c=value(ex,h,b,lay)
+        assert same(ref,a) and same(a,c),'CACHE_LOSS_GRADIENT_FAILED'
+        avg=(a[1]+c[1])/2;assert torch.equal(avg,ref[1])
+        scalar=dict(step=0,second_moments=[0.,0.]);one,ss=update(0,saved,ref[1],scalar);two,tt=update(0,saved,avg,scalar)
+        assert ss==tt and all(torch.equal(one[k],two[k]) for k in one)
+        assert scalar==dict(step=0,second_moments=[0.,0.])
+      assert all(torch.equal(v,saved[k]) for k,v in snapshot(ex).items())
+      if nonzero:
+       for b,lay in zip(bs,lays):
+        p=lay['prefix_length'];expected=logits(h,b,lay);pre=prefix_kwargs(b,p);pre['use_cache']=True
+        with torch.no_grad(),h.generation_request():
+         out=runtime.model(**pre);first=out.logits[0,-1].detach().cpu().double()
+         kw=b.forward_kwargs();decode=dict(pre,past_key_values=out.past_key_values,inputs_embeds=kw['inputs_embeds'][:,p:p+1])
+         for k in ('attention_mask','position_ids'):
+          if isinstance(kw.get(k),torch.Tensor):decode[k]=kw[k][:,:p+1] if k=='attention_mask' else kw[k][:,p:p+1]
+         out=runtime.model(**decode);second=out.logits[0,-1].detach().cpu().double();del out
+        torch.testing.assert_close(first,expected[0],rtol=1e-5,atol=5e-4)
+        torch.testing.assert_close(second,expected[1],rtol=1e-5,atol=5e-4)
      ex.load_state_dict(initial)
-     if nonzero:
-      with torch.no_grad():root.fill_(.001)
-     refs=[value(ex,h,b,lay) for b,lay in zip(bs,lays)]
-     assert all(v[1].norm()>0 for v in refs)
-     if not nonzero:
-      offset=0
-      for name,param in ex.named_parameters():
-       n=param.numel()
-       if param is root:assert all(v[1][offset:offset+n].norm()>0 for v in refs)
-       offset+=n
-     saved=snapshot(ex)
-     with PrefixCache(runtime,bs,21):
-      for b,lay,ref in zip(bs,lays,refs):
-       a=value(ex,h,b,lay);c=value(ex,h,b,lay)
-       assert same(ref,a) and same(a,c),'CACHE_LOSS_GRADIENT_FAILED'
-       avg=(a[1]+c[1])/2;assert torch.equal(avg,ref[1])
-       scalar=dict(step=0,second_moments=[0.,0.]);one,ss=update(0,saved,ref[1],scalar);two,tt=update(0,saved,avg,scalar)
-       assert ss==tt and all(torch.equal(one[k],two[k]) for k in one)
-       assert scalar==dict(step=0,second_moments=[0.,0.])
-     assert all(torch.equal(v,saved[k]) for k,v in snapshot(ex).items())
-     if nonzero:
-      for b,lay in zip(bs,lays):
-       p=lay['prefix_length'];expected=logits(h,b,lay);pre=prefix_kwargs(b,p);pre['use_cache']=True
-       with torch.no_grad(),h.generation_request():
-        out=runtime.model(**pre);first=out.logits[0,-1].detach().cpu().double()
-        kw=b.forward_kwargs();decode=dict(pre,past_key_values=out.past_key_values,inputs_embeds=kw['inputs_embeds'][:,p:p+1])
-        for k in ('attention_mask','position_ids'):
-         if isinstance(kw.get(k),torch.Tensor):decode[k]=kw[k][:,:p+1] if k=='attention_mask' else kw[k][:,p:p+1]
-        out=runtime.model(**decode);second=out.logits[0,-1].detach().cpu().double();del out
-       torch.testing.assert_close(first,expected[0],rtol=1e-5,atol=5e-4)
-       torch.testing.assert_close(second,expected[1],rtol=1e-5,atol=5e-4)
-    ex.load_state_dict(initial)
-    assert torch.equal(rng,torch.get_rng_state()) and torch.equal(cuda_rng,torch.cuda.get_rng_state())
-    torch.save(snapshot(ex),dest/'state.pt');loaded=torch.load(dest/'state.pt',map_location=runtime.device,weights_only=True)
-    assert all(torch.equal(v,loaded[k]) for k,v in initial.items())
-    assert all(torch.equal(ref,logits(h,b,lay)) for ref,b,lay in zip(base,bs,lays))
-    size=(dest/'state.pt').stat().st_size;(dest/'state.pt').unlink()
-    write(dest/'PASS.json',dict(status='PASS',all_three_bindings=True,save_load_exact=True,temporary_state_retired_bytes=size,counts=dict(counts),time=time.time()))
-   finally:h.detach()
-   write(ROOT/'PROGRESS.json',dict(phase='REAL_ADMISSION',owner=task['order'],counts=dict(counts),time=time.time()))
-   del bs,items;gc.collect()
- finally:h.detach()
- del ex;gc.collect();torch.cuda.empty_cache()
- assert counts['backwards']-prior_counts['backwards']==180 and counts['generations']-prior_counts['generations']==2
- write(ROOT/'REAL_ADMISSION.json',dict(status='PASS',counts=dict(counts),time=time.time(),all10_all3_bindings=True))
+     assert torch.equal(rng,torch.get_rng_state()) and torch.equal(cuda_rng,torch.cuda.get_rng_state())
+     torch.save(snapshot(ex),dest/'state.pt');loaded=torch.load(dest/'state.pt',map_location=runtime.device,weights_only=True)
+     assert all(torch.equal(v,loaded[k]) for k,v in initial.items())
+     assert all(torch.equal(ref,logits(h,b,lay)) for ref,b,lay in zip(base,bs,lays))
+     size=(dest/'state.pt').stat().st_size;(dest/'state.pt').unlink()
+     write(dest/'PASS.json',dict(status='PASS',all_three_bindings=True,save_load_exact=True,temporary_state_retired_bytes=size,counts=dict(counts),time=time.time()))
+    finally:h.detach()
+    write(ROOT/'PROGRESS.json',dict(phase='REAL_ADMISSION',owner=task['order'],counts=dict(counts),time=time.time()))
+    del bs,items;gc.collect()
+  finally:h.detach()
+  del ex;gc.collect();torch.cuda.empty_cache()
+  assert counts['backwards']-prior_counts['backwards']==180 and counts['generations']-prior_counts['generations']==2
+  write(ROOT/'REAL_ADMISSION.json',dict(status='PASS',counts=dict(counts),time=time.time(),all10_all3_bindings=True))
+
  # Validate the additional prefix-only KL and its cache for every source swap.
  ex=new_ex(0);initial=snapshot(ex);h=TokenHook(module,ex,'ALL_TOKENS')
  try:
@@ -203,7 +210,7 @@ def main():
    del b,item;gc.collect()
  finally:h.detach()
  del ex;gc.collect();torch.cuda.empty_cache()
- assert counts['backwards']-prior_counts['backwards']==240
+ assert counts['backwards']-prior_counts['backwards']==(60 if (ROOT/'INHERITED_REAL_ADMISSION.json').exists() else 240)
  write(ROOT/'ANCHOR_ADMISSION.json',dict(status='PASS',all10=True,counts=dict(counts),time=time.time()))
  # Reuse V64 controls; new fixed auxiliary objective only.
 
@@ -253,7 +260,7 @@ def main():
    finally:h.detach()
    del ex;gc.collect();torch.cuda.empty_cache()
   if arm=='A_NATIVE':write(ROOT/'A_REPLAY_BARRIER.json',dict(status='PASS',TT_only=True,each_160_curve_all10=True,each_219_raw_tokens=True,time=time.time()))
- assert counts['updates']-prior_counts['updates']==1600 and counts['backwards']-prior_counts['backwards']==5040 and counts['generations']-prior_counts['generations']==221
+ assert counts['updates']-prior_counts['updates']==1600 and counts['backwards']-prior_counts['backwards']==(4860 if (ROOT/'INHERITED_REAL_ADMISSION.json').exists() else 5040) and counts['generations']-prior_counts['generations']==(219 if (ROOT/'INHERITED_REAL_ADMISSION.json').exists() else 221)
  write(ROOT/'MAIN_COMPLETE.json',dict(status='MAIN_OUTPUTS_COMPLETE_SCORING_PENDING',counts=dict(counts),time=time.time(),state_injection_tested=False))
  fh.remove();vh.remove()
 
