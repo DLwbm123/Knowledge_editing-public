@@ -1,0 +1,30 @@
+{
+  "time": 1792664843.998131,
+  "stage": "BASE_ONLY_QUALIFICATION",
+  "pool": 64,
+  "existing_reviewed": 16,
+  "retention_candidates": 9,
+  "unreviewed_metadata_only": 48,
+  "train_panels": [
+    "A",
+    "C"
+  ],
+  "heldout_panels": [
+    "B",
+    "D",
+    "E"
+  ],
+  "untrained_negative": "B",
+  "retention_training_forbidden": true,
+  "source_disjoint_retention": true,
+  "patient_independence": "UNKNOWN",
+  "independent_confirmation": false,
+  "confounds": "Same source, different imaging plane and annotations; not independent cases",
+  "generations": 17,
+  "updates": 0,
+  "backwards": 0,
+  "no_hinge": true,
+  "grading": "Freeze all17 C/I/U/A judgments against fixed references before next training. Clinical retention includes CORRECT only. Modality auxiliary is separate, never substitutes clinical retention.",
+  "stop": "No training without clinical Base-correct retention and supported heldout negative. No replacement by model-performance selection.",
+  "hard_end": 1792685766
+}
