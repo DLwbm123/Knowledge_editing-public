@@ -38,9 +38,17 @@ def packet(root):
  def sig(r):
   o=r['output'];return o['binding']['question'],o['binding']['reference'],o['raw_answer']
  triples=sorted({sig(r) for r in rows});random.Random(620022).shuffle(triples);keys={x:f'K{i:04}' for i,x in enumerate(triples)}
- write(root/'BLIND_PACKET.json',[dict(id=keys[x],question=x[0],reference=x[1],answer=x[2]) for x in triples])
+ full=[dict(id=keys[x],question=x[0],reference=x[1],answer=x[2]) for x in triples]
+ write(root/'BLIND_PACKET.json',full)
+ # Fresh reference equality / empty-answer rules only, never historical labels.
+ exact={}
+ for x in full:
+  if not x['answer'].strip():exact[x['id']]=dict(label='ABSTAIN',reason='Empty answer under unified v1.')
+  elif x['reference'].strip() and x['answer'].strip().casefold()==x['reference'].strip().casefold():exact[x['id']]=dict(label='CORRECT',reason='Complete answer equals the frozen reference after outer whitespace and case normalization; no additional claims.')
+ write(root/'FRESH_EXACT_VERDICTS.json',exact)
+ write(root/'BLIND_REVIEW_PACKET.json',[x for x in full if x['id'] not in exact])
  write(root/'BLIND_MAPPING.json',[dict(arm=r['arm'],owner=r['owner'],query=r['query'],blind_id=keys[sig(r)]) for r in rows])
- admission=dict(status='PASS',bound_outputs=len(rows),unique_blind=len(triples),prior_semantic_labels_reused=0,Base_generations_reused=183,formal_output_consumers=876,EOS=sum(r['output']['EOS'] for r in rows),at_cap=sum(r['output']['at_cap'] for r in rows))
+ admission=dict(status='PASS',bound_outputs=len(rows),unique_blind=len(triples),prior_semantic_labels_reused=0,fresh_exact_or_empty=len(exact),manual_blind=len(full)-len(exact),Base_generations_reused=183,formal_output_consumers=876,EOS=sum(r['output']['EOS'] for r in rows),at_cap=sum(r['output']['at_cap'] for r in rows))
  write(root/'PACKET_ADMISSION.json',admission);write(root/'SELECTION_SUMMARY.json',selections);return admission
 
 def summary(root):
