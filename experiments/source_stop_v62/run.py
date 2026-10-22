@@ -30,7 +30,7 @@ def main():
  from token_hook import TokenHook,layout
  from path_v18 import proposal,construct
  from v51_cache import PrefixCache
- from structure import LoRA,lora_step,preserve_rng,target_margin,exact_source_pass
+ from v62_structure import LoRA,lora_step,preserve_rng,target_margin,exact_source_pass
  r.c.budget=budget
  torch.use_deterministic_algorithms(True);torch.backends.cuda.enable_flash_sdp(False);torch.backends.cuda.enable_mem_efficient_sdp(False);torch.backends.cuda.enable_math_sdp(True);torch.backends.cuda.matmul.allow_tf32=False
  runtime=load_real_runtime(SimpleNamespace(cpu_gate=P/'private/cpu_gate'));runtime.model.eval();r.old.fp32(runtime)
