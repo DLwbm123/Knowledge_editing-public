@@ -75,4 +75,3 @@ class PrefixCache:
         for layer, forward in zip(self.layers, self.originals):
             layer.forward = forward
         self.cache.clear()
-
