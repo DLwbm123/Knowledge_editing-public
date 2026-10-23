@@ -6,6 +6,8 @@ import canonedit as old
 import tt_native_canon as native
 import convex_correction
 v = c.v
+if (v.ROOT/'ENGINEERING_CARRIED_COUNTS.json').exists():
+    v.counts.update(v.read(v.ROOT/'ENGINEERING_CARRIED_COUNTS.json'))
 ARMS = ['CE', 'BAL_CE', 'OLD', 'FIXED', 'FIXED_SOURCE']
 
 
@@ -97,6 +99,7 @@ def evaluate_new(tasks):
 
 
 def main():
+    recovery = v.read(v.ROOT/'ENGINEERING_RECOVERY2.json') if (v.ROOT/'ENGINEERING_RECOVERY2.json').exists() else {}
     tasks, items, by_owner, new_all = c.prepare()
     Chart = native.chart_class(); old_by, old_all = {}, []
     for task in tasks:
@@ -121,6 +124,10 @@ def main():
         del probe, full, cached
         for task in tasks:
             owner = task['order']; new = by_owner[owner]
+            if owner in recovery.get('completed_owners', []):
+                assert (v.ROOT/'training'/f'{owner}.json').exists()
+                assert (v.ROOT/'candidates/FIXED'/f'{owner}.pt').exists()
+                continue
             initial = v.r.p.load_state(v.PARENT/'private/candidates/C'/f'{owner}.pt')['states']['BASE']
             initial = {k:x.to(v.runtime.device) for k,x in v.r.mm.canonicalize(initial)[0].items()}
             endpoints = [{k:x.to(v.runtime.device) for k,x in v.r.p.load_state(v.ROOT/'candidates'/arm/f'{owner}.pt')['state'].items()}
@@ -138,13 +145,20 @@ def main():
                 endpoint_audit[arm] = dict(margin=ms.tolist(), protected_MAE=float((ss-baseline).abs().mean()),
                     protected_MSE=float((ss-baseline).square().mean()), total_radius_squared=radius,
                     nonlinear_gate=old.gates(ms,ss,baseline), radius_pass=radius<=36+1e-6)
-            v.write(v.ROOT/'endpoint_audit'/f'{owner}.json', endpoint_audit)
+            if owner in recovery.get('completed_old_replay', []):
+                expected_endpoint = v.read(v.ROOT/'endpoint_audit'/f'{owner}.json')
+                assert endpoint_audit == expected_endpoint
+            else:
+                v.write(v.ROOT/'endpoint_audit'/f'{owner}.json', endpoint_audit)
             with torch.no_grad():expert.z.zero_()
-            audit = native.solve(expert,new,old_by[owner],protected)
-            verify_old(audit,v.read(v.ROOT/'old_training'/f'{owner}.json'))
-            expected = v.r.p.load_state(v.ROOT/'candidates/OLD'/f'{owner}.pt')['state']
-            for k,t in expert.state().items():torch.testing.assert_close(t.cpu(),expected[k].cpu(),rtol=1e-5,atol=5e-4)
-            v.write(v.ROOT/'old_replay'/f'{owner}.json',dict(status='PASS',audit=audit))
+            if owner in recovery.get('completed_old_replay', []):
+                assert v.read(v.ROOT/'old_replay'/f'{owner}.json')['status'] == 'PASS'
+            else:
+                audit = native.solve(expert,new,old_by[owner],protected)
+                verify_old(audit,v.read(v.ROOT/'old_training'/f'{owner}.json'))
+                expected = v.r.p.load_state(v.ROOT/'candidates/OLD'/f'{owner}.pt')['state']
+                for k,t in expert.state().items():torch.testing.assert_close(t.cpu(),expected[k].cpu(),rtol=1e-5,atol=5e-4)
+                v.write(v.ROOT/'old_replay'/f'{owner}.json',dict(status='PASS',audit=audit))
             with torch.no_grad():expert.z.zero_()
             audit=corrected(expert,new,old_by[owner],protected,owner)
             state={k:t.detach().clone() for k,t in expert.state().items()}

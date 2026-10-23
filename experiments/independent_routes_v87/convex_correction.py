@@ -55,8 +55,11 @@ def solve(A, b, B, g, M, M0, z, C=None, d=None):
     if active.any():
         try:
             multipliers[active], _ = nnls(jacobian(x)[active].T, grad, maxiter=1000)
-        except RuntimeError:
-            return dict(status='NUMERICAL_KKT_FAILURE', delta=None)
+        except (RuntimeError, np.linalg.LinAlgError) as error:
+            return dict(status='NUMERICAL_KKT_FAILURE', delta=None,
+                        error=repr(error), primal_min=float(values.min()),
+                        scipy_success=bool(result.success),
+                        scipy_message=str(result.message))
     stationarity = float(np.linalg.norm(grad - jacobian(x).T @ multipliers))
     complementarity = float(np.max(np.abs(values * multipliers)))
     tolerance = 1e-5 * (1 + float(np.linalg.norm(grad)))
