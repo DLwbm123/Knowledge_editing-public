@@ -50,46 +50,77 @@ def objective(log,q,z,arm):
     return (z*rkl+(1-z)*(fkl+.1*rel)).mean()
 
 
+def cached_forward(cache,b):
+    import prefix_cache
+    inner=cache.cache
+    assert inner.current is None and id(b) in inner.cache
+    assert inner.batch_signature(b)==inner.inputs[id(b)]
+    assert [prefix_cache.signature(p) for p in inner.parameters]==inner.weights
+    inner.current=id(b);inner.hits+=1
+    try:return v.runtime.model(**b.forward_kwargs())
+    finally:inner.current=None
+
+
 def main():
     tasks,items,by_owner,batches=c.prepare();torch=v.torch;r=v.r
     from m3bench_repro.editors.llava_runtime import seed_everything
-    import diagnosis
-    teacher={};sens=[];ordered=[]
-    for task in tasks:
-        owner=task['order'];rows=v.read(v.ROOT/'SOURCE_ROWS.json')[str(owner)];fact=v.read(v.ROOT/'FACTS.json')[str(owner)]
-        conditioned=[dict(row,question=diagnosis.short_context(fact,'S3')+'\n\nQuestion: '+row['question']) for row in rows]
-        ci=v.prepare(task,conditioned,True)
-        for view,(row,item,b) in enumerate(zip(rows,ci,by_owner[owner])):
-            key=f'{owner}:{view}';answer=diagnosis.greedy(item)
-            v.write(v.ROOT/'qualification'/f'{owner}_{view}.json',dict(key=key,source=row,source_facts=fact['medical_record'],**answer))
-            cb=r.old.batch_on(v.runtime,item[1])
-            with torch.no_grad():q=token_log(v.runtime.model(**cb.forward_kwargs()),cb).detach().cpu()
-            assert torch.equal(cb.labels[cb.labels!=-100].cpu(),b.labels[b.labels!=-100].cpu())
-            teacher[key]=q;ordered.append((key,b))
-            v.progress(stage='TEACHER_SOURCE_QUALIFICATION',owner=owner,view=view)
-    v.save_state(v.ROOT/'FROZEN_TEACHER_LOGP.pt',teacher)
-    v.write(v.ROOT/'SOURCE_REVIEW_READY.json',dict(count=40,full_source_required=True,time=time.time()))
-    while not (v.ROOT/'SOURCE_REVIEW_FROZEN.json').exists():
-        v.budget();time.sleep(3)
-    labels=v.read(v.ROOT/'SOURCE_REVIEW_FROZEN.json');assert set(labels['pass'])==set(teacher)
-    if not any(labels['pass'].values()):
-        v.write(v.ROOT/'CLOSED_NO_QUALIFIED_TEACHER.json',dict(count=0,no_training=True,time=time.time()));return
-    for key,b in ordered:
-        kwargs=b.forward_kwargs();embedded=kwargs['inputs_embeds'].detach().clone().requires_grad_(True);kwargs=dict(kwargs,inputs_embeds=embedded)
-        out=v.runtime.model(**kwargs);log=token_log(out,b);target=b.labels[b.labels!=-100]
-        value=-log.gather(1,target[:,None]).sum()
-        grad=torch.autograd.grad(value,embedded)[0];v.counts['backwards']+=1
-        positions=torch.where(b.labels[0]!=-100)[0]
-        top=log.detach().topk(2,-1).indices;alt=torch.where(top[:,0]==target,top[:,1],top[:,0])
-        direction=v.runtime.model.get_input_embeddings()(alt).detach()-v.runtime.model.get_input_embeddings()(target).detach()
-        direction=direction/direction.norm(dim=-1,keepdim=True).clamp_min(1e-8)
-        score=(grad[0,positions]*direction).sum(-1).abs().detach().cpu();sens.append(score)
-        del out,log,value,grad,embedded
-    zz,audit=weights(sens);zmap={key:z for (key,_),z in zip(ordered,zz)}
-    v.save_state(v.ROOT/'FROZEN_JUNCTION_POSTERIOR.pt',dict(weights=zmap,sensitivity=dict(zip(teacher,sens)),audit=audit))
-    v.write(v.ROOT/'SUPERVISION_FROZEN.json',dict(qualified=sum(labels['pass'].values()),total=40,reference_prefix=True,on_policy=False,teacher='SOURCE_CONDITIONED_FROZEN_BASE',time=time.time()))
+    if not (v.ROOT/'SUPERVISION_FROZEN.json').exists():
+        import diagnosis
+        teacher={};sens=[];ordered=[]
+        for task in tasks:
+            owner=task['order'];rows=v.read(v.ROOT/'SOURCE_ROWS.json')[str(owner)];fact=v.read(v.ROOT/'FACTS.json')[str(owner)]
+            conditioned=[dict(row,question=diagnosis.short_context(fact,'S3')+'\n\nQuestion: '+row['question']) for row in rows]
+            ci=v.prepare(task,conditioned,True)
+            for view,(row,item,b) in enumerate(zip(rows,ci,by_owner[owner])):
+                key=f'{owner}:{view}';answer=diagnosis.greedy(item)
+                v.write(v.ROOT/'qualification'/f'{owner}_{view}.json',dict(key=key,source=row,source_facts=fact['medical_record'],**answer))
+                cb=r.old.batch_on(v.runtime,item[1])
+                with torch.no_grad():q=token_log(v.runtime.model(**cb.forward_kwargs()),cb).detach().cpu()
+                assert torch.equal(cb.labels[cb.labels!=-100].cpu(),b.labels[b.labels!=-100].cpu())
+                teacher[key]=q;ordered.append((key,b))
+                v.progress(stage='TEACHER_SOURCE_QUALIFICATION',owner=owner,view=view)
+        v.save_state(v.ROOT/'FROZEN_TEACHER_LOGP.pt',teacher)
+        v.write(v.ROOT/'SOURCE_REVIEW_READY.json',dict(count=40,full_source_required=True,time=time.time()))
+        while not (v.ROOT/'SOURCE_REVIEW_FROZEN.json').exists():
+            v.budget();time.sleep(3)
+        labels=v.read(v.ROOT/'SOURCE_REVIEW_FROZEN.json');assert set(labels['pass'])==set(teacher)
+        if not any(labels['pass'].values()):
+            v.write(v.ROOT/'CLOSED_NO_QUALIFIED_TEACHER.json',dict(count=0,no_training=True,time=time.time()));return
+        for key,b in ordered:
+            kwargs=b.forward_kwargs();embedded=kwargs['inputs_embeds'].detach().clone().requires_grad_(True);kwargs=dict(kwargs,inputs_embeds=embedded)
+            out=v.runtime.model(**kwargs);log=token_log(out,b);target=b.labels[b.labels!=-100]
+            value=-log.gather(1,target[:,None]).sum()
+            grad=torch.autograd.grad(value,embedded)[0];v.counts['backwards']+=1
+            positions=torch.where(b.labels[0]!=-100)[0]
+            top=log.detach().topk(2,-1).indices;alt=torch.where(top[:,0]==target,top[:,1],top[:,0])
+            direction=v.runtime.model.get_input_embeddings()(alt).detach()-v.runtime.model.get_input_embeddings()(target).detach()
+            direction=direction/direction.norm(dim=-1,keepdim=True).clamp_min(1e-8)
+            score=(grad[0,positions]*direction).sum(-1).abs().detach().cpu();sens.append(score)
+            del out,log,value,grad,embedded
+        zz,audit=weights(sens);zmap={key:z for (key,_),z in zip(ordered,zz)}
+        v.save_state(v.ROOT/'FROZEN_JUNCTION_POSTERIOR.pt',dict(weights=zmap,sensitivity=dict(zip(teacher,sens)),audit=audit))
+        v.write(v.ROOT/'SUPERVISION_FROZEN.json',dict(qualified=sum(labels['pass'].values()),total=40,reference_prefix=True,on_policy=False,teacher='SOURCE_CONDITIONED_FROZEN_BASE',time=time.time()))
+    else:
+        teacher=r.p.load_state(v.ROOT/'FROZEN_TEACHER_LOGP.pt')
+        zmap=r.p.load_state(v.ROOT/'FROZEN_JUNCTION_POSTERIOR.pt')['weights']
+        labels=v.read(v.ROOT/'SOURCE_REVIEW_FROZEN.json')
+        assert sum(labels['pass'].values())==26 and len(teacher)==40
     arms=['CE','RKL','RANK','JB']
-    with c.CachedSource(batches):
+    # Full/cached source logits parity before any first training update.
+    task=tasks[0];original=r.p.load_state(v.PARENT/'private/candidates/C'/f'{task["order"]}.pt')['states']['BASE']
+    seed_everything(task['seed']);probe=r.p.expert(original,task['seed'],v.runtime.device);probe.load_state_dict(r.mm.canonicalize(original)[0])
+    ph=r.q.scoped.replay.MedTraceLayerHook(v.runtime.get_module(r.c.LAYER),probe);ph.attach();b=by_owner[task['order']][0];ph.set_teacher_routing(b.labels)
+    try:
+        with torch.no_grad():full_logits=v.runtime.model(**b.forward_kwargs()).logits.detach().cpu()
+    finally:ph.detach()
+    with c.CachedSource(batches) as cache:
+        ph.attach();ph.set_teacher_routing(b.labels)
+        try:
+            with torch.no_grad():cached_logits=cached_forward(cache,b).logits.detach().cpu()
+            torch.testing.assert_close(cached_logits,full_logits,rtol=1e-5,atol=5e-4)
+            v.write(v.ROOT/'CACHED_LOGITS_PARITY.json',dict(status='PASS',rtol=1e-5,atol=5e-4,nonzero_TT=True,no_updates_before_check=True))
+        finally:ph.detach()
+        del probe,full_logits,cached_logits
         for task in tasks:
             owner=task['order'];bs=by_owner[owner];original=r.p.load_state(v.PARENT/'private/candidates/C'/f'{owner}.pt')['states']['BASE']
             for arm in arms:
@@ -101,7 +132,7 @@ def main():
                         opt.zero_grad(set_to_none=True)
                         for view in (0,1+step%4):
                             b=bs[view];key=f'{owner}:{view}';hook.set_teacher_routing(b.labels)
-                            out=v.runtime.model(**b.forward_kwargs());log=token_log(out,b);target=b.labels[b.labels!=-100]
+                            out=cached_forward(cache,b);log=token_log(out,b);target=b.labels[b.labels!=-100]
                             ce=-log.gather(1,target[:,None]).mean();loss=ce
                             if arm!='CE' and labels['pass'][key]:loss=.5*ce+.5*objective(log,teacher[key].to(log.device),zmap[key].to(log.device),arm)
                             assert torch.isfinite(loss);(.5*loss).backward();v.counts['backwards']+=1

@@ -51,3 +51,9 @@ JB使用冻结Base在固定参考轨迹上的真实input-embedding反向：完�
 ### V90部署纠错与费用继承
 
 启动器错误地把SGB源码复制到了Rank/JB文件名，实际执行过447个来源backward、200个更新（487forward，0教师/评价生成）；不是零模型入口失败。发现后设置STOP，等待原worker/guard退出，保存误部署源码、全部部分状态、退出与进度回执至deployment_recovery1。正确Rank/JB尚未开始，修正具体复制源文件后在同一个V90根/原钟/7200秒GPU总预算中启动；新actor从ENGINEERING_CARRIED_COUNTS继承上述已付计数而不是归零，旧GPU租约登记结束。误执行SGB状态不作为Rank/JB初始化、数据或结果，不隐式重训已运行Rank/JB轨迹。该错误与未计入Rank/JB有效训练的成本必须在最终报告披露。首次公开启动快照中GPU3出现的GLOBAL_FULL_TRAINING实际是误部署SGB，不能视作Rank/JB进展。
+
+### V90监督完成后的logits消费者修复
+
+40教师资格、40原词表参考评分、40方向未来梯度与EM已完成并冻结；首次训练forward发现直接model调用没有进入既有compute_loss的PrefixCache batch作用域，卸载层因而被实际调用导致CPU/CUDA设备错误。在任何Rank/JB梯度或更新之前失败，不能称零模型失败：累计1849forward/608non-gen/487backward/200更新/40教师生成，包含前述误部署费用。完整退出、源码、STOP、缓存/部分状态原样保留。
+
+续接仅修复logits消费者进入同一严格签名检查的活动batch作用域，预先核验非零TT完整forward与缓存logits，原rtol1e-5/atol5e-4不变。明确从已冻结FROZEN_TEACHER_LOGP/FROZEN_JUNCTION_POSTERIOR/SOURCE_REVIEW_FROZEN加载，禁止重新生成教师、重评序列、重算敏感度或改合格mask；无任何已执行的Rank/JB训练步需要重跑。重建FP32只读模型及源缓存是工程费用，所有计数/GPU租约/原始12h钟继续继承，不以新名重置预算。其余三个运行不变。后续如有训练中失败，保存其step/optimizer状态再判断，禁止从头隐式重训。
