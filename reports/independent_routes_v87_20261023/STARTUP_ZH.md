@@ -14,3 +14,5 @@ V86五臂已完成40终态与775个自由回答消费者，所有进程正常退
 DPC/SCRO两次零模型入口错误（运行时import先后、helper命名冲突）已保存回执后修复，累计成本/原钟不重置；没有训练后悄悄重试。SGB启动器重复环境键错误发生于创建worker之前，保存bootstrap记录后在同一原钟修复。实际训练失败仍STOP。完整科学协议、原文迁移区别、容量差异和严格审核边界见PROTOCOL_ZH.md。
 
 本记录只证明实际启动与所列训练进度，尚无新路线性能收益结论。原医疗问答/图片/key/梯度/逐token答案和私有路径均留私有。
+
+更新：GPU3首次复制源文件错误，执行的是重复SGB而非Rank/JB；该作业已STOP退出并保留实际447 backward/200更新费用，正确入口已在原钟内启动。此前“监督资格构造中”对首次actor不成立。原快照GLOBAL_FULL_TRAINING亦仅是误部署证据。后续以正确源码及qualification/SOURCE_REVIEW_READY回执确认Rank/JB真实进度。

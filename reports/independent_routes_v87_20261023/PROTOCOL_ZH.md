@@ -47,3 +47,7 @@ JB使用冻结Base在固定参考轨迹上的真实input-embedding反向：完�
 这是原词表损失机制的**固定参考轨迹TT迁移**：轨迹不是随学生更新的on-policy rollout，教师不是论文外部更强模型，JB敏感度来自冻结Base而非训练中的学生；不得称完整Rank-OPD/JB-OPD复现，也不由40源轨迹正确推断无token级监督。相对V83不再只给三个同义句候选分配能量。主要RANK−RKL、JB−RKL及CE参照，额外教师/敏感度成本完整披露。
 
 全部32终态freeze后Base+4臂各155，共775消费者，严格同前缀机械检查/原route/全文盲评/保护支持分母与生命周期继承。独立12h墙钟/7200GPU驻留秒、8GB硬/6GB软/余8GiB，本地200MB；F1e6/non-gen20000/NNB20000/opB20000/update25000/teacher40（仅固定资格生成）/eval800（775正式+25故障余量，不是重采）/Judge0。任何模型运行异常STOP保留费用，不能隐式重训。资格审核后若有合格输入继续全部8编辑四臂训练，不挑编辑或删失败源输入。
+
+### V90部署纠错与费用继承
+
+启动器错误地把SGB源码复制到了Rank/JB文件名，实际执行过447个来源backward、200个更新（487forward，0教师/评价生成）；不是零模型入口失败。发现后设置STOP，等待原worker/guard退出，保存误部署源码、全部部分状态、退出与进度回执至deployment_recovery1。正确Rank/JB尚未开始，修正具体复制源文件后在同一个V90根/原钟/7200秒GPU总预算中启动；新actor从ENGINEERING_CARRIED_COUNTS继承上述已付计数而不是归零，旧GPU租约登记结束。误执行SGB状态不作为Rank/JB初始化、数据或结果，不隐式重训已运行Rank/JB轨迹。该错误与未计入Rank/JB有效训练的成本必须在最终报告披露。首次公开启动快照中GPU3出现的GLOBAL_FULL_TRAINING实际是误部署SGB，不能视作Rank/JB进展。

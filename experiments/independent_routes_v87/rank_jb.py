@@ -2,6 +2,7 @@
 import time
 import route_common as c
 v=c.v
+if (v.ROOT/'ENGINEERING_CARRIED_COUNTS.json').exists():v.counts.update(v.read(v.ROOT/'ENGINEERING_CARRIED_COUNTS.json'))
 
 
 def weights(scores):
