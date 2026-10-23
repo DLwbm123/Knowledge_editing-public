@@ -79,7 +79,23 @@ def main():
         owner=task['order'];answer=v.read(v.ROOT/'OLD_SOURCE_ANSWERS.json')[str(owner)]['raw_answer']
         rows=[dict(x,reference=answer) for x in v.read(v.ROOT/'SOURCE_ROWS.json')[str(owner)]]
         batches=[v.r.old.batch_on(v.runtime,x[1]) for x in v.prepare(task,rows,True)];old_by[owner]=batches;old_all+=batches
-    with c.CachedSource(new_all+old_all):
+    probe_state=v.r.p.load_state(v.ROOT/'candidates/CE/1.pt')['state']
+    probe=v.r.p.expert(probe_state,1,v.runtime.device);batch=by_owner[1][0]
+    ph=v.r.q.scoped.replay.MedTraceLayerHook(v.runtime.get_module(v.r.c.LAYER),probe);ph.attach();ph.set_teacher_routing(batch.labels)
+    try:
+        with torch.no_grad():full=v.runtime.model(**batch.forward_kwargs()).logits.detach().cpu()
+    finally:ph.detach()
+    with c.CachedSource(new_all+old_all) as cache:
+        ph.attach();ph.set_teacher_routing(batch.labels)
+        try:
+            cache.cache.current=id(batch)
+            try:
+                with torch.no_grad():cached=v.runtime.model(**batch.forward_kwargs()).logits.detach().cpu()
+            finally:cache.cache.current=None
+            torch.testing.assert_close(full,cached,rtol=1e-5,atol=5e-4)
+            v.write(v.ROOT/'CACHED_LOGITS_PARITY.json',dict(status='PASS',nonzero_matched_CE=True,rtol=1e-5,atol=5e-4))
+        finally:ph.detach()
+        del probe,full,cached
         for task in tasks:
             owner=task['order'];new=by_owner[owner]
             initial=v.r.p.load_state(v.PARENT/'private/candidates/C'/f'{owner}.pt')['states']['BASE'];initial=v.r.mm.canonicalize(initial)[0]
