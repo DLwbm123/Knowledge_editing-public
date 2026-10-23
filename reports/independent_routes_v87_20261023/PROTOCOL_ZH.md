@@ -57,3 +57,5 @@ JB使用冻结Base在固定参考轨迹上的真实input-embedding反向：完�
 40教师资格、40原词表参考评分、40方向未来梯度与EM已完成并冻结；首次训练forward发现直接model调用没有进入既有compute_loss的PrefixCache batch作用域，卸载层因而被实际调用导致CPU/CUDA设备错误。在任何Rank/JB梯度或更新之前失败，不能称零模型失败：累计1849forward/608non-gen/487backward/200更新/40教师生成，包含前述误部署费用。完整退出、源码、STOP、缓存/部分状态原样保留。
 
 续接仅修复logits消费者进入同一严格签名检查的活动batch作用域，预先核验非零TT完整forward与缓存logits，原rtol1e-5/atol5e-4不变。明确从已冻结FROZEN_TEACHER_LOGP/FROZEN_JUNCTION_POSTERIOR/SOURCE_REVIEW_FROZEN加载，禁止重新生成教师、重评序列、重算敏感度或改合格mask；无任何已执行的Rank/JB训练步需要重跑。重建FP32只读模型及源缓存是工程费用，所有计数/GPU租约/原始12h钟继续继承，不以新名重置预算。其余三个运行不变。后续如有训练中失败，保存其step/optimizer状态再判断，禁止从头隐式重训。
+
+DPC的FREE_FROB与DPC各8终态补登记为V86先前已声明S0固定40来源CE/Jacobian比较的有限只读消费者；DPC全部训练与620自由回答结束后、原V86预算内执行3×40来源backward。不得在该消费者完成前退休这16份状态；CE对照仍按其原全部消费者闭合后退休。该来源比较不改变DPC方法/选择标准/训练或终态，不取已曝光测试答案调参。
