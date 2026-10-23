@@ -219,11 +219,36 @@ def source_gradient(expert, hook, batches, step):
     return {k: v.grad.detach().clone() for k, v in expert.named_parameters()}, losses
 
 
+def sampled_batch(value, token_ids):
+    """Keep sampled tokenization, including leading whitespace and EOS."""
+    if token_ids is None:
+        return value
+    kwargs, labels, _ = value
+    assert token_ids and token_ids[-1] == runtime.adapter.tokenizer.eos_token_id
+    assert token_ids.count(runtime.adapter.tokenizer.eos_token_id) == 1
+    start = int(torch.where(labels[0] != -100)[0][0])
+    ids = torch.tensor([token_ids], device=runtime.device)
+    with torch.no_grad():
+        embeds = runtime.model.get_input_embeddings()(ids).detach().half().cpu()
+    kw = dict(kwargs)
+    kw['inputs_embeds'] = torch.cat([kwargs['inputs_embeds'][:,:start], embeds], 1)
+    target = torch.tensor([[-100]*start+token_ids], dtype=labels.dtype)
+    kw['labels'] = target
+    if kwargs.get('attention_mask') is not None:
+        kw['attention_mask'] = torch.ones(target.shape, dtype=kwargs['attention_mask'].dtype)
+    if kwargs.get('position_ids') is not None:
+        kw['position_ids'] = torch.arange(target.shape[1], dtype=kwargs['position_ids'].dtype)[None]
+    assert kw['inputs_embeds'].shape[:2] == target.shape
+    assert target[0,start:].tolist() == token_ids
+    return kw, target, tuple(token_ids)
+
+
 def train(task, fisher):
     from m3bench_repro.editors.llava_runtime import seed_everything
     owner = task['order']
     source = read(ROOT / 'SOURCE_ROWS.json')[str(owner)]
     target = read(ROOT / 'TARGETS_FROZEN.json')[str(owner)]
+    target_tokens = read(ROOT / 'TARGET_TOKENS_FROZEN.json')[str(owner)]
     reference = read(PARENT / 'private/results/C' / f'{owner}.json')
     stepsizes = [x['operator_step_norm'] for x in reference['curve']]
     regularization = read(PARENT / 'private/calibration146' / f'{owner}.json')['coefficient']
@@ -235,7 +260,8 @@ def train(task, fisher):
         seed_everything(task['seed'])
         rows = [dict(row, reference=target[arm][v]) for v, row in enumerate(source)]
         items = prepare(task, rows, True)
-        batches = [r.old.batch_on(runtime, x[1]) for x in items]
+        frozen_batches = [sampled_batch(x[1], target_tokens[arm][v]) for v,x in enumerate(items)]
+        batches = [r.old.batch_on(runtime, b) for b in frozen_batches]
         expert = r.p.expert(original, task['seed'], runtime.device)
         expert.load_state_dict(r.mm.canonicalize(original)[0])
         hook = r.q.scoped.replay.MedTraceLayerHook(runtime.get_module(r.c.LAYER), expert)
