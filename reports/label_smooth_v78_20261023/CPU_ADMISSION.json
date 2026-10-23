@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "smoothing": {
+    "status": "PASS",
+    "fixed_epsilon": 0.1,
+    "causal_mask": true,
+    "masked_positions_ignored": true,
+    "analytic_gradient": true,
+    "torch_cross_entropy_parity": true,
+    "real_model_calls": 0
+  },
+  "cache": {
+    "status": "PASS",
+    "cache_three_batch_loss_gradient_exact": true,
+    "kind": "CPU_CAUSAL_FIXTURE_ONLY",
+    "zero_exact": true,
+    "single_position": true,
+    "no_alias": true,
+    "explicit_hook_exact": true,
+    "prefix_stepwise_exact": true,
+    "duplicate_gradient_update_exact": true,
+    "RNG_unchanged": true,
+    "detached_direction": true,
+    "random_recipe": true,
+    "real_model_calls": 0
+  }
+}
