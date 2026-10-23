@@ -31,6 +31,7 @@ counts = dict(forwards=0, non_generation_forwards=0, backwards=0,
               evaluation_generations=0)
 generating = False
 limits = read(ROOT / 'RESOURCE_LIMITS.json')
+allocations = None
 
 
 def progress(**extra):
@@ -39,16 +40,16 @@ def progress(**extra):
 
 
 def budget():
+    global allocations
     assert time.time() < limits['hard_end'] - 300, 'Original wall deadline'
     assert not (ROOT / 'STOP').exists(), 'Guard stop'
     health = read(ROOT / 'RESOURCE_GUARD_HEALTH.json')
     assert time.time() - health['time'] < 120, 'Guard stale'
-    # Two disjoint partitions each receive one half of the operation reservation.
-    for key, cap in limits['counts'].items():
-        allocated = cap // 2
-        if key == 'evaluation_generations':
-            owners = {x['order'] for x in read(ROOT / 'TASKS.json')[PART::2]}
-            allocated = 4 * sum(x['owner'] in owners for x in read(ROOT / 'EVAL_PLAN.json')) + 10
+    if allocations is None:
+        allocations = {k:v//2 for k,v in limits['counts'].items()}
+        owners = {x['order'] for x in read(ROOT / 'TASKS.json')[PART::2]}
+        allocations['evaluation_generations'] = 4 * sum(x['owner'] in owners for x in read(ROOT / 'EVAL_PLAN.json')) + 10
+    for key, allocated in allocations.items():
         assert counts[key] <= allocated, (key, counts[key], allocated)
 
 
@@ -74,6 +75,11 @@ def contexts(fact, arm):
 
 def setup():
     global torch, r, runtime, bindings, cache_class, training_math
+    assert read(ROOT / 'CPU_ADMISSION.json')['status']=='PASS'
+    gpu = int(os.environ['GPU'])
+    uuid = read(ROOT / 'HARDWARE.json')[str(gpu)]
+    os.environ.update(M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES=str(gpu),
+        M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES=str(gpu), M3BENCH_FORMAL_EXPECTED_GPU_UUID=uuid)
     sys.path[:0] = [str(ROOT / 'tools'), str(PARENT / 'private/tools'),
                    str(PARENT / 'private/source'), str(PARENT / 'private/official_llava')]
     import torch
@@ -90,7 +96,6 @@ def setup():
     torch.backends.cuda.enable_mem_efficient_sdp(False)
     torch.backends.cuda.enable_math_sdp(True)
     torch.backends.cuda.matmul.allow_tf32 = False
-    gpu = int(os.environ['GPU'])
     import subprocess
     observed = subprocess.check_output(['nvidia-smi', '-i', str(gpu),
         '--query-gpu=uuid,memory.free', '--format=csv,noheader,nounits'], text=True).strip().split(', ')

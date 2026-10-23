@@ -48,12 +48,18 @@ def guard():
             return
         if now-last_scan >= 30:
             size = sum(p.stat().st_size for p in ROOT.rglob('*') if p.is_file() and not p.is_symlink())
+            size += sum(Path(p).stat().st_size for p in limits['external_owned_paths'] if Path(p).exists())
             last_scan = now
             if size >= limits['soft_stop_bytes'] or shutil.disk_usage(ROOT).free < limits['free_reserve_bytes']:
                 trigger = trigger or dict(reason='STORAGE', time=now, bytes=size)
         gpu_seconds = sum((t.get('ended_epoch') or now)-t['started_epoch'] for t in targets if t.get('gpu') is not None)
         if gpu_seconds >= limits['gpu_process_seconds']:
             trigger = trigger or dict(reason='GPU_PROCESS_SECONDS', time=now)
+        totals={k:0 for k in limits['counts']}
+        for f in ROOT.glob('PROGRESS_*.json'):
+            for k,v in read(f)['counts'].items():totals[k]+=v
+        if any(totals[k]>limits['counts'][k] for k in totals):
+            trigger = trigger or dict(reason='GLOBAL_OPERATION_BUDGET', time=now, counts=totals)
         if now >= limits['hard_end']-300:
             trigger = trigger or dict(reason='ORIGINAL_WALL_DEADLINE', time=now)
         if (ROOT/'STOP').exists():
@@ -80,6 +86,7 @@ def launch(phase, part, gpu):
            phase=phase, gpu=gpu, started_epoch=time.time(), deadline=read(ROOT/'RESOURCE_LIMITS.json')['hard_end'])
     d=read(ROOT/'RESOURCE_TARGETS.json'); d['targets'].append(t); write(ROOT/'RESOURCE_TARGETS.json',d)
     write(ROOT/f'START_{phase}_{part}.json',t)
+    write(ROOT/f'GO_{phase}_{part}.json',dict(time=time.time()))
     return child
 
 
