@@ -42,6 +42,11 @@ def targets_freeze(root):
     assert len(labels)==len({d['id'] for d in labels})==120
     by_id={d['id']:d for d in labels}
     assert set(by_id)=={d['id'] for d in packet}
+    for label in labels:
+        assert label['label'] in ('C','I','U','A') and label['reason']
+        assert isinstance(label['complete'],bool) and isinstance(label['extra_claims'],bool)
+    # The immutable blind judgments must precede opening the arm mapping.
+    write(root/'TARGET_LABELS_FROZEN.json',labels)
     by_path={}
     mapping=read(root/'BLIND_TARGET_MAPPING.json')
     for d in packet:
@@ -51,8 +56,6 @@ def targets_freeze(root):
         by_path[mapping[d['id']]]=dict(label,
             accepted=label['label']=='C' and label['complete'] and not label['extra_claims']
                      and d['EOS'] and not d['at_cap'])
-    # Freeze blind judgments before consulting the method mapping.
-    write(root/'TARGET_LABELS_FROZEN.json',labels)
     targets={};tokens={};rows=read(root/'SOURCE_ROWS.json');decisions=[];changed=0
     for owner in range(1,9):
         key=str(owner)
