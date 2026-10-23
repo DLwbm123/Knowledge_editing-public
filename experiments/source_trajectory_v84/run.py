@@ -58,9 +58,15 @@ def main():
             dest=v.ROOT/'trajectories'/str(owner)/f'{view}.json';assert not dest.exists()
             attempt=v.ROOT/'attempts'/str(owner)/f'{view}.json';assert not attempt.exists()
             v.write(attempt,dict(owner=owner,view=view,time=time.time()))
-            source=v.prepare(task,[row])[0]
+            source=v.prepare(task,[row],True)[0]
             hook=v.r.q.scoped.replay.MedTraceLayerHook(v.runtime.get_module(v.r.c.LAYER),expert);hook.attach()
-            try:tokens=sample(source,hook,task['seed']+1009*view)
+            try:
+                if owner==1 and view==0:
+                    batch=v.r.old.batch_on(v.runtime,source[1])
+                    check=v.r.s.fit.short.mechanical(v.runtime,hook,batch)
+                    v.write(v.ROOT/'SOURCE_PREFIX_MECHANICAL.json',check)
+                    del batch
+                tokens=sample(source,hook,task['seed']+1009*view)
             finally:hook.detach()
             text=v.runtime.adapter.tokenizer.decode(tokens,skip_special_tokens=True).strip()
             # Persist the paid trajectory before probability scoring; no hidden resampling on failure.
@@ -81,7 +87,7 @@ def main():
                 first3_candidates_frozen=True,sample_seed=task['seed']+1009*view))
             v.progress(owner=owner,view=view)
         del expert
-    assert v.counts['evaluation_generations']==40 and v.counts['non_generation_forwards']==320
+    assert v.counts['evaluation_generations']==40 and v.counts['non_generation_forwards']==322
     v.write(v.ROOT/'MAIN_COMPLETE.json',dict(status='SOURCE_AUDIT_GENERATION_COMPLETE_REVIEW_PENDING',samples=40,sequence_scores=320,counts=v.counts,time=time.time()))
 
 
