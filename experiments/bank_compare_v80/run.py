@@ -21,7 +21,7 @@ def budget():
   last_space=time.time();write(ROOT/'COUNTS.json',dict(counts,time=time.time()))
 
 def main():
- with (ROOT/'WORKER_ONCE').open('x'):pass
+ with (ROOT/('RECOVERY1_WORKER_ONCE' if (ROOT/'RECOVERY1_ADMISSION.json').exists() else 'WORKER_ONCE')).open('x'):pass
  signal.signal(signal.SIGALRM,lambda *_:(_ for _ in ()).throw(TimeoutError('V80 finite deadline')))
  signal.alarm(max(1,int(limits['hard_end']-time.time()-300)))
  sys.path[:0]=[str(ROOT/'tools'),str(P/'private/tools'),str(P/'private/source'),str(P/'private/official_llava')]
@@ -63,22 +63,25 @@ def main():
    if isinstance(kw.get(k),torch.Tensor):kw[k]=kw[k][:,:p]
   return kw
  # No hidden-state extraction or injection in this independent input-coverage experiment.
- metadata=[]
- for task in cfg['tasks']:
-  items=batches(task);targets=[];layouts=[]
-  for item in items:
-   b=r.old.batch_on(runtime,item[1]);kw=b.forward_kwargs();lay=layout(item[2],item[3]);p=lay['prefix_length']
-   target=b.labels[0][b.labels[0]!=-100].detach().cpu();targets.append(target)
-   assert target[-1]==eos and int((target==eos).sum())==1
-   assert p==int(torch.where(b.labels[0]!=-100)[0][0]) and lay['visual_start']+lay['visual_count']<=p-1
-   assert torch.equal(kw['inputs_embeds'][:,:p].cpu(),item[3][4].float())
-   assert kw['inputs_embeds'].shape[1]<runtime.model.config.max_position_embeddings
-   layouts.append(dict(lay,target_length=len(target),sequence_length=kw['inputs_embeds'].shape[1]))
-   del b,kw
-  assert all(torch.equal(targets[0],x) for x in targets[1:]),'TARGET_TOKEN_MISMATCH'
-  metadata.append(dict(owner=task['order'],layouts=layouts))
-  del items;gc.collect()
- write(ROOT/'TOKEN_ADMISSION.json',dict(status='PASS',rows=metadata,time=time.time(),counts=dict(counts)))
+ if not (ROOT/'TOKEN_ADMISSION.json').exists():
+  metadata=[]
+  for task in cfg['tasks']:
+   items=batches(task);targets=[];layouts=[]
+   for item in items:
+    b=r.old.batch_on(runtime,item[1]);kw=b.forward_kwargs();lay=layout(item[2],item[3]);p=lay['prefix_length']
+    target=b.labels[0][b.labels[0]!=-100].detach().cpu();targets.append(target)
+    assert target[-1]==eos and int((target==eos).sum())==1
+    assert p==int(torch.where(b.labels[0]!=-100)[0][0]) and lay['visual_start']+lay['visual_count']<=p-1
+    assert torch.equal(kw['inputs_embeds'][:,:p].cpu(),item[3][4].float())
+    assert kw['inputs_embeds'].shape[1]<runtime.model.config.max_position_embeddings
+    layouts.append(dict(lay,target_length=len(target),sequence_length=kw['inputs_embeds'].shape[1]))
+    del b,kw
+   assert all(torch.equal(targets[0],x) for x in targets[1:]),'TARGET_TOKEN_MISMATCH'
+   metadata.append(dict(owner=task['order'],layouts=layouts))
+   del items;gc.collect()
+  write(ROOT/'TOKEN_ADMISSION.json',dict(status='PASS',rows=metadata,time=time.time(),counts=dict(counts)))
+ else:
+  admission=read(ROOT/'TOKEN_ADMISSION.json');assert admission['status']=='PASS' and len(admission['rows'])==10
  def new_ex(part):
   assert part==0, 'No LoRA arm authorized'
   ex=TT(225034559).to(runtime.device)
@@ -189,9 +192,14 @@ def main():
   assert counts['backwards']-admission_before['backwards']==180 and counts['generations']-admission_before['generations']==2
   write(ROOT/('REAL_ADMISSION_%d.json'%part),dict(status='PASS',counts=dict(counts),time=time.time(),all10_all3_bindings=True))
  # Reconstruct retired TT states for the registered bank consumer. No separate replay experiment.
- admit(0)
+ if (ROOT/'RECOVERY1_ADMISSION.json').exists():
+  assert read(ROOT/'REAL_ADMISSION_0.json')['status']=='PASS' and read(ROOT/'RECOVERY1_ADMISSION.json')['status']=='PASS'
+ else:admit(0)
  for task in cfg['tasks']:
   dest=ROOT/'TT_V69'/task['key'];dest.mkdir(parents=True,exist_ok=True)
+  if task['key']=='E001' and (ROOT/'RECOVERY1_ADMISSION.json').exists():
+   ex=new_ex(0);saved=torch.load(dest/'state.pt',map_location='cpu',weights_only=True);ex.load_state_dict(saved);assert all(torch.equal(v.cpu(),saved[k]) for k,v in snapshot(ex).items())
+   rec=read(dest/'TRAIN.json');rec.update(stored_state_to_loaded_module_exact=True);write(dest/'TRAIN.json',rec);del ex,saved;gc.collect();torch.cuda.empty_cache();continue
   with (dest/'ONCE').open('x'):pass
   ex=new_ex(0);ex.load_state_dict(initializers[task['key']]);h=TokenHook(module,ex,'ALL_TOKENS')
   items=batches(task);bs=[r.old.batch_on(runtime,i[1]) for i in items];lays=[layout(i[2],i[3]) for i in items];scalar=dict(step=0,second_moments=[0.,0.]);curve=[];began=time.time();h.attach()
@@ -203,7 +211,7 @@ def main():
   finally:h.detach()
   assert cache.misses==3 and cache.hits==317
   assert curve==read(V69/'0'/task['key']/'B_VIEW_CE/TRAIN.json')['curve'],'REBUILD_TRAJECTORY_MISMATCH'
-  torch.save(snapshot(ex),dest/'state.pt');loaded=torch.load(dest/'state.pt',map_location='cpu',weights_only=True);assert all(torch.equal(v,loaded[k]) for k,v in snapshot(ex).items())
+  torch.save(snapshot(ex),dest/'state.pt');loaded=torch.load(dest/'state.pt',map_location='cpu',weights_only=True);assert all(torch.equal(v.cpu(),loaded[k].cpu()) for k,v in snapshot(ex).items())
   write(dest/'TRAIN.json',dict(status='PASS',curve=curve,cache_misses=cache.misses,cache_hits=cache.hits,save_load_exact=True,train_seconds=time.time()-began,counts=dict(counts)))
   write(ROOT/'PROGRESS.json',dict(phase='TT_RECONSTRUCTION',owner=task['order'],counts=dict(counts),time=time.time()))
   del ex,h,bs,items;gc.collect();torch.cuda.empty_cache()
@@ -327,4 +335,4 @@ if __name__=='__main__':
  except BaseException:
   code=1;write(ROOT/'FAILURE.json',dict(error=traceback.format_exc(),counts=counts,time=time.time()));write(ROOT/'STOP',dict(reason='V80_DEPENDENCY_FAILURE'));raise
  finally:
-  write(ROOT/'EXIT.json',dict(code=code,counts=counts,seconds=time.time()-START,time=time.time()));write(ROOT/'RESOURCE_SCOPE_CLOSED.json',dict(time=time.time(),status='WORKER_EXITED',scoring='PENDING'))
+  write(ROOT/'EXIT.json',dict(code=code,counts=counts,seconds=time.time()-START+(read(ROOT/'PREVIOUS_ACCOUNTING.json')['seconds'] if (ROOT/'PREVIOUS_ACCOUNTING.json').exists() else 0),attempt_seconds=time.time()-START,time=time.time()));write(ROOT/'RESOURCE_SCOPE_CLOSED.json',dict(time=time.time(),status='WORKER_EXITED',scoring='PENDING'))
