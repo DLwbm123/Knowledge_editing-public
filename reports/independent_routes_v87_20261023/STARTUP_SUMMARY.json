@@ -1,20 +1,20 @@
 {
   "dpc-v87": {
-    "observed_epoch": 1792756077.626928,
+    "observed_epoch": 1792756335.5129862,
     "progress": {
-      "time": 1792756045.4785156,
+      "time": 1792756333.1050146,
       "phase": "independent",
       "partition": 0,
       "counts": {
-        "forwards": 1133,
-        "non_generation_forwards": 1133,
-        "backwards": 1093,
-        "operator_backwards": 512,
-        "updates": 1056,
+        "forwards": 2226,
+        "non_generation_forwards": 2226,
+        "backwards": 2186,
+        "operator_backwards": 1024,
+        "updates": 2112,
         "teacher_generations": 0,
         "evaluation_generations": 0
       },
-      "owner": 1,
+      "owner": 2,
       "arm": "DPC",
       "stage": "FULL_TRAINING_COMPLETE"
     },
@@ -24,22 +24,22 @@
     "source_review_ready": null
   },
   "scro-v88": {
-    "observed_epoch": 1792756077.6275122,
+    "observed_epoch": 1792756335.5135508,
     "progress": {
-      "time": 1792756070.0099921,
+      "time": 1792756301.0557785,
       "phase": "independent",
       "partition": 0,
       "counts": {
-        "forwards": 1266,
-        "non_generation_forwards": 1266,
-        "backwards": 1226,
-        "operator_backwards": 512,
-        "updates": 1120,
+        "forwards": 2172,
+        "non_generation_forwards": 2172,
+        "backwards": 2132,
+        "operator_backwards": 768,
+        "updates": 1824,
         "teacher_generations": 0,
         "evaluation_generations": 0
       },
-      "owner": 1,
-      "arm": "SCRO",
+      "owner": 2,
+      "arm": "FREE_FROB",
       "stage": "FULL_TRAINING_COMPLETE"
     },
     "healthy": "HEALTHY",
@@ -48,22 +48,22 @@
     "source_review_ready": null
   },
   "sgb-v89": {
-    "observed_epoch": 1792756077.6279485,
+    "observed_epoch": 1792756335.5139627,
     "progress": {
-      "time": 1792756027.2659862,
+      "time": 1792756312.5347328,
       "phase": "independent",
       "partition": 0,
       "counts": {
-        "forwards": 408,
-        "non_generation_forwards": 408,
-        "backwards": 368,
+        "forwards": 1368,
+        "non_generation_forwards": 1368,
+        "backwards": 1328,
         "operator_backwards": 0,
-        "updates": 161,
+        "updates": 641,
         "teacher_generations": 0,
         "evaluation_generations": 0
       },
       "arm": "SHARED",
-      "step": 160,
+      "step": 640,
       "stage": "GLOBAL_FULL_TRAINING"
     },
     "healthy": "HEALTHY",
@@ -72,31 +72,35 @@
     "source_review_ready": null
   },
   "rankjb-v90": {
-    "observed_epoch": 1792756077.6283638,
+    "observed_epoch": 1792756335.5143363,
     "progress": {
-      "time": 1792756047.6587098,
+      "time": 1792756259.470613,
       "phase": "independent",
       "partition": 0,
       "counts": {
-        "forwards": 248,
-        "non_generation_forwards": 248,
-        "backwards": 208,
+        "forwards": 1768,
+        "non_generation_forwards": 527,
+        "backwards": 447,
         "operator_backwards": 0,
-        "updates": 81,
-        "teacher_generations": 0,
+        "updates": 200,
+        "teacher_generations": 40,
         "evaluation_generations": 0
       },
-      "arm": "SHARED",
-      "step": 80,
-      "stage": "GLOBAL_FULL_TRAINING"
+      "stage": "TEACHER_SOURCE_QUALIFICATION",
+      "owner": 8,
+      "view": 4
     },
     "healthy": "HEALTHY",
     "model_complete": null,
     "failure": null,
-    "source_review_ready": null
+    "source_review_ready": {
+      "count": 40,
+      "full_source_required": true,
+      "time": 1792756259.526898
+    }
   },
   "multiroute-full-v86": {
-    "observed_epoch": 1792756077.6287785,
+    "observed_epoch": 1792756335.5147145,
     "progress": {},
     "healthy": "HEALTHY",
     "model_complete": {
