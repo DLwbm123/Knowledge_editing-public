@@ -1,7 +1,7 @@
 """DPC/SCRO TT migrations with independently optimized source activation targets."""
 import copy
 import os
-import common as c
+import route_common as c
 v=c.v
 
 
@@ -70,8 +70,8 @@ def internalize(task,original,batches,data,residual,deltas,decision):
 
 
 def main():
-    from m3bench_repro.editors.llava_runtime import seed_everything
     tasks,items,by_owner,batches=c.prepare();torch=v.torch
+    from m3bench_repro.editors.llava_runtime import seed_everything
     route=os.environ['ROUTE'];arms=['CE','FREE_FROB','DPC'] if route=='DPC' else ['CE','FREE_FROB','SCRO']
     with c.CachedSource(batches) as cache:
         for task in tasks:
