@@ -99,10 +99,17 @@ def main():
         hook.attach()
         return expert, hook
 
-    def emit(item, hook, path):
+    def emit(item, hook, path, smoke=False):
         budget()
         counts['generations'] += 1
-        answer, _ = r.s.fit.short.generate(runtime, hook, item[2], item[3])
+        if smoke:
+            # The legacy nonzero-candidate wrapper rejects a correct zero writer.
+            with hook.generation_request():
+                answer, _ = r.s.fit.short.generate(runtime, None, item[2], item[3])
+            assert hook.last_generation_trace and all(
+                x['active_residual_norm'] == 0 for x in hook.last_generation_trace)
+        else:
+            answer, _ = r.s.fit.short.generate(runtime, hook, item[2], item[3])
         tokens = list(answer.raw_token_ids)
         value = dict(binding=item[4], raw_answer=answer.decoded_text, raw_token_ids=tokens,
                      EOS=bool(tokens) and tokens[-1] == runtime.adapter.tokenizer.eos_token_id,
@@ -142,7 +149,7 @@ def main():
             scalar = dict(step=0, second_moments=[0., 0.]) if arm != 'C' else None
             optimizer = r.p.optimizer(expert, runtime.model) if arm == 'C' else None
             try:
-                smoke = emit(native, hook, arm_dir / 'ZERO_SMOKE.json')
+                smoke = emit(native, hook, arm_dir / 'ZERO_SMOKE.json', smoke=True)
                 assert smoke['raw_token_ids'] == base['raw_token_ids'] and smoke['raw_answer'] == base['raw_answer']
                 if task_index == 0 and arm in ('C', 'M13B'):
                     for nonzero in (False, True):
