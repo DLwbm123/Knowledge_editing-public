@@ -82,7 +82,7 @@ def main():
         hook=module.register_forward_pre_hook(capture)
         kw={k:v for k,v in b.forward_kwargs().items() if k!='labels'}
         for k in ['inputs_embeds','attention_mask','position_ids']:
-            if k in kw:kw[k]=kw[k][:,:position]
+            if isinstance(kw.get(k),torch.Tensor):kw[k]=kw[k][:,:position]
         kw['use_cache']=False
         try:
             with torch.no_grad():out=runtime.model(**kw)
