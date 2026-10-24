@@ -90,15 +90,18 @@ def logits():
         for key,logit in saved.items():
             assert bool(torch.isfinite(logit).all())
             raw=json.loads((prior/'outputs'/route/(key+'.json')).read_text())
-            assert raw['raw_token_ids'][0] in [yes[0],no[0]]
-            assert int(logit.argmax())==raw['raw_token_ids'][0]
-            values[key]=dict(s=float(logit[yes[0]].double()-logit[no[0]].double()),first_token=int(logit.argmax()))
+            returned=raw['raw_token_ids']
+            # Transformers 4.36 inputs_embeds generation returns its initialized BOS before the first scored token.
+            offset=1 if route=='R' and returned[0]==tokenizer.bos_token_id else 0
+            assert returned[offset] in [yes[0],no[0]]
+            assert int(logit.argmax())==returned[offset]
+            values[key]=dict(s=float(logit[yes[0]].double()-logit[no[0]].double()),first_token=int(logit.argmax()),returned_prefix_tokens=returned[:offset])
         pairs=[]
         for neg,pos in zip(cases[::2],cases[1::2]):
             assert neg['source_group']==pos['source_group']
             a,b=values[str(neg['qid'])]['s'],values[str(pos['qid'])]['s']
             pairs.append(dict(group=neg['source_group'],finding=neg['protection_label'],negative_s=a,positive_s=b,delta=b-a,noimage_s=values[neg['source_group']+'_noimage']['s']))
-        result[route]=pairs
+        result[route]=dict(pairs=pairs,position_checks=values)
     write('LOGIT_AUDIT_PRIVATE.json',dict(tokenization=tokens,canonical_ids=dict(Yes=yes,No=no),routes=result,model_calls=0))
     inputs=torch.load(prior/'C_INPUTS.pt',map_location='cpu',weights_only=True)
     means=torch.tensor([.48145466,.4578275,.40821073])[:,None,None]

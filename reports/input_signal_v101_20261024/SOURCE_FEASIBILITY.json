@@ -1,0 +1,45 @@
+{
+  "status": "SOURCE_METADATA_FEASIBILITY_ONLY_NOT_FROZEN_NOT_FULLY_ADJUDICATED",
+  "prior_patients_excluded": 60,
+  "official_train_images": 3185,
+  "eligible_unique_patients": {
+    "pneumothorax": {
+      "positive": 0,
+      "negative": 10
+    },
+    "consolidation": {
+      "positive": 7,
+      "negative": 88
+    },
+    "nodule": {
+      "positive": 26,
+      "negative": 47
+    },
+    "infiltrates": {
+      "positive": 49,
+      "negative": 137
+    }
+  },
+  "greedy_patient_disjoint_4_per_stratum": {
+    "D_pneumothorax_positive": 0,
+    "D_pneumothorax_negative": 4,
+    "D_consolidation_positive": 4,
+    "D_consolidation_negative": 4,
+    "D_nodule_positive": 4,
+    "D_nodule_negative": 4,
+    "D_infiltrates_positive": 4,
+    "D_infiltrates_negative": 4,
+    "C_pneumothorax_positive": 0,
+    "C_pneumothorax_negative": 4,
+    "C_consolidation_positive": 3,
+    "C_consolidation_negative": 4,
+    "C_nodule_positive": 4,
+    "C_nodule_negative": 4,
+    "C_infiltrates_positive": 4,
+    "C_infiltrates_negative": 4
+  },
+  "unique_patients": 55,
+  "new_model_calls": 0,
+  "new_image_extractions": 0,
+  "warning": "Counts need full source review before model calls; no model or threshold selection from confirmation"
+}
