@@ -2,6 +2,7 @@
 import json
 import os
 from pathlib import Path
+import random
 import signal
 import subprocess
 import sys
@@ -112,6 +113,7 @@ def worker(action):
         vision_module = model.vision_tower
     import transformers
     from PIL import Image
+    random.seed(0)
     torch.manual_seed(0)
     torch.cuda.manual_seed_all(0)
     counts = dict(forwards=0, generations=0, vision=0, backwards=0, updates=0)
@@ -187,7 +189,8 @@ def worker(action):
 
 
 def supervisor():
-    with (ROOT / 'ONCE').open('x'):
+    adoption = json.loads((ROOT/'ADOPT_DOWNLOAD.json').read_text()) if os.environ.get('ADOPT_DOWNLOAD')=='1' else None
+    with (ROOT / ('ADOPTION_ONCE' if adoption else 'ONCE')).open('x'):
         pass
     child = None
     gpu_used = 0.0
@@ -199,6 +202,22 @@ def supervisor():
             except subprocess.TimeoutExpired:
                 os.killpg(child.pid, signal.SIGKILL)
                 child.wait()
+        elif child is None and adoption:
+            pid=adoption['download_pid']
+            stat=Path('/proc')/str(pid)/'stat'
+            def alive():
+                if not stat.exists():
+                    return False
+                fields=stat.read_text().split()
+                return fields[21]==str(adoption['download_start_ticks']) and fields[2]!='Z'
+            if alive():
+                os.killpg(pid,signal.SIGTERM)
+                for _ in range(5):
+                    if not alive():
+                        break
+                    time.sleep(1)
+                if alive():
+                    os.killpg(pid,signal.SIGKILL)
     def guard(begin=None):
         size = sum(p.stat().st_size for r in CFG['owned_roots'] for p in Path(r).rglob('*') if p.is_file() and not p.is_symlink())
         used = gpu_used + (time.time()-begin if begin is not None else 0)
@@ -218,19 +237,45 @@ def supervisor():
         env = dict(os.environ, TRIAL_ACTION=action)
         if gpu:
             env.update(HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1')
-        with (ROOT / (action+'.log')).open('x') as log:
-            child = subprocess.Popen([CFG['python'], CFG['neutral_entry']], env=env,
-                stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
-            write(action+'/IDENTITY.json', dict(pid=child.pid, start_ticks=Path('/proc/'+str(child.pid)+'/stat').read_text().split()[21], start=start))
-            while child.poll() is None:
-                guard(start if gpu else None)
-                time.sleep(5)
-        if gpu:
-            gpu_used += time.time()-start
-        write(action+'/PROCESS_EXIT.json', dict(code=child.returncode, seconds=time.time()-start, gpu_process_seconds=gpu_used))
-        assert child.returncode == 0, action+' failed'
+        child = None
+        launched = False
+        try:
+            with (ROOT / (action+'.log')).open('x') as log:
+                child = subprocess.Popen([CFG['python'], CFG['neutral_entry']], env=env,
+                    stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+                launched = True
+                write(action+'/IDENTITY.json', dict(pid=child.pid, start_ticks=Path('/proc/'+str(child.pid)+'/stat').read_text().split()[21], start=start))
+                while child.poll() is None:
+                    guard(start if gpu else None)
+                    time.sleep(5)
+        finally:
+            if launched:
+                stop_child()
+                elapsed = time.time()-start
+                if gpu:
+                    gpu_used += elapsed
+                write(action+'/PROCESS_EXIT.json', dict(code=child.returncode, seconds=elapsed,
+                    gpu_process_seconds=gpu_used, settled_once=True))
+        assert child is not None and child.returncode == 0, action+' failed'
     try:
-        run('download')
+        if adoption:
+            assert adoption['gpu_process_seconds']==0
+            assert adoption['original_start']==CFG['original_start'] and adoption['hard_end']==CFG['hard_end']
+            assert not (ROOT/'O_D/IDENTITY.json').exists() and not (ROOT/'M_D/IDENTITY.json').exists()
+            stat = Path('/proc')/str(adoption['download_pid'])/'stat'
+            while stat.exists():
+                fields=stat.read_text().split()
+                assert fields[21]==str(adoption['download_start_ticks']), 'Download PID reused'
+                if fields[2]=='Z':
+                    break
+                guard()
+                time.sleep(5)
+            assert (ROOT/'DOWNLOAD_COMPLETE.json').exists() and not (ROOT/'download/FAILURE.json').exists()
+            write('download/ADOPTED_COMPLETION.json',dict(time=time.time(),original_start=adoption['download_start'],
+                seconds=time.time()-adoption['download_start'],gpu_process_seconds=0,exit_code_available=False))
+            adoption=None
+        else:
+            run('download')
         for action in ['O_D', 'M_D']:
             run(action, True)
         write('D_READY_FOR_REVIEW.json', dict(time=time.time(), gpu_process_seconds=gpu_used))
