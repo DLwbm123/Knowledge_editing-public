@@ -23,7 +23,7 @@ def main():
         started=time.time()
         write('GUARD_HEALTH.json',dict(time=started,gpu_seconds=cfg['prior_gpu_seconds']))
         with (ROOT/'worker.log').open('x') as log:
-            child=subprocess.Popen(['/data/bmw/envs/v0/bin/python','/data/bmw/.q.20261024.107/q.py'],
+            child=subprocess.Popen(['/data/bmw/envs/v0/bin/python',os.environ.get('NEUTRAL_ENTRY','/data/bmw/.q.20261024.107/q.py')],
                 env=dict(os.environ,ACTION_107='worker'),stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
         write('WORKER_IDENTITY.json',dict(pid=child.pid,start_ticks=Path('/proc/'+str(child.pid)+'/stat').read_text().split()[21],start=started))
         while child.poll() is None:
