@@ -59,7 +59,7 @@ def reference_setup():
     original=CLIPVisionTower.__init__
     def local(instance,_name,*args,**kwargs):original(instance,os.environ['M3BENCH_VISION_PATH'],*args,**kwargs)
     CLIPVisionTower.__init__=local
-    try:tokenizer,model,processor,_=load_pretrained_model(os.environ['M3BENCH_MODEL_PATH'],None,get_model_name_from_path(os.environ['M3BENCH_MODEL_PATH']),device='cuda:0')
+    try:tokenizer,model,processor,_=load_pretrained_model(os.environ['M3BENCH_MODEL_PATH'],None,get_model_name_from_path(os.environ['M3BENCH_MODEL_PATH']),device='cuda')
     finally:CLIPVisionTower.__init__=original
     model.eval();model.requires_grad_(False)
     def count(*_):
