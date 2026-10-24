@@ -72,13 +72,13 @@ def build(private):
     return summary
 
 
-def paired(a, b):
+def paired(a, b, seed=10720261024):
     differences = [x - y for x, y in zip(a, b)]
     n = len(differences)
     observed = sum(differences) / n
     extreme = sum(abs(sum(s * v for s, v in zip(signs, differences)) / n) >= abs(observed) - 1e-15
                   for signs in itertools.product((-1, 1), repeat=n))
-    rng = random.Random(10720261024)
+    rng = random.Random(seed)
     bootstrap = sorted(sum(rng.choice(differences) for _ in range(n)) / n for _ in range(10000))
     def quantile(q):
         index = q * (len(bootstrap) - 1)
