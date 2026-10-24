@@ -1,0 +1,158 @@
+{
+  "outputs": 350,
+  "EOS": 350,
+  "cap": 0,
+  "arms": {
+    "SOURCE": {
+      "source": 2,
+      "cross": 2,
+      "rephrase": 2,
+      "edit_denominator": 2,
+      "Base_correct_pairs": 20,
+      "post_labels_on_Base_correct": {
+        "INCORRECT": 1,
+        "CORRECT": 19
+      },
+      "full_eval_labels": {
+        "INCORRECT": 19,
+        "UNCERTAIN": 6,
+        "CORRECT": 19
+      },
+      "full_eval_pairs": 44,
+      "avoided_clear_damage": 0,
+      "additional_clear_damage": 0,
+      "protection_identifiable": true
+    },
+    "CE": {
+      "source": 2,
+      "cross": 2,
+      "rephrase": 1,
+      "edit_denominator": 2,
+      "Base_correct_pairs": 20,
+      "post_labels_on_Base_correct": {
+        "INCORRECT": 4,
+        "CORRECT": 14,
+        "ABSTAIN": 2
+      },
+      "full_eval_labels": {
+        "INCORRECT": 14,
+        "UNCERTAIN": 10,
+        "ABSTAIN": 5,
+        "CORRECT": 15
+      },
+      "full_eval_pairs": 44,
+      "avoided_clear_damage": 0,
+      "additional_clear_damage": 3,
+      "protection_identifiable": true
+    },
+    "KL": {
+      "source": 2,
+      "cross": 2,
+      "rephrase": 2,
+      "edit_denominator": 2,
+      "Base_correct_pairs": 20,
+      "post_labels_on_Base_correct": {
+        "INCORRECT": 1,
+        "CORRECT": 19
+      },
+      "full_eval_labels": {
+        "INCORRECT": 19,
+        "UNCERTAIN": 6,
+        "CORRECT": 19
+      },
+      "full_eval_pairs": 44,
+      "avoided_clear_damage": 0,
+      "additional_clear_damage": 0,
+      "protection_identifiable": true
+    },
+    "CE_PROJ": {
+      "source": 2,
+      "cross": 2,
+      "rephrase": 2,
+      "edit_denominator": 2,
+      "Base_correct_pairs": 20,
+      "post_labels_on_Base_correct": {
+        "INCORRECT": 1,
+        "CORRECT": 19
+      },
+      "full_eval_labels": {
+        "INCORRECT": 18,
+        "UNCERTAIN": 7,
+        "CORRECT": 19
+      },
+      "full_eval_pairs": 44,
+      "avoided_clear_damage": 0,
+      "additional_clear_damage": 0,
+      "protection_identifiable": true
+    },
+    "RESERVE": {
+      "source": 1,
+      "cross": 1,
+      "rephrase": 1,
+      "edit_denominator": 2,
+      "Base_correct_pairs": 20,
+      "post_labels_on_Base_correct": {
+        "INCORRECT": 1,
+        "CORRECT": 19
+      },
+      "full_eval_labels": {
+        "INCORRECT": 19,
+        "UNCERTAIN": 6,
+        "CORRECT": 19
+      },
+      "full_eval_pairs": 44,
+      "avoided_clear_damage": 0,
+      "additional_clear_damage": 0,
+      "protection_identifiable": true
+    },
+    "BALANCEDIT": {
+      "source": 2,
+      "cross": 2,
+      "rephrase": 2,
+      "edit_denominator": 2,
+      "Base_correct_pairs": 20,
+      "post_labels_on_Base_correct": {
+        "INCORRECT": 20
+      },
+      "full_eval_labels": {
+        "INCORRECT": 43,
+        "UNCERTAIN": 1
+      },
+      "full_eval_pairs": 44,
+      "avoided_clear_damage": 0,
+      "additional_clear_damage": 19,
+      "protection_identifiable": true
+    },
+    "BALANCEDIT_CE": {
+      "source": 2,
+      "cross": 2,
+      "rephrase": 2,
+      "edit_denominator": 2,
+      "Base_correct_pairs": 20,
+      "post_labels_on_Base_correct": {
+        "INCORRECT": 6,
+        "CORRECT": 14
+      },
+      "full_eval_labels": {
+        "INCORRECT": 27,
+        "CORRECT": 14,
+        "UNCERTAIN": 3
+      },
+      "full_eval_pairs": 44,
+      "avoided_clear_damage": 0,
+      "additional_clear_damage": 5,
+      "protection_identifiable": true
+    }
+  },
+  "counts": {
+    "forwards": 126274,
+    "backwards": 47781,
+    "updates": 1748,
+    "generations": 406,
+    "vision_forwards": 414,
+    "candidate_checks": 1776
+  },
+  "evidence_scope": "IMAGE_SOURCE_ISOLATED_FORCED_SINGLE_EDIT_BENCHMARK_NOT_PATIENT_INDEPENDENT",
+  "support_composition": "4 modality, 2 color, 2 plane questions",
+  "TT_natural_routing_efficacy": "NOT_EVALUATED"
+}

@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "consumers": 219,
+  "arms": 5,
+  "metrics": {
+    "TT_NATIVE": {
+      "T0": 10,
+      "T1G": 40,
+      "T2G": 33,
+      "T1L": 33,
+      "T2L": 1,
+      "REPHRASE_DIAGNOSTIC": 40
+    },
+    "TT_VIEW": {
+      "T0": 10,
+      "T1G": 40,
+      "T2G": 35,
+      "T1L": 33,
+      "T2L": 1,
+      "REPHRASE_DIAGNOSTIC": 40
+    },
+    "TT_SUPERVISED": {
+      "T0": 10,
+      "T1G": 40,
+      "T2G": 37,
+      "T1L": 33,
+      "T2L": 1,
+      "REPHRASE_DIAGNOSTIC": 40
+    },
+    "TT_WORST_VIEW": {
+      "T0": 10,
+      "T1G": 40,
+      "T2G": 36,
+      "T1L": 33,
+      "T2L": 1,
+      "REPHRASE_DIAGNOSTIC": 40
+    },
+    "LORA_NATIVE": {
+      "T0": 10,
+      "T1G": 40,
+      "T2G": 37,
+      "T1L": 33,
+      "T2L": 1,
+      "REPHRASE_DIAGNOSTIC": 40
+    }
+  },
+  "source_lookup_T2G_exact": 40,
+  "Base_or_V69_hard_selection_T2G_upper_bound": 37,
+  "locality_categories": {
+    "APPLICABLE": 53,
+    "UNDETERMINED": 36
+  },
+  "legal_source_training_bindings": 30,
+  "explicit_inapplicable_source_support": 0,
+  "gate_training": "NOT_ADMITTED_NO_EXPLICIT_LEGAL_NEGATIVE_SUPPORT",
+  "historical_labels_unchanged": true,
+  "model_calls": 0,
+  "limitation": "No new clinical annotation; no inferred negatives from different organ, random image or missing reference. LoRA scope labels reused from original V62 followup; known historical scope ambiguity retained."
+}

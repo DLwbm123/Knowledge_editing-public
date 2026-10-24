@@ -1,0 +1,55 @@
+{
+  "time": 1792666338.592374,
+  "arms": [
+    "SOURCE_ONLY",
+    "JOINT_CE"
+  ],
+  "mainline": "JOINT_CE positive and explicit negative source support",
+  "control": "SOURCE_ONLY repeats positive CE twice for matched backward count; no tuning",
+  "seed": 225034559,
+  "layer": 21,
+  "rank": 4,
+  "parameters": 7168,
+  "steps": 160,
+  "optimizer": "Inherited canonical TT scalar RMS",
+  "train_ids": [
+    "S00_C",
+    "S00_A"
+  ],
+  "heldout_boundary_ids": [
+    "S00_B",
+    "S00_D",
+    "S00_E"
+  ],
+  "retention_ids": [
+    "L00",
+    "L04",
+    "L06",
+    "L23",
+    "L30",
+    "L40",
+    "L47",
+    "L48",
+    "L51",
+    "L52",
+    "L53",
+    "L56"
+  ],
+  "clinical_BaseC": [
+    "L47"
+  ],
+  "all17_eval": true,
+  "retention_training": false,
+  "loss": "Mean of two native CE losses, no hinge or score constraints",
+  "formal_backwards_per_arm": 320,
+  "admission_backwards_per_arm": 6,
+  "new_generations": 36,
+  "Base_cached": 17,
+  "annotation_preserved": true,
+  "scope": "One source-local development pack; clinical BaseC denominator1 organ recognition, structure abbreviations present. Not unannotated evaluation or independent patient confirmation.",
+  "independent_confirmation": false,
+  "patient_independence": "UNKNOWN",
+  "gate": "JOINT both source answers correct; all three heldout B/D/E correct and at least one improvement over SOURCE_ONLY; clinical BaseC retained; no retained CORRECT control lost. Report all failures, no checkpoint/seed selection.",
+  "hard_end": 1792685766,
+  "checkpoint_last_consumer": "All17 outputs plus save/load, scoring and declared successor decision; then explicit retirement"
+}

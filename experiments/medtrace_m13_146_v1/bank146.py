@@ -24,7 +24,7 @@ def evaluate(expected_candidates=584,partitions=3,admit=require_ready,
     part, gpu = int(os.environ['PARTITION']), int(os.environ['GPU'])
     action = os.environ['ACTION']
     rows = c.read(RUN/'private'/plan_file)
-    assert partitions in (2,3) and 0<=part<partitions
+    assert partitions in (2,3,4) and 0<=part<partitions
     assigned = [v for i, v in enumerate(rows) if i % partitions == part and
                 ((v['mode'] in ('base', 'single')) if action == 'm13_146_single' else (v['mode'] in ('bank', 'insertion')))]
     byid = {t['edit_id']: t for t in tasks()}

@@ -1,0 +1,195 @@
+{
+  "status": "NO_MIGRATION_ADMISSION",
+  "selected": null,
+  "pairs": 15,
+  "patients": 30,
+  "questions_per_model": 90,
+  "old_outputs_reused": 90,
+  "new_generations": 180,
+  "models": {
+    "old": {
+      "core_correct": {
+        "target": 5,
+        "brief_control": 6,
+        "negative_direct": 15,
+        "negative_reverse": 15,
+        "positive_direct": 0,
+        "positive_reverse": 0
+      },
+      "unknown": {
+        "target": 0,
+        "brief_control": 0,
+        "negative_direct": 0,
+        "negative_reverse": 0,
+        "positive_direct": 0,
+        "positive_reverse": 0
+      },
+      "fully_supported": {
+        "target": 4,
+        "brief_control": 6,
+        "negative_direct": 15,
+        "negative_reverse": 15,
+        "positive_direct": 0,
+        "positive_reverse": 0
+      },
+      "counts": {
+        "persistent": 9,
+        "negative": 15,
+        "positive": 0,
+        "discriminative": 0,
+        "operational": 9,
+        "strong": 0
+      },
+      "strong_coverage": {
+        "target_answers": [],
+        "target_findings": [],
+        "protection_findings": []
+      },
+      "balanced_accuracy": {
+        "direct": 0.5,
+        "reverse": 0.5
+      },
+      "discriminative_categories": [],
+      "discrimination_signal": false,
+      "migration_admitted": false
+    },
+    "Q": {
+      "core_correct": {
+        "target": 7,
+        "brief_control": 7,
+        "negative_direct": 10,
+        "negative_reverse": 14,
+        "positive_direct": 0,
+        "positive_reverse": 0
+      },
+      "unknown": {
+        "target": 0,
+        "brief_control": 0,
+        "negative_direct": 5,
+        "negative_reverse": 1,
+        "positive_direct": 6,
+        "positive_reverse": 0
+      },
+      "fully_supported": {
+        "target": 2,
+        "brief_control": 7,
+        "negative_direct": 7,
+        "negative_reverse": 9,
+        "positive_direct": 0,
+        "positive_reverse": 0
+      },
+      "counts": {
+        "persistent": 8,
+        "negative": 5,
+        "positive": 0,
+        "discriminative": 0,
+        "operational": 3,
+        "strong": 0
+      },
+      "strong_coverage": {
+        "target_answers": [],
+        "target_findings": [],
+        "protection_findings": []
+      },
+      "balanced_accuracy": {
+        "direct": 0.3333333333333333,
+        "reverse": 0.4666666666666667
+      },
+      "discriminative_categories": [],
+      "discrimination_signal": false,
+      "migration_admitted": false,
+      "descriptive_core_only_discriminative_pairs": 0,
+      "descriptive_core_only_strong_pairs": 0,
+      "execution": {
+        "counts": {
+          "forwards": 9155,
+          "generations": 90,
+          "vision": 90,
+          "backwards": 0,
+          "updates": 0
+        },
+        "seconds": 303.9071123600006
+      }
+    },
+    "L": {
+      "core_correct": {
+        "target": 7,
+        "brief_control": 9,
+        "negative_direct": 11,
+        "negative_reverse": 14,
+        "positive_direct": 4,
+        "positive_reverse": 2
+      },
+      "unknown": {
+        "target": 0,
+        "brief_control": 0,
+        "negative_direct": 0,
+        "negative_reverse": 0,
+        "positive_direct": 0,
+        "positive_reverse": 0
+      },
+      "fully_supported": {
+        "target": 4,
+        "brief_control": 9,
+        "negative_direct": 2,
+        "negative_reverse": 2,
+        "positive_direct": 0,
+        "positive_reverse": 2
+      },
+      "counts": {
+        "persistent": 4,
+        "negative": 0,
+        "positive": 0,
+        "discriminative": 0,
+        "operational": 0,
+        "strong": 0
+      },
+      "strong_coverage": {
+        "target_answers": [],
+        "target_findings": [],
+        "protection_findings": []
+      },
+      "balanced_accuracy": {
+        "direct": 0.5,
+        "reverse": 0.5333333333333333
+      },
+      "discriminative_categories": [],
+      "discrimination_signal": false,
+      "migration_admitted": false,
+      "descriptive_core_only_discriminative_pairs": 2,
+      "descriptive_core_only_strong_pairs": 0,
+      "execution": {
+        "counts": {
+          "forwards": 3622,
+          "generations": 90,
+          "vision": 90,
+          "backwards": 0,
+          "updates": 0
+        },
+        "seconds": 192.964985370636
+      }
+    }
+  },
+  "method_training": false,
+  "source_candidates": 18,
+  "source_excluded": 3,
+  "execution": {
+    "status": "COMPLETE",
+    "gpu_process_seconds": 511.38670682907104,
+    "generations": 180,
+    "forwards": 12777,
+    "vision_calls": 180,
+    "backwards": 0,
+    "updates": 0,
+    "all_EOS": true,
+    "truncated": 0,
+    "retries": 0,
+    "visual_tokens_min": 1221,
+    "visual_tokens_max": 1260,
+    "model_loading_memory_MiB": {
+      "Q": 16154,
+      "L": 16154
+    },
+    "memory_note": "Single post-loading reading, not full runtime peak"
+  }
+}

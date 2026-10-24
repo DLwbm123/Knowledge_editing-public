@@ -1,0 +1,191 @@
+{
+  "version": "V63 request-form state transfer; preparation-only v1",
+  "status": "PREPARED_NOT_AUTHORIZED_TO_RUN",
+  "launch_authorized": false,
+  "model_calls_during_preparation": 0,
+  "purpose": "Test the TT mainline request-form state-coverage hypothesis; normalized LoRA is a matched fixed-recipe mechanistic reference, not a separately tuned baseline.",
+  "data": {
+    "parent_commit": "a43f38c9",
+    "parent_outputs": "V62 run2, existing fixed160/Base bindings",
+    "edits": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "development_exposed": true,
+    "independent_confirmation": false,
+    "views_per_edit": 2,
+    "view_order": [
+      "imperative",
+      "information_slot"
+    ],
+    "unique_view_texts": 18,
+    "training_source": "Original image/question/reference plus frozen source-question-only derived views; never evaluation questions.",
+    "evaluation_per_arm": 219,
+    "Base_unique": 183,
+    "scope_tension_edits": [
+      7,
+      8
+    ],
+    "view_manifest": "Private VIEWS_FROZEN.json; public metadata VIEW_ADMISSION.json; no medical QA published."
+  },
+  "structures": {
+    "TT": {
+      "parameters": 7168,
+      "rank": 4,
+      "initialization_seed": 225034559,
+      "update": "V62 canonical two-scalar RMS unchanged"
+    },
+    "NORMALIZED_LORA_R1": {
+      "parameters": 18432,
+      "rank": 1,
+      "initialization_seed": 225034559,
+      "update": "V62 normalized two-scalar RMS unchanged; no separate tuning"
+    }
+  },
+  "writer": {
+    "module": "model.layers.21.mlp.down_proj",
+    "layer_indexing": "zero-based",
+    "active_tokens": "ALL_TOKENS",
+    "input_dimension": 14336,
+    "residual_output_dimension": 4096
+  },
+  "main_arms": [
+    "TT_A_NATIVE",
+    "TT_B_VIEW_CE",
+    "TT_C_STATE",
+    "NORMALIZED_LORA_R1_A_NATIVE",
+    "NORMALIZED_LORA_R1_B_VIEW_CE",
+    "NORMALIZED_LORA_R1_C_STATE"
+  ],
+  "objective": {
+    "steps": 160,
+    "branches_per_step": 2,
+    "branch_weights": [
+      0.5,
+      0.5
+    ],
+    "A": [
+      "CE(q0,a)",
+      "CE(q0,a)"
+    ],
+    "B": [
+      "CE(q0,a)",
+      "CE(qk,a)"
+    ],
+    "C": [
+      "CE(q0,a)",
+      "CE(q0,a; add dk at pre-block21 final prompt position)"
+    ],
+    "k_schedule": "step1 uses view1; step2 uses view2; alternate, exactly80 each",
+    "loss_mask": "All target tokens including EOS; no prompt or image labels; identical target token IDs for q0/q1/q2 required.",
+    "gradient": "Compute each full unweighted CE gradient separately, convert to CPU float64, arithmetic mean, clip global norm1 once, one scalar-RMS update per step.",
+    "optimizer": "beta2=.999 eps1e-8; output factor1e-3 input factor1e-4; no first moment; original TT canonicalization only; no added trainable parameters.",
+    "effective_target_exposure": "160*N weighted target positions per arm;320*N raw target positions; same N for all views/structures."
+  },
+  "state": {
+    "extract": "Frozen unedited model in eval mode, no writer or intervention; prefix-only (image + canonical chat prompt), no answer tokens/labels/answer-derived view text.",
+    "site": "Input residual stream of decoder block21, before input layernorm and self-attention, final expanded prompt position p-1.",
+    "shape": [
+      1,
+      4096
+    ],
+    "direction": "dk=hk-h0, float32 detached constant; alpha1 fixed; no normalization, clipping, learned projection or other scaling.",
+    "shared": "Same two directions per edit shared by both structures; extraction before either is trained.",
+    "modify": "Clone block input; add dk only at q0 final prompt position; all other positions exactly unchanged; no in-place cache mutation.",
+    "teacher": "Full sequence includes answer for CE, but direction was extracted prefix-only; p=first nonignored label, patch p-1.",
+    "inference": "Remove state hook entirely. Writer remains ALL_TOKENS.",
+    "cache": "Only frozen blocks0..20 may be cached; block21 and later always live; patch after cache return on clone; never cache patched states or edited-layer KV."
+  },
+  "random_control": {
+    "status": "CONDITIONAL_NOT_AUTHORIZED",
+    "trigger": "After all six main arms complete and unseen labels frozen, either structure passes C-versus-A AND C-versus-B full gate.",
+    "run": "If triggered, run R for BOTH structures and all10 edits, otherwise neither; no selecting winning edits.",
+    "arms": [
+      "TT_R_RANDOM",
+      "NORMALIZED_LORA_R1_R_RANDOM"
+    ],
+    "objective": [
+      "CE(q0,a)",
+      "CE(q0,a; rk)"
+    ],
+    "direction": "For owner i and view k: NumPy Generator(PCG64(630022+100*i+k)).standard_normal(4096,dtype=float64); rk=norm_float64(dk)*z/norm_float64(z), cast float32. Record NumPy version and exact vectors before any main-arm training. Fixed per view, shared across structures.",
+    "orthogonalize": false,
+    "norm_tolerance": {
+      "rtol": 1e-05,
+      "atol": 1e-07
+    },
+    "no_redraw_or_scale_search": true,
+    "signal_gate": "For a main-gate-passing structure, C must also pass the same paired gate versus R; otherwise no semantic-direction-specific signal."
+  },
+  "paired_gate": {
+    "T2G_net_correct_min": 2,
+    "T2G_positive_edit_min": 2,
+    "preserve_each_correct_T0": true,
+    "preserve_each_correct_T1G": true,
+    "preserve_each_correct_rephrase": true,
+    "T1L_T2L_correct_totals_not_lower": true,
+    "no_additional_Base_correct_locality_loss": true,
+    "no_new_reference_unsupported_source_assertion_consumers": true,
+    "no_new_capped_output_consumers": true,
+    "against": "Each comparator independently; paired identities, not aggregate loss cancellation.",
+    "interpretation": "Development screen only, not statistical significance, clinical safety, or independent confirmation."
+  },
+  "scoring": {
+    "contract": "V62 unified v1 unchanged",
+    "old_scores": "Immutable; reuse only exact question/reference/full-output triple with same contract.",
+    "new_outputs": "Mix all unseen triples blindly with fixed seed630023; freeze labels before method mapping/decision; R later follows same contract without relabeling main arms.",
+    "new_scope_outputs": "Same89 source/question/reference classifications; apply fixed V62-followup unsupported-source-assertion rule to unseen outputs; mark indeterminate rather than infer clinical exclusion.",
+    "no_scope_claim": "Explicit negative denominator remains0; do not reinterpret NA as safety."
+  },
+  "replay": {
+    "A": "Both TT and LoRA A160 must reproduce every parentV62 fixed160 loss trajectory and all219 raw generation tokens; exact loss/CPUfloat64-gradient equality for duplicate clean branch admission; otherwise engineering stop, no tolerance widening.",
+    "Base": "Reuse183 bound outputs only with identical runtime/image/question/generation config and zero-writer clean admission; no forced Base regeneration to repair mismatch."
+  },
+  "budget_ceiling": {
+    "main_updates": 9600,
+    "conditional_updates": 3200,
+    "max_total_updates": 12800,
+    "main_gradient_passes": 19200,
+    "conditional_gradient_passes": 6400,
+    "max_total_gradient_passes_including_admission": 26000,
+    "main_formal_generations": 1314,
+    "conditional_formal_generations": 438,
+    "max_total_new_generations_including_admission": 1880,
+    "prefix_state_extractions": 30,
+    "max_total_model_forwards": 2200000,
+    "max_cumulative_GPU_process_seconds": 21600,
+    "max_wall_seconds_from_first_model_use": 14400,
+    "per_host_new_bytes": 3000000000,
+    "local_reserved_bytes": 750000000,
+    "free_reserve_bytes": 8589934592,
+    "inherit_previous_hard_end": 1792685766,
+    "budget_rule": "Preparation allocates no execution time or storage. Future authorized execution must fit min(existing remaining deadline,4h cap); retries and R share first-model clock. Expired or insufficient inherited window blocks launch; no implicit reset from version/name. A new independent window requires explicit authorization and preserved historical costs."
+  },
+  "stops": [
+    "Any semantic/tokenization/binding/admission/replay failure stops all dependent arms.",
+    "Zero or nonfinite dk stops state hypothesis without scale search.",
+    "NaN, resource limit or deadline ends the run with partial/missing evidence; do not select finished subset.",
+    "No main gate passes: do not launch R; close state candidate.",
+    "R completes: report all arms and close finite chain regardless of sign; no automatic successors."
+  ],
+  "forbidden": [
+    "No launch in this preparation task",
+    "No source-stop",
+    "No evaluation-to-training transfer",
+    "No rank/layer/step/alpha/seed search",
+    "No extra data, hinge, RL, second adapter, routing or alignment loss",
+    "No monitoring restoration",
+    "No deadline reset",
+    "No claim of pure-structure effect or independent confirmation"
+  ],
+  "admission_status": "STATIC_TEXT_PASS_ONLY; CPU hook/gradient and real-model checks NOT_EXECUTED",
+  "lifecycle": "At most80 formal final states plus2 temporary admission states; registered consumers full free generations/save-load/bindings/scoring summaries, then exact-list retirement. Keep direction vectors and provenance as private small artifacts. No current files scheduled for deletion."
+}

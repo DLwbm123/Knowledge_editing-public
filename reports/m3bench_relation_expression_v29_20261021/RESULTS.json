@@ -1,0 +1,211 @@
+{
+  "status": "COMPLETE_FIXED_REFERENCE_REVIEW",
+  "eligible_pairs": 3,
+  "parameters_per_edit": 7168,
+  "fp32_parameter_bytes": 28672,
+  "independent_confirmation": false,
+  "clinical_adjudication": false,
+  "arms": {
+    "BASE": {
+      "UPDATE": {
+        "n": 12,
+        "labels": {
+          "INCORRECT": 10,
+          "UNCERTAIN": 2
+        }
+      },
+      "PRESERVE": {
+        "n": 12,
+        "labels": {
+          "UNCERTAIN": 3,
+          "CORRECT": 5,
+          "INCORRECT": 4
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 0,
+        "eos": 24,
+        "tokens": 829
+      },
+      "strata": {
+        "all": {
+          "update_correct": 0,
+          "update_n": 12,
+          "preserve_correct": 5,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 0,
+          "preserve_base_C": 5,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 12
+        },
+        "source_qualified": {
+          "update_correct": 0,
+          "update_n": 6,
+          "preserve_correct": 3,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 0,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 6
+        }
+      },
+      "cross_relation_exact_copy": 0
+    },
+    "JOINT": {
+      "UPDATE": {
+        "n": 12,
+        "labels": {
+          "CORRECT": 10,
+          "ABSTAIN": 1,
+          "INCORRECT": 1
+        }
+      },
+      "PRESERVE": {
+        "n": 12,
+        "labels": {
+          "CORRECT": 9,
+          "INCORRECT": 3
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 1,
+        "eos": 24,
+        "tokens": 243
+      },
+      "strata": {
+        "all": {
+          "update_correct": 10,
+          "update_n": 12,
+          "preserve_correct": 9,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 10,
+          "preserve_base_C": 5,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 7,
+          "pair_n": 12
+        },
+        "source_qualified": {
+          "update_correct": 5,
+          "update_n": 6,
+          "preserve_correct": 5,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 5,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 4,
+          "pair_n": 6
+        }
+      },
+      "cross_relation_exact_copy": 2
+    },
+    "JOINT_EXPR": {
+      "UPDATE": {
+        "n": 12,
+        "labels": {
+          "CORRECT": 11,
+          "ABSTAIN": 1
+        }
+      },
+      "PRESERVE": {
+        "n": 12,
+        "labels": {
+          "CORRECT": 12
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 1,
+        "eos": 24,
+        "tokens": 226
+      },
+      "strata": {
+        "all": {
+          "update_correct": 11,
+          "update_n": 12,
+          "preserve_correct": 12,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 11,
+          "preserve_base_C": 5,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 11,
+          "pair_n": 12
+        },
+        "source_qualified": {
+          "update_correct": 5,
+          "update_n": 6,
+          "preserve_correct": 6,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 5,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 5,
+          "pair_n": 6
+        }
+      },
+      "cross_relation_exact_copy": 0
+    }
+  },
+  "paired": {
+    "UPDATE": {
+      "repairs": 1,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 10,
+        "ABSTAIN->ABSTAIN": 1,
+        "INCORRECT->CORRECT": 1
+      }
+    },
+    "PRESERVE": {
+      "repairs": 3,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 9,
+        "INCORRECT->CORRECT": 3
+      }
+    }
+  },
+  "cost": {
+    "code": 0,
+    "counts": {
+      "forwards": 5147,
+      "backwards": 3845,
+      "updates": 1920,
+      "generations": 72,
+      "vision_forwards": 80,
+      "query_keys": 0
+    },
+    "seconds": 1103.399727344513
+  },
+  "audit": {
+    "consumers": 72,
+    "blind_unique": 56,
+    "blind_labels": {
+      "CORRECT": 32,
+      "INCORRECT": 18,
+      "UNCERTAIN": 5,
+      "ABSTAIN": 1
+    },
+    "prior_reused": 0,
+    "reconstruction_160_steps_pass": 6,
+    "retired_files": 24,
+    "retired_bytes": 850512,
+    "retained_weight_copies": 0,
+    "wall_preparation_to_model_complete_seconds": 1157.4437975883484
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "status": "FINAL_RESIDENCY_ENDED_ALL_OWNED_PROCESSES_EXITED",
+  "workers": [
+    {
+      "gpu": 0,
+      "launch_epoch": 1792311863.3928885,
+      "release_epoch": 1792324200.0001035,
+      "launch_to_release_seconds": 12336.607214927673,
+      "worker_runtime_seconds": 12333.650007247925,
+      "model_work_seconds": 189.28900408744812,
+      "residency_wait_seconds": 12144.361003160477,
+      "exit_code": 0,
+      "counts": {
+        "updates": 0,
+        "backwards": 0,
+        "operator_backwards": 0,
+        "generations": 144,
+        "forwards": 3349
+      }
+    },
+    {
+      "gpu": 1,
+      "launch_epoch": 1792311863.5511043,
+      "release_epoch": 1792324200.000095,
+      "launch_to_release_seconds": 12336.44899058342,
+      "worker_runtime_seconds": 12333.776839733124,
+      "model_work_seconds": 187.8513948917389,
+      "residency_wait_seconds": 12145.925444841385,
+      "exit_code": 0,
+      "counts": {
+        "updates": 0,
+        "backwards": 0,
+        "operator_backwards": 0,
+        "generations": 144,
+        "forwards": 3449
+      }
+    }
+  ],
+  "deadline": "2026-10-18T19:50:00+08:00",
+  "panel_launch_to_release_seconds": 24673.056205511093,
+  "panel_launch_to_release_gpu_process_hours": 6.853626723753082,
+  "panel_model_work_seconds": 377.140398979187,
+  "panel_wait_seconds": 24290.28644800186,
+  "prior_AB_successful_worker_process_seconds": 620.4852409362793,
+  "known_AB_plus_panel_worker_process_hours": 7.02598373512427,
+  "measurement": "Worker launch through release marker; model/module runtime and wait separately recorded. Not kernel-only timing or a billing measurement; standalone device-admission/import/failure records retained separately and not reset.",
+  "gpu_memory_release_verified": true,
+  "all_owned_processes_ended": true,
+  "all_exit_codes_zero": true,
+  "counts": {
+    "updates": 320,
+    "backwards": 984,
+    "operator_backwards": 320,
+    "generations": 303,
+    "forwards": 10008
+  },
+  "external_judge_calls": 0,
+  "initial_failures_model_work": 0,
+  "project_cost_reset": false
+}

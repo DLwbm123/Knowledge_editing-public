@@ -1,0 +1,101 @@
+{
+  "status": "COMPLETE_NO_ADDITIONAL_PROTECTION_BENEFIT_AND_EDIT_FAILURE",
+  "owner": 5,
+  "steps_per_arm": 160,
+  "control_negative_damage": 0,
+  "negative_denominator": 2,
+  "panels": {
+    "BASE": {
+      "native": 0,
+      "FIT": 2,
+      "positive_construct": 1,
+      "positive_check": 1,
+      "negative_construct": 1,
+      "negative_check": 1
+    },
+    "M13P160": {
+      "native": 1,
+      "FIT": 4,
+      "positive_construct": null,
+      "positive_check": null,
+      "negative_construct": null,
+      "negative_check": null
+    },
+    "CONTROL": {
+      "native": 1,
+      "FIT": 4,
+      "positive_construct": 1,
+      "positive_check": 1,
+      "negative_construct": 1,
+      "negative_check": 1
+    },
+    "PROTECTED": {
+      "native": 0,
+      "FIT": 2,
+      "positive_construct": 1,
+      "positive_check": 1,
+      "negative_construct": 1,
+      "negative_check": 1
+    }
+  },
+  "denominators": {
+    "native": 1,
+    "FIT": 4,
+    "positive_construct": 1,
+    "positive_check": 1,
+    "negative_construct": 1,
+    "negative_check": 1
+  },
+  "protected_exact_Base_outputs": 9,
+  "protected_skipped_steps": 138,
+  "protected_nonzero_steps": 22,
+  "protected_full_steps": 0,
+  "protected_fraction_histogram": {
+    "0.0078125": 1,
+    "0.00048828125": 1,
+    "0.001953125": 1,
+    "0.00390625": 2,
+    "0.0009765625": 2,
+    "3.0517578125e-05": 8,
+    "0.0001220703125": 3,
+    "0.03125": 1,
+    "0.000244140625": 1,
+    "0.0": 138,
+    "6.103515625e-05": 2
+  },
+  "construct_NLL": {
+    "BASE": 5.913671016693115,
+    "CONTROL": 4.734551906585693,
+    "PROTECTED": 5.913671970367432
+  },
+  "sum_step_operator_norm": {
+    "CONTROL": 5.861883893892824,
+    "PROTECTED": 0.002144847290962204
+  },
+  "counts": {
+    "updates": 320,
+    "backwards": 960,
+    "operator_backwards": 320,
+    "generations": 20,
+    "forwards": 3925
+  },
+  "wall_seconds": 711.0940072536469,
+  "GPU_process_hours": 0.197526113126013,
+  "external_Judge_calls": 0,
+  "scoring": "Frozen-answer semantic agreement; individually reviewed, not new clinical adjudication",
+  "all_generations_EOS": true,
+  "all_generations_below_cap": true,
+  "reference_new_items_missing": 4,
+  "check_used_for_selection": false,
+  "retries": 0,
+  "retired_generated_state_files": 4,
+  "limitations": [
+    "One owner and one check negative only",
+    "Positive CT versus negative radiograph modality confound",
+    "Patient independence unverified and prior development exposure",
+    "Short-answer NLL constraint is not a semantic-generation guarantee",
+    "Original M13P160 new-item outputs absent; no reference retraining",
+    "Cumulative step operator norm is path length, not net endpoint norm",
+    "Positive correctness was already present in unedited Base"
+  ]
+}

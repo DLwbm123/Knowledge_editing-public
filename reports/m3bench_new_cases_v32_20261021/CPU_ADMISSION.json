@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "writer": {
+    "status": "PASS",
+    "model_calls": 0,
+    "real_pretrained_model_calls": 0,
+    "synthetic_random_Mistral_only": true,
+    "parameters": 7168,
+    "effective_rank": 4,
+    "original_A_three_step_exact": true,
+    "canonical_and_save_load": true,
+    "last_layer_logits_gradients_KV_equivalent": true,
+    "nonfinal_scope_can_differ": true
+  },
+  "gradient": {
+    "status": "PASS",
+    "nonconflict_identity": true,
+    "zero_preserve_identity": true,
+    "opposing_gradients": true,
+    "nonfinite_rejected": true,
+    "model_calls": 0
+  },
+  "consumer": {
+    "status": "PASS",
+    "synthetic_consumers": 108,
+    "partitions": 2,
+    "source_only_qualification": true,
+    "missing_verdict_rejected": true,
+    "failed_shard_rejected": true
+  },
+  "time": 1792590075.6968753,
+  "data_contract": "PASS"
+}

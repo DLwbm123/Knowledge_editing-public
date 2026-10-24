@@ -1,0 +1,53 @@
+{
+  "status": "CURRENT_PANEL_CLOSED_NEW_DATA_DEPENDENCY",
+  "time": 1792824960.360414,
+  "fixed_TRAIN_images": 8,
+  "source_QA": 29,
+  "source_compatible_nonexpert": 18,
+  "source_unknown_or_conflict": 11,
+  "source_compatible_requested_fact_errors": 0,
+  "eligible_CR_groups": 0,
+  "required_CR_groups": 4,
+  "model_calls": 0,
+  "additional_training": 0,
+  "role_oracle": {
+    "TT_CE": {
+      "native": 8,
+      "FIT": 32,
+      "T2G": 32,
+      "OTHER_Base_strict": 11,
+      "qualified_protection": 3,
+      "total_strict": 83,
+      "denominator": 93
+    },
+    "TT_BAL": {
+      "native": 8,
+      "FIT": 32,
+      "T2G": 32,
+      "OTHER_Base_strict": 11,
+      "qualified_protection": 3,
+      "total_strict": 83,
+      "denominator": 93
+    },
+    "LoRA_BAL": {
+      "native": 8,
+      "FIT": 32,
+      "T2G": 32,
+      "OTHER_Base_strict": 11,
+      "qualified_protection": 3,
+      "total_strict": 83,
+      "denominator": 93
+    },
+    "Retrieval": {
+      "native": 8,
+      "FIT": 32,
+      "T2G": 32,
+      "OTHER_Base_strict": 11,
+      "qualified_protection": 3,
+      "total_strict": 83,
+      "denominator": 93
+    }
+  },
+  "oracle_warning": "Uses evaluation role labels to activate only target-relation questions; unavailable to a deployed router. Counterfactual bound, not a method or validated gain.",
+  "decision": "Close fixed BAL and CR-TTI candidates on this panel. Preserve V69/TT evidence, require a separately preregistered provenance-supported relation task before further mechanism training. No resampling the closed admission pool, no DEV/CONFIRM unsealing."
+}

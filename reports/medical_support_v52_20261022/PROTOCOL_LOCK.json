@@ -1,0 +1,67 @@
+{
+  "version": "V52_FINITE_SOURCE_LOCAL_DEVELOPMENT",
+  "registered_at": 1792656197.39813,
+  "hard_end": 1792685766,
+  "parent_window": ".private/mechanism_v51_20261022/WINDOW.json",
+  "source_pool_indices": [
+    0,
+    21,
+    28,
+    49
+  ],
+  "max_source_clusters": 4,
+  "target_complete_packs": "2-4; actual admitted count, no replacement sampling",
+  "data_scope": "Existing authorized source pool only; no credentialed dataset access or new external data enrollment. Original full-figure panels from those4 papers permitted.",
+  "qualification_levels": {
+    "training": "Actual pixels and primary-source caption/text support; exact panel/question/reference bindings; legal positive, negative and unrelated relation protection; no absence inferred from unmentioned finding.",
+    "development": "Freeze support vs evaluation query identities before model outputs; label same-pixel paraphrase and unseen-panel tests separately. Same-source development allowed.",
+    "independent_confirmation": "Not required to run development; remains unadmitted unless patient/source separation established. UNKNOWN patient independence stays UNKNOWN."
+  },
+  "role_policy": "Positive/negative applicability is relative to target fact, not disease presence. Protection excludes logical consequences of target change. Original old4 exposed cases not training.",
+  "arms": [
+    "BASE",
+    "MATCHED_CE",
+    "INCREMENT"
+  ],
+  "primary_contrast": "INCREMENT minus MATCHED_CE; same admitted examples/roles, same initialization and fixed21 TT, seed225034559 rank4 parameters7168 steps160. No router, gamma or layer/seed sweep.",
+  "loss_proposal": "Role-normalized supervised CE for source/positive/negative/protection. INCREMENT adds hinge pair margin0.1 and negative increment hinge epsilon0; weights1 each, frozen. Exact score definition and training role schedule frozen before launch.",
+  "metrics": [
+    "full free-answer paired positive/negative joint correctness",
+    "source success",
+    "protection accuracy and Base-C damage with denominators",
+    "original/SHORT common correctness",
+    "EOS and length caps",
+    "training fit vs same-pixel paraphrase vs unseen-panel separately"
+  ],
+  "promotion": "Development only: true paired repair vs CE on at least2 distinct source clusters, no new source or verified protection loss in either prompt. If fewer2clusters admitted no promotion possible but bounded feasibility can run. Independent confirmation not claimed.",
+  "admission_stop": "Review only fixed4 sources; unavailable/ambiguous references remain blocked. Do not replace missing sources. Zero complete packs blocks GPU comparison, not CPU preparation.",
+  "storage_reservation": {
+    "remote_bytes": 2000000000,
+    "local_bytes": 300000000
+  },
+  "cpu_data_hard_bytes": 300000000,
+  "gpu_wall": "Original window deadline; independently enforced guard with earlier per-worker finite timeout",
+  "last_weight_consumers": [
+    "all original and SHORT generation",
+    "save/load parity",
+    "frozen scoring and successor decision"
+  ],
+  "publication": "Aggregate numbers/code/protocol only; private medical imagery/questions/tokens/bindings remain private",
+  "seed": 225034559,
+  "steps": 160,
+  "layer": 21,
+  "complete_packs": 2,
+  "training_rows": 8,
+  "evaluation_rows": 16,
+  "formal_generations": 96,
+  "zero_smoke_generations": 2,
+  "formal_updates": 640,
+  "formal_backwards": 7680,
+  "admission_backwards": 120,
+  "score_definition": "Mean teacher-forced log probability of the positive target answer, causal shift, excludes EOS and ignored labels. Identical positive target answer on positive and negative images; Base score detached and fixed. Not a competitor log-ratio.",
+  "objective": "For each original/SHORT context: equal mean of source, positive, true-answer negative, protection CE. Add relu(0.1-delta_pos+delta_neg)+relu(delta_neg) only to INCREMENT. Equal mean of two contexts. Both arms compute identical CE/score gradients, CE discards constraint gradients.",
+  "schedule": "All four roles and both contexts every step, no adaptive role weights. Canonical RMS TT step with gradient norm clip1, existing proposal/construct. Same zero-writer seed and rank. No layer/seed/weight search.",
+  "split": "8 TRAIN_FIT rows; 6 SAME_PIXEL_PARAPHRASE rows; 2 UNSEEN_PANEL rows (positive and protection only), 0 unseen-negative panels, 0 independent confirmation.",
+  "mainline_purpose": "Evaluate and improve the main TT editing mechanism through Base-relative positive-versus-negative increment constraints; matched CE is fixed, receives no tuning or enhancement.",
+  "frozen_before_model_outputs": true
+}

@@ -1,0 +1,26 @@
+{
+  "status": "FROZEN_BEFORE_BASE",
+  "version": "V28",
+  "selection": "All six previously reviewed source figures owned by 1/4/6, excluding V27; caption-derived relationships fixed before new Base calls; no further cases this run",
+  "cases": 6,
+  "source_questions": 12,
+  "eval_questions": 36,
+  "arms": [
+    "JOINT",
+    "RELATION"
+  ],
+  "params_per_edit": 7168,
+  "steps": 160,
+  "gate": "At least one fixed pair UPDATE non-C and PRESERVE C; if pass train ALL six cases and report qualified stratum separately; otherwise stop. No rephrasing or role swaps.",
+  "budgets": {
+    "updates": 1920,
+    "backwards": 4000,
+    "forwards": 160000,
+    "generations": 108,
+    "gpu_hours": 2,
+    "wall_hours": 24,
+    "remote_bytes": 2000000000,
+    "local_bytes": 250000000
+  },
+  "independent_confirmation": false
+}

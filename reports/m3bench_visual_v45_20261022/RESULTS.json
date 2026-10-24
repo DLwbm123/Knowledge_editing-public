@@ -1,0 +1,473 @@
+{
+  "status": "COMPLETE",
+  "admission": {
+    "status": "PASS",
+    "outputs": 248,
+    "base_replay": 62,
+    "adapt_replay": 62,
+    "swapped_outputs": 124,
+    "no_swapped_correctness_grading": true
+  },
+  "independent_confirmation": false,
+  "grounding_confirmed": false,
+  "accuracy_test": false,
+  "limited_improvement_gate": false,
+  "contexts": {
+    "ORIGINAL": {
+      "all": {
+        "n": 31,
+        "unchanged_tokens": {
+          "BASE": 9,
+          "ADAPT": 16
+        },
+        "changed_tokens": {
+          "BASE": 22,
+          "ADAPT": 15
+        },
+        "both_unchanged": 7,
+        "base_changed_adapt_unchanged": 9,
+        "base_unchanged_adapt_changed": 2,
+        "both_changed": 13
+      },
+      "groups": {
+        "HELDOUT": {
+          "n": 16,
+          "unchanged_tokens": {
+            "BASE": 3,
+            "ADAPT": 8
+          },
+          "changed_tokens": {
+            "BASE": 13,
+            "ADAPT": 8
+          },
+          "both_unchanged": 3,
+          "base_changed_adapt_unchanged": 5,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 8
+        },
+        "LOCALITY_CLINICAL": {
+          "n": 3,
+          "unchanged_tokens": {
+            "BASE": 1,
+            "ADAPT": 0
+          },
+          "changed_tokens": {
+            "BASE": 2,
+            "ADAPT": 3
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 0,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 2
+        },
+        "LOCALITY_TECHNICAL": {
+          "n": 4,
+          "unchanged_tokens": {
+            "BASE": 1,
+            "ADAPT": 2
+          },
+          "changed_tokens": {
+            "BASE": 3,
+            "ADAPT": 2
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 1
+        },
+        "SOURCE": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 4,
+            "ADAPT": 6
+          },
+          "changed_tokens": {
+            "BASE": 4,
+            "ADAPT": 2
+          },
+          "both_unchanged": 4,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 2
+        }
+      },
+      "roles": {
+        "PRESERVE": {
+          "n": 12,
+          "unchanged_tokens": {
+            "BASE": 4,
+            "ADAPT": 7
+          },
+          "changed_tokens": {
+            "BASE": 8,
+            "ADAPT": 5
+          },
+          "both_unchanged": 4,
+          "base_changed_adapt_unchanged": 3,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 5
+        },
+        "UNTRAINED_CLINICAL": {
+          "n": 3,
+          "unchanged_tokens": {
+            "BASE": 1,
+            "ADAPT": 0
+          },
+          "changed_tokens": {
+            "BASE": 2,
+            "ADAPT": 3
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 0,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 2
+        },
+        "UNTRAINED_TECHNICAL": {
+          "n": 4,
+          "unchanged_tokens": {
+            "BASE": 1,
+            "ADAPT": 2
+          },
+          "changed_tokens": {
+            "BASE": 3,
+            "ADAPT": 2
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 1
+        },
+        "UPDATE": {
+          "n": 12,
+          "unchanged_tokens": {
+            "BASE": 3,
+            "ADAPT": 7
+          },
+          "changed_tokens": {
+            "BASE": 9,
+            "ADAPT": 5
+          },
+          "both_unchanged": 3,
+          "base_changed_adapt_unchanged": 4,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 5
+        }
+      },
+      "cases": {
+        "M01": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 3,
+            "ADAPT": 5
+          },
+          "changed_tokens": {
+            "BASE": 5,
+            "ADAPT": 3
+          },
+          "both_unchanged": 3,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 3
+        },
+        "M02": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 3,
+            "ADAPT": 6
+          },
+          "changed_tokens": {
+            "BASE": 5,
+            "ADAPT": 2
+          },
+          "both_unchanged": 2,
+          "base_changed_adapt_unchanged": 4,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 1
+        },
+        "M03": {
+          "n": 7,
+          "unchanged_tokens": {
+            "BASE": 1,
+            "ADAPT": 3
+          },
+          "changed_tokens": {
+            "BASE": 6,
+            "ADAPT": 4
+          },
+          "both_unchanged": 1,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 4
+        },
+        "M04": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 2,
+            "ADAPT": 2
+          },
+          "changed_tokens": {
+            "BASE": 6,
+            "ADAPT": 6
+          },
+          "both_unchanged": 1,
+          "base_changed_adapt_unchanged": 1,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 5
+        }
+      }
+    },
+    "_SHORT": {
+      "all": {
+        "n": 31,
+        "unchanged_tokens": {
+          "BASE": 9,
+          "ADAPT": 18
+        },
+        "changed_tokens": {
+          "BASE": 22,
+          "ADAPT": 13
+        },
+        "both_unchanged": 7,
+        "base_changed_adapt_unchanged": 11,
+        "base_unchanged_adapt_changed": 2,
+        "both_changed": 11
+      },
+      "groups": {
+        "HELDOUT": {
+          "n": 16,
+          "unchanged_tokens": {
+            "BASE": 5,
+            "ADAPT": 9
+          },
+          "changed_tokens": {
+            "BASE": 11,
+            "ADAPT": 7
+          },
+          "both_unchanged": 3,
+          "base_changed_adapt_unchanged": 6,
+          "base_unchanged_adapt_changed": 2,
+          "both_changed": 5
+        },
+        "LOCALITY_CLINICAL": {
+          "n": 3,
+          "unchanged_tokens": {
+            "BASE": 0,
+            "ADAPT": 2
+          },
+          "changed_tokens": {
+            "BASE": 3,
+            "ADAPT": 1
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 1
+        },
+        "LOCALITY_TECHNICAL": {
+          "n": 4,
+          "unchanged_tokens": {
+            "BASE": 0,
+            "ADAPT": 0
+          },
+          "changed_tokens": {
+            "BASE": 4,
+            "ADAPT": 4
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 0,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 4
+        },
+        "SOURCE": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 4,
+            "ADAPT": 7
+          },
+          "changed_tokens": {
+            "BASE": 4,
+            "ADAPT": 1
+          },
+          "both_unchanged": 4,
+          "base_changed_adapt_unchanged": 3,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 1
+        }
+      },
+      "roles": {
+        "PRESERVE": {
+          "n": 12,
+          "unchanged_tokens": {
+            "BASE": 6,
+            "ADAPT": 8
+          },
+          "changed_tokens": {
+            "BASE": 6,
+            "ADAPT": 4
+          },
+          "both_unchanged": 4,
+          "base_changed_adapt_unchanged": 4,
+          "base_unchanged_adapt_changed": 2,
+          "both_changed": 2
+        },
+        "UNTRAINED_CLINICAL": {
+          "n": 3,
+          "unchanged_tokens": {
+            "BASE": 0,
+            "ADAPT": 2
+          },
+          "changed_tokens": {
+            "BASE": 3,
+            "ADAPT": 1
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 1
+        },
+        "UNTRAINED_TECHNICAL": {
+          "n": 4,
+          "unchanged_tokens": {
+            "BASE": 0,
+            "ADAPT": 0
+          },
+          "changed_tokens": {
+            "BASE": 4,
+            "ADAPT": 4
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 0,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 4
+        },
+        "UPDATE": {
+          "n": 12,
+          "unchanged_tokens": {
+            "BASE": 3,
+            "ADAPT": 8
+          },
+          "changed_tokens": {
+            "BASE": 9,
+            "ADAPT": 4
+          },
+          "both_unchanged": 3,
+          "base_changed_adapt_unchanged": 5,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 4
+        }
+      },
+      "cases": {
+        "M01": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 5,
+            "ADAPT": 7
+          },
+          "changed_tokens": {
+            "BASE": 3,
+            "ADAPT": 1
+          },
+          "both_unchanged": 5,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 1
+        },
+        "M02": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 2,
+            "ADAPT": 5
+          },
+          "changed_tokens": {
+            "BASE": 6,
+            "ADAPT": 3
+          },
+          "both_unchanged": 1,
+          "base_changed_adapt_unchanged": 4,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 2
+        },
+        "M03": {
+          "n": 7,
+          "unchanged_tokens": {
+            "BASE": 2,
+            "ADAPT": 3
+          },
+          "changed_tokens": {
+            "BASE": 5,
+            "ADAPT": 4
+          },
+          "both_unchanged": 1,
+          "base_changed_adapt_unchanged": 2,
+          "base_unchanged_adapt_changed": 1,
+          "both_changed": 3
+        },
+        "M04": {
+          "n": 8,
+          "unchanged_tokens": {
+            "BASE": 0,
+            "ADAPT": 3
+          },
+          "changed_tokens": {
+            "BASE": 8,
+            "ADAPT": 5
+          },
+          "both_unchanged": 0,
+          "base_changed_adapt_unchanged": 3,
+          "base_unchanged_adapt_changed": 0,
+          "both_changed": 5
+        }
+      }
+    }
+  },
+  "stability": {
+    "BASE": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 35.96774193548387
+    },
+    "BASE_SHORT": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 22.161290322580644
+    },
+    "ADAPT": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 13.193548387096774
+    },
+    "ADAPT_SHORT": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 10.290322580645162
+    },
+    "SWAP_BASE": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 29.387096774193548
+    },
+    "SWAP_BASE_SHORT": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 21.838709677419356
+    },
+    "SWAP_ADAPT": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 18.032258064516128
+    },
+    "SWAP_ADAPT_SHORT": {
+      "empty": 0,
+      "eos": 31,
+      "cap": 0,
+      "mean_tokens": 10.935483870967742
+    }
+  }
+}

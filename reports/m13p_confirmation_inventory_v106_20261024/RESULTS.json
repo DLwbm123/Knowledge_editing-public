@@ -1,0 +1,73 @@
+{
+  "status": "NO_ADMITTED_M13P_CONFIRMATION_TASK_IN_FIXED_AUDIT",
+  "inventory": {
+    "time": 1792849529.361026,
+    "history_manifests": 161,
+    "history_groups": 177,
+    "t4l_rows": 257,
+    "t4l_groups": 116,
+    "history_matched_rows": 145,
+    "remaining_groups_after_history_and_V95_reservations": 45,
+    "selected": 8,
+    "source_rule": "first occurrence per group in original T4L row order; first 8 groups; no replacement",
+    "V95_reserved_groups": 24,
+    "V95_DEV_CONFIRM_groups": 16,
+    "V95_DEV_CONFIRM_history_matches": 0,
+    "model_calls": 0,
+    "GPU_seconds": 0,
+    "contents_used_for_selection": false,
+    "selection_status_at_freeze": "EXISTING_TABLE_FIXED_METADATA_8_PENDING_SOURCE_VERIFICATION"
+  },
+  "source_review": {
+    "frozen_groups": 8,
+    "full_original_English_QA_reviewed": 80,
+    "images_reviewed": 8,
+    "both_facts_supported": 7,
+    "protection_evidence_missing": 1,
+    "support_level": "original dataset annotations, not independent clinical adjudication"
+  },
+  "base": {
+    "target_core_correct": 7,
+    "target_total": 7,
+    "protection_core_correct": 6,
+    "protection_total": 7,
+    "target_full_supported": 5,
+    "protection_full_supported": 3,
+    "target_extra_unsupported": 1,
+    "target_extra_contradictory": 1,
+    "protection_extra_unsupported": 3,
+    "protection_core_contradictory": 1,
+    "fixed_core_wrong_target_and_supported_protection": 0,
+    "broader_extra_false_target_and_supported_protection": 1,
+    "primary_minimum_pairs": 2,
+    "EOS": 14,
+    "at_cap": 0,
+    "counts": {
+      "forwards": 385,
+      "generations": 14,
+      "vision_forwards": 14,
+      "backwards": 0,
+      "updates": 0
+    }
+  },
+  "cost": {
+    "time": 1792849930.0025494,
+    "code": 0,
+    "phase_gpu_seconds": 45.11819052696228,
+    "prior_gpu_seconds": 849.4331088066101,
+    "total_gpu_seconds": 894.5512993335724,
+    "first_attempt_seconds": 5.008635520935059,
+    "phase_including_failure_seconds": 50.12682604789734,
+    "remaining_original_gpu_seconds": 2705.4487006664276
+  },
+  "M13P_or_M13B_training_started": false,
+  "other_T4L_unexamined_groups": 37,
+  "V95_DEV_CONFIRM_reserved": {
+    "groups": 16,
+    "QA": 94,
+    "contents_shown_to_reviewer": false,
+    "new_history_identifier_matches": 0
+  },
+  "V104_C_sealed": true,
+  "scope_limit": "No qualified package identified among registered packages and this fixed eight-group source audit; remaining raw/candidate groups are unqualified, not proven impossible."
+}

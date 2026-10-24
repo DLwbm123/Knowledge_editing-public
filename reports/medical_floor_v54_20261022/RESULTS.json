@@ -1,0 +1,818 @@
+{
+  "status": "COMPLETE",
+  "independent_confirmation": false,
+  "clinical_expert_review": false,
+  "contexts": {
+    "ORIGINAL": {
+      "groups": {
+        "SAME_PIXEL_PARAPHRASE": {
+          "NEGATIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "MATCHED_CE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "INCORRECT": 1,
+                  "CORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 1,
+                "losses_vs_CE": 0
+              }
+            }
+          },
+          "POSITIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "PROTECTION": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          }
+        },
+        "TRAIN_FIT": {
+          "NEGATIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "INCORRECT": 1,
+                  "CORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 1,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "POSITIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "PROTECTION": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 2
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              }
+            }
+          },
+          "SOURCE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 2
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              }
+            }
+          }
+        },
+        "UNSEEN_PANEL": {
+          "POSITIVE": {
+            "n": 1,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "PROTECTION": {
+            "n": 1,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "MATCHED_CE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              }
+            }
+          }
+        }
+      },
+      "stability": {
+        "BASE": {
+          "eos": 16,
+          "cap": 0,
+          "mean_tokens": 55.625
+        },
+        "MATCHED_CE": {
+          "eos": 16,
+          "cap": 0,
+          "mean_tokens": 9
+        },
+        "INCREMENT_FLOOR": {
+          "eos": 16,
+          "cap": 0,
+          "mean_tokens": 10.4375
+        }
+      }
+    },
+    "SHORT": {
+      "groups": {
+        "SAME_PIXEL_PARAPHRASE": {
+          "NEGATIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "MATCHED_CE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "INCORRECT": 1,
+                  "CORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 1,
+                "repairs_vs_CE": 1,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "POSITIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 1,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "PROTECTION": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          }
+        },
+        "TRAIN_FIT": {
+          "NEGATIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "INCORRECT": 1,
+                  "CORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 1,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "POSITIVE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "UNCERTAIN": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 2
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "PROTECTION": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 2
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              }
+            }
+          },
+          "SOURCE": {
+            "n": 2,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 2
+              },
+              "MATCHED_CE": {
+                "correct": 2,
+                "labels": {
+                  "CORRECT": 2
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1,
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          }
+        },
+        "UNSEEN_PANEL": {
+          "POSITIVE": {
+            "n": 1,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              },
+              "MATCHED_CE": {
+                "correct": 1,
+                "labels": {
+                  "CORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 1
+              }
+            }
+          },
+          "PROTECTION": {
+            "n": 1,
+            "arms": {
+              "BASE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "MATCHED_CE": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              },
+              "INCREMENT_FLOOR": {
+                "correct": 0,
+                "labels": {
+                  "INCORRECT": 1
+                },
+                "base_C_support": 0,
+                "base_C_damage": 0,
+                "repairs_vs_CE": 0,
+                "losses_vs_CE": 0
+              }
+            }
+          }
+        }
+      },
+      "stability": {
+        "BASE": {
+          "eos": 16,
+          "cap": 0,
+          "mean_tokens": 37.1875
+        },
+        "MATCHED_CE": {
+          "eos": 16,
+          "cap": 0,
+          "mean_tokens": 7.4375
+        },
+        "INCREMENT_FLOOR": {
+          "eos": 16,
+          "cap": 0,
+          "mean_tokens": 9.1875
+        }
+      }
+    }
+  },
+  "common_correct": {
+    "TRAIN_FIT": {
+      "n": 8,
+      "arms": {
+        "BASE": 0,
+        "MATCHED_CE": 7,
+        "INCREMENT_FLOOR": 5
+      }
+    },
+    "SAME_PIXEL_PARAPHRASE": {
+      "n": 6,
+      "arms": {
+        "BASE": 1,
+        "MATCHED_CE": 3,
+        "INCREMENT_FLOOR": 2
+      }
+    },
+    "UNSEEN_PANEL": {
+      "n": 2,
+      "arms": {
+        "BASE": 0,
+        "MATCHED_CE": 1,
+        "INCREMENT_FLOOR": 0
+      }
+    }
+  },
+  "paired": {
+    "S28": {
+      "train_vs_paraphrase": {
+        "T": {
+          "BASE": {
+            "ORIGINAL": false,
+            "SHORT": false
+          },
+          "MATCHED_CE": {
+            "ORIGINAL": true,
+            "SHORT": true
+          },
+          "INCREMENT_FLOOR": {
+            "ORIGINAL": false,
+            "SHORT": false
+          }
+        },
+        "H": {
+          "BASE": {
+            "ORIGINAL": false,
+            "SHORT": true
+          },
+          "MATCHED_CE": {
+            "ORIGINAL": false,
+            "SHORT": true
+          },
+          "INCREMENT_FLOOR": {
+            "ORIGINAL": false,
+            "SHORT": false
+          }
+        }
+      },
+      "paraphrase_common": {
+        "BASE": false,
+        "MATCHED_CE": false,
+        "INCREMENT_FLOOR": false
+      },
+      "unseen_complete_pair": false
+    },
+    "S49": {
+      "train_vs_paraphrase": {
+        "T": {
+          "BASE": {
+            "ORIGINAL": false,
+            "SHORT": false
+          },
+          "MATCHED_CE": {
+            "ORIGINAL": false,
+            "SHORT": false
+          },
+          "INCREMENT_FLOOR": {
+            "ORIGINAL": false,
+            "SHORT": false
+          }
+        },
+        "H": {
+          "BASE": {
+            "ORIGINAL": false,
+            "SHORT": false
+          },
+          "MATCHED_CE": {
+            "ORIGINAL": false,
+            "SHORT": false
+          },
+          "INCREMENT_FLOOR": {
+            "ORIGINAL": false,
+            "SHORT": false
+          }
+        }
+      },
+      "paraphrase_common": {
+        "BASE": false,
+        "MATCHED_CE": false,
+        "INCREMENT_FLOOR": false
+      },
+      "unseen_complete_pair": false
+    }
+  },
+  "development_recommendation": false,
+  "repaired_source_clusters_vs_CE": 0,
+  "source_protection_safety": false,
+  "decision": "NO_REGISTERED_DEVELOPMENT_PROMOTION"
+}

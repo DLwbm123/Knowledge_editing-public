@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "status": "PASS",
+      "arm": "ALL_TOKENS",
+      "source_gradient_norm": 0.31767154664484937,
+      "zero_logits_exact": true,
+      "cache_CE_gradient_exact": true,
+      "teacher_prefix_max_abs": 0.0,
+      "teacher_KV_max_abs": 4.38690185546875e-05,
+      "layout": {
+        "prefix_length": 595,
+        "visual_start": 5,
+        "visual_count": 576,
+        "raw_length": 20
+      },
+      "trace": [
+        {
+          "sequence_length": 595,
+          "absolute_offset": 0,
+          "active_predictor_count": 595,
+          "first_active_predictor": 0,
+          "active_residual_norm": 0.6844086647033691
+        },
+        {
+          "sequence_length": 1,
+          "absolute_offset": 595,
+          "active_predictor_count": 1,
+          "first_active_predictor": 0,
+          "active_residual_norm": 0.03331813961267471
+        }
+      ],
+      "legacy_A_exact": true,
+      "pure_text_identity": false,
+      "counts": {
+        "forwards": 55,
+        "backwards": 4,
+        "updates": 0,
+        "generations": 1,
+        "admission_backwards": 4,
+        "vision_forwards": 2
+      },
+      "time": 1792669344.3297994
+    },
+    {
+      "status": "PASS",
+      "arm": "PREFILL_ONLY",
+      "source_gradient_norm": 0.19208391699220906,
+      "zero_logits_exact": true,
+      "cache_CE_gradient_exact": true,
+      "teacher_prefix_max_abs": 0.0,
+      "teacher_KV_max_abs": 2.6702880859375e-05,
+      "layout": {
+        "prefix_length": 595,
+        "visual_start": 5,
+        "visual_count": 576,
+        "raw_length": 20
+      },
+      "trace": [
+        {
+          "sequence_length": 595,
+          "absolute_offset": 0,
+          "active_predictor_count": 595,
+          "first_active_predictor": 0,
+          "active_residual_norm": 0.6844086647033691
+        },
+        {
+          "sequence_length": 1,
+          "absolute_offset": 595,
+          "active_predictor_count": 0,
+          "first_active_predictor": null,
+          "active_residual_norm": 0.0
+        }
+      ],
+      "legacy_A_exact": false,
+      "pure_text_identity": false,
+      "counts": {
+        "forwards": 54,
+        "backwards": 3,
+        "updates": 0,
+        "generations": 1,
+        "admission_backwards": 3,
+        "vision_forwards": 2
+      },
+      "time": 1792669345.9369757
+    },
+    {
+      "status": "PASS",
+      "arm": "VISUAL_ONLY",
+      "source_gradient_norm": 0.05040668557965422,
+      "zero_logits_exact": true,
+      "cache_CE_gradient_exact": true,
+      "teacher_prefix_max_abs": 0.0,
+      "teacher_KV_max_abs": 2.384185791015625e-05,
+      "layout": {
+        "prefix_length": 595,
+        "visual_start": 5,
+        "visual_count": 576,
+        "raw_length": 20
+      },
+      "trace": [
+        {
+          "sequence_length": 595,
+          "absolute_offset": 0,
+          "active_predictor_count": 576,
+          "first_active_predictor": 5,
+          "active_residual_norm": 0.6729269623756409
+        },
+        {
+          "sequence_length": 1,
+          "absolute_offset": 595,
+          "active_predictor_count": 0,
+          "first_active_predictor": null,
+          "active_residual_norm": 0.0
+        }
+      ],
+      "legacy_A_exact": false,
+      "pure_text_identity": true,
+      "counts": {
+        "forwards": 56,
+        "backwards": 3,
+        "updates": 0,
+        "generations": 1,
+        "admission_backwards": 3,
+        "vision_forwards": 2
+      },
+      "time": 1792669343.1584005
+    }
+  ]
+}

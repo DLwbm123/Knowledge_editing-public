@@ -1,0 +1,172 @@
+{
+  "status": "COMPLETE",
+  "experts": 3,
+  "matrix_rows": 28,
+  "capability_consumers": 84,
+  "heldout": 17,
+  "heldout_Base_correct": 7,
+  "forced": {
+    "E01": {
+      "source_correct": true,
+      "applicable_heldout_correct": 1,
+      "applicable_heldout_total": 3,
+      "all_heldout_labels": {
+        "INCORRECT": 13,
+        "CORRECT": 3,
+        "UNCERTAIN": 1
+      },
+      "Base_correct_damage": 4,
+      "Base_correct_abstain": 0
+    },
+    "E02": {
+      "source_correct": true,
+      "applicable_heldout_correct": 3,
+      "applicable_heldout_total": 3,
+      "all_heldout_labels": {
+        "INCORRECT": 10,
+        "CORRECT": 6,
+        "UNCERTAIN": 1
+      },
+      "Base_correct_damage": 4,
+      "Base_correct_abstain": 0
+    },
+    "E03": {
+      "source_correct": true,
+      "applicable_heldout_correct": 1,
+      "applicable_heldout_total": 3,
+      "all_heldout_labels": {
+        "INCORRECT": 8,
+        "CORRECT": 8,
+        "UNCERTAIN": 1
+      },
+      "Base_correct_damage": 0,
+      "Base_correct_abstain": 0
+    }
+  },
+  "natural": {
+    "R0": {
+      "correct": 7,
+      "damage": 3,
+      "abstain": 0,
+      "legal": 5,
+      "selection_loss": 4,
+      "writing_failure": 4,
+      "activation_side_effect": 3,
+      "OFF": 0,
+      "has_legal": 9,
+      "unknown": 0,
+      "total": 17,
+      "source_correct": 3,
+      "source_total": 3,
+      "labels": {
+        "INCORRECT": 9,
+        "CORRECT": 7,
+        "UNCERTAIN": 1
+      },
+      "repairs_from_explicit_Base_errors": 3,
+      "correct_OOD_OFF": 0,
+      "OOD_total": 8,
+      "missed_applicable_OFF": 0,
+      "applicable_total": 9
+    },
+    "JOINT": {
+      "correct": 8,
+      "damage": 3,
+      "abstain": 0,
+      "legal": 4,
+      "selection_loss": 3,
+      "writing_failure": 4,
+      "activation_side_effect": 3,
+      "OFF": 0,
+      "has_legal": 9,
+      "unknown": 0,
+      "total": 17,
+      "source_correct": 3,
+      "source_total": 3,
+      "labels": {
+        "INCORRECT": 8,
+        "CORRECT": 8,
+        "UNCERTAIN": 1
+      },
+      "repairs_from_explicit_Base_errors": 4,
+      "correct_OOD_OFF": 0,
+      "OOD_total": 8,
+      "missed_applicable_OFF": 0,
+      "applicable_total": 9
+    },
+    "CONTEXT_MIN": {
+      "correct": 8,
+      "damage": 3,
+      "abstain": 0,
+      "legal": 8,
+      "selection_loss": 3,
+      "writing_failure": 4,
+      "activation_side_effect": 3,
+      "OFF": 4,
+      "has_legal": 9,
+      "unknown": 0,
+      "total": 17,
+      "source_correct": 3,
+      "source_total": 3,
+      "labels": {
+        "INCORRECT": 8,
+        "CORRECT": 8,
+        "UNCERTAIN": 1
+      },
+      "repairs_from_explicit_Base_errors": 4,
+      "correct_OOD_OFF": 3,
+      "OOD_total": 8,
+      "missed_applicable_OFF": 1,
+      "applicable_total": 9
+    }
+  },
+  "scope_limitations": "Four assistant-reviewed anatomical localization development scopes, three source experts; no independent clinician, disease-specific or patient-level validation.",
+  "counts": {
+    "forwards": 2574,
+    "backwards": 480,
+    "updates": 480,
+    "generations": 119,
+    "vision_forwards": 159,
+    "query_keys": 28,
+    "anchor_keys": 6
+  },
+  "GPU_process_seconds": 594.2711293697357,
+  "scope_aware_oracle_with_Base_correct": 11,
+  "applicable_Base_labels": {
+    "INCORRECT": 7,
+    "CORRECT": 1,
+    "UNCERTAIN": 1
+  },
+  "forced_applicable_correct": 5,
+  "Base_counts": {
+    "CORRECT": 12,
+    "INCORRECT": 21,
+    "UNCERTAIN": 2,
+    "ABSTAIN": 0,
+    "total": 35,
+    "EOS": 35,
+    "cap": 0
+  },
+  "method_generations": 84,
+  "method_EOS": 84,
+  "method_cap": 0,
+  "calibration": {
+    "JOINT": {
+      "tau": 0.95,
+      "best_macro_legal_action_accuracy": 0.41666666666666663,
+      "train_rows": 8,
+      "heldout_used": false
+    },
+    "CONTEXT_MIN": {
+      "tau": 0.9,
+      "best_macro_legal_action_accuracy": 0.6666666666666666,
+      "train_rows": 8,
+      "heldout_used": false
+    }
+  },
+  "retired_generated_state": {
+    "count": 10,
+    "bytes": 3259592,
+    "retained_copy": false
+  }
+}

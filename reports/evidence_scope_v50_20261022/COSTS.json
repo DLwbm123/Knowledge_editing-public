@@ -1,0 +1,244 @@
+{
+  "writer_arms": {
+    "W0": {
+      "counts": {
+        "forwards": 3288,
+        "backwards": 2560,
+        "updates": 640,
+        "generations": 62,
+        "probes": 0,
+        "vision_forwards": 0,
+        "router_updates": 0,
+        "conditioner_updates": 0
+      },
+      "train_and_generate_seconds": 707.1397361869458,
+      "writer_parameters_per_edit": 7168,
+      "conditioner_parameters_per_edit": 0
+    },
+    "B_GATE": {
+      "counts": {
+        "forwards": 3288,
+        "backwards": 2560,
+        "updates": 640,
+        "generations": 62,
+        "probes": 0,
+        "vision_forwards": 0,
+        "router_updates": 0,
+        "conditioner_updates": 0
+      },
+      "train_and_generate_seconds": 713.8820527859498,
+      "writer_parameters_per_edit": 7168,
+      "conditioner_parameters_per_edit": 0
+    },
+    "B_COND": {
+      "counts": {
+        "forwards": 3250,
+        "backwards": 2560,
+        "updates": 640,
+        "generations": 62,
+        "probes": 0,
+        "vision_forwards": 0,
+        "router_updates": 0,
+        "conditioner_updates": 640
+      },
+      "train_and_generate_seconds": 713.8059375480516,
+      "writer_parameters_per_edit": 7168,
+      "conditioner_parameters_per_edit": 4180
+    }
+  },
+  "shared_overhead": {
+    "counts": {
+      "forwards": 2199,
+      "backwards": 0,
+      "updates": 0,
+      "generations": 74,
+      "probes": 94,
+      "vision_forwards": 110,
+      "router_updates": 800,
+      "conditioner_updates": 0
+    },
+    "notes": "Includes Base generation, source smoke, prompt probes, localizer and router fitting. Router fit has 800 auxiliary optimizer steps: LDKE400 + B gate400; model-backward counter excludes auxiliary backwards. Separate router wall time was not instrumented."
+  },
+  "parameters_per_edit": {
+    "W0": 7168,
+    "BE_RADIUS_TT": {
+      "shared_W0": 7168,
+      "anchors": 28672,
+      "radii": 2,
+      "learned_router": 0
+    },
+    "LDKE_ROUTER_TT_PROXY": {
+      "shared_W0": 7168,
+      "router": 536576
+    },
+    "B_GATE": {
+      "writer": 7168,
+      "gate": 4129
+    },
+    "B_COND": {
+      "writer": 7168,
+      "gate": 4129,
+      "conditioner": 4180,
+      "total": 15477
+    },
+    "sharing": "Per-edit modules; B_GATE/B_COND share frozen gate, A arms share W0; no cross-edit amortization claim."
+  },
+  "localizer": [
+    {
+      "case_index": 1,
+      "selected_layer": 29,
+      "scores": {
+        "16": 0.8636226654052734,
+        "17": 0.11713600158691406,
+        "18": 0.44332408905029297,
+        "19": -0.01956653594970703,
+        "20": -0.3687868118286133,
+        "21": 0.27341556549072266,
+        "22": 0.976658821105957,
+        "23": 0.5411605834960938,
+        "24": 0.0720968246459961,
+        "25": 0.56060791015625,
+        "26": 1.8776397705078125,
+        "27": -0.937901496887207,
+        "28": -0.43297481536865234,
+        "29": 2.670351982116699,
+        "30": 0.21740436553955078,
+        "31": 0.5998764038085938
+      },
+      "target_rule": "first authorized source answer token",
+      "residual_before_after_ffn": true
+    },
+    {
+      "case_index": 2,
+      "selected_layer": 31,
+      "scores": {
+        "16": -0.018161773681640625,
+        "17": 0.38007545471191406,
+        "18": 0.14379501342773438,
+        "19": 0.5680131912231445,
+        "20": 0.03596973419189453,
+        "21": -0.29114341735839844,
+        "22": 0.4499855041503906,
+        "23": 0.5739927291870117,
+        "24": 0.2655019760131836,
+        "25": 0.490509033203125,
+        "26": -0.04805469512939453,
+        "27": 0.12581539154052734,
+        "28": -0.39871883392333984,
+        "29": -1.9125738143920898,
+        "30": 0.8122329711914062,
+        "31": 2.255998134613037
+      },
+      "target_rule": "first authorized source answer token",
+      "residual_before_after_ffn": true
+    },
+    {
+      "case_index": 3,
+      "selected_layer": 18,
+      "scores": {
+        "16": 0.925755500793457,
+        "17": 0.47205114364624023,
+        "18": 1.507026195526123,
+        "19": 1.3898980617523193,
+        "20": 0.5890629291534424,
+        "21": 0.37362194061279297,
+        "22": 0.0371701717376709,
+        "23": 0.534522533416748,
+        "24": 0.32185375690460205,
+        "25": 0.08898329734802246,
+        "26": 0.2489091157913208,
+        "27": 0.6076698899269104,
+        "28": 0.24378418922424316,
+        "29": 0.25263160467147827,
+        "30": 0.028074875473976135,
+        "31": 0.0004948892164975405
+      },
+      "target_rule": "first authorized source answer token",
+      "residual_before_after_ffn": true
+    },
+    {
+      "case_index": 4,
+      "selected_layer": 31,
+      "scores": {
+        "16": 0.0450897216796875,
+        "17": 0.14399337768554688,
+        "18": -0.3405284881591797,
+        "19": -0.05142498016357422,
+        "20": -0.2244243621826172,
+        "21": 0.08714962005615234,
+        "22": 0.5637350082397461,
+        "23": 0.22234058380126953,
+        "24": 0.25710010528564453,
+        "25": 0.027390480041503906,
+        "26": 0.12769222259521484,
+        "27": -0.36437129974365234,
+        "28": -1.2964248657226562,
+        "29": -2.8661880493164062,
+        "30": -0.2378864288330078,
+        "31": 0.792881965637207
+      },
+      "target_rule": "first authorized source answer token",
+      "residual_before_after_ffn": true
+    }
+  ],
+  "scope": "V50 only; does not include V36-V49",
+  "successful_attempt": {
+    "counts": {
+      "forwards": 12025,
+      "backwards": 7680,
+      "updates": 1920,
+      "generations": 260,
+      "probes": 94,
+      "vision_forwards": 110,
+      "router_updates": 800,
+      "conditioner_updates": 640
+    },
+    "gpu_process_seconds": 2444.696614265442
+  },
+  "failed_attempt": {
+    "forwards": 11,
+    "backwards": 0,
+    "updates": 0,
+    "generations": 0,
+    "gpu_process_seconds": 54.906522035598755
+  },
+  "total_gpu_process_hours": 0.6943342045280668,
+  "total_model_forwards": 12036,
+  "pure_route_cost": {
+    "BE_RADIUS_TT": "0 additional writer updates/generations; shared prompt probes and exact cached selection",
+    "LDKE_ROUTER_TT_PROXY": "0 additional writer updates/generations; 400 auxiliary fit steps plus shared probes; forced output is W0 cache"
+  },
+  "generation_latency": {
+    "BASE": {
+      "n": 62,
+      "total_seconds": 81.42062381072901,
+      "mean_seconds": 1.313235867914984,
+      "includes_probe": false
+    },
+    "W0": {
+      "n": 62,
+      "total_seconds": 48.72844954987522,
+      "mean_seconds": 0.7859427346754068,
+      "includes_probe": false
+    },
+    "B_GATE": {
+      "n": 62,
+      "total_seconds": 48.67430684482679,
+      "mean_seconds": 0.7850694652391418,
+      "includes_probe": false
+    },
+    "B_COND": {
+      "n": 62,
+      "total_seconds": 47.54140636255033,
+      "mean_seconds": 0.7667968768153279,
+      "includes_probe": false
+    }
+  },
+  "router_inference_latency": "NOT_SEPARATELY_MEASURED; cached selections are not an end-to-end deployment latency measurement",
+  "storage_before_retirement": {
+    "local_run_bytes": 17797319,
+    "delta_files": 12,
+    "delta_bytes": 441100,
+    "remote_all_attempts_bytes": 18015908
+  }
+}

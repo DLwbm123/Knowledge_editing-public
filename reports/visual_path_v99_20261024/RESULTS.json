@@ -1,0 +1,231 @@
+{
+  "status": "VISUAL_CHAIN_ACTIVE_DISCRIMINATION_NOT_RECOVERED",
+  "patients": 8,
+  "source_pairs": 4,
+  "independent_generations": 36,
+  "condition_consumers": 72,
+  "historical_current_token_matches": 8,
+  "routes": {
+    "C": {
+      "image_correct": 4,
+      "image_total": 8,
+      "positive_correct": 0,
+      "positive_total": 4,
+      "negative_correct": 4,
+      "negative_total": 4,
+      "swapped_pair_same_full_text": 4,
+      "swapped_pair_same_fact_direction": 4,
+      "pairs": 4,
+      "image_swap_distribution": {
+        "max_logit_abs": {
+          "min": 0.46908116340637207,
+          "max": 0.52984619140625
+        },
+        "total_variation": {
+          "min": 0.020302750682057547,
+          "max": 0.07243102179437762
+        },
+        "JS_nats": {
+          "min": 0.0002677948631613636,
+          "max": 0.004417298699833034
+        }
+      },
+      "image_swap_first_token_changes": 0,
+      "image_vs_noimage_distribution": {
+        "max_logit_abs": {
+          "min": 1.3148255348205566,
+          "max": 2.3486528396606445
+        },
+        "total_variation": {
+          "min": 0.13396883743142943,
+          "max": 0.23398836649368843
+        },
+        "JS_nats": {
+          "min": 0.010768231728154491,
+          "max": 0.03342374593301797
+        }
+      },
+      "image_vs_noimage_first_token_changes": 2,
+      "noimage_yes_answers": 1,
+      "all_visual_injection_checks_pass": true,
+      "all_noimage_bypass_checks_pass": true
+    },
+    "N": {
+      "image_correct": 4,
+      "image_total": 8,
+      "positive_correct": 0,
+      "positive_total": 4,
+      "negative_correct": 4,
+      "negative_total": 4,
+      "swapped_pair_same_full_text": 3,
+      "swapped_pair_same_fact_direction": 4,
+      "pairs": 4,
+      "image_swap_distribution": {
+        "max_logit_abs": {
+          "min": 0.46533203125,
+          "max": 0.53125
+        },
+        "total_variation": {
+          "min": 0.015253716179480719,
+          "max": 0.07190631728155165
+        },
+        "JS_nats": {
+          "min": 0.00017476613269423583,
+          "max": 0.004391330030779622
+        }
+      },
+      "image_swap_first_token_changes": 0,
+      "image_vs_noimage_distribution": {
+        "max_logit_abs": {
+          "min": 1.23046875,
+          "max": 2.390625
+        },
+        "total_variation": {
+          "min": 0.1322794476755741,
+          "max": 0.23212352440158202
+        },
+        "JS_nats": {
+          "min": 0.010765222430158409,
+          "max": 0.03332661543268685
+        }
+      },
+      "image_vs_noimage_first_token_changes": 2,
+      "noimage_yes_answers": 1,
+      "all_visual_injection_checks_pass": true,
+      "all_noimage_bypass_checks_pass": true
+    },
+    "R": {
+      "image_correct": 4,
+      "image_total": 8,
+      "positive_correct": 0,
+      "positive_total": 4,
+      "negative_correct": 4,
+      "negative_total": 4,
+      "swapped_pair_same_full_text": 3,
+      "swapped_pair_same_fact_direction": 4,
+      "pairs": 4,
+      "image_swap_distribution": {
+        "max_logit_abs": {
+          "min": 0.46484375,
+          "max": 0.53125
+        },
+        "total_variation": {
+          "min": 0.018898141713189844,
+          "max": 0.07194007274084384
+        },
+        "JS_nats": {
+          "min": 0.0002884776514056014,
+          "max": 0.004388166110709401
+        }
+      },
+      "image_swap_first_token_changes": 0,
+      "image_vs_noimage_distribution": {
+        "max_logit_abs": {
+          "min": 1.3125,
+          "max": 2.35546875
+        },
+        "total_variation": {
+          "min": 0.1313435333920606,
+          "max": 0.23179354831782112
+        },
+        "JS_nats": {
+          "min": 0.010670395957197706,
+          "max": 0.032954396181980386
+        }
+      },
+      "image_vs_noimage_first_token_changes": 2,
+      "noimage_yes_answers": 1,
+      "all_visual_injection_checks_pass": true,
+      "all_noimage_bypass_checks_pass": true
+    }
+  },
+  "cross_route_parity": {
+    "C_N": {
+      "full_text_equal": 11,
+      "fact_direction_equal": 12,
+      "total": 12,
+      "first_token_changes": 0,
+      "logit_max_abs_range": {
+        "min": 0.006566047668457031,
+        "max": 0.086517333984375
+      },
+      "caveat": "Unaligned official one-pixel padding draws and precision/version differences are not causally separated"
+    },
+    "N_R": {
+      "full_text_equal": 12,
+      "fact_direction_equal": 12,
+      "total": 12,
+      "first_token_changes": 0,
+      "logit_max_abs_range": {
+        "min": 0.0078125,
+        "max": 0.08203125
+      },
+      "caveat": "Unaligned official one-pixel padding draws and precision/version differences are not causally separated"
+    },
+    "C_R": {
+      "full_text_equal": 11,
+      "fact_direction_equal": 12,
+      "total": 12,
+      "first_token_changes": 0,
+      "logit_max_abs_range": {
+        "min": 0.006688594818115234,
+        "max": 0.05893135070800781
+      },
+      "caveat": "Unaligned official one-pixel padding draws and precision/version differences are not causally separated"
+    }
+  },
+  "native_preprocess_pixel_matches": {
+    "N": 4,
+    "R": 6
+  },
+  "same_image_seed_official_pinned_CPU_exact_matches": 8,
+  "pair_feature_ranges": {
+    "pixel_max_abs_difference": {
+      "min": 2.5361328125,
+      "max": 3.826171875
+    },
+    "pixel_relative_L2": {
+      "min": 0.6709092855453491,
+      "max": 1.2261502742767334
+    },
+    "projector_max_abs_difference": {
+      "min": 16.31005859375,
+      "max": 20.2890625
+    },
+    "projector_relative_L2": {
+      "min": 1.1200271844863892,
+      "max": 1.1933637857437134
+    }
+  },
+  "counts": {
+    "forwards": 718,
+    "non_generation_forwards": 0,
+    "backwards": 0,
+    "operator_backwards": 0,
+    "updates": 0,
+    "teacher_generations": 0,
+    "evaluation_generations": 36
+  },
+  "gpu_process_seconds": 100.42811560630798,
+  "environments": {
+    "current": {
+      "torch": "2.7.1+cu128",
+      "transformers": "4.51.3",
+      "tokenizers": "0.21.1",
+      "forward_compat_installed": true
+    },
+    "reference": {
+      "torch": "2.7.1+cu128",
+      "transformers": "4.36.2",
+      "tokenizers": "0.15.2",
+      "forward_compat_installed": false
+    }
+  },
+  "engineering_incidents": [
+    "Dependency receipt checked before package installation finished; completed current outputs retained",
+    "Reference loader device cuda:0 requested an unsupported device_map; zero model calls; corrected to official default cuda"
+  ],
+  "all_EOS": true,
+  "no_method_training": true,
+  "inference": "Visual features enter and alter calculations; three paths retain an absent-finding bias on these fixed cases. No general clinical capability or whole-model visual-blindness claim."
+}

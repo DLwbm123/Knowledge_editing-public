@@ -1,0 +1,30 @@
+{
+  "status": "STOPPED_PRELAUNCH_WINDOW_NOT_ADMITTED",
+  "checked_epoch": 1792681876.174824,
+  "checked_CST": "2026-10-22T23:11:16.174824+08:00",
+  "original_hard_end": 1792685766,
+  "remaining_seconds": 3889.825176000595,
+  "authorization": "User authorized admission then finite validation, conditional on sufficient original time and budget.",
+  "original_clock_reset": false,
+  "model_calls": 0,
+  "gradient_passes": 0,
+  "updates": 0,
+  "generations": 0,
+  "new_GPU_process_seconds": 0,
+  "remote_writes": 0,
+  "real_model_admission": "NOT_EXECUTED",
+  "main_arms": "NOT_STARTED",
+  "random_arms": "NOT_STARTED",
+  "basis": {
+    "parent_TT_worker_seconds": 1827.798,
+    "parent_TT_training_seconds": 425.7456192970276,
+    "parent_TT_check_seconds": 25.523929595947266,
+    "parent_remaining_seconds": 1376.5284511070251,
+    "main_planning_seconds": 4619.266392442703,
+    "conditional_full_planning_seconds": 6159.0218565902705,
+    "formula": "main=6*parent_train+1.5*parent_remaining; full=8*parent_train+2*parent_remaining",
+    "limitations": "Conservative planning estimate, not measured V63 runtime or a mathematical lower bound. Parent remainder includes loading/admission/evaluation/save overhead and long source-stop outputs. Actual new output lengths unknown. New implementation, CPU/real admission and blind scoring time excluded. Assumes two structures can run concurrently; GPU availability not probed because time admission failed."
+  },
+  "budget": "No execution reservation added; original counters, storage reservations and deadline preserved.",
+  "decision": "Cannot justify full frozen chain within remaining window; stop before dependent model work. Do not reduce edits/arms/checks, weaken replay, select completed subset, or reset clock."
+}
