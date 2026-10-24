@@ -1,0 +1,158 @@
+{
+  "status": "GRADIENT_AUDIT_COMPLETE",
+  "source_priority_test_admissible": true,
+  "eligible_terminal_PATH_blocks": 28,
+  "conflicting_terminal_PATH_blocks": 12,
+  "metrics": {
+    "REPLAY_DOUBLE/INITIAL": {
+      "source_vs_replay": {
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.023490464752458445,
+        "median_cosine": 0.21850692771403973,
+        "median_norm_ratio": 1.000919565147608
+      },
+      "source_vs_raw_combined_aux": {
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.023490464752458445,
+        "median_cosine": 0.21850692771403973,
+        "median_norm_ratio": 1.000919565147608
+      },
+      "source_vs_original_unclipped_total": {
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.5170791057660944,
+        "median_cosine": 0.7799988847759829,
+        "median_norm_ratio": 1.5743453821141207
+      },
+      "source_vs_priority_unclipped_total": {
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.7357074135767648,
+        "median_cosine": 0.7883342571766134,
+        "median_norm_ratio": 1.5459798984387816
+      }
+    },
+    "REPLAY_DOUBLE/TERMINAL": {
+      "source_vs_replay": {
+        "eligible_blocks": 28,
+        "negative_blocks": 19,
+        "minimum_cosine": -0.7346356630999381,
+        "median_cosine": -0.15009245068167704,
+        "median_norm_ratio": 2.305423543349715
+      },
+      "source_vs_raw_fisher": {
+        "eligible_blocks": 28,
+        "negative_blocks": 23,
+        "minimum_cosine": -0.37695751135993405,
+        "median_cosine": -0.14103079613234054,
+        "median_norm_ratio": 4.588523721972129
+      },
+      "source_vs_raw_combined_aux": {
+        "eligible_blocks": 28,
+        "negative_blocks": 27,
+        "minimum_cosine": -0.5489963127322374,
+        "median_cosine": -0.23934477084853906,
+        "median_norm_ratio": 4.102941387830576
+      },
+      "source_vs_original_unclipped_total": {
+        "eligible_blocks": 28,
+        "negative_blocks": 4,
+        "minimum_cosine": -0.0952120867867634,
+        "median_cosine": 0.2725082968751849,
+        "median_norm_ratio": 2.750783123050975
+      },
+      "source_vs_priority_unclipped_total": {
+        "eligible_blocks": 28,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.7071236061200671,
+        "median_cosine": 0.7968216990484833,
+        "median_norm_ratio": 1.2621300692481334
+      }
+    },
+    "PATH_REPLAY/INITIAL": {
+      "source_vs_replay": {
+        "eligible_blocks": 14,
+        "negative_blocks": 3,
+        "minimum_cosine": -0.008887548459410722,
+        "median_cosine": 0.17545381095255547,
+        "median_norm_ratio": 0.7108123438504308
+      },
+      "source_vs_raw_combined_aux": {
+        "eligible_blocks": 14,
+        "negative_blocks": 3,
+        "minimum_cosine": -0.008887548459410722,
+        "median_cosine": 0.17545381095255547,
+        "median_norm_ratio": 0.7108123438504308
+      },
+      "source_vs_original_unclipped_total": {
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.6093766884339521,
+        "median_cosine": 0.8569368389007752,
+        "median_norm_ratio": 1.3012001382439404
+      },
+      "source_vs_priority_unclipped_total": {
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.7071068135413344,
+        "median_cosine": 0.8569368389007752,
+        "median_norm_ratio": 1.3012001382439404
+      }
+    },
+    "PATH_REPLAY/TERMINAL": {
+      "source_vs_replay": {
+        "eligible_blocks": 28,
+        "negative_blocks": 10,
+        "minimum_cosine": -0.42791824967558556,
+        "median_cosine": 0.12757953487258428,
+        "median_norm_ratio": 6.058660077696807
+      },
+      "source_vs_raw_fisher": {
+        "eligible_blocks": 28,
+        "negative_blocks": 19,
+        "minimum_cosine": -0.3206940996968342,
+        "median_cosine": -0.10652717844425302,
+        "median_norm_ratio": 1.3070303924764006
+      },
+      "source_vs_raw_combined_aux": {
+        "eligible_blocks": 28,
+        "negative_blocks": 12,
+        "minimum_cosine": -0.45188063615244406,
+        "median_cosine": 0.09921285984921666,
+        "median_norm_ratio": 5.904627002303288
+      },
+      "source_vs_original_unclipped_total": {
+        "eligible_blocks": 28,
+        "negative_blocks": 1,
+        "minimum_cosine": -0.31937995243844974,
+        "median_cosine": 0.23159165625947659,
+        "median_norm_ratio": 6.338584311723158
+      },
+      "source_vs_priority_unclipped_total": {
+        "eligible_blocks": 28,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.741078050971754,
+        "median_cosine": 0.777241745475489,
+        "median_norm_ratio": 1.482708811450995
+      }
+    }
+  },
+  "counts": {
+    "forwards": 616,
+    "backwards": 616,
+    "operator_backwards": 56,
+    "updates": 0,
+    "generations": 0,
+    "vision_forwards": 308
+  },
+  "cost": {
+    "time": 1792881598.9526522,
+    "code": 0,
+    "phase_gpu_seconds": 279.41239619255066,
+    "prior_gpu_seconds": 15638.844546318054,
+    "total_gpu_seconds": 15918.256942510605
+  },
+  "interpretation": "Fixed56 endpoint expected gradients, no optimizer step/generation; not a causal trajectory reconstruction"
+}
