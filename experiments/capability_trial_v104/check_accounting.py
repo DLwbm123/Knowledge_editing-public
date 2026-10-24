@@ -19,6 +19,14 @@ def test(mode):
             (root/'O_D.log').write_text('preserve')
         os.environ['TRIAL_ROOT']=tmp
         os.environ.pop('ADOPT_DOWNLOAD',None)
+        os.environ.pop('ADOPT_MANIFEST',None)
+        os.environ.pop('RECOVER_PREGEN',None)
+        if mode=='recovery_normal':
+            os.environ['RECOVER_PREGEN']='1'
+            (root/'RECOVERY_PREGEN.json').write_text(json.dumps(dict(original_start=0,hard_end=100,gpu_process_seconds=20)))
+            (root/'pregen_incident').mkdir()
+            (root/'pregen_incident/GUARD_EXIT.json').write_text(json.dumps(dict(gpu_process_seconds=20)))
+            (root/'DOWNLOAD_COMPLETE.json').write_text('{}')
         adoption=mode.startswith('adopt_')
         if adoption:
             os.environ['ADOPT_DOWNLOAD']='1'
@@ -69,11 +77,13 @@ def test(mode):
         except BaseException as exc:
             failure=type(exc).__name__
         exit_receipt=json.loads((root/'GUARD_EXIT.json').read_text())
-        expected={'normal':10,'nonzero':5,'guard_interrupt':94,'spawn_failure':0,'existing_log':0,'adopt_timeout':0,'adopt_identity_mismatch':0}[mode]
+        expected={'normal':10,'recovery_normal':30,'nonzero':5,'guard_interrupt':94,'spawn_failure':0,'existing_log':0,'adopt_timeout':0,'adopt_identity_mismatch':0}[mode]
         assert exit_receipt['gpu_process_seconds']==expected,(mode,exit_receipt,(root/'FAILURE.json').read_text() if (root/'FAILURE.json').exists() else None)
-        assert (failure is None)==(mode=='normal')
+        assert (failure is None)==(mode in ['normal','recovery_normal'])
         receipt=root/'O_D/PROCESS_EXIT.json'
-        assert receipt.exists()==(mode in ['normal','nonzero','guard_interrupt'])
+        assert receipt.exists()==(mode in ['normal','recovery_normal','nonzero','guard_interrupt'])
+        if mode=='recovery_normal':
+            assert launches==['O_D','M_D']
         if receipt.exists():
             assert json.loads(receipt.read_text())['settled_once'] is True
         if mode=='existing_log':
@@ -92,4 +102,4 @@ def test(mode):
 
 
 if __name__=='__main__':
-    print(json.dumps([test(mode) for mode in ['normal','nonzero','guard_interrupt','spawn_failure','existing_log','adopt_timeout','adopt_identity_mismatch']]))
+    print(json.dumps([test(mode) for mode in ['normal','nonzero','guard_interrupt','spawn_failure','existing_log','adopt_timeout','adopt_identity_mismatch','recovery_normal']]))

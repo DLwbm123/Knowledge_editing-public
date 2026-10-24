@@ -174,7 +174,9 @@ def worker(action):
         before = dict(counts)
         counts['generations'] += 1
         with torch.inference_mode():
-            generated = model.generate(**inputs, do_sample=False, num_beams=1,
+            # Native LLaVA-Mistral names this argument `inputs`, unlike HF Gemma.
+            generation_inputs = dict(inputs=inputs['input_ids'], images=inputs['images']) if key == 'O' else inputs
+            generated = model.generate(**generation_inputs, do_sample=False, num_beams=1,
                 max_new_tokens=1024, use_cache=True)
         # Native LLaVA generates from inputs_embeds and returns only new IDs (plus BOS).
         tokens = generated[0].cpu().tolist() if key == 'O' else generated[0, inputs['input_ids'].shape[1]:].cpu().tolist()
@@ -189,14 +191,16 @@ def worker(action):
 
 
 def supervisor():
+    recovery = json.loads((ROOT/'RECOVERY_PREGEN.json').read_text()) if os.environ.get('RECOVER_PREGEN')=='1' else None
     manifest=os.environ.get('ADOPT_MANIFEST','ADOPT_DOWNLOAD.json')
     assert manifest in ['ADOPT_DOWNLOAD.json','ADOPT_DOWNLOAD_ACCEL.json']
     adoption = json.loads((ROOT/manifest).read_text()) if os.environ.get('ADOPT_DOWNLOAD')=='1' else None
     once='ADOPTION_ACCEL_ONCE' if manifest=='ADOPT_DOWNLOAD_ACCEL.json' else 'ADOPTION_ONCE'
-    with (ROOT / (once if adoption else 'ONCE')).open('x'):
+    assert not (recovery and adoption)
+    with (ROOT / ('RECOVERY_PREGEN_ONCE' if recovery else once if adoption else 'ONCE')).open('x'):
         pass
     child = None
-    gpu_used = 0.0
+    gpu_used = float(recovery['gpu_process_seconds']) if recovery else 0.0
     def stop_child():
         if child is not None and child.poll() is None:
             os.killpg(child.pid, signal.SIGTERM)
@@ -261,7 +265,16 @@ def supervisor():
                     gpu_process_seconds=gpu_used, settled_once=True))
         assert child is not None and child.returncode == 0, action+' failed'
     try:
-        if adoption:
+        if recovery:
+            assert recovery['original_start']==CFG['original_start'] and recovery['hard_end']==CFG['hard_end']
+            assert 0 <= gpu_used < CFG['gpu_seconds']-15
+            prior=json.loads((ROOT/'pregen_incident/GUARD_EXIT.json').read_text())
+            assert prior['gpu_process_seconds']==gpu_used
+            assert (ROOT/'DOWNLOAD_COMPLETE.json').exists()
+            assert not any((ROOT/a/'IDENTITY.json').exists() for a in ['O_D','M_D'])
+            assert all(not list((ROOT/a/'outputs').glob('*.json')) for a in ['O_D','M_D'])
+            assert not list((ROOT/'pregen_incident/O_D/outputs').glob('*.json'))
+        elif adoption:
             assert adoption['gpu_process_seconds']==0
             assert adoption['original_start']==CFG['original_start'] and adoption['hard_end']==CFG['hard_end']
             assert not (ROOT/'O_D/IDENTITY.json').exists() and not (ROOT/'M_D/IDENTITY.json').exists()
