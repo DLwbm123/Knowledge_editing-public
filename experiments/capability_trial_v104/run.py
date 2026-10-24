@@ -189,8 +189,11 @@ def worker(action):
 
 
 def supervisor():
-    adoption = json.loads((ROOT/'ADOPT_DOWNLOAD.json').read_text()) if os.environ.get('ADOPT_DOWNLOAD')=='1' else None
-    with (ROOT / ('ADOPTION_ONCE' if adoption else 'ONCE')).open('x'):
+    manifest=os.environ.get('ADOPT_MANIFEST','ADOPT_DOWNLOAD.json')
+    assert manifest in ['ADOPT_DOWNLOAD.json','ADOPT_DOWNLOAD_ACCEL.json']
+    adoption = json.loads((ROOT/manifest).read_text()) if os.environ.get('ADOPT_DOWNLOAD')=='1' else None
+    once='ADOPTION_ACCEL_ONCE' if manifest=='ADOPT_DOWNLOAD_ACCEL.json' else 'ADOPTION_ONCE'
+    with (ROOT / (once if adoption else 'ONCE')).open('x'):
         pass
     child = None
     gpu_used = 0.0
@@ -305,7 +308,11 @@ if __name__ == '__main__':
         if action == 'supervisor':
             supervisor()
         elif action == 'download':
-            download()
+            if os.environ.get('TRIAL_RANGE_DOWNLOAD')=='1':
+                import runpy
+                runpy.run_path(str(ROOT/'ranged_download.py'),run_name='__main__')
+            else:
+                download()
         else:
             worker(action)
     except BaseException as exc:
