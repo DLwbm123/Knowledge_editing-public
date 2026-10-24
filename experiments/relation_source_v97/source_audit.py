@@ -115,7 +115,33 @@ def main(source, output):
         for role, question, ref in questions:
             rows.append(dict(qid=f'{group}_{role}', source_group=group, role=role, question=question, reference=ref, image_path=str(path.resolve()), source='PadChest-GR official TRAIN', source_evidence=row['other'] if role=='protect_holdout' else row['target']))
     (output/'SOURCE_ROWS.json').write_text(json.dumps(rows, ensure_ascii=False, indent=2))
+    prepare_admitted(output)
     print(json.dumps(audit))
+
+
+def prepare_admitted(output):
+    """Frozen pre-Base source vetoes, then one fixed full-range conversion."""
+    from PIL import Image
+    import numpy as np
+    excluded = {'p03': 'OTHER_PROJECTION_DEPENDENCY',
+                'p09': 'DEVICE_LEAD_LOCATION_NOT_DEVICE_LATERALITY',
+                'p10': 'BORDERLINE_PROTECTION', 'p15': 'TEMPORAL_PROTECTION'}
+    rows = [r for r in json.loads((output/'SOURCE_ROWS.json').read_text())
+            if r['source_group'] not in excluded]
+    (output/'prepared').mkdir(exist_ok=True)
+    for group in dict.fromkeys(r['source_group'] for r in rows):
+        with Image.open(output/'images'/f'{group}.png') as original:
+            pixels = np.asarray(original, dtype=np.float64)
+        Image.fromarray(np.rint(pixels / 257).astype('uint8')).convert('RGB').save(output/'prepared'/f'{group}.png')
+    for i, row in enumerate(rows):
+        row.update(qid=970000+i, query_id=row['source_group']+'_'+row['role'],
+                   image_path=str((output/'prepared'/f"{row['source_group']}.png").resolve()),
+                   audit_role='SOURCE_QUALIFICATION',
+                   content_type='Laterality' if row['role'] in ['target','brief_control'] else 'Presence')
+    (output/'SOURCE_ROWS_ADMITTED.json').write_text(json.dumps(rows, ensure_ascii=False, indent=2))
+    (output/'SOURCE_REVIEW.json').write_text(json.dumps(dict(original=24, admitted=20,
+        excluded=excluded, replacement=False, image_conversion='round(uint16/257) RGB',
+        model_answers_seen=0), indent=2))
 
 
 if __name__ == '__main__':
