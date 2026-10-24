@@ -17,7 +17,7 @@ def identity(row):
     return tuple(row[k] for k in ('source_group', 'question', 'reference', 'full_answer'))
 
 
-def build(private, old107, old108):
+def build(private, old107, old108, admission_name='SCOPE_ADMISSION_FROZEN.json'):
     private, old107, old108 = Path(private), Path(old107), Path(old108)
     labels107 = {r['review_id']: r for r in read(old107 / 'V107_BLIND_VERDICTS_FROZEN.json')['labels']}
     labels108 = {r['review_id']: r for r in read(old108 / 'BLIND_VERDICTS_FROZEN.json')['labels']}
@@ -26,7 +26,7 @@ def build(private, old107, old108):
     root = private / 'completed'
     assert read(root / 'COMPLETE.json')['status'] == 'BLIND_REVIEW_PENDING'
     assert read(root / 'WORKER_EXIT.json')['code'] == read(root / 'GUARD_EXIT.json')['code'] == 0
-    assert read(root / 'SCOPE_ADMISSION_FROZEN.json')['admitted']
+    assert read(root / admission_name)['admitted']
     bindings, inherited, novel = [], {}, {}
     for task in read(root / 'TASKS.json')['tasks']:
         assert read(root / task['task_id'] / 'GENERATION_COMPLETE.json')['OFF_Base_exact']
@@ -55,7 +55,7 @@ def build(private, old107, old108):
     return dict(bindings=126, unique_new=len(novel), inherited_bindings=sum(r['review_id'].startswith('I') for r in bindings))
 
 
-def summarize(private, old107, old108):
+def summarize(private, old107, old108, seed=10920261025, admission_name='SCOPE_ADMISSION_FROZEN.json'):
     private, old107, old108 = Path(private), Path(old107), Path(old108)
     frozen = read(private / 'BLIND_VERDICTS_FROZEN.json')
     assert frozen['method_mapping_opened'] is False
@@ -89,7 +89,7 @@ def summarize(private, old107, old108):
     paired = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(paired)
     comparisons = {role: {a: paired.paired([int(v['joint']) for v in groups['SCOPE'][role]],
-        [int(v['joint']) for v in groups[a][role]], seed=10920261025)
+        [int(v['joint']) for v in groups[a][role]], seed=seed)
         for a in ('P_SOURCE_STOP', 'M13B', 'M13P', 'S')} for role in ('CONFIRM_CANDIDATE', 'ALL')}
     primary = summaries['SCOPE']['CONFIRM_CANDIDATE']
     all_rows = summaries['SCOPE']['ALL']
@@ -102,7 +102,7 @@ def summarize(private, old107, old108):
     result = dict(summaries=summaries, group_outcomes=groups, routing=routing, comparisons=comparisons,
         development_gate=gate, development_gate_pass=all(gate.values()),
         evaluation_EOS=sum(r['EOS'] for r in new), evaluation_at_cap=sum(r['at_cap'] for r in new),
-        admission=read(private / 'completed/SCOPE_ADMISSION_FROZEN.json'),
+        admission=read(private / 'completed' / admission_name),
         counts=read(private / 'completed/COMPLETE.json')['counts'], cost=read(private / 'completed/GUARD_EXIT.json'))
     write(private / 'RESULTS.json', result)
     write(private / 'SCORED_BINDINGS_PRIVATE.json', new)
