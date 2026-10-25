@@ -5,6 +5,7 @@ from pathlib import Path
 import signal
 import subprocess
 import sys
+import threading
 import time
 
 ROOT = Path(os.environ['V131_ROOT'])
@@ -22,13 +23,37 @@ def write(name, value):
 
 def size(folder):
     total = 0
-    for path in Path(folder).rglob('*'):
-        try:
-            if path.is_file() and not path.is_symlink():
-                total += path.stat().st_size
-        except FileNotFoundError:
-            pass
+    pending = [str(folder)]
+    while pending:
+        with os.scandir(pending.pop()) as entries:
+            for entry in entries:
+                try:
+                    if entry.is_symlink():
+                        continue
+                    if entry.is_dir(follow_symlinks=False):
+                        pending.append(entry.path)
+                    elif entry.is_file(follow_symlinks=False):
+                        total += entry.stat(follow_symlinks=False).st_size
+                except FileNotFoundError:
+                    pass
     return total
+
+
+def start_counter(roots, initial):
+    state = {'sample': initial}
+    stopped = threading.Event()
+    def collect():
+        while not stopped.is_set():
+            try:
+                used = sum(size(root) for root in roots)
+                free = os.statvfs(roots[0]).f_bavail * os.statvfs(roots[0]).f_frsize
+                state['sample'] = dict(time=time.time(), new_bytes=used, free_disk_bytes=free)
+            except BaseException as error:
+                state['sample'] = dict(time=time.time(), error=repr(error))
+            stopped.wait(10)
+    thread = threading.Thread(target=collect, daemon=True)
+    thread.start()
+    return state, stopped
 
 
 def main():
@@ -39,10 +64,17 @@ def main():
     uuid, free = subprocess.check_output(['nvidia-smi', '-i', os.environ['CUDA_VISIBLE_DEVICES'],
         '--query-gpu=uuid,memory.free', '--format=csv,noheader,nounits'], text=True).strip().split(', ')
     assert uuid == os.environ['M3BENCH_FORMAL_EXPECTED_GPU_UUID'] and int(free) >= 45 * 1024
-    child, started = None, time.time()
+    child, started, counter_stop = None, time.time(), None
     prior = cfg.get('prior_process_seconds',{}).get(METHOD,0.)
     try:
-        write('GUARD_HEALTH.json', dict(time=started, process_seconds=0))
+        roots = [ROOT, Path(os.environ['NEUTRAL_ENTRY']).parent]
+        used = sum(size(root) for root in roots)
+        free = os.statvfs(ROOT).f_bavail * os.statvfs(ROOT).f_frsize
+        sample = dict(time=time.time(), new_bytes=used, free_disk_bytes=free)
+        assert used < cfg['storage_pre_stop_bytes'] and free >= 8*1024**3
+        state, counter_stop = start_counter(roots, sample)
+        write('GUARD_HEALTH.json', dict(time=time.time(), process_seconds=time.time()-started,
+            new_bytes=used, free_disk_bytes=free, storage_sample_time=sample['time']))
         with (OUT / 'worker.log').open('x') as log:
             child = subprocess.Popen([sys.executable, os.environ['NEUTRAL_ENTRY']],
                 env=dict(os.environ, V131_ACTION='worker'), stdout=log, stderr=subprocess.STDOUT,
@@ -50,15 +82,21 @@ def main():
         write('WORKER_IDENTITY.json', dict(pid=child.pid,
             start_ticks=Path('/proc', str(child.pid), 'stat').read_text().split()[21], start=started))
         while child.poll() is None:
+            sample = state['sample']
             now = time.time()
-            used = size(ROOT) + size(Path(os.environ['NEUTRAL_ENTRY']).parent)
-            free_disk = os.statvfs(ROOT).f_bavail * os.statvfs(ROOT).f_frsize
+            used, free_disk = sample.get('new_bytes',used), sample.get('free_disk_bytes',free)
             write('GUARD_HEALTH.json', dict(time=now, process_seconds=now-started,
                 prior_process_seconds=prior,total_method_process_seconds=prior+now-started,
-                new_bytes=used, free_disk_bytes=free_disk))
+                new_bytes=used, free_disk_bytes=free_disk, storage_sample_time=sample['time'],
+                storage_sample_age_seconds=now-sample['time'], accounting_error=sample.get('error'),
+                storage_hard_limit_bytes=cfg['storage_limit_bytes'],storage_pre_stop_bytes=cfg['storage_pre_stop_bytes']))
             reason = None
-            if now >= cfg['hard_end'] - 20:
+            if sample.get('error') or now-sample['time'] >= 45:
+                reason = 'STORAGE_COUNTER_UNAVAILABLE'
+            elif now >= cfg['hard_end'] - 20:
                 reason = 'ORIGINAL_24H_WALL'
+            elif now >= cfg.get('method_original_deadline', {}).get(METHOD, cfg['hard_end']) - 20:
+                reason = 'METHOD_ORIGINAL_WALL'
             elif prior+now-started >= cfg['method_process_seconds'][METHOD] - 20:
                 reason = 'METHOD_PROCESS_BUDGET'
             elif used >= cfg['storage_pre_stop_bytes']:
@@ -70,6 +108,8 @@ def main():
                 break
             time.sleep(5)
     finally:
+        if counter_stop is not None:
+            counter_stop.set()
         if child is not None:
             if child.poll() is None:
                 os.killpg(child.pid, signal.SIGTERM)
@@ -81,7 +121,8 @@ def main():
             write('GUARD_EXIT.json', dict(time=time.time(), code=child.returncode,
                 process_seconds=time.time()-started,prior_process_seconds=prior,
                 total_method_process_seconds=prior+time.time()-started))
+    return child.returncode if child is not None else 1
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())

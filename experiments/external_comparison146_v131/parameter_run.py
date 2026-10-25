@@ -16,7 +16,7 @@ ROOT = Path(os.environ['V131_ROOT'])
 PARENT = Path(os.environ['PARENT_RUN'])
 METHOD = os.environ['V131_METHOD']
 OUT = ROOT / METHOD
-lock = json.loads((ROOT / 'PROTOCOL_LOCK.json').read_text())
+lock = json.loads(Path(os.environ.get('V131_PROTOCOL_FILE', ROOT / 'PROTOCOL_LOCK.json')).read_text())
 START = time.time()
 counts = dict(forwards=0, backwards=0, updates=0, edits=0, generation_attempts=0,
               formal_consumers=0, inserted=0, vision_forwards=0, LM_input_positions=0)
@@ -36,7 +36,8 @@ def write(path, value):
 
 def budget():
     assert time.time() < lock['hard_end'] - 20 and not (OUT / 'STOP.json').exists()
-    assert time.time() - read(OUT / 'GUARD_HEALTH.json')['time'] < 60
+    health = read(OUT / 'GUARD_HEALTH.json')
+    assert time.time() - health['time'] < 60
     for key, maximum in lock['maximum_counts'][METHOD].items():
         assert counts[key] <= maximum, (key, counts[key], maximum)
 
@@ -58,6 +59,17 @@ def main():
     from scripts.medtrace.run_realmodel_core import load_real_runtime
     from types import SimpleNamespace
     from m3bench_repro.editors.llava_runtime import seed_everything
+    resume = None
+    if os.environ.get('V131_MEMIT_RESUME_FILE'):
+        resume = torch.load(os.environ['V131_MEMIT_RESUME_FILE'], map_location='cpu', weights_only=True)
+        assert resume['mode'] == 'sequential' and 1 <= resume['owner'] <= 146
+        assert resume['source'] == lock['resume_source_execution_identity']
+        assert read(OUT/'SINGLE_COMPLETE.json')['consumers'] == 2956
+        prior_counts = lock['prior_counts'][METHOD]
+        for key in ('updates', 'backwards', 'edits', 'inserted', 'generation_attempts', 'formal_consumers'):
+            assert prior_counts[key] == resume['counts'][key], ('Resume counter binding', key)
+        assert all(prior_counts[key] >= resume['counts'][key] for key in resume['counts'])
+        counts.update(prior_counts)
     r.c.budget = budget
     torch.set_num_threads(8)
     torch.use_deterministic_algorithms(True)
@@ -73,12 +85,21 @@ def main():
     tasks = packet['original_tasks']
     plan = [v for v in read(ROOT / 'EVAL_PLAN.json') if v['method'] == METHOD]
     assert len(plan) == 7494 and len(tasks) == 146
+    if resume is not None:
+        before = {r.c.digest(contract.consumer_id(row))+'.json' for row in plan
+            if row['mode'] == 'single' or row['prefix'] < resume['owner']}
+        through = before | {r.c.digest(contract.consumer_id(row))+'.json' for row in plan
+            if row['mode'] != 'single' and row['prefix'] == resume['owner']}
+        actual = {path.name for path in (OUT/'outputs').glob('*.json')}
+        assert before <= actual <= through and len(actual) == counts['formal_consumers']
     bindings = read(PARENT / 'private/EVAL_BINDINGS.json')
     runtime = load_real_runtime(SimpleNamespace(cpu_gate=PARENT / 'private/cpu_gate'))
     runtime.model.eval()
     r.old.fp32(runtime)
     assert not any(p.requires_grad for p in runtime.model.parameters())
     assert runtime.generation_config == next(iter(bindings.values()))['generation']
+    if resume is not None:
+        assert not runtime.generation_config.get('do_sample', False), 'Resume requires frozen greedy generation'
     layers = lock['parameter_edit_layers']
     assert layers == [4, 5, 6, 7, 8]
     weights = {layer: runtime.get_module(f'model.layers.{layer}.mlp.down_proj').weight for layer in layers}
@@ -193,6 +214,13 @@ def main():
             for row in rows[begin:begin+24]:
                 task = tasks[row['owner']-1]
                 query = dict(row['query'], audit_role=row['query'].get('audit_role', 'EVAL'))
+                path = OUT/'outputs'/(r.c.digest(contract.consumer_id(row))+'.json')
+                if resume is not None and path.exists():
+                    saved = read(path)
+                    assert saved['consumer_id'] == contract.consumer_id(row)
+                    assert all(saved['binding']['input'][key] == query[key]
+                        for key in ('query_id', 'question', 'reference', 'image_sha256'))
+                    continue
                 item = prepare(task, [query])[0]
                 pending.append((row, query, item))
             for row, query, item in pending:
@@ -212,7 +240,7 @@ def main():
                     counts=counts, time=time.time()))
 
     # First all independent singles, always restoring exactly the original Base.
-    for task in tasks:
+    for task in ([] if resume is not None else tasks):
         owner = task['order']
         seed_everything(task['seed'])
         restore_base()
@@ -229,9 +257,28 @@ def main():
         write(OUT / 'retirement' / f'single_{owner}.json', dict(files=1, bytes=size,
             last_consumer='single generation plus save-load', retained_copies=0, time=time.time()))
         del batches, kl_batch
-    write(OUT / 'SINGLE_COMPLETE.json', dict(consumers=2956, counts=counts, time=time.time()))
-    restore_base()
-    for task in tasks:
+    if resume is None:
+        write(OUT / 'SINGLE_COMPLETE.json', dict(consumers=2956, counts=counts, time=time.time()))
+        restore_base()
+        remaining_tasks = tasks
+    else:
+        path = OUT/'sequential_resume.pt'
+        assert path.resolve() == Path(os.environ['V131_MEMIT_RESUME_FILE']).resolve() and not path.is_symlink()
+        assert set(resume['weights']) == set(layers)
+        with torch.no_grad():
+            for layer, value in weights.items():
+                saved = resume['weights'][layer]
+                assert saved.dtype == value.dtype and saved.shape == value.shape and torch.isfinite(saved).all()
+                value.copy_(saved.to(runtime.device))
+                assert torch.equal(value.detach().cpu(), saved)
+        assert counts['inserted'] == resume['owner'] and counts['edits'] == 146+resume['owner']
+        write(OUT/'RESUME_ADMISSION.json', dict(status='PASS', owner=resume['owner'],
+            physical_cumulative_weights_restored_exactly=True, repeated_single_edits=0,
+            repeated_sequential_edits=0, prior_counts=lock['prior_counts'][METHOD], time=time.time()))
+        seed_everything(tasks[resume['owner']-1]['seed'])
+        evaluate([row for row in plan if row['mode'] != 'single' and row['prefix'] == resume['owner']], resume['owner'])
+        remaining_tasks = tasks[resume['owner']:]
+    for task in remaining_tasks:
         owner = task['order']
         seed_everything(task['seed'])
         batches, kl_batch = inputs(task)
