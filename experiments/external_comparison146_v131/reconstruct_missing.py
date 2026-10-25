@@ -76,6 +76,9 @@ def main():
     bindings = read(PARENT / 'private/EVAL_BINDINGS.json')
     runtime = load_real_runtime(SimpleNamespace(cpu_gate=PARENT / 'private/cpu_gate'))
     runtime.model.eval()
+    # Original math_load sets the complete math backend before the first vision
+    # prefill, including disabling cuDNN SDPA as well as flash/memory-efficient.
+    r.old.fp32(runtime)
     assert runtime.generation_config == next(iter(bindings.values()))['generation']
     assert not any(v.requires_grad for v in runtime.model.parameters())
     def count(*_):
