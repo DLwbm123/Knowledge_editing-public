@@ -1,0 +1,224 @@
+{
+  "snapshot_time": 1792930848.9803948,
+  "scope": "Original146 exposed DEV; same frozen primary mask; existing AlphaEdit primary multi-layer19-23 versus frozen M13P160; cross-precision and reasoning effort differences",
+  "panels": {
+    "ALPHAEDIT_MM": {
+      "single_1": {
+        "T0": {
+          "macro": 50.0,
+          "correct": 73,
+          "observations": 146,
+          "edits": 146,
+          "missing": 0,
+          "micro": 50.0
+        },
+        "T1G": {
+          "macro": 50.342465753424655,
+          "correct": 290,
+          "observations": 578,
+          "edits": 146,
+          "missing": 0,
+          "micro": 50.173010380622834
+        },
+        "T2G": {
+          "macro": 8.162100456621003,
+          "correct": 43,
+          "observations": 557,
+          "edits": 146,
+          "missing": 0,
+          "micro": 7.719928186714542
+        },
+        "T1L": {
+          "macro": 100.0,
+          "correct": 2,
+          "observations": 2,
+          "edits": 1,
+          "missing": 0,
+          "micro": 100.0
+        },
+        "T2L": {
+          "macro": 96.7741935483871,
+          "correct": 52,
+          "observations": 54,
+          "edits": 31,
+          "missing": 0,
+          "micro": 96.29629629629629
+        }
+      },
+      "bank_146": {
+        "T0": {
+          "macro": 81.5068493150685,
+          "correct": 119,
+          "observations": 146,
+          "edits": 146,
+          "missing": 0,
+          "micro": 81.5068493150685
+        },
+        "T1G": {
+          "macro": 81.16438356164383,
+          "correct": 468,
+          "observations": 578,
+          "edits": 146,
+          "missing": 0,
+          "micro": 80.96885813148789
+        },
+        "T2G": {
+          "macro": 24.88584474885845,
+          "correct": 132,
+          "observations": 557,
+          "edits": 146,
+          "missing": 0,
+          "micro": 23.6983842010772
+        },
+        "T1L": {
+          "macro": 100.0,
+          "correct": 2,
+          "observations": 2,
+          "edits": 1,
+          "missing": 0,
+          "micro": 100.0
+        },
+        "T2L": {
+          "macro": 55.913978494623656,
+          "correct": 28,
+          "observations": 54,
+          "edits": 31,
+          "missing": 0,
+          "micro": 51.851851851851855
+        }
+      }
+    },
+    "M13P_160": {
+      "single_1": {
+        "T0": {
+          "macro": 100.0,
+          "correct": 146,
+          "observations": 146,
+          "edits": 146,
+          "missing": 0,
+          "micro": 100.0
+        },
+        "T1G": {
+          "macro": 100.0,
+          "correct": 578,
+          "observations": 578,
+          "edits": 146,
+          "missing": 0,
+          "micro": 100.0
+        },
+        "T2G": {
+          "macro": 76.48401826484019,
+          "correct": 427,
+          "observations": 557,
+          "edits": 146,
+          "missing": 0,
+          "micro": 76.66068222621185
+        },
+        "T1L": {
+          "macro": 100.0,
+          "correct": 2,
+          "observations": 2,
+          "edits": 1,
+          "missing": 0,
+          "micro": 100.0
+        },
+        "T2L": {
+          "macro": 100.0,
+          "correct": 54,
+          "observations": 54,
+          "edits": 31,
+          "missing": 0,
+          "micro": 100.0
+        }
+      },
+      "bank_146": {
+        "T0": {
+          "macro": 100.0,
+          "correct": 146,
+          "observations": 146,
+          "edits": 146,
+          "missing": 0,
+          "micro": 100.0
+        },
+        "T1G": {
+          "macro": null,
+          "correct": 489,
+          "observations": 578,
+          "edits": 146,
+          "missing": 52,
+          "micro": null
+        },
+        "T2G": {
+          "macro": null,
+          "correct": 418,
+          "observations": 557,
+          "edits": 146,
+          "missing": 8,
+          "micro": null
+        },
+        "T1L": {
+          "macro": 100.0,
+          "correct": 2,
+          "observations": 2,
+          "edits": 1,
+          "missing": 0,
+          "micro": 100.0
+        },
+        "T2L": {
+          "macro": 100.0,
+          "correct": 54,
+          "observations": 54,
+          "edits": 31,
+          "missing": 0,
+          "micro": 100.0
+        }
+      }
+    }
+  },
+  "single_delta_M13P_minus_Alpha_pp": {
+    "T0": 50.0,
+    "T1G": 49.657534246575345,
+    "T2G": 68.32191780821918,
+    "T1L": 0.0,
+    "T2L": 3.225806451612897
+  },
+  "single_per_edit_comparison": {
+    "T0": {
+      "M13P_better": 73,
+      "same": 73,
+      "M13P_worse": 0
+    },
+    "T1G": {
+      "M13P_better": 75,
+      "same": 71,
+      "M13P_worse": 0
+    },
+    "T2G": {
+      "M13P_better": 137,
+      "same": 8,
+      "M13P_worse": 1
+    },
+    "T1L": {
+      "M13P_better": 0,
+      "same": 1,
+      "M13P_worse": 0
+    },
+    "T2L": {
+      "M13P_better": 2,
+      "same": 29,
+      "M13P_worse": 0
+    }
+  },
+  "single_binding_identity_all_common_metrics": "PASS question/reference/image/prompt IDs",
+  "limitations": [
+    "All original146 edits are exposed development data, not independent confirmation.",
+    "AlphaEdit uses the previously frozen multimodal primary multi-layer19-23 adaptation, not a claim about all AlphaEdit settings.",
+    "AlphaEdit historical FP16 runtime and high Judge effort differ from M13P FP32 decoder with frozen FP16 prefill and medium Judge effort.",
+    "Algorithms and training information/compute budgets are not a fully matched causal intervention.",
+    "M13P bank is routing over independent experts; AlphaEdit sequentially modifies cumulative shared parameters.",
+    "M13P bank T1G/T2G incomplete at this snapshot; missing scores are not failures or zeros.",
+    "T1L support is only one edit/two probes, T2L31 edits/54 probes."
+  ],
+  "metric_definition": "Primary edit macro average in percent. G uses original Base-incorrect mask, L uses original Base-correct mask; active native targets excluded from bank locality. Micro counts separately shown.",
+  "new_GPU_or_Judge_for_this_analysis": 0
+}
