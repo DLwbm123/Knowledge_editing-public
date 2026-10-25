@@ -172,7 +172,10 @@ def main():
             'BalancEdit and GRACE retain their separately completed historical reports; this file does not relabel those configurations as matched runs.'])
     prefix = 'M13P_C_ALPHA_MEMIT' if include_memit else 'M13P_COMPLETE'
     if include_memit:
-        result['cost']['MEMIT_guard_seconds'] = read(root/'MEMIT_MM/GUARD_EXIT.json')['process_seconds']
+        guard = read(root/'MEMIT_MM/GUARD_EXIT.json')
+        result['cost']['MEMIT_guard_seconds'] = guard.get('total_method_process_seconds', guard['process_seconds'])
+        result['cost']['MEMIT_latest_attempt_guard_seconds'] = guard['process_seconds']
+        result['cost']['MEMIT_prior_attempt_guard_seconds'] = guard.get('prior_process_seconds', 0.)
     private = root/(prefix+'_RESULTS.private.json')
     private.write_text(json.dumps(result, indent=2)+'\n')
     public = json.loads(json.dumps(result))
