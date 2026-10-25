@@ -10,7 +10,7 @@ import time
 ROOT = Path(os.environ['V131_ROOT'])
 METHOD = os.environ['V131_METHOD']
 OUT = ROOT / METHOD
-cfg = json.loads((ROOT / 'PROTOCOL_LOCK.json').read_text())
+cfg = json.loads(Path(os.environ.get('V131_PROTOCOL_FILE', ROOT / 'PROTOCOL_LOCK.json')).read_text())
 
 
 def write(name, value):
@@ -40,6 +40,7 @@ def main():
         '--query-gpu=uuid,memory.free', '--format=csv,noheader,nounits'], text=True).strip().split(', ')
     assert uuid == os.environ['M3BENCH_FORMAL_EXPECTED_GPU_UUID'] and int(free) >= 45 * 1024
     child, started = None, time.time()
+    prior = cfg.get('prior_process_seconds',{}).get(METHOD,0.)
     try:
         write('GUARD_HEALTH.json', dict(time=started, process_seconds=0))
         with (OUT / 'worker.log').open('x') as log:
@@ -53,11 +54,12 @@ def main():
             used = size(ROOT) + size(Path(os.environ['NEUTRAL_ENTRY']).parent)
             free_disk = os.statvfs(ROOT).f_bavail * os.statvfs(ROOT).f_frsize
             write('GUARD_HEALTH.json', dict(time=now, process_seconds=now-started,
+                prior_process_seconds=prior,total_method_process_seconds=prior+now-started,
                 new_bytes=used, free_disk_bytes=free_disk))
             reason = None
             if now >= cfg['hard_end'] - 20:
                 reason = 'ORIGINAL_24H_WALL'
-            elif now-started >= cfg['method_process_seconds'][METHOD] - 20:
+            elif prior+now-started >= cfg['method_process_seconds'][METHOD] - 20:
                 reason = 'METHOD_PROCESS_BUDGET'
             elif used >= cfg['storage_pre_stop_bytes']:
                 reason = 'WHOLE_EXPERIMENT_STORAGE'
@@ -77,7 +79,8 @@ def main():
                     os.killpg(child.pid, signal.SIGKILL)
                     child.wait()
             write('GUARD_EXIT.json', dict(time=time.time(), code=child.returncode,
-                process_seconds=time.time()-started))
+                process_seconds=time.time()-started,prior_process_seconds=prior,
+                total_method_process_seconds=prior+time.time()-started))
 
 
 if __name__ == '__main__':

@@ -17,7 +17,7 @@ import traceback
 ROOT = Path(os.environ['V131_ROOT'])
 PARENT = Path(os.environ['PARENT_RUN'])
 OUT = ROOT / 'M13P_160'
-lock = json.loads((ROOT / 'PROTOCOL_LOCK.json').read_text())
+lock = json.loads(Path(os.environ.get('V131_PROTOCOL_FILE', ROOT / 'PROTOCOL_LOCK.json')).read_text())
 START = time.time()
 counts = dict(forwards=0, backwards=0, operator_backwards=0, updates=0,
               generation_attempts=0, formal_consumers=0, rebuilt_experts=0)
@@ -40,6 +40,8 @@ def budget():
     assert time.time() - read(OUT / 'GUARD_HEALTH.json')['time'] < 60
     for key, maximum in lock['maximum_counts']['M13P_160'].items():
         assert counts[key] <= maximum, (key, counts[key], maximum)
+        if 'maximum_actual_counts' in lock:
+            assert counts[key]+lock['prior_counts']['M13P_160'].get(key,0) <= lock['maximum_actual_counts']['M13P_160'][key]
 
 
 def main():
@@ -101,7 +103,9 @@ def main():
         batches = [r.old.batch_on(runtime, item[1]) for item in items]
         initial = r.p.tr.TT4(task['seed'],8,8).state_dict()
         expert = r.p.expert(initial, task['seed'], runtime.device)
-        expert.load_state_dict(r.mm.canonicalize(initial)[0])
+        # The original worker resets raw initial here. trajectory.run performs
+        # the single canonicalization; doing it twice changes finite precision.
+        expert.load_state_dict(initial)
         hook = r.q.scoped.replay.MedTraceLayerHook(runtime.get_module(r.c.LAYER), expert)
         hook.attach()
         binding = dict(arm='M13P', seed=task['seed'], steps=160, parameters=7168,
