@@ -182,7 +182,8 @@ def main():
         public['common_original_Base_mask_locality'].pop(method+'_bank_1', None)
     public['matched_C_M13P']['bank_1'] = dict(status='PRIVATE_SMALL_GROUP_AUDIT_ONLY')
     (root/(prefix+'_RESULTS.json')).write_text(json.dumps(public, indent=2)+'\n')
-    (root/(prefix+'_REPORT_COMPLETE.json')).write_text(json.dumps(dict(status=result['status'], time=time.time()))+'\n')
+    receipt = 'M13P_C_ALPHA_MEMIT_REPORT_COMPLETE.json' if include_memit else 'M13P_REPORT_COMPLETE.json'
+    (root/receipt).write_text(json.dumps(dict(status=result['status'], time=time.time()))+'\n')
     print(json.dumps(dict(panels={m: panels[m]['bank_146'] for m in methods},
         protection={m: protection[m+'_bank_146'] for m in ('C', 'M13P_160')},
         matched_C_M13P=contrasts['bank_146'], cost=result['cost']), indent=2))
