@@ -83,7 +83,12 @@ def main():
     fisher = {k: v.to(runtime.device) if isinstance(v, torch.Tensor) else v
               for k,v in r.p.load_state(PARENT / 'private/OPERATOR_FISHER.pt').items()}
     def prepare(task, rows, training=False):
-        runtime.model.half()
+        # The prepared image/prompt uses only these unchanged input modules.
+        # Keep any attached trained expert and decoder math in FP32 throughout.
+        modules = [runtime.model.model.embed_tokens, runtime.model.model.mm_projector,
+                   runtime.model.get_vision_tower()]
+        for module in modules:
+            module.half()
         try:
             return r.s.prepare(runtime, bindings, task, rows, training)
         finally:
