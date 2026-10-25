@@ -53,6 +53,14 @@ def main():
     root, parent, cm = [Path(os.environ[k]) for k in ('V131_ROOT', 'PARENT_RUN', 'CM_RUN')]
     assert read(root/'M13P_160/COMPLETE.json')['counts']['formal_consumers'] == 436
     assert read(root/'M13P_160/GUARD_EXIT.json')['code'] == 0
+    include_memit = os.environ.get('INCLUDE_COMPLETED_MEMIT') == '1'
+    wanted = ['M13P_160', 'ALPHAEDIT_MM']
+    expected = dict(M13P_160=7494, ALPHAEDIT_MM=5722)
+    if include_memit:
+        assert read(root/'MEMIT_MM/COMPLETE.json')['counts']['formal_consumers'] == 7494
+        assert read(root/'MEMIT_MM/GUARD_EXIT.json')['code'] == 0
+        wanted.append('MEMIT_MM')
+        expected['MEMIT_MM'] = 7494
     packet = read(parent/'private/M13_SOURCE_PACKET.json')
     tasks, mask = packet['original_tasks'], packet['base_mask']
     plan = read(root/'EVAL_PLAN.json')
@@ -63,13 +71,13 @@ def main():
         for method, mode, prefix, owner, qid, state, correct, binding in db.execute(
                 'SELECT c.method,c.mode,c.prefix,c.owner,c.query_id,p.state,p.correct,p.binding '
                 'FROM consumer c JOIN payload p ON p.key=c.payload_key '
-                "WHERE c.method IN ('M13P_160','ALPHAEDIT_MM')"):
+                'WHERE c.method IN ('+','.join('?' for _ in wanted)+')', wanted):
             assert state in ('FORMAT_VALID', 'REUSED') and correct in (0, 1)
             key = (method, mode, prefix, owner, qid)
             assert key not in scores
             scores[key], bindings[key] = correct, json.loads(binding)['binding']
         attempts = dict(db.execute("SELECT key,value FROM meta WHERE key!='prompt'"))
-    assert collections.Counter(k[0] for k in scores) == dict(M13P_160=7494, ALPHAEDIT_MM=5722)
+    assert collections.Counter(k[0] for k in scores) == expected
     with sqlite3.connect('file:'+str(cm/'private/judge_cm146_astra_medium/queue.sqlite')+'?mode=ro', uri=True) as db:
         for method, mode, prefix, owner, qid, state, correct, binding in db.execute(
                 'SELECT c.method,c.mode,c.prefix,c.edit_order,c.query_id,p.status,p.correct,p.binding '
@@ -78,7 +86,7 @@ def main():
             key = (method, mode, prefix, owner, qid)
             assert key not in scores
             scores[key], bindings[key] = correct, json.loads(binding)
-    assert collections.Counter(k[0] for k in scores) == dict(M13P_160=7494, ALPHAEDIT_MM=5722, C=7494, BASE=2093)
+    assert collections.Counter(k[0] for k in scores) == dict(expected, C=7494, BASE=2093)
     for row in plan:
         if row['method'] != 'M13P_160':
             continue
@@ -86,8 +94,8 @@ def main():
         left, right = bindings[('C', *tail)], bindings[('M13P_160', *tail)]
         for field in ('question', 'reference', 'image_sha256', 'prompt_ids', 'runtime', 'generation'):
             assert left[field] == right[field], ('Matched C/M13P identity', tail, field)
-    methods = ('C', 'M13P_160', 'ALPHAEDIT_MM')
-    panels, owners, protection = {m: {} for m in methods}, {}, {}
+    methods = ('C', *wanted)
+    panels, owners, protection, primary_locality = {m: {} for m in methods}, {}, {}, {}
     for mode, prefix in [('single', 1)] + [('bank', n) for n in (1, 50, 100, 146)]:
         subset = tasks if mode == 'single' else tasks[:prefix]
         active = {(t['native']['image_sha256'], t['native']['question']) for t in subset}
@@ -110,7 +118,12 @@ def main():
                         task['order'] if mode == 'single' else 0, q] for q in qids]
                 owners[method, label, role] = values
                 panels[method][label][role] = summarize(values)
-            if method == 'ALPHAEDIT_MM':
+            local = [panels[method][label][role] for role in ('T1L', 'T2L')]
+            n, correct = sum(v['observations'] for v in local), sum(v['correct'] for v in local)
+            primary_locality[method+'_'+label] = dict(observations=n, correct=correct,
+                lost=n-correct, missing=0, retention_percent=100*correct/n if n else None,
+                reference='Frozen original Base-correct locality mask; not the fresh medium Base audit')
+            if method in ('ALPHAEDIT_MM', 'MEMIT_MM'):
                 continue  # The matched Base uses medium effort; no high/medium protection conflation.
             protected = []
             for task in subset:
@@ -128,6 +141,8 @@ def main():
     assert abs(panels['M13P_160']['single_1']['T2G']['macro']-76.48401826484019) < 1e-9
     assert protection['M13P_160_single_1']['new_damage'] == 2
     assert protection['M13P_160_single_1']['Base_correct'] == 85
+    assert primary_locality['C_bank_146']['lost'] == 8
+    assert primary_locality['M13P_160_bank_146']['lost'] == 0
     contrasts = {}
     for label in ('single_1', 'bank_1', 'bank_50', 'bank_100', 'bank_146'):
         ts = tasks if label == 'single_1' else tasks[:int(label.split('_')[1])]
@@ -139,8 +154,10 @@ def main():
             contrasts[label][role] = dict(M13P_minus_C_macro_pp=100*sum(delta)/len(delta) if delta else None,
                 edit_CI_pp=interval(delta), source_CI_pp=interval(delta, [t['native']['source_group'] for t in supported]),
                 M13P_better=sum(v > 0 for v in delta), same=sum(v == 0 for v in delta), M13P_worse=sum(v < 0 for v in delta))
-    result = dict(status='M13P_ALL7494_ACCEPTED_ALPHA_ALL5722_ACCEPTED_MEMIT_PENDING',
+    result = dict(status='M13P_C_ALPHA_MEMIT_COMPLETE' if include_memit else
+            'M13P_ALL7494_ACCEPTED_ALPHA_ALL5722_ACCEPTED_MEMIT_PENDING',
         snapshot_time=time.time(), panels=panels, matched_C_M13P=contrasts, protection=protection,
+        common_original_Base_mask_locality=primary_locality,
         missing_consumers=0, bootstrap=dict(samples=10000, seed=13120261025, source_groups_not_patients=True),
         scoring_attempts_all_methods=attempts, selfcheck=selfcheck(),
         cost=dict(M13P_new_unique_generations=287, M13P_reused_bank_consumers=4102,
@@ -151,16 +168,21 @@ def main():
             'C/M13P have matched scientific input, runtime and medium Judge contract; original scoring epochs retained.',
             'AlphaEdit primary multi-layer19-23 MM adaptation retains historical FP16/high effort; information and compute budgets and mechanism differ.',
             'AlphaEdit FIT not measured; absent panels not zero. T1L only one edit/two probes, T2L31 edits/54 probes.',
-            'MEMIT remains pending; these results do not alter its frozen execution or the M13P recipe.'])
-    private = root/'M13P_COMPLETE_RESULTS.private.json'
+            'The optional MEMIT report requires complete generation, normal guard exit and every accepted score; it never consumes partial results for selection.',
+            'BalancEdit and GRACE retain their separately completed historical reports; this file does not relabel those configurations as matched runs.'])
+    prefix = 'M13P_C_ALPHA_MEMIT' if include_memit else 'M13P_COMPLETE'
+    if include_memit:
+        result['cost']['MEMIT_guard_seconds'] = read(root/'MEMIT_MM/GUARD_EXIT.json')['process_seconds']
+    private = root/(prefix+'_RESULTS.private.json')
     private.write_text(json.dumps(result, indent=2)+'\n')
     public = json.loads(json.dumps(result))
     for method in methods:
         public['panels'][method]['bank_1'] = dict(status='PRIVATE_SMALL_GROUP_AUDIT_ONLY')
         public['protection'].pop(method+'_bank_1', None)
+        public['common_original_Base_mask_locality'].pop(method+'_bank_1', None)
     public['matched_C_M13P']['bank_1'] = dict(status='PRIVATE_SMALL_GROUP_AUDIT_ONLY')
-    (root/'M13P_COMPLETE_RESULTS.json').write_text(json.dumps(public, indent=2)+'\n')
-    (root/'M13P_REPORT_COMPLETE.json').write_text(json.dumps(dict(status=result['status'], time=time.time()))+'\n')
+    (root/(prefix+'_RESULTS.json')).write_text(json.dumps(public, indent=2)+'\n')
+    (root/(prefix+'_REPORT_COMPLETE.json')).write_text(json.dumps(dict(status=result['status'], time=time.time()))+'\n')
     print(json.dumps(dict(panels={m: panels[m]['bank_146'] for m in methods},
         protection={m: protection[m+'_bank_146'] for m in ('C', 'M13P_160')},
         matched_C_M13P=contrasts['bank_146'], cost=result['cost']), indent=2))

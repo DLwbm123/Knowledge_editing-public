@@ -1,0 +1,9 @@
+# 完整比较的CPU报告准备
+
+MEMIT仍按原协议训练和生成，结果未用于改配置。本次仅提前接好完成后的报告入口，未启动额外模型或Judge调用，也未读取部分MEMIT正确率选择路线。
+
+已有 comparison_report.py 新增环境开关 INCLUDE_COMPLETED_MEMIT=1。开启时先要求MEMIT7494个消费者生成完成、guard正常退出，再要求全部7494项评分已接受且消费者数量准确；否则拒绝写成完整报告。新报告使用 M13P_C_ALPHA_MEMIT_RESULTS.json 和对应私有审计、完成回执，保留原 M13P_COMPLETE_RESULTS 文件作为历史阶段结果。BalancEdit与GRACE继续引用各自已完成历史配置，不伪装成同配置新跑。若出现预算到限或无法恢复的评分缺失，保留未知并另行报告不完整覆盖，不能删掉缺项让此完整报告入口通过。
+
+继续使用原Base资格掩码、编辑宏平均与微正确数、原native active-target排除规则和固定bootstrap。所有方法并列报告原Base正确T1L/T2L掩码的保持与丢失观测；这一参考只有原固定稀疏支持，区别于C/M13P共享medium fresh Base的85项损伤审计。AlphaEdit/MEMIT保留high合同，不把medium Base的评分当作完全匹配的高强度新Base审计；M13P受限掩码零丢失仍不能解释成全局零伤。
+
+检查通过：不完整MEMIT无法进入最终报告且不产生结果文件；临时只读连接实际评分库，已有M13P终点T2G=75.399543%、fresh Base新损伤2/85保持一致，原主掩码C丢失8项/M13P0项，未包含未完整MEMIT。临时报告未覆盖既有阶段文件。运行中的GPU及评分源码、参数、计数上限和50GB守卫均未修改。
