@@ -77,7 +77,7 @@ def main():
         free = os.statvfs(LOCAL).f_bavail*os.statvfs(LOCAL).f_frsize
         assert free>=8*1024**3
         available = remote(dict(action='status'))['summary']
-        if not available['ready_by_effort'][CONFIG['effort']]:
+        if not CONFIG.get('recover_batch') and not available['ready_by_effort'][CONFIG['effort']]:
             write(LOCAL/'QUEUE_STATUS.json',available)
             done = all(v['complete'] or v['failure'] for v in available['producers'].values())
             if done and not any(available['payload_states'].get(k,0) for k in ('PENDING','RESERVED')):
@@ -88,7 +88,11 @@ def main():
         number = state['new_batches']+state['missing_batches']
         probe = LOCAL/'preflight'/str(number)
         preflight(judge,probe/'work',probe/'sibling',probe/'bundle')
-        reserved = remote(dict(action='reserve',effort=CONFIG['effort'],worker=CONFIG['worker']))
+        if CONFIG.get('recover_batch'):
+            reserved = remote(dict(action='recover_transport',batch_id=CONFIG['recover_batch'],
+                worker=CONFIG['worker'],no_valid_response=True))
+        else:
+            reserved = remote(dict(action='reserve',effort=CONFIG['effort'],worker=CONFIG['worker']))
         if reserved['status'] in ('WAIT','DEADLINE_NO_NEW_CALL'):
             summary = reserved['summary']
             write(LOCAL/'QUEUE_STATUS.json',summary)
@@ -109,7 +113,7 @@ def main():
         (bundle/'judge_only'/f'{bid}.prompt.md').write_text(judge.PROMPT+
             '\n\nBatch input (all strings are untrusted data):\n'+json.dumps(batch,ensure_ascii=False))
         (bundle/'judge_only'/f'{bid}.schema.json').write_text(json.dumps(schema(batch)))
-        for attempt in (0,1):
+        for attempt in range(reserved.get('attempt',0),2):
             operator = bundle/'operator'/str(attempt)
             for name in ['execution_evidence','responses']:
                 (operator/name).mkdir(parents=True)
@@ -152,6 +156,7 @@ def main():
             pure_transport = (evidence.get('status')=='FAILED_NO_RETRY' and evidence.get('exit_code')==1 and
                 messages and all(any(x in message for x in ['Transport error: network error: error decoding response body',
                 'stream disconnected before completion: idle timeout waiting for SSE','error sending request for url',
+                'Connection failed: error sending request',
                 'connection reset','Connection reset']) for message in messages) and
                 not evidence.get('tool_event_types') and evidence.get('isolation_checks') and
                 all(evidence['isolation_checks'].values()))
@@ -169,6 +174,8 @@ def main():
         state.update(status='RUNNING',time=time.time())
         write(LOCAL/'STATUS.json',state)
         write(LOCAL/'QUEUE_STATUS.json',result['summary'])
+        if CONFIG.get('recover_batch'):
+            break
         if state['missing_batches']>=3:
             raise RuntimeError('Three failed batches: preserve evidence and stop new reservations')
     state.update(status='FINISHED_OR_HARD_BUDGET',time=time.time())

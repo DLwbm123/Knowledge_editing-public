@@ -183,7 +183,8 @@ def transport_only(evidence):
     messages = [str(e.get('message',e.get('error',{}).get('message',''))) for e in errors]
     allowed = ['Transport error: network error: error decoding response body',
                'stream disconnected before completion: idle timeout waiting for SSE',
-               'error sending request for url', 'connection reset', 'Connection reset']
+               'error sending request for url', 'Connection failed: error sending request',
+               'connection reset', 'Connection reset']
     return (evidence.get('status')=='FAILED_NO_RETRY' and evidence.get('exit_code')==1 and
         bool(messages) and all(any(t in m for t in allowed) for m in messages) and
         not evidence.get('tool_event_types') and bool(evidence.get('isolation_checks')) and
@@ -199,7 +200,14 @@ def selfcheck():
     assert original != payload_key('q1',binding,dict(answer,raw_token_ids=[3]),'high','prompt')
     assert original != payload_key('q1',binding,answer,'medium','prompt')
     assert original != payload_key('q2',binding,answer,'high','prompt')
-    return dict(status='PASS',changed_image_tokens_effort_or_query_cannot_inherit=True)
+    failure = dict(status='FAILED_NO_RETRY',exit_code=1,
+        errors=[dict(message='Connection failed: error sending request')],
+        tool_event_types=[],isolation_checks=dict(own_input=True,operator=True))
+    assert transport_only(failure)
+    assert not transport_only(dict(failure,tool_event_types=['command_execution']))
+    assert not transport_only(dict(failure,errors=[dict(message='Invalid score format')]))
+    return dict(status='PASS',changed_image_tokens_effort_or_query_cannot_inherit=True,
+        transport_recovery_excludes_tools_and_format=True)
 
 
 def action(request):
@@ -226,6 +234,27 @@ def action(request):
                 db.executemany('UPDATE payload SET state=\'RESERVED\',attempts=attempts+1 WHERE key=?',[(k,) for k in keys])
                 db.commit()
                 return dict(status='RESERVED',effort=effort,batch=dict(batch_id=bid,records=[json.loads(r[1]) for r in rows]),prompt=db.execute("SELECT value FROM meta WHERE key='prompt'").fetchone()[0],attempt=0)
+            if kind == 'recover_transport':
+                # Recover only the unused preregistered transport attempt. The
+                # original failed attempt and MISSING evidence stay immutable.
+                bid = request['batch_id']
+                row = db.execute('SELECT keys,effort,state,attempt FROM batch WHERE id=?',(bid,)).fetchone()
+                assert row and row[2]=='MISSING' and row[3]==0
+                old = db.execute('SELECT evidence,response FROM attempt WHERE batch_id=? AND number=0',(bid,)).fetchone()
+                evidence = json.loads(old[0])
+                assert json.loads(old[1]) is None and request['no_valid_response'] is True
+                assert transport_only(evidence) and CFG['scoring']['transport_retries']==1
+                assert evidence['actual_model']=='gpt-6-astra' and evidence['reasoning_effort']==row[1]
+                keys = json.loads(row[0])
+                payloads = [db.execute('SELECT state,attempts,record FROM payload WHERE key=?',(key,)).fetchone() for key in keys]
+                assert all(item[0]=='MISSING' and item[1]==1 for item in payloads)
+                charge(db,len(keys))
+                db.execute('UPDATE batch SET state=\'RESERVED\',attempt=1,worker=? WHERE id=?',(request['worker'],bid))
+                db.executemany('UPDATE payload SET state=\'RESERVED\',attempts=attempts+1 WHERE key=?',[(key,) for key in keys])
+                db.commit()
+                return dict(status='RESERVED',effort=row[1],batch=dict(batch_id=bid,records=[json.loads(item[2]) for item in payloads]),
+                    prompt=db.execute("SELECT value FROM meta WHERE key='prompt'").fetchone()[0],attempt=1,
+                    preserved_failed_attempt=True)
             if kind in ('finish','retry'):
                 bid = request['batch_id']
                 row = db.execute('SELECT keys,effort,state,attempt FROM batch WHERE id=?',(bid,)).fetchone()
