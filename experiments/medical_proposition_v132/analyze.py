@@ -39,10 +39,13 @@ def summarize(local, metadata):
         for field in ('core_correct','full_supported'):
             base=[r for r in localities if r[field]]
             kept=[r for r in base if bykey[('LEGACY',r['owner'],r['query_id'])][field]]
+            full_kept=[r for r in base if bykey[('FULL_CTX',r['owner'],r['query_id'])][field]]
             old_lost=[r for r in base if not bykey[('LEGACY',r['owner'],r['query_id'])][field]]
             damage[arm][field]=dict(Base_correct=len(base),Base_and_legacy_correct=len(kept),
                 total_Base_damage=sum(not bykey[(arm,r['owner'],r['query_id'])][field] for r in base),
                 newly_damaged=sum(not bykey[(arm,r['owner'],r['query_id'])][field] for r in kept),
+                Base_and_FULL_CTX_correct=len(full_kept),
+                newly_damaged_vs_FULL_CTX=sum(not bykey[(arm,r['owner'],r['query_id'])][field] for r in full_kept),
                 old_damage_repaired=sum(bykey[(arm,r['owner'],r['query_id'])][field] for r in old_lost))
     per_edit={}
     for index,o in enumerate(owners):
@@ -68,6 +71,15 @@ def summarize(local, metadata):
         extra_contradiction=sum(r['arm']==arm and r['extra_contradiction'] for r in rows)) for arm in arms}
     signal=all(contrasts['MED_minus_'+x]['T2G_macro_pp']>0 for x in ('LEGACY','FULL_CTX','GEN'))
     signal=signal and all(damage['MED'][field]['newly_damaged']==0 for field in ('core_correct','full_supported'))
+    signal=signal and all(damage['MED'][field]['newly_damaged_vs_FULL_CTX']==0 for field in ('core_correct','full_supported'))
+    source=[r for r in rows if r['arm']=='MED' and any(p in ('T0','FIT') for p in r['panels'])]
+    signal=signal and all(r['core_correct'] for r in source)
+    for field in ('core_correct','full_supported'):
+        legacy_kept=[r for r in rows if r['arm']=='LEGACY' and r[field] and
+            (any(p in ('T0','FIT') for p in r['panels']) or
+             r['original_Base_qualified'] and any(p in ('T1L','T2L') for p in r['panels']))]
+        signal=signal and all(bykey[('MED',r['owner'],r['query_id'])][field] for r in legacy_kept)
+    signal=signal and metrics['MED']['T2G']['full_supported']['edit_macro_percent']>=metrics['LEGACY']['T2G']['full_supported']['edit_macro_percent']
     result=dict(status='SMALL_DEV_DIRECTIONAL_SIGNAL' if signal else 'NO_JOINT_SMALL_DEV_IMPROVEMENT',
         scope='Four exposed development edits; anatomy-presence mapping; not clinical or independent confirmation',
         metrics=metrics,paired_T2G=contrasts,per_edit=per_edit,locality_damage=damage,
