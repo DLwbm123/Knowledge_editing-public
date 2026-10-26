@@ -99,7 +99,7 @@ def main():
         active['writes'] = True
         return result
     editor.capture, editor.optimize_z = capture, optimize
-    records, generation_checks = [], []
+    records, generation_checks, solve_records = [], [], []
     try:
         from m3bench_repro.editors.llava_runtime import seed_everything
         for task in frame['tasks'][:6]:
@@ -132,6 +132,8 @@ def main():
                 inverse = frame['statistics'][layer]
                 adjusted = inverse @ key
                 adjusted /= 1 + torch.dot(key,adjusted)
+                if task['order'] in (1,6):
+                    solve_records.append(dict(owner=task['order'],layer=layer,key=key.clone(),adjusted=adjusted.clone()))
                 residual = (active['target']-current).double() / (5-index)
                 expected = active['before'][layer] + torch.outer(residual,adjusted).float()
                 actual = frame['weights'][layer].detach().cpu()
@@ -164,6 +166,7 @@ def main():
             write(out/'PROGRESS.json',dict(time=time.time(),completed_edits=owner,counts=m.counts,
                   replay=records,generation_checks=generation_checks))
             print('AUDIT_EDIT_COMPLETE',owner,flush=True)
+        torch.save(solve_records,out/'SOLVE_RECORDS.pt')
         result = dict(status='COMPLETE',time=time.time(),counts=m.counts,replay=records,
                       generation_checks=generation_checks,formal_generations=0,Judge_calls=0,
                       diagnostic_generation_attempts=len(generation_checks),
