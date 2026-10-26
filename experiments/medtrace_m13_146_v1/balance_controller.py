@@ -69,6 +69,12 @@ def retire_candidates():
     assert actual==expected and len(actual)==2956
     paths=[RUN/'private/candidates'/f.CANDIDATE/f'{owner}.pt' for owner in range(1,147)]
     assert all(p.is_file() and not p.is_symlink() and p.resolve().parent==(RUN/'private/candidates'/f.CANDIDATE).resolve() for p in paths)
+    if f.CANDIDATE == 'M13P':
+        write(RUN/'private/M13P_RETENTION1.json',dict(status='RETAINED_USER_METHOD',count=146,
+            bytes=sum(p.stat().st_size for p in paths),paths=[str(p) for p in paths],
+            purpose='Canonical original146 M13P-160 reproduction, deployment and extension',
+            deletion_requires_explicit_user_approval=True,epoch=time.time()))
+        return
     receipt=dict(status='CONSUMERS_COMPLETE_DELETION_PENDING',last_consumer='single generation and durable bindings',count=146,bytes=sum(p.stat().st_size for p in paths),paths=[str(p) for p in paths],no_retained_copy=True,rebuild_requires_training=True)
     write(RUN/'private/BALANCE_DELETION1.json',receipt)
     for path in paths:path.unlink()

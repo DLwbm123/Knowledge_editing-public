@@ -3,7 +3,8 @@
 The original 2956 single generations and 4102 bank consumers are reused. Each
 missing expert is trained once with the unchanged160 recipe; every source-NLL
 step must reproduce its historical curve before new evaluation. Its complete
-registered future-query set is consumed before the rebuilt state is retired.
+registered future-query set is consumed before temporary resume state is retired.
+The user's canonical M13P final weights remain retained after those consumers.
 """
 import copy
 import json
@@ -174,7 +175,15 @@ def main():
                     write(destination,value)
                     counts['formal_consumers'] += 1
                 write(OUT / 'PROGRESS.json',dict(phase='FILL_MISSING',owner=owner,counts=counts,time=time.time()))
-            files = [OUT/'resume.pt',path]
+            retained = OUT/'retained/M13P_160'/f'{owner}.pt'
+            retained.parent.mkdir(parents=True,exist_ok=True)
+            assert path.is_file() and not path.is_symlink() and not retained.exists()
+            path.replace(retained)
+            write(OUT/'retained'/f'{owner}.json',dict(owner=owner,path=str(retained),
+                bytes=retained.stat().st_size,binding=binding,all160_source_NLL_reproduced=True,
+                save_load_exact=True,purpose='Canonical M13P-160 reproduction and extension',
+                deletion_requires_explicit_user_approval=True,time=time.time()))
+            files = [OUT/'resume.pt']
             manifest = []
             for file in files:
                 assert file.is_file() and not file.is_symlink() and file.resolve().is_relative_to(OUT.resolve())
@@ -183,9 +192,9 @@ def main():
                 last_consumers='All registered queries at every future prefix for this expert are durable; source parity/save-load complete'))
             for file in files:
                 file.unlink()
-            write(OUT/'retirement'/f'{owner}.receipt.json',dict(files=2,
-                bytes=sum(v['bytes'] for v in manifest),retained_copies=0,
-                reconstruction='Retrain unchanged original M13P-160 recipe',time=time.time()))
+            write(OUT/'retirement'/f'{owner}.receipt.json',dict(files=1,
+                bytes=sum(v['bytes'] for v in manifest),retained_copies=1,
+                retained_final=str(retained),temporary_resume_only=True,time=time.time()))
         finally:
             hook.detach()
         del expert,batches,items,final,loaded,state
