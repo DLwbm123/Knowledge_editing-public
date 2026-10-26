@@ -79,10 +79,12 @@ class ParallelEvaluator:
             uuid, free = info.split(', ')
             if int(free) >= 45*1024:
                 devices.append((gpu, uuid))
+            if len(devices) == 2:
+                break  # The latest human limit is three total GPUs, including the primary.
         if not devices:
             return self.serial(pending, inserted)
         import torch
-        phase = self.out/'parallel'/f'prefix{inserted}'
+        phase = self.out/'parallel'/f"prefix{inserted}_{self.lock.get('parallel_epoch', 'initial')}"
         phase.mkdir(parents=True, exist_ok=False)
         captured = []
 

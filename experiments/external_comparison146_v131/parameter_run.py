@@ -65,6 +65,13 @@ def main():
     from scripts.medtrace.run_realmodel_core import load_real_runtime
     from types import SimpleNamespace
     from m3bench_repro.editors.llava_runtime import seed_everything
+    aborted = lock.get('aborted_consumers', [])
+    aborted_ids = {value['consumer_id'] for value in aborted}
+    assert len(aborted_ids) == len(aborted)
+    if aborted:
+        proof = read(OUT/'CAP3_ABORTED_CONSUMERS.json')
+        assert proof['maximum_total_GPUs'] == 3 and proof['formal_retry_allowed'] is False
+        assert proof['consumers'] == aborted
     resume = None
     if os.environ.get('V131_MEMIT_RESUME_FILE'):
         resume = torch.load(os.environ['V131_MEMIT_RESUME_FILE'], map_location='cpu', weights_only=True)
@@ -74,7 +81,7 @@ def main():
         prior_counts = lock['prior_counts'][METHOD]
         for key in ('updates', 'backwards', 'edits', 'inserted'):
             assert prior_counts[key] == resume['counts'][key], ('Resume counter binding', key)
-        assert prior_counts['generation_attempts'] == prior_counts['formal_consumers']
+        assert prior_counts['generation_attempts'] == prior_counts['formal_consumers']+len(aborted_ids)
         assert prior_counts['formal_consumers'] >= resume['counts']['formal_consumers']
         assert all(prior_counts[key] >= resume['counts'][key] for key in resume['counts'])
         counts.update(prior_counts)
@@ -95,11 +102,18 @@ def main():
     assert len(plan) == 7494 and len(tasks) == 146
     if resume is not None:
         before = {r.c.digest(contract.consumer_id(row))+'.json' for row in plan
-            if row['mode'] == 'single' or row['prefix'] < resume['owner']}
+            if (row['mode'] == 'single' or row['prefix'] < resume['owner'])
+            and contract.consumer_id(row) not in aborted_ids}
         through = before | {r.c.digest(contract.consumer_id(row))+'.json' for row in plan
-            if row['mode'] != 'single' and row['prefix'] == resume['owner']}
+            if row['mode'] != 'single' and row['prefix'] == resume['owner']
+            and contract.consumer_id(row) not in aborted_ids}
         actual = {path.name for path in (OUT/'outputs').glob('*.json')}
         assert before <= actual <= through and len(actual) == counts['formal_consumers']
+        assert not actual.intersection(r.c.digest(cid)+'.json' for cid in aborted_ids)
+        assert aborted_ids <= {contract.consumer_id(row) for row in plan if row['prefix'] <= resume['owner']}
+        if aborted:
+            write(OUT/'ABORTED_COVERAGE_DECLARED.json', dict(status='UNKNOWN_NO_RETRY',
+                consumers=aborted, frozen_plan_consumers=len(plan), time=time.time()))
     bindings = read(PARENT / 'private/EVAL_BINDINGS.json')
     runtime = load_real_runtime(SimpleNamespace(cpu_gate=PARENT / 'private/cpu_gate'))
     runtime.model.eval()
@@ -255,9 +269,12 @@ def main():
     if os.environ.get('V131_PARALLEL_DEVICES'):
         parallel = ParallelEvaluator(runtime, r, contract, OUT, ROOT, lock, counts, tasks,
                                      evaluate_serial, budget, reserve)
-        evaluate = parallel.evaluate
+        evaluate_impl = parallel.evaluate
     else:
-        evaluate = evaluate_serial
+        evaluate_impl = evaluate_serial
+
+    def evaluate(rows, inserted):
+        return evaluate_impl([row for row in rows if contract.consumer_id(row) not in aborted_ids], inserted)
 
     # First all independent singles, always restoring exactly the original Base.
     for task in ([] if resume is not None else tasks):
@@ -311,8 +328,14 @@ def main():
         evaluate([row for row in plan if row['mode'] != 'single' and row['prefix'] == owner], owner)
         write(OUT / 'PROGRESS.json', dict(phase='INSERTION_COMPLETE', owner=owner, counts=counts, time=time.time()))
         del batches, kl_batch
-    assert counts['formal_consumers'] == counts['generation_attempts'] == 7494
+    assert counts['formal_consumers']+len(aborted_ids) == counts['generation_attempts'] == 7494
     assert counts['inserted'] == 146 and counts['edits'] == 292
+    if aborted:
+        write(OUT/'INCOMPLETE_GENERATION.json', dict(status='KNOWN_INTERRUPTED_CONSUMERS_UNKNOWN',
+            counts=counts, aborted_consumers=aborted, complete=False, time=time.time()))
+        fh.remove()
+        vh.remove()
+        return  # Preserve latest resume; the original all-7494 completion gate stays closed.
     write(OUT / 'GENERATION_COMPLETE.json', dict(status='ALL_CONSUMERS_DURABLE_JUDGE_PENDING',
         counts=counts, time=time.time()))
     assert path == OUT / 'sequential_resume.pt' and path.is_file() and not path.is_symlink()

@@ -89,6 +89,7 @@ def main():
             sample = state['sample']
             now = time.time()
             auxiliary, live_helpers = helper_seconds(OUT/'parallel', now, since=started)
+            assert live_helpers <= 2, 'Human limit: at most three total GPUs'
             total = prior+now-started+auxiliary
             shutdown_reserve = 30*(1+live_helpers) if live_helpers else 20
             used, free_disk = sample.get('new_bytes',used), sample.get('free_disk_bytes',free)
