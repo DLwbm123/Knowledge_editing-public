@@ -42,6 +42,22 @@ def main():
     m.budget = budget
     # Reuse the production initializer and input closures through inputs();
     # none of its formal edit/generation/retirement loops are executed.
+    backend = os.environ.get('AUDIT_INVERSE_BACKEND','CPU_FLOAT64')
+    precomputed = {}
+    if backend == 'GPU_BEFORE_MODEL':
+        torch.set_num_threads(8)
+        torch.use_deterministic_algorithms(True)
+        torch.backends.cuda.matmul.allow_tf32 = False
+        for layer in m.lock['parameter_edit_layers']:
+            covariance = torch.load(root/'STATISTICS'/f'covariance_{layer}.pt',
+                                    map_location='cuda:0',weights_only=True).double()
+            inverse = torch.linalg.inv(m.lock['MEMIT_MM']['mom2_update_weight'] * covariance)
+            assert torch.isfinite(inverse).all()
+            precomputed[layer] = inverse.cpu()
+            del covariance,inverse
+            torch.cuda.empty_cache()
+            write(out/'INVERSE_PRELOAD.json',dict(time=time.time(),completed_layer=layer,backend=backend))
+        m.__dict__['__audit_saved_inverse'] = lambda layer: precomputed[layer]
     tree = ast.parse(source.read_text())
     function = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == 'main')
     cut = next(i for i,n in enumerate(function.body)
@@ -55,6 +71,13 @@ def main():
             node.value = ast.Constant('cpu')
             moved += 1
     assert moved == 1
+    if backend == 'GPU_BEFORE_MODEL':
+        replaced = 0
+        for node in ast.walk(function):
+            if isinstance(node,ast.Assign) and len(node.targets)==1 and isinstance(node.targets[0],ast.Name) and node.targets[0].id=='inverse':
+                node.value = ast.Call(ast.Name('__audit_saved_inverse',ast.Load()),[ast.Name('layer',ast.Load())],[])
+                replaced += 1
+        assert replaced == 1
     code = ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[]))
     exec(compile(code, str(source), 'exec'), m.__dict__)
     frame = m.main()
@@ -144,7 +167,7 @@ def main():
         result = dict(status='COMPLETE',time=time.time(),counts=m.counts,replay=records,
                       generation_checks=generation_checks,formal_generations=0,Judge_calls=0,
                       diagnostic_generation_attempts=len(generation_checks),
-                      peak_reserved_bytes=torch.cuda.max_memory_reserved(),inverse_initialization_backend='CPU_FLOAT64',
+                      peak_reserved_bytes=torch.cuda.max_memory_reserved(),inverse_initialization_backend=backend,
                       maximum_write_error=max(q['max_abs'] for r in records for q in r['physical_writes']))
         write(out/'RESULT.json',result)
     finally:
