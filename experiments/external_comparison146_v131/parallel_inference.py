@@ -123,13 +123,13 @@ class ParallelEvaluator:
             entry.write_text('import json,os,runpy\nfrom pathlib import Path\n'
                 'p=Path(__file__)\nc=json.loads(p.with_suffix(".json").read_text())\n'
                 'os.environ.update(c)\nrunpy.run_path(c["V131_PARALLEL_WORKER_FILE"],run_name="__main__")\n')
-            env = dict(os.environ, CUDA_VISIBLE_DEVICES=str(gpu),
+            overrides = dict(CUDA_VISIBLE_DEVICES=str(gpu),
                 M3BENCH_FORMAL_AUTHORIZED_CUDA_VISIBLE_DEVICES=str(gpu),
                 M3BENCH_FORMAL_EXPECTED_GPU_UUID=uuid,
                 M3BENCH_FORMAL_ALLOWED_CUDA_VISIBLE_DEVICES=','.join(str(v[0]) for v in devices)+','+os.environ['CUDA_VISIBLE_DEVICES'],
                 V131_HELPER_JOB=str(job), V131_PARALLEL_WORKER_FILE=str(Path(__file__).resolve()),
                 V131_PARALLEL_WORKER='1')
-            write(entry.with_suffix('.json'), env)
+            write(entry.with_suffix('.json'), overrides)
             started = time.time()
             log = (job/'worker.log').open('x')
             child = subprocess.Popen([sys.executable, str(entry)], stdout=log, stderr=subprocess.STDOUT)
