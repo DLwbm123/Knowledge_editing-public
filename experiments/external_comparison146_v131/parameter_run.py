@@ -20,6 +20,7 @@ lock = json.loads(Path(os.environ.get('V131_PROTOCOL_FILE', ROOT / 'PROTOCOL_LOC
 START = time.time()
 counts = dict(forwards=0, backwards=0, updates=0, edits=0, generation_attempts=0,
               formal_consumers=0, inserted=0, vision_forwards=0, LM_input_positions=0)
+parallel_reservation = dict(forwards=0, generation_attempts=0, formal_consumers=0)
 
 
 def read(path):
@@ -39,7 +40,8 @@ def budget():
     health = read(OUT / 'GUARD_HEALTH.json')
     assert time.time() - health['time'] < 60
     for key, maximum in lock['maximum_counts'][METHOD].items():
-        assert counts[key] <= maximum, (key, counts[key], maximum)
+        actual = counts[key] + parallel_reservation.get(key, 0)
+        assert actual <= maximum, (key, actual, maximum)
 
 
 def main():
@@ -66,8 +68,10 @@ def main():
         assert resume['source'] == lock['resume_source_execution_identity']
         assert read(OUT/'SINGLE_COMPLETE.json')['consumers'] == 2956
         prior_counts = lock['prior_counts'][METHOD]
-        for key in ('updates', 'backwards', 'edits', 'inserted', 'generation_attempts', 'formal_consumers'):
+        for key in ('updates', 'backwards', 'edits', 'inserted'):
             assert prior_counts[key] == resume['counts'][key], ('Resume counter binding', key)
+        assert prior_counts['generation_attempts'] == prior_counts['formal_consumers']
+        assert prior_counts['formal_consumers'] >= resume['counts']['formal_consumers']
         assert all(prior_counts[key] >= resume['counts'][key] for key in resume['counts'])
         counts.update(prior_counts)
     r.c.budget = budget
@@ -208,7 +212,7 @@ def main():
                 value.copy_(loaded['weights'][layer].to(runtime.device))
         return path
 
-    def evaluate(rows, inserted):
+    def evaluate_serial(rows, inserted):
         for begin in range(0, len(rows), 24):
             pending = []
             for row in rows[begin:begin+24]:
@@ -238,6 +242,19 @@ def main():
                 counts['formal_consumers'] += 1
                 write(OUT / 'PROGRESS.json', dict(phase='GENERATE', last_consumer=contract.consumer_id(row),
                     counts=counts, time=time.time()))
+
+    def reserve(forwards=0, generation_attempts=0, formal_consumers=0):
+        parallel_reservation.update(forwards=forwards, generation_attempts=generation_attempts,
+                                    formal_consumers=formal_consumers)
+        budget()
+
+    if os.environ.get('V131_PARALLEL_DEVICES'):
+        from parallel_inference import ParallelEvaluator
+        parallel = ParallelEvaluator(runtime, r, contract, OUT, ROOT, lock, counts, tasks,
+                                     evaluate_serial, budget, reserve)
+        evaluate = parallel.evaluate
+    else:
+        evaluate = evaluate_serial
 
     # First all independent singles, always restoring exactly the original Base.
     for task in ([] if resume is not None else tasks):

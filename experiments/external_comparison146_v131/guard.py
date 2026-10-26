@@ -57,6 +57,8 @@ def start_counter(roots, initial):
 
 
 def main():
+    sys.path.insert(0, str(ROOT/'tools'))
+    from parallel_inference import helper_seconds
     assert cfg['launch_authorized'] is True and cfg['source_public_verified'] is True
     assert METHOD in ('M13P_160','STATISTICS','MEMIT_MM')
     with (OUT / 'GUARD_ONCE').open('x'):
@@ -84,9 +86,14 @@ def main():
         while child.poll() is None:
             sample = state['sample']
             now = time.time()
+            auxiliary, live_helpers = helper_seconds(OUT/'parallel', now, since=started)
+            total = prior+now-started+auxiliary
+            shutdown_reserve = 30*(1+live_helpers) if live_helpers else 20
             used, free_disk = sample.get('new_bytes',used), sample.get('free_disk_bytes',free)
             write('GUARD_HEALTH.json', dict(time=now, process_seconds=now-started,
-                prior_process_seconds=prior,total_method_process_seconds=prior+now-started,
+                prior_process_seconds=prior,total_method_process_seconds=total,
+                auxiliary_process_seconds=auxiliary,
+                total_GPU_process_seconds=total,live_helpers=live_helpers,
                 new_bytes=used, free_disk_bytes=free_disk, storage_sample_time=sample['time'],
                 storage_sample_age_seconds=now-sample['time'], accounting_error=sample.get('error'),
                 storage_hard_limit_bytes=cfg['storage_limit_bytes'],storage_pre_stop_bytes=cfg['storage_pre_stop_bytes']))
@@ -97,7 +104,7 @@ def main():
                 reason = 'ORIGINAL_24H_WALL'
             elif now >= cfg.get('method_original_deadline', {}).get(METHOD, cfg['hard_end']) - 20:
                 reason = 'METHOD_ORIGINAL_WALL'
-            elif prior+now-started >= cfg['method_process_seconds'][METHOD] - 20:
+            elif total >= cfg['method_process_seconds'][METHOD] - shutdown_reserve:
                 reason = 'METHOD_PROCESS_BUDGET'
             elif used >= cfg['storage_pre_stop_bytes']:
                 reason = 'WHOLE_EXPERIMENT_STORAGE'
@@ -111,16 +118,41 @@ def main():
         if counter_stop is not None:
             counter_stop.set()
         if child is not None:
-            if child.poll() is None:
-                os.killpg(child.pid, signal.SIGTERM)
+            try:
+                _, live_helpers = helper_seconds(OUT/'parallel', time.time(), since=started)
+            except BaseException:
+                live_helpers = 1  # Unclosed helper evidence fails closed.
+            if child.poll() is None or live_helpers:
+                try:
+                    os.killpg(child.pid, signal.SIGTERM)
+                except ProcessLookupError:
+                    pass
                 try:
                     child.wait(timeout=8)
                 except subprocess.TimeoutExpired:
                     os.killpg(child.pid, signal.SIGKILL)
                     child.wait()
+                if live_helpers:
+                    limit = time.monotonic()+8
+                    while time.monotonic() < limit:
+                        try:
+                            _, alive = helper_seconds(OUT/'parallel', time.time(), since=started)
+                            if not alive:
+                                break
+                        except BaseException:
+                            pass
+                        time.sleep(.1)
+                    else:
+                        try:
+                            os.killpg(child.pid, signal.SIGKILL)
+                        except ProcessLookupError:
+                            pass
+            auxiliary, _ = helper_seconds(OUT/'parallel', time.time(), strict=False, since=started)
             write('GUARD_EXIT.json', dict(time=time.time(), code=child.returncode,
                 process_seconds=time.time()-started,prior_process_seconds=prior,
-                total_method_process_seconds=prior+time.time()-started))
+                auxiliary_process_seconds=auxiliary,
+                total_method_process_seconds=prior+time.time()-started+auxiliary,
+                total_GPU_process_seconds=prior+time.time()-started+auxiliary))
     return child.returncode if child is not None else 1
 
 
