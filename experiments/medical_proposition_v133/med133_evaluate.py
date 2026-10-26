@@ -23,6 +23,7 @@ def membership(entries,row):
 def run(runtime,r,inputs,counts,budget,write,root,parent,lock):
     import contract
     from m3bench_repro.editors.routing import MemoryRouter,decision_as_json
+    execution_source=r.c.read(root/'SOURCE_VERSION.json')
     tasks=inputs['tasks'];byid={t['edit_id']:t for t in tasks}
     entries=[r.p.load_state(Path(inputs['router_bindings'][str(t['order'])]))['entries'][0] for t in tasks]
     states={t['edit_id']:r.p.load_state(root/'candidates'/f"MED_{t['order']}.pt") for t in tasks}
@@ -32,7 +33,7 @@ def run(runtime,r,inputs,counts,budget,write,root,parent,lock):
     if not package.exists():
         package.parent.mkdir(exist_ok=True)
         torch.save(dict(states=states,R0_entries=entries,tasks=tasks,source_rows=inputs['source_rows'],
-            mapping=inputs['mapping'],unmapped=inputs['unmapped'],state_hashes=hashes,protocol=lock,
+            mapping=inputs['mapping'],unmapped=inputs['unmapped'],state_hashes=hashes,protocol=lock,source_version=execution_source,
             calibration={str(t['order']):r.c.read(root/'calibration'/f"{t['order']}.json") for t in tasks}),package.with_suffix('.tmp'))
         package.with_suffix('.tmp').replace(package)
     check=torch.load(package,map_location='cpu',weights_only=True)
@@ -92,7 +93,7 @@ def run(runtime,r,inputs,counts,budget,write,root,parent,lock):
             for row,query,item,route,selected in prepared:
                 budget();cid=contract.consumer_id(row);dest=root/'outputs'/(r.c.digest(cid)+'.json')
                 prediction_binding=dict(input=item[4],effective_state=hashes[selected] if selected else 'UNEDITED_BASE',
-                    model_source=lock['source_reference'],deterministic_greedy=True,generation_rng_binding=rng_binding)
+                    model_source=lock['source_reference'],execution_source=execution_source,deterministic_greedy=True,generation_rng_binding=rng_binding)
                 cachekey=r.c.digest(prediction_binding)
                 if dest.exists():
                     old=r.c.read(dest)

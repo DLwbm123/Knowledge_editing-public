@@ -31,8 +31,8 @@ def main():
         assert d.activated and d.logical_edit_id==selected[-1]['logical_edit_id']
     state=dict(G=torch.ones(2));a=evaluate.state_id(state);state['G'][0]+=1
     assert a!=evaluate.state_id(state)
-    binding=dict(input=dict(prompt_ids=[1,2],runtime='same'),effective_state='x',generation={'do_sample':False})
-    for changed in [dict(binding,effective_state='y'),dict(binding,input=dict(prompt_ids=[1,3],runtime='same')),dict(binding,generation={'do_sample':True})]:
+    binding=dict(input=dict(prompt_ids=[1,2],runtime='same'),effective_state='x',generation={'do_sample':False},source_code='fixtureA')
+    for changed in [dict(binding,effective_state='y'),dict(binding,input=dict(prompt_ids=[1,3],runtime='same')),dict(binding,generation={'do_sample':True}),dict(binding,source_code='fixtureB')]:
         assert r.c.digest(binding)!=r.c.digest(changed)
     import med133_report as report
     fake=[];decisions={}
