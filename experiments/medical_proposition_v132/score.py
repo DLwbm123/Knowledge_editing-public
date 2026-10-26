@@ -181,6 +181,39 @@ print(json.dumps(dict(rows=rows,expected=69*5,clock=json.loads((r/'CLOCK.json').
         write(local/'DECISIONS.json',dict(decisions=decisions,missing=missing))
     write(local/'SCORING_COMPLETE.json',dict(time=time.time(),consumers=len(consumers),
         unique_payloads=len(payloads),valid=len(decisions),missing=len(missing),charged_items=charged))
+    metadata=remote(prefix+'''
+a=json.loads((r/'CURVATURE_ADMISSION.json').read_text());anchors=[v for v in a['anchors'] if v['status']=='MAPPED']
+w=json.loads((r/'WORKER_COMPLETE.json').read_text());g=json.loads((r/'GUARD_EXIT.json').read_text());h=json.loads((r/'GUARD_HEALTH.json').read_text());lock=json.loads((r/'PROTOCOL_LOCK.json').read_text())
+assert g['code']==0 and json.loads((r/'WORKER_EXIT.json').read_text())['code']==0
+print(json.dumps(dict(owners=lock['owners'],cost=dict(counts=w['counts'],GPU_process_seconds=g['GPU_process_seconds'],max_cuda_bytes=w['cuda_max_memory_allocated'],owned_bytes_last_sample=h['new_bytes'],Judge_attempt_items=CHARGED),curvature=dict(mapped=a['mapped'],common_fallback=a['common_fallback'],mapped_source_groups=24,full_rank_min=min(v['full_rank'] for v in anchors),full_rank_max=max(v['full_rank'] for v in anchors),max_relative_trace_error=max(abs(v[k]/v['full_trace']-1) for v in anchors for k in ['MED_trace','GEN_trace']),MED_GEN_cosine_min=min(v['MED_GEN_operator_cosine'] for v in anchors),MED_GEN_cosine_max=max(v['MED_GEN_operator_cosine'] for v in anchors),global_spectrum_matched=False))))
+'''.replace('CHARGED',str(charged)))
+    sys.path.insert(0,str(Path(__file__).parent))
+    import analyze
+    result,report=analyze.summarize(local,metadata)
+    write(local/'ANONYMOUS_RESULTS.json',result)
+    (local/'REPORT_ZH.md').write_text(report)
+    # Exact owned file list, after every weight consumer and all durable scoring bindings.
+    lifecycle=remote(prefix+'''
+import time
+f=json.loads((r/'INPUTS_FROZEN.json').read_text());assert (r/'GENERATION_COMPLETE.json').exists()
+assert len(list((r/'outputs').glob('*/*/*.json')))==207
+paths=[]
+for t in f['tasks']:
+ for arm in ['FULL_CTX','MED','GEN']:
+  assert json.loads((r/'training'/f"{arm}_{t['order']}.json").read_text())['save_load_exact']
+  paths.extend([r/'candidates'/f"{arm}_{t['order']}.pt",r/'resume'/f"{arm}_{t['order']}.pt"])
+paths.extend(r/'curvature'/name for name in ['COMMON_FALLBACK.pt','FULL_CTX.pt','MED.pt','GEN.pt'])
+removed=[]
+for path in paths:
+ assert path.is_file() and not path.is_symlink() and path.resolve().is_relative_to(r.resolve())
+ removed.append(dict(path=str(path),bytes=path.stat().st_size));path.unlink()
+receipt=dict(time=time.time(),files=removed,total_bytes=sum(v['bytes'] for v in removed),last_consumers='all207 durable generations/save-load and complete isolated scoring bindings',no_retained_copy=True,reconstruction_requires_training=True)
+(r/'LIFECYCLE_COMPLETE.json').write_text(json.dumps(receipt,indent=2))
+print(json.dumps(dict(files=len(removed),bytes=receipt['total_bytes'],no_retained_copy=True)))
+''')
+    write(local/'LIFECYCLE_ANONYMOUS.json',lifecycle)
+    publication=analyze.publish(config,result,report)
+    write(local/'PUBLICATION.json',publication)
 
 
 if __name__=='__main__':
