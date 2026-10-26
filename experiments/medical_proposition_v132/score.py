@@ -103,10 +103,13 @@ for c in f['consumers']:
  items=[('LEGACY',answer,lb)]
  if b is not None:
   out=b['output'];items.append(('BASE',dict(raw_answer=out['model_answer_raw'],raw_token_ids=out['raw_generated_token_ids']),b))
- elif qid.startswith('edit_'):
+ else:
   basepath=p/'private/outputs/BASE_base_p0/0'/(Path(c['legacy_output']).name)
-  old=json.loads(basepath.read_text());items.append(('BASE',old['R0'],old['binding']['judge_input']))
- else: raise RuntimeError('Missing original Base identity')
+  old=json.loads(basepath.read_text())
+  assert old['binding']['input']['query_id']==qid
+  basebinding=old['binding']['judge_input']
+  assert all(basebinding[k]==lb[k] for k in ['question','reference','image_sha256','prompt_ids'])
+  items.append(('BASE',old['R0'],basebinding))
  import hashlib
  name=hashlib.sha256(json.dumps(qid,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()+'.json'
  for arm in ['FULL_CTX','MED','GEN']:
