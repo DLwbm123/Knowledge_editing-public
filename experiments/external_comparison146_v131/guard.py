@@ -58,7 +58,9 @@ def start_counter(roots, initial):
 
 def main():
     sys.path.insert(0, str(ROOT/'tools'))
-    from parallel_inference import helper_seconds
+    import prefix_parallel_v131
+    assert Path(prefix_parallel_v131.__file__).resolve() == (ROOT/'tools/prefix_parallel_v131.py').resolve()
+    helper_seconds = prefix_parallel_v131.helper_seconds
     assert cfg['launch_authorized'] is True and cfg['source_public_verified'] is True
     assert METHOD in ('M13P_160','STATISTICS','MEMIT_MM')
     with (OUT / 'GUARD_ONCE').open('x'):

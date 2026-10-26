@@ -58,6 +58,10 @@ def main():
     import contract
     import algebra
     import parameter_edit as editor
+    if os.environ.get('V131_PARALLEL_DEVICES'):
+        import prefix_parallel_v131
+        assert Path(prefix_parallel_v131.__file__).resolve() == (ROOT/'tools/prefix_parallel_v131.py').resolve()
+        ParallelEvaluator = prefix_parallel_v131.ParallelEvaluator
     from scripts.medtrace.run_realmodel_core import load_real_runtime
     from types import SimpleNamespace
     from m3bench_repro.editors.llava_runtime import seed_everything
@@ -249,7 +253,6 @@ def main():
         budget()
 
     if os.environ.get('V131_PARALLEL_DEVICES'):
-        from parallel_inference import ParallelEvaluator
         parallel = ParallelEvaluator(runtime, r, contract, OUT, ROOT, lock, counts, tasks,
                                      evaluate_serial, budget, reserve)
         evaluate = parallel.evaluate
