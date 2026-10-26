@@ -18,7 +18,7 @@ def write(path, value):
 def main():
     import torch
     root = Path(os.environ['V131_ROOT'])
-    out = root / 'MEMIT_MM' / 'implementation_audit'
+    out = Path(os.environ['AUDIT_OUTPUT'])
     assert not (out / 'RESULT.json').exists()
     free, total = torch.cuda.mem_get_info()
     assert free >= 36 * 1024**3
@@ -47,6 +47,14 @@ def main():
     cut = next(i for i,n in enumerate(function.body)
                if isinstance(n,ast.FunctionDef) and n.name == 'inputs') + 1
     function.body = function.body[:cut] + [ast.Return(ast.Call(ast.Name('locals',ast.Load()),[],[]))]
+    # Initialization-only CPU LU avoids a second model's CUDA workspace; the
+    # covariance, double precision, coefficient and mathematical solve stay fixed.
+    moved = 0
+    for node in ast.walk(function):
+        if isinstance(node,ast.keyword) and node.arg == 'map_location' and isinstance(node.value,ast.Attribute) and isinstance(node.value.value,ast.Name) and node.value.value.id == 'runtime' and node.value.attr == 'device':
+            node.value = ast.Constant('cpu')
+            moved += 1
+    assert moved == 1
     code = ast.fix_missing_locations(ast.Module(body=[function], type_ignores=[]))
     exec(compile(code, str(source), 'exec'), m.__dict__)
     frame = m.main()
@@ -136,7 +144,7 @@ def main():
         result = dict(status='COMPLETE',time=time.time(),counts=m.counts,replay=records,
                       generation_checks=generation_checks,formal_generations=0,Judge_calls=0,
                       diagnostic_generation_attempts=len(generation_checks),
-                      peak_reserved_bytes=torch.cuda.max_memory_reserved(),
+                      peak_reserved_bytes=torch.cuda.max_memory_reserved(),inverse_initialization_backend='CPU_FLOAT64',
                       maximum_write_error=max(q['max_abs'] for r in records for q in r['physical_writes']))
         write(out/'RESULT.json',result)
     finally:
@@ -148,6 +156,6 @@ if __name__ == '__main__':
     try:
         main()
     except BaseException:
-        write(Path(os.environ['V131_ROOT'])/'MEMIT_MM/implementation_audit/FAILURE.json',
+        write(Path(os.environ['AUDIT_OUTPUT'])/'FAILURE.json',
               dict(time=time.time(),error=traceback.format_exc()))
         raise
