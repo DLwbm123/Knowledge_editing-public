@@ -144,7 +144,9 @@ def main():
     def count(_module, args, kwargs):
         budget()
         counts['forwards'] += 1
-        x = kwargs.get('inputs_embeds', kwargs.get('input_ids'))
+        x = kwargs.get('inputs_embeds')
+        if x is None:
+            x = kwargs.get('input_ids')
         if x is None and args:
             x = args[0]
         if isinstance(x, torch.Tensor):
