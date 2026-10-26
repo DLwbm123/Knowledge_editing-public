@@ -97,17 +97,18 @@ def main():
                 prior_process_seconds=prior,total_method_process_seconds=total,
                 auxiliary_process_seconds=auxiliary,
                 total_GPU_process_seconds=total,live_helpers=live_helpers,
+                time_limits_enforced=not cfg.get('run_until_completion',False),
                 new_bytes=used, free_disk_bytes=free_disk, storage_sample_time=sample['time'],
                 storage_sample_age_seconds=now-sample['time'], accounting_error=sample.get('error'),
                 storage_hard_limit_bytes=cfg['storage_limit_bytes'],storage_pre_stop_bytes=cfg['storage_pre_stop_bytes']))
             reason = None
             if sample.get('error') or now-sample['time'] >= 45:
                 reason = 'STORAGE_COUNTER_UNAVAILABLE'
-            elif now >= cfg['hard_end'] - 20:
+            elif not cfg.get('run_until_completion') and now >= cfg['hard_end'] - 20:
                 reason = 'ORIGINAL_24H_WALL'
-            elif now >= cfg.get('method_original_deadline', {}).get(METHOD, cfg['hard_end']) - 20:
+            elif not cfg.get('run_until_completion') and now >= cfg.get('method_original_deadline', {}).get(METHOD, cfg['hard_end']) - 20:
                 reason = 'METHOD_ORIGINAL_WALL'
-            elif total >= cfg['method_process_seconds'][METHOD] - shutdown_reserve:
+            elif not cfg.get('run_until_completion') and total >= cfg['method_process_seconds'][METHOD] - shutdown_reserve:
                 reason = 'METHOD_PROCESS_BUDGET'
             elif used >= cfg['storage_pre_stop_bytes']:
                 reason = 'WHOLE_EXPERIMENT_STORAGE'

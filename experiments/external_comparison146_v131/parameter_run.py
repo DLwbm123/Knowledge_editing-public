@@ -36,7 +36,7 @@ def write(path, value):
 
 
 def budget():
-    assert time.time() < lock['hard_end'] - 20 and not (OUT / 'STOP.json').exists()
+    assert (lock.get('run_until_completion') or time.time() < lock['hard_end'] - 20) and not (OUT / 'STOP.json').exists()
     health = read(OUT / 'GUARD_HEALTH.json')
     assert time.time() - health['time'] < 60
     for key, maximum in lock['maximum_counts'][METHOD].items():
@@ -49,7 +49,8 @@ def main():
     with (OUT / 'WORKER_ONCE').open('x'):
         pass
     signal.signal(signal.SIGALRM, lambda *_: (_ for _ in ()).throw(TimeoutError('Original wall')))
-    signal.alarm(max(1, int(lock['hard_end'] - time.time() - 20)))
+    if not lock.get('run_until_completion'):
+        signal.alarm(max(1, int(lock['hard_end'] - time.time() - 20)))
     sys.path[:0] = [str(ROOT / 'tools'), str(PARENT / 'private/tools'), str(PARENT / 'private/source'),
                    str(PARENT / 'private/official_llava')]
     import torch
@@ -79,8 +80,11 @@ def main():
         assert resume['source'] == lock['resume_source_execution_identity']
         assert read(OUT/'SINGLE_COMPLETE.json')['consumers'] == 2956
         prior_counts = lock['prior_counts'][METHOD]
+        overhead = lock.get('handoff_uncommitted_counts', {})
+        assert all(value >= 0 for value in overhead.values())
+        assert not any(overhead.get(key, 0) for key in ('edits', 'inserted', 'generation_attempts', 'formal_consumers'))
         for key in ('updates', 'backwards', 'edits', 'inserted'):
-            assert prior_counts[key] == resume['counts'][key], ('Resume counter binding', key)
+            assert prior_counts[key] == resume['counts'][key] + overhead.get(key, 0), ('Resume counter binding', key)
         assert prior_counts['generation_attempts'] == prior_counts['formal_consumers']+len(aborted_ids)
         assert prior_counts['formal_consumers'] >= resume['counts']['formal_consumers']
         assert all(prior_counts[key] >= resume['counts'][key] for key in resume['counts'])

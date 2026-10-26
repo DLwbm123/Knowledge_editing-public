@@ -188,7 +188,7 @@ def worker():
     started, code = time.time(), 0
 
     def budget():
-        assert time.time() < min(lock['hard_end'], lock['method_original_deadline']['MEMIT_MM'])-20
+        assert lock.get('run_until_completion') or time.time() < min(lock['hard_end'], lock['method_original_deadline']['MEMIT_MM'])-20
         assert not (out/'STOP.json').exists()
         assert time.time()-read(out/'GUARD_HEALTH.json')['time'] < 60
         assert counts['forwards'] <= len(job['rows'])*1024+len(read_anchor['calls'])

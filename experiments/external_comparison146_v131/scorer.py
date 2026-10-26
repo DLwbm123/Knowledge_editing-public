@@ -69,11 +69,14 @@ def main():
         os.killpg(os.getpgrp(),signal.SIGTERM)
     hard = threading.Timer(max(1,CONFIG['hard_end']-time.time()-10),end_project)
     hard.daemon=True
-    hard.start()
+    if not CONFIG.get('run_until_completion'):
+        hard.start()
     state = dict(status='STARTING',worker=CONFIG['worker'],effort=CONFIG['effort'],
         new_batches=0,transport_recoveries=0,missing_batches=0,time=time.time())
     write(LOCAL/'STATUS.json',state)
-    while time.time()<CONFIG['hard_end']-620:
+    while CONFIG.get('run_until_completion') or time.time()<CONFIG['hard_end']-620:
+        if (LOCAL/'RETIRE_AFTER_BATCH.json').exists():
+            break
         free = os.statvfs(LOCAL).f_bavail*os.statvfs(LOCAL).f_frsize
         assert free>=8*1024**3
         available = remote(dict(action='status'))['summary']
@@ -126,7 +129,7 @@ def main():
                     command = subprocess.run(['ps','-p',child,'-o','args='],capture_output=True,text=True).stdout
                     if str(CONFIG['cli'])+' exec' in command:
                         os.kill(int(child),signal.SIGTERM)
-            timer = threading.Timer(min(600,CONFIG['hard_end']-time.time()-20),terminate_call)
+            timer = threading.Timer(600 if CONFIG.get('run_until_completion') else min(600,CONFIG['hard_end']-time.time()-20),terminate_call)
             timer.daemon=True
             timer.start()
             error = None

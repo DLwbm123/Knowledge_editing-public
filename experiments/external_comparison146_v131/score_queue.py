@@ -155,7 +155,8 @@ def charge(db,count):
 
 def producer_status():
     return {method:dict(complete=(ROOT/method/'COMPLETE.json').exists() or
-        (method=='ALPHAEDIT_MM' and (ROOT/method/'GENERATION_COMPLETE.json').exists()),
+        (method=='ALPHAEDIT_MM' and (ROOT/method/'GENERATION_COMPLETE.json').exists()) or
+        (method=='MEMIT_MM' and (ROOT/method/'INCOMPLETE_GENERATION.json').exists()),
         failure=(ROOT/method/'FAILURE.json').exists()) for method in CFG['scoring']['effort']}
 
 
@@ -221,7 +222,7 @@ def action(request):
             if kind in ('reserve','status','initialize'):
                 ingest(db)
             if kind == 'reserve':
-                if time.time() >= CFG['hard_end'] - 620:
+                if not CFG.get('run_until_completion') and time.time() >= CFG['hard_end'] - 620:
                     return dict(status='DEADLINE_NO_NEW_CALL',summary=snapshot(db))
                 effort = request['effort']
                 rows = candidates(db,effort)
