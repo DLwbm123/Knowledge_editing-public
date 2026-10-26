@@ -48,7 +48,7 @@ def main():
     with (ROOT/'worker.log').open('a') as stream:
         child=subprocess.Popen([sys.executable,os.environ['NEUTRAL_ENTRY']],env=env,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
     ticks=Path('/proc',str(child.pid),'stat').read_text().split(') ',1)[1].split()[19]
-    write('WORKER_IDENTITY.json',dict(pid=child.pid,start_ticks=ticks,time=start))
+    write('WORKER_IDENTITY.json',dict(pid=child.pid,start_ticks=ticks,time=start,start=start))
     try:
         while child.poll() is None:
             used=size(ROOT)+size(Path(os.environ['NEUTRAL_ENTRY']).parent);free=os.statvfs(ROOT).f_bavail*os.statvfs(ROOT).f_frsize

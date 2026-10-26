@@ -139,7 +139,7 @@ training=[load(p) for p in (r/'training').glob('MED_*.json')];assert len(trainin
 curves=[v for t in training for v in t['curve']];calibration=[load(p) for p in (r/'calibration').glob('*.json')]
 g=load(r/'STAGE_STAGE_GENERATION_COMPLETE.json');clock=load(r/'CLOCK.json');worker=load(r/'WORKER_IDENTITY.json');health=load(r/'GUARD_HEALTH.json')
 print(json.dumps(dict(counts=g['counts'],experiment_elapsed_seconds=g['time']-clock['original_start'],
- current_GPU_worker_residency_seconds=g['time']-worker['start'],cuda_max_memory_allocated=g['cuda_max_memory_allocated'],
+ current_GPU_worker_residency_seconds=g['time']-worker.get('start',worker.get('time')),cuda_max_memory_allocated=g['cuda_max_memory_allocated'],
  owned_remote_new_bytes_last_sample=health['new_bytes'],
  curvature=dict(mapped=a['mapped'],common_fallback=a['common_fallback'],full_rank_min=min(v['full_rank'] for v in anchors),full_rank_max=max(v['full_rank'] for v in anchors),max_relative_MED_trace_error=max(abs(v['MED_trace']/v['full_trace']-1) for v in anchors)),
  mechanism=dict(scientific_updates=len(curves),Fisher_cap_active_fraction=statistics.mean(v['balance']['active'] for v in curves),
