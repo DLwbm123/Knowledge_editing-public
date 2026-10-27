@@ -19,7 +19,9 @@ def normalize(v):
 
 def main():
     signal.signal(signal.SIGALRM,lambda *_:(_ for _ in ()).throw(TimeoutError('CPU census wall limit')));signal.alarm(1800)
-    assert not PRIVATE.exists();PRIVATE.mkdir(parents=True)
+    if PRIVATE.exists():
+        assert (PRIVATE/'IDENTITY_CORRECTION.json').exists() and not (PRIVATE/'CANDIDATES_FROZEN.json').exists()
+    else:PRIVATE.mkdir(parents=True)
     snap=read(ROOT/'.private/prospective_confirmation_v111_20261025/EXPOSURE_SNAPSHOT.json')
     v111=read(ROOT/'.private/prospective_confirmation_v111_20261025/CONDITIONAL_CANDIDATES_FROZEN.json')
     assert len(snap['history_groups'])==177 and len(snap['V95_reserved'])==24 and len(snap['V106_audited'])==8 and len(snap['replay64'])==64
@@ -29,8 +31,17 @@ def main():
     meta=read(ROOT/'.private/med146_single_sequential_v133_20261027/scoring_recovery1/PACKET_METADATA_B.json')
     extra=read(ROOT/'.private/med150_feasibility_20261027/ROLE_SAFE_CANDIDATES.private.json')['items']
     # Other datasets use different source identifiers and are not SLAKE groups.
-    allnames=[t['native']['source_group'] for t in meta['tasks']]+[t['task']['native']['source_group'] for t in extra]
-    exclusions['MED150_slake']={normalize(x) for x in allnames if re.fullmatch(r'xmlab\d+',str(x).lower())}
+    natives=[t['native'] for t in meta['tasks']]+[t['task']['native'] for t in extra]
+    assert len(natives)==150
+    slake=[]
+    for n in natives:
+        assert n['dataset'] in ('SLAKE','VQA-RAD')
+        if n['dataset']=='SLAKE':
+            ids={normalize(x) for x in re.findall(r'xmlab\d+',str(n.get('image_path',''))+' '+str(n.get('original_image_path','')),re.I)}
+            assert len(ids)==1, 'SLAKE image group cannot be identified unambiguously'
+            slake.append(next(iter(ids)))
+    assert len(slake)==97, 'Unexpected original SLAKE cohort coverage'
+    exclusions['MED150_slake']=set(slake)
     union=set().union(*exclusions.values())
     script='''from pathlib import Path
 import collections,json,re
