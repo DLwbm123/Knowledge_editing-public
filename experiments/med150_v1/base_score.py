@@ -124,5 +124,5 @@ if __name__=='__main__':
     try:
         if os.environ.get('ENTRY_MODE','guard')=='guard':guard(cfg)
         else:score(cfg)
-    except BaseException:
+    except Exception:
         write(local/'FAILURE.json',dict(time=time.time(),error=traceback.format_exc(),no_retry=True));raise
