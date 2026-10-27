@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "scope": "Synthetic algebra only, existing V133 factorized penalty implementation",
+  "alpha_scaling_quadratic_energy": true,
+  "normalized_q_scale_invariant": true,
+  "no_current_MED_F_reconstruction": true,
+  "new_GPU_or_model_calls": 0,
+  "rows": [
+    {
+      "alpha": 1.1,
+      "quadratic_energy_ratio": 1.2100000000000009,
+      "normalized_q": 0.147292496661879,
+      "normalized_q_epsilon1e12": 0.14729249666187896
+    },
+    {
+      "alpha": 1.0,
+      "quadratic_energy_ratio": 1.0,
+      "normalized_q": 0.1472924966618789,
+      "normalized_q_epsilon1e12": 0.14729249666187888
+    },
+    {
+      "alpha": 0.9,
+      "quadratic_energy_ratio": 0.8100000000000004,
+      "normalized_q": 0.147292496661879,
+      "normalized_q_epsilon1e12": 0.14729249666187894
+    },
+    {
+      "alpha": 0.75,
+      "quadratic_energy_ratio": 0.5625000000000002,
+      "normalized_q": 0.14729249666187896,
+      "normalized_q_epsilon1e12": 0.14729249666187888
+    },
+    {
+      "alpha": 0.5,
+      "quadratic_energy_ratio": 0.25,
+      "normalized_q": 0.1472924966618789,
+      "normalized_q_epsilon1e12": 0.1472924966618787
+    }
+  ],
+  "consequence": "For fixed F and negligible epsilon, shrinking alpha cannot make q exceedance disappear; high-q experts fall to the prescribed violation fallback"
+}

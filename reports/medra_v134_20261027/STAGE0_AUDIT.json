@@ -1,0 +1,177 @@
+{
+  "status": "INCOMPLETE",
+  "method_implemented": false,
+  "GPU_experiments_started": 0,
+  "baseline_experts_retained": 146,
+  "MED_routes_checked": 7494,
+  "M13P_routes_checked": 7494,
+  "semantic_route_mismatches": 0,
+  "max_nearest_distance_difference": 1.0356277227401733,
+  "raw_MED_lambda_range": [
+    1.6777872876488784,
+    62.899187701358095
+  ],
+  "raw_MED_operator_norm_range": [
+    2.1879930933862908,
+    4.561960263680015
+  ],
+  "mask_check": {
+    "status": "PASS",
+    "finite_difference": 0.09930133819580078,
+    "analytic": 0.09813211113214493,
+    "step": 0.001,
+    "actual_injection_mask_exact": true,
+    "predictor_positions": 11,
+    "EOS_scored": true,
+    "last_prompt_predictor_selected": true
+  },
+  "mapped_alias_paths": 124,
+  "mapped_alias_mask_positions": 1190,
+  "q_i_unavailable": 146,
+  "source_final_gain_not_persisted": true,
+  "fresh_CORE_damage": [
+    {
+      "phase": "single_1",
+      "owner": 56,
+      "effective_owner": 56
+    },
+    {
+      "phase": "bank_100",
+      "owner": 56,
+      "effective_owner": 56
+    },
+    {
+      "phase": "bank_146",
+      "owner": 56,
+      "effective_owner": 56
+    }
+  ],
+  "T2L_CORE_regressions": [
+    {
+      "phase": "single_1",
+      "owner": 56,
+      "effective_owner": 56
+    },
+    {
+      "phase": "bank_100",
+      "owner": 56,
+      "effective_owner": 56
+    },
+    {
+      "phase": "bank_146",
+      "owner": 56,
+      "effective_owner": 56
+    }
+  ],
+  "single_to_bank_decomposition": [
+    {
+      "prefix": 1,
+      "role": "T1G",
+      "n": 4,
+      "MED_expert_changes": 0,
+      "M13P_expert_changes": 0,
+      "MED_lost": 0,
+      "M13P_lost": 0,
+      "shared_lost": 0,
+      "MED_repaired": 0,
+      "M13P_repaired": 0
+    },
+    {
+      "prefix": 1,
+      "role": "T2G",
+      "n": 4,
+      "MED_expert_changes": 0,
+      "M13P_expert_changes": 0,
+      "MED_lost": 0,
+      "M13P_lost": 0,
+      "shared_lost": 0,
+      "MED_repaired": 0,
+      "M13P_repaired": 0
+    },
+    {
+      "prefix": 50,
+      "role": "T1G",
+      "n": 196,
+      "MED_expert_changes": 25,
+      "M13P_expert_changes": 25,
+      "MED_lost": 17,
+      "M13P_lost": 17,
+      "shared_lost": 17,
+      "MED_repaired": 0,
+      "M13P_repaired": 0
+    },
+    {
+      "prefix": 50,
+      "role": "T2G",
+      "n": 195,
+      "MED_expert_changes": 2,
+      "M13P_expert_changes": 2,
+      "MED_lost": 1,
+      "M13P_lost": 1,
+      "shared_lost": 1,
+      "MED_repaired": 1,
+      "M13P_repaired": 1
+    },
+    {
+      "prefix": 100,
+      "role": "T1G",
+      "n": 394,
+      "MED_expert_changes": 53,
+      "M13P_expert_changes": 53,
+      "MED_lost": 37,
+      "M13P_lost": 37,
+      "shared_lost": 37,
+      "MED_repaired": 0,
+      "M13P_repaired": 0
+    },
+    {
+      "prefix": 100,
+      "role": "T2G",
+      "n": 386,
+      "MED_expert_changes": 10,
+      "M13P_expert_changes": 10,
+      "MED_lost": 6,
+      "M13P_lost": 6,
+      "shared_lost": 6,
+      "MED_repaired": 1,
+      "M13P_repaired": 1
+    },
+    {
+      "prefix": 146,
+      "role": "T1G",
+      "n": 578,
+      "MED_expert_changes": 101,
+      "M13P_expert_changes": 101,
+      "MED_lost": 77,
+      "M13P_lost": 77,
+      "shared_lost": 77,
+      "MED_repaired": 0,
+      "M13P_repaired": 0
+    },
+    {
+      "prefix": 146,
+      "role": "T2G",
+      "n": 557,
+      "MED_expert_changes": 17,
+      "M13P_expert_changes": 17,
+      "MED_lost": 10,
+      "M13P_lost": 10,
+      "shared_lost": 10,
+      "MED_repaired": 2,
+      "M13P_repaired": 2
+    }
+  ],
+  "new_model_calls": 0,
+  "new_training": 0,
+  "new_generation": 0,
+  "new_Judge": 0,
+  "V133_models_outputs_scores_ledgers_reports_unchanged": true,
+  "monitoring": "OFF",
+  "saved_teacher_masks_checked": 124,
+  "stage0_block": "MISSING_REQUIRED_CURVATURE",
+  "curvature_files_present": {
+    "MED.pt": false,
+    "FULL_CTX.pt": false,
+    "COMMON_FALLBACK.pt": false
+  }
+}
