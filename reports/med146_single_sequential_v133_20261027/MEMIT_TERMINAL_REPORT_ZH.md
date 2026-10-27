@@ -14,3 +14,5 @@
 评分采用 Astra high 的原二元来源一致性协议，属于已暴露原146开发集；与MED后续共同CORE/FULL medium epoch分别报告。不能把不同评分effort混成新的匹配保护结论，也不构成独立确认。
 
 MEMIT生成和评分实际退出后，已按用户授权衔接GPU0上的MED固定实验。MED首次运行起独立24小时硬时钟，single及完整sequential共用该时钟；不继承MEMIT取消旧时间限制的例外。
+
+后续实现复核已完成：[终态实现与适配审计](../external_comparison146_v131_20261025/TERMINAL_SEQUENTIAL_RECHECK_ZH.md)。当前证据支持固定MEMIT-MM在线适配失稳；未发现所检查范围内的机械流程错误，唯一因果机制仍未证实，不能将其等同原生MEMIT在该任务上已被充分验证的失败。
