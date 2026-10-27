@@ -2,6 +2,7 @@
 import json
 import math
 import os
+import time
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -33,7 +34,7 @@ def rebuild(runtime,r,inputs,ROOT,PARENT,LOCK,COUNTS,budget,write,save):
         expert = r.p.expert(state, LOCK['seed'], runtime.device)
         hook = r.q.scoped.replay.MedTraceLayerHook(runtime.get_module(r.c.LAYER),expert)
         hook.attach()
-        full_blocks, med_blocks, audits, actual_inputs = [], [], [], []
+        full_blocks, med_blocks, audits, actual_inputs, paths = [], [], [], [], []
         try:
             for entry in inputs['mapping']:
                 index, row = entry['index'], entry['row']

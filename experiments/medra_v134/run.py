@@ -110,6 +110,7 @@ def main():
     q0=float(torch.quantile(torch.tensor(values,dtype=torch.float64),.75,interpolation='linear'))
     if (ROOT/'Q0_FROZEN.json').exists():assert r.c.read(ROOT/'Q0_FROZEN.json')['raw_q']==values
     else:write('Q0_FROZEN.json',dict(q0=q0,raw_q=values,quantile=.75,interpolation='linear',training_calibration_only=True))
+    prepared,batches=None,None
     for task in inputs['tasks']:
         owner=task['order'];original=raw['states'][task['edit_id']]
         final=ROOT/'candidates'/f'MED_RA_{owner}.pt';ledgerfile=ROOT/'selection'/f'{owner}.json'
