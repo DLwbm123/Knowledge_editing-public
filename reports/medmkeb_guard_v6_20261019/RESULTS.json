@@ -1,0 +1,304 @@
+{
+  "status": "COMPLETE",
+  "paired_comparisons": {
+    "POOL_MEAN_vs_NONE": {
+      "control_has_damage": false,
+      "recovered_checks": 0,
+      "additional_damage_checks": 0,
+      "source_not_worse": true,
+      "transfer_not_worse": false,
+      "development_protection_criterion_met": false
+    },
+    "POOL_PAIR_vs_POOL_MEAN": {
+      "control_has_damage": false,
+      "recovered_checks": 0,
+      "additional_damage_checks": 0,
+      "source_not_worse": false,
+      "transfer_not_worse": false,
+      "development_protection_criterion_met": false
+    },
+    "LOOKAHEAD_vs_NONE": {
+      "control_has_damage": false,
+      "recovered_checks": 0,
+      "additional_damage_checks": 0,
+      "source_not_worse": false,
+      "transfer_not_worse": false,
+      "development_protection_criterion_met": false
+    },
+    "LOOKAHEAD_vs_NORM_REPLAY": {
+      "control_has_damage": false,
+      "recovered_checks": 0,
+      "additional_damage_checks": 0,
+      "source_not_worse": true,
+      "transfer_not_worse": true,
+      "development_protection_criterion_met": false
+    }
+  },
+  "base_correct_eval_questions": 11,
+  "heldout_questions": 27,
+  "panels": {
+    "NONE": {
+      "tasks": {
+        "E01": {
+          "source_correct": true,
+          "own_cross_correct": true,
+          "own_rephrase_correct": true,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        },
+        "E02": {
+          "source_correct": true,
+          "own_cross_correct": true,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 13,
+            "CORRECT": 11,
+            "UNCERTAIN": 3
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        }
+      },
+      "source_correct": 2,
+      "cross_correct": 2,
+      "rephrase_correct": 1,
+      "base_correct_denominator": 22,
+      "new_damage": 0,
+      "EOS": 64,
+      "at_cap": 0,
+      "outputs": 64,
+      "raw_token_same_as_Base": 46
+    },
+    "POOL_MEAN": {
+      "tasks": {
+        "E01": {
+          "source_correct": true,
+          "own_cross_correct": true,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        },
+        "E02": {
+          "source_correct": true,
+          "own_cross_correct": true,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 13,
+            "CORRECT": 11,
+            "UNCERTAIN": 3
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        }
+      },
+      "source_correct": 2,
+      "cross_correct": 2,
+      "rephrase_correct": 0,
+      "base_correct_denominator": 22,
+      "new_damage": 0,
+      "EOS": 64,
+      "at_cap": 0,
+      "outputs": 64,
+      "raw_token_same_as_Base": 48
+    },
+    "POOL_PAIR": {
+      "tasks": {
+        "E01": {
+          "source_correct": false,
+          "own_cross_correct": false,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        },
+        "E02": {
+          "source_correct": false,
+          "own_cross_correct": false,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        }
+      },
+      "source_correct": 0,
+      "cross_correct": 0,
+      "rephrase_correct": 0,
+      "base_correct_denominator": 22,
+      "new_damage": 0,
+      "EOS": 64,
+      "at_cap": 0,
+      "outputs": 64,
+      "raw_token_same_as_Base": 55
+    },
+    "LOOKAHEAD": {
+      "tasks": {
+        "E01": {
+          "source_correct": false,
+          "own_cross_correct": false,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        },
+        "E02": {
+          "source_correct": false,
+          "own_cross_correct": false,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        }
+      },
+      "source_correct": 0,
+      "cross_correct": 0,
+      "rephrase_correct": 0,
+      "base_correct_denominator": 22,
+      "new_damage": 0,
+      "EOS": 64,
+      "at_cap": 0,
+      "outputs": 64,
+      "raw_token_same_as_Base": 64
+    },
+    "NORM_REPLAY": {
+      "tasks": {
+        "E01": {
+          "source_correct": false,
+          "own_cross_correct": false,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        },
+        "E02": {
+          "source_correct": false,
+          "own_cross_correct": false,
+          "own_rephrase_correct": false,
+          "heldout_four_category": {
+            "INCORRECT": 12,
+            "CORRECT": 11,
+            "UNCERTAIN": 4
+          },
+          "base_correct_denominator": 11,
+          "new_damage": 0,
+          "damage_to_wrong_or_contradictory": 0,
+          "damage_to_uncertain": 0,
+          "all_originally_correct_retained": true
+        }
+      },
+      "source_correct": 0,
+      "cross_correct": 0,
+      "rephrase_correct": 0,
+      "base_correct_denominator": 22,
+      "new_damage": 0,
+      "EOS": 64,
+      "at_cap": 0,
+      "outputs": 64,
+      "raw_token_same_as_Base": 64
+    }
+  },
+  "counts": {
+    "updates": 1600,
+    "backwards": 3286,
+    "forwards": 253040,
+    "generations": 320,
+    "operator_backwards": 0
+  },
+  "unique_hidden_reviews": 79,
+  "formal_tasks": 2,
+  "arms": [
+    "NONE",
+    "POOL_MEAN",
+    "POOL_PAIR",
+    "LOOKAHEAD",
+    "NORM_REPLAY"
+  ],
+  "independent_clinical_confirmation": false,
+  "official_counterfactual_benchmark": false,
+  "extra_support_shared": true,
+  "method_win_not_automatically_inferred": true,
+  "lookahead_vs_norm_output_checks": [
+    {
+      "task": "E01",
+      "checks": 32,
+      "same_semantic_label": 32,
+      "same_raw_tokens": 32
+    },
+    {
+      "task": "E02",
+      "checks": 32,
+      "same_semantic_label": 32,
+      "same_raw_tokens": 32
+    }
+  ],
+  "gpu_process_hours": 20.145283807648553,
+  "review": {
+    "unique": 79,
+    "reused_exact": 76,
+    "new_hidden_review": 3,
+    "external_judge_calls": 0
+  },
+  "source_qualification": "All development data previously exposed; no independent clinical confirmation; not official counterfactual benchmark.",
+  "retirement": {
+    "files": 20,
+    "bytes": 1943448,
+    "historical_assets_touched": false,
+    "reconstruction_requires_training": true
+  }
+}

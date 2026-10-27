@@ -1,0 +1,1032 @@
+{
+  "status": "COMPLETE_ENGINEERING_AUDIT",
+  "tasks": [
+    {
+      "task": "E01",
+      "engineering": "PASS",
+      "support_initial_max_difference": 0.0,
+      "zero_constraint_state_identity": true,
+      "QP": {
+        "status": "PASS",
+        "sweeps": 50,
+        "max_normalized_violation": 3.1880775146556073e-13,
+        "max_dual_change": 8.649280857503383e-11,
+        "active_duals": 6,
+        "stationarity_residual": 2.381193813166696e-18,
+        "complementarity_residual": 3.332473070007424e-13,
+        "identity": false
+      },
+      "candidate_qualified": true,
+      "qualified_scales": [
+        0.5,
+        0.25,
+        0.125
+      ],
+      "full_source_gain": 0.010184288024902344,
+      "candidates": [
+        {
+          "kind": "SOURCE",
+          "scale": 1.0,
+          "source_gain": 0.010184288024902344,
+          "actual_operator_norm": 0.05059631829950662,
+          "max_support_regression": 0.0049896240234375,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 110,
+            "candidate_checks": 1
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 1.0,
+          "source_gain": 0.010050773620605469,
+          "actual_operator_norm": 0.050218665562303234,
+          "max_support_regression": 0.00011205673217773438,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 165,
+            "candidate_checks": 2
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 1.0,
+          "source_gain": 0.010112285614013672,
+          "actual_operator_norm": 0.05021866554791557,
+          "max_support_regression": 0.004944801330566406,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 220,
+            "candidate_checks": 3
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.5,
+          "source_gain": 0.005105018615722656,
+          "actual_operator_norm": 0.02529815914975331,
+          "max_support_regression": 0.00249481201171875,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 275,
+            "candidate_checks": 4
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.5,
+          "source_gain": 0.005028724670410156,
+          "actual_operator_norm": 0.025109332781151617,
+          "max_support_regression": 5.936622619628906e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 330,
+            "candidate_checks": 5
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.5,
+          "source_gain": 0.005068778991699219,
+          "actual_operator_norm": 0.025109332774600167,
+          "max_support_regression": 0.0024814605712890625,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 385,
+            "candidate_checks": 6
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.25,
+          "source_gain": 0.002551555633544922,
+          "actual_operator_norm": 0.012649079574876656,
+          "max_support_regression": 0.0012559890747070312,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 440,
+            "candidate_checks": 7
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.25,
+          "source_gain": 0.0025129318237304688,
+          "actual_operator_norm": 0.012554666390575809,
+          "max_support_regression": 4.3392181396484375e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 495,
+            "candidate_checks": 8
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.25,
+          "source_gain": 0.002529144287109375,
+          "actual_operator_norm": 0.012554666387345115,
+          "max_support_regression": 0.0012445449829101562,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 550,
+            "candidate_checks": 9
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.125,
+          "source_gain": 0.0012764930725097656,
+          "actual_operator_norm": 0.006324539787438328,
+          "max_support_regression": 0.00061798095703125,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 605,
+            "candidate_checks": 10
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.125,
+          "source_gain": 0.00125885009765625,
+          "actual_operator_norm": 0.006277333195287904,
+          "max_support_regression": 3.6716461181640625e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 660,
+            "candidate_checks": 11
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.125,
+          "source_gain": 0.0012674331665039062,
+          "actual_operator_norm": 0.006277333193804304,
+          "max_support_regression": 0.0006160736083984375,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 715,
+            "candidate_checks": 12
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.0625,
+          "source_gain": 0.0006451606750488281,
+          "actual_operator_norm": 0.003162269893719164,
+          "max_support_regression": 0.00031948089599609375,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 770,
+            "candidate_checks": 13
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.0625,
+          "source_gain": 0.0006399154663085938,
+          "actual_operator_norm": 0.003138666597643952,
+          "max_support_regression": 1.8358230590820312e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 825,
+            "candidate_checks": 14
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.0625,
+          "source_gain": 0.0006399154663085938,
+          "actual_operator_norm": 0.003138666596904223,
+          "max_support_regression": 0.00031566619873046875,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 880,
+            "candidate_checks": 15
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.03125,
+          "source_gain": 0.00031757354736328125,
+          "actual_operator_norm": 0.001581134946859582,
+          "max_support_regression": 0.0001621246337890625,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 935,
+            "candidate_checks": 16
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.03125,
+          "source_gain": 0.0003113746643066406,
+          "actual_operator_norm": 0.001569333298821976,
+          "max_support_regression": 1.6927719116210938e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 990,
+            "candidate_checks": 17
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.03125,
+          "source_gain": 0.0003161430358886719,
+          "actual_operator_norm": 0.0015693332984523327,
+          "max_support_regression": 0.0001621246337890625,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1045,
+            "candidate_checks": 18
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.015625,
+          "source_gain": 0.00015163421630859375,
+          "actual_operator_norm": 0.000790567473429791,
+          "max_support_regression": 7.2479248046875e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1100,
+            "candidate_checks": 19
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.015625,
+          "source_gain": 0.0001506805419921875,
+          "actual_operator_norm": 0.000784666649410988,
+          "max_support_regression": 2.6702880859375e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1155,
+            "candidate_checks": 20
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.015625,
+          "source_gain": 0.00015163421630859375,
+          "actual_operator_norm": 0.0007846666492261445,
+          "max_support_regression": 7.534027099609375e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1210,
+            "candidate_checks": 21
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.0078125,
+          "source_gain": 7.534027099609375e-05,
+          "actual_operator_norm": 0.0003952837367148955,
+          "max_support_regression": 4.100799560546875e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1265,
+            "candidate_checks": 22
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.0078125,
+          "source_gain": 7.724761962890625e-05,
+          "actual_operator_norm": 0.000392333324705494,
+          "max_support_regression": 1.1920928955078125e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1320,
+            "candidate_checks": 23
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.0078125,
+          "source_gain": 7.677078247070312e-05,
+          "actual_operator_norm": 0.0003923333246130019,
+          "max_support_regression": 4.00543212890625e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1375,
+            "candidate_checks": 24
+          }
+        }
+      ],
+      "matched_norm_pairs": [
+        {
+          "scale": 1.0,
+          "project_actual_feasible": false,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.010050773620605469,
+          "source_control_gain": 0.010112285614013672,
+          "gain_difference": -6.151199340820312e-05,
+          "norm_difference": 1.4387664670767464e-11
+        },
+        {
+          "scale": 0.5,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.005028724670410156,
+          "source_control_gain": 0.005068778991699219,
+          "gain_difference": -4.00543212890625e-05,
+          "norm_difference": 6.5514503544417124e-12
+        },
+        {
+          "scale": 0.25,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.0025129318237304688,
+          "source_control_gain": 0.002529144287109375,
+          "gain_difference": -1.621246337890625e-05,
+          "norm_difference": 3.2306934905079743e-12
+        },
+        {
+          "scale": 0.125,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.00125885009765625,
+          "source_control_gain": 0.0012674331665039062,
+          "gain_difference": -8.58306884765625e-06,
+          "norm_difference": 1.4836005687857146e-12
+        },
+        {
+          "scale": 0.0625,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.0006399154663085938,
+          "source_control_gain": 0.0006399154663085938,
+          "gain_difference": 0.0,
+          "norm_difference": 7.39729024562541e-13
+        },
+        {
+          "scale": 0.03125,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.0003113746643066406,
+          "source_control_gain": 0.0003161430358886719,
+          "gain_difference": -4.76837158203125e-06,
+          "norm_difference": 3.6964333503808344e-13
+        },
+        {
+          "scale": 0.015625,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": true,
+          "project_gain": 0.0001506805419921875,
+          "source_control_gain": 0.00015163421630859375,
+          "gain_difference": -9.5367431640625e-07,
+          "norm_difference": 1.8484356840292593e-13
+        },
+        {
+          "scale": 0.0078125,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": true,
+          "project_gain": 7.724761962890625e-05,
+          "source_control_gain": 7.677078247070312e-05,
+          "gain_difference": 4.76837158203125e-07,
+          "norm_difference": 9.249209471234865e-14
+        }
+      ]
+    },
+    {
+      "task": "E02",
+      "engineering": "PASS",
+      "support_initial_max_difference": 0.0,
+      "zero_constraint_state_identity": true,
+      "QP": {
+        "status": "PASS",
+        "sweeps": 22,
+        "max_normalized_violation": 3.322402522911751e-11,
+        "max_dual_change": 7.251843288196003e-11,
+        "active_duals": 9,
+        "stationarity_residual": 2.4188319904710236e-18,
+        "complementarity_residual": 3.7803613182639096e-14,
+        "identity": false
+      },
+      "candidate_qualified": true,
+      "qualified_scales": [
+        0.5,
+        0.25,
+        0.125
+      ],
+      "full_source_gain": 0.004684925079345703,
+      "candidates": [
+        {
+          "kind": "SOURCE",
+          "scale": 1.0,
+          "source_gain": 0.004684925079345703,
+          "actual_operator_norm": 0.05059616915176747,
+          "max_support_regression": 0.0007963180541992188,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 110,
+            "candidate_checks": 1
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 1.0,
+          "source_gain": 0.004661083221435547,
+          "actual_operator_norm": 0.050445082014984974,
+          "max_support_regression": 0.00011157989501953125,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 165,
+            "candidate_checks": 2
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 1.0,
+          "source_gain": 0.004670858383178711,
+          "actual_operator_norm": 0.05044508198494132,
+          "max_support_regression": 0.0007910728454589844,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 220,
+            "candidate_checks": 3
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.5,
+          "source_gain": 0.0023407936096191406,
+          "actual_operator_norm": 0.025298084575883735,
+          "max_support_regression": 0.0004134178161621094,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 275,
+            "candidate_checks": 4
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.5,
+          "source_gain": 0.002326488494873047,
+          "actual_operator_norm": 0.025222541007492487,
+          "max_support_regression": 6.103515625e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 330,
+            "candidate_checks": 5
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.5,
+          "source_gain": 0.002332925796508789,
+          "actual_operator_norm": 0.025222540993637525,
+          "max_support_regression": 0.00041675567626953125,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 385,
+            "candidate_checks": 6
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.25,
+          "source_gain": 0.001171112060546875,
+          "actual_operator_norm": 0.012649042287941867,
+          "max_support_regression": 0.00021505355834960938,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 440,
+            "candidate_checks": 7
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.25,
+          "source_gain": 0.0011639595031738281,
+          "actual_operator_norm": 0.012611270503746243,
+          "max_support_regression": 4.38690185546875e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 495,
+            "candidate_checks": 8
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.25,
+          "source_gain": 0.00116729736328125,
+          "actual_operator_norm": 0.012611270496884161,
+          "max_support_regression": 0.00021982192993164062,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 550,
+            "candidate_checks": 9
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.125,
+          "source_gain": 0.0005846023559570312,
+          "actual_operator_norm": 0.006324521143970934,
+          "max_support_regression": 0.00012683868408203125,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 605,
+            "candidate_checks": 10
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.125,
+          "source_gain": 0.0005826950073242188,
+          "actual_operator_norm": 0.006305635251873122,
+          "max_support_regression": 4.38690185546875e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 660,
+            "candidate_checks": 11
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.125,
+          "source_gain": 0.0005819797515869141,
+          "actual_operator_norm": 0.006305635248419655,
+          "max_support_regression": 0.00012350082397460938,
+          "actual_feasible": false,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 715,
+            "candidate_checks": 12
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.0625,
+          "source_gain": 0.00029277801513671875,
+          "actual_operator_norm": 0.003162260571985467,
+          "max_support_regression": 7.152557373046875e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 770,
+            "candidate_checks": 13
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.0625,
+          "source_gain": 0.0002923011779785156,
+          "actual_operator_norm": 0.003152817625936561,
+          "max_support_regression": 3.24249267578125e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 825,
+            "candidate_checks": 14
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.0625,
+          "source_gain": 0.0002923011779785156,
+          "actual_operator_norm": 0.003152817624209376,
+          "max_support_regression": 6.961822509765625e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 880,
+            "candidate_checks": 15
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.03125,
+          "source_gain": 0.00014543533325195312,
+          "actual_operator_norm": 0.0015811302859927334,
+          "max_support_regression": 3.814697265625e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 935,
+            "candidate_checks": 16
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.03125,
+          "source_gain": 0.00014495849609375,
+          "actual_operator_norm": 0.0015764088129682804,
+          "max_support_regression": 2.002716064453125e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 990,
+            "candidate_checks": 17
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.03125,
+          "source_gain": 0.00014495849609375,
+          "actual_operator_norm": 0.001576408812105312,
+          "max_support_regression": 4.100799560546875e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1045,
+            "candidate_checks": 18
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.015625,
+          "source_gain": 7.534027099609375e-05,
+          "actual_operator_norm": 0.0007905651429963667,
+          "max_support_regression": 3.4332275390625e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1100,
+            "candidate_checks": 19
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.015625,
+          "source_gain": 7.486343383789062e-05,
+          "actual_operator_norm": 0.0007882044064841402,
+          "max_support_regression": 2.765655517578125e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1155,
+            "candidate_checks": 20
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.015625,
+          "source_gain": 7.462501525878906e-05,
+          "actual_operator_norm": 0.0007882044060526697,
+          "max_support_regression": 3.719329833984375e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1210,
+            "candidate_checks": 21
+          }
+        },
+        {
+          "kind": "SOURCE",
+          "scale": 0.0078125,
+          "source_gain": 3.5762786865234375e-05,
+          "actual_operator_norm": 0.00039528257149818336,
+          "max_support_regression": 1.71661376953125e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1265,
+            "candidate_checks": 22
+          }
+        },
+        {
+          "kind": "PROJECT",
+          "scale": 0.0078125,
+          "source_gain": 3.457069396972656e-05,
+          "actual_operator_norm": 0.0003941022032420701,
+          "max_support_regression": 1.3828277587890625e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1320,
+            "candidate_checks": 23
+          }
+        },
+        {
+          "kind": "NORM_SOURCE",
+          "scale": 0.0078125,
+          "source_gain": 3.552436828613281e-05,
+          "actual_operator_norm": 0.00039410220302636283,
+          "max_support_regression": 1.71661376953125e-05,
+          "actual_feasible": true,
+          "reused_exact_state": false,
+          "counts": {
+            "updates": 0,
+            "backwards": 55,
+            "operator_backwards": 0,
+            "generations": 0,
+            "forwards": 1375,
+            "candidate_checks": 24
+          }
+        }
+      ],
+      "matched_norm_pairs": [
+        {
+          "scale": 1.0,
+          "project_actual_feasible": false,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.004661083221435547,
+          "source_control_gain": 0.004670858383178711,
+          "gain_difference": -9.775161743164062e-06,
+          "norm_difference": 3.004365506376061e-11
+        },
+        {
+          "scale": 0.5,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.002326488494873047,
+          "source_control_gain": 0.002332925796508789,
+          "gain_difference": -6.4373016357421875e-06,
+          "norm_difference": 1.3854962316317554e-11
+        },
+        {
+          "scale": 0.25,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.0011639595031738281,
+          "source_control_gain": 0.00116729736328125,
+          "gain_difference": -3.337860107421875e-06,
+          "norm_difference": 6.862082083114451e-12
+        },
+        {
+          "scale": 0.125,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": false,
+          "project_gain": 0.0005826950073242188,
+          "source_control_gain": 0.0005819797515869141,
+          "gain_difference": 7.152557373046875e-07,
+          "norm_difference": 3.453466679292916e-12
+        },
+        {
+          "scale": 0.0625,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": true,
+          "project_gain": 0.0002923011779785156,
+          "source_control_gain": 0.0002923011779785156,
+          "gain_difference": 0.0,
+          "norm_difference": 1.7271848014310809e-12
+        },
+        {
+          "scale": 0.03125,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": true,
+          "project_gain": 0.00014495849609375,
+          "source_control_gain": 0.00014495849609375,
+          "gain_difference": 0.0,
+          "norm_difference": 8.629683339450578e-13
+        },
+        {
+          "scale": 0.015625,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": true,
+          "project_gain": 7.486343383789062e-05,
+          "source_control_gain": 7.462501525878906e-05,
+          "gain_difference": 2.384185791015625e-07,
+          "norm_difference": 4.314705060251556e-13
+        },
+        {
+          "scale": 0.0078125,
+          "project_actual_feasible": true,
+          "source_control_actual_feasible": true,
+          "project_gain": 3.457069396972656e-05,
+          "source_control_gain": 3.552436828613281e-05,
+          "gain_difference": -9.5367431640625e-07,
+          "norm_difference": 2.1570728059652766e-13
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "forwards": 2750,
+    "updates": 0,
+    "generations": 0,
+    "candidate_checks": 48,
+    "backwards": 110,
+    "operator_backwards": 0
+  },
+  "gpu_process_hours": 0.1427646479341719,
+  "semantic_protection_effectiveness_tested": false,
+  "independent_confirmation": false,
+  "metric": "Euclidean fixed canonical parameter frame, not operator invariant",
+  "prior_V6_unchanged": true
+}

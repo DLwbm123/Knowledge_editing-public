@@ -1,0 +1,937 @@
+{
+  "as_of_CST": "2026-10-23 09:51",
+  "authorized_deadline_CST": "2026-10-23 11:59:35",
+  "window_not_full12_elapsed": true,
+  "independent_confirmation": false,
+  "V64": {
+    "A_T2G": 33,
+    "B_T2G": 35,
+    "new_source_assertions": 2,
+    "joint_gate": false
+  },
+  "experiments": [
+    {
+      "version": 65,
+      "mechanism": "仅答案位置写入",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 35,
+        "T2L": 0,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": 2,
+        "positive_edits_vs_A": 3,
+        "B_T2G_correct_losses": 2,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": false
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": false
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 0,
+        "extra_caps": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "pass": false
+      },
+      "status": "ANSWER_POSITION_WRITER_NOT_PROMOTED",
+      "unsupported": 34,
+      "caps": 1,
+      "report": "../answer_writer_v65_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 66,
+      "mechanism": "源输入子空间初始化",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 31,
+        "T2L": 0,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": -2,
+        "positive_edits_vs_A": 1,
+        "B_T2G_correct_losses": 5,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": false
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": false
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 4,
+        "extra_caps": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "pass": false
+      },
+      "status": "SOURCE_INITIALIZATION_NOT_PROMOTED",
+      "unsupported": 38,
+      "caps": 0,
+      "report": "../source_init_v66_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 67,
+      "mechanism": "原问优先梯度投影",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 35,
+        "T2L": 1,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": 2,
+        "positive_edits_vs_A": 2,
+        "B_T2G_correct_losses": 0,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "extra_unsupported_vs_A": 2,
+        "extra_caps": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "pass": false
+      },
+      "status": "GRADIENT_PROJECTION_NOT_PROMOTED",
+      "unsupported": 36,
+      "caps": 1,
+      "report": "../gradient_guard_v67_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 68,
+      "mechanism": "换图Base分布锚",
+      "metrics": {
+        "T1L": 21,
+        "T1G": 35,
+        "T2G": 27,
+        "T2L": 1,
+        "T0": 9,
+        "REPHRASE_DIAGNOSTIC": 36
+      },
+      "gate": {
+        "T2G_net_vs_A": -6,
+        "positive_edits_vs_A": 0,
+        "B_T2G_correct_losses": 8,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          },
+          "B_VIEW_CE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": false,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": false,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "extra_unsupported_vs_A": 0,
+        "extra_caps": {
+          "A_NATIVE": 21,
+          "B_VIEW_CE": 21
+        },
+        "pass": false
+      },
+      "status": "SWAPPED_PREFIX_ANCHOR_NOT_PROMOTED",
+      "unsupported": 20,
+      "caps": 21,
+      "report": "../swap_anchor_v68_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 69,
+      "mechanism": "监督输出方向初始化",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 37,
+        "T2L": 1,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": 4,
+        "positive_edits_vs_A": 3,
+        "B_T2G_correct_losses": 0,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 2,
+        "extra_caps": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "pass": false
+      },
+      "status": "OUTPUT_INITIALIZATION_NOT_PROMOTED",
+      "unsupported": 36,
+      "caps": 0,
+      "report": "../output_init_v69_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 70,
+      "mechanism": "完整梯度初始化",
+      "metrics": {
+        "T1L": 31,
+        "T1G": 40,
+        "T2G": 32,
+        "T2L": 2,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": -1,
+        "positive_edits_vs_A": 1,
+        "B_T2G_correct_losses": 3,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": false,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": false,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "extra_unsupported_vs_A": 0,
+        "extra_caps": {
+          "A_NATIVE": 2,
+          "B_VIEW_CE": 2
+        },
+        "pass": false
+      },
+      "status": "FULL_GRADIENT_INITIALIZATION_NOT_PROMOTED",
+      "unsupported": 32,
+      "caps": 2,
+      "report": "../full_gradient_init_v70_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 71,
+      "mechanism": "仅根核训练",
+      "metrics": {
+        "T1L": 5,
+        "T1G": 6,
+        "T2G": 5,
+        "T2L": 1,
+        "T0": 1,
+        "REPHRASE_DIAGNOSTIC": 3
+      },
+      "gate": {
+        "T2G_net_vs_A": -28,
+        "positive_edits_vs_A": 0,
+        "B_T2G_correct_losses": 30,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          },
+          "B_VIEW_CE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": false,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": false,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "extra_unsupported_vs_A": 0,
+        "extra_caps": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "pass": false
+      },
+      "status": "FIXED_TAIL_NOT_PROMOTED",
+      "unsupported": 1,
+      "caps": 0,
+      "report": "../frozen_tail_v71_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 72,
+      "mechanism": "核心度量方向",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 34,
+        "T2L": 1,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": 1,
+        "positive_edits_vs_A": 2,
+        "B_T2G_correct_losses": 2,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 1,
+        "extra_caps": {
+          "A_NATIVE": 5,
+          "B_VIEW_CE": 5
+        },
+        "pass": false
+      },
+      "status": "CORE_METRIC_NOT_PROMOTED",
+      "unsupported": 35,
+      "caps": 5,
+      "report": "../core_metric_v72_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 73,
+      "mechanism": "源惊奇度加权",
+      "metrics": {
+        "T1L": 31,
+        "T1G": 32,
+        "T2G": 30,
+        "T2L": 1,
+        "T0": 8,
+        "REPHRASE_DIAGNOSTIC": 32
+      },
+      "gate": {
+        "T2G_net_vs_A": -3,
+        "positive_edits_vs_A": 3,
+        "B_T2G_correct_losses": 7,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          },
+          "B_VIEW_CE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": false,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": false,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 2,
+        "extra_caps": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "pass": false
+      },
+      "status": "SOURCE_SURPRISAL_NOT_PROMOTED",
+      "unsupported": 36,
+      "caps": 2,
+      "report": "../source_surprisal_v73_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 74,
+      "mechanism": "源状态子空间门控",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 21,
+        "T2L": 1,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": -12,
+        "positive_edits_vs_A": 0,
+        "B_T2G_correct_losses": 14,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "extra_unsupported_vs_A": 0,
+        "extra_caps": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "pass": false
+      },
+      "status": "SOURCE_SPAN_NOT_PROMOTED",
+      "unsupported": 34,
+      "caps": 0,
+      "report": "../source_span_v74_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 75,
+      "mechanism": "两问法最差损失",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 36,
+        "T2L": 1,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": 3,
+        "positive_edits_vs_A": 3,
+        "B_T2G_correct_losses": 0,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 1,
+        "extra_caps": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "pass": false
+      },
+      "status": "WORST_VIEW_NOT_PROMOTED",
+      "unsupported": 35,
+      "caps": 0,
+      "report": "../worst_view_v75_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 76,
+      "mechanism": "目标外条件KL",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 22,
+        "T2L": 0,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 39
+      },
+      "gate": {
+        "T2G_net_vs_A": -11,
+        "positive_edits_vs_A": 0,
+        "B_T2G_correct_losses": 13,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": false
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": false
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": false
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": false
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 0,
+        "extra_caps": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "pass": false
+      },
+      "status": "COMPLEMENT_KL_NOT_PROMOTED",
+      "unsupported": 34,
+      "caps": 0,
+      "report": "../complement_kl_v76_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 77,
+      "mechanism": "固定输入、训练输出",
+      "metrics": {
+        "T1L": 7,
+        "T1G": 22,
+        "T2G": 15,
+        "T2L": 2,
+        "T0": 6,
+        "REPHRASE_DIAGNOSTIC": 23
+      },
+      "gate": {
+        "T2G_net_vs_A": -18,
+        "positive_edits_vs_A": 1,
+        "B_T2G_correct_losses": 21,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          },
+          "B_VIEW_CE": {
+            "T0": false,
+            "T1G": false,
+            "REPHRASE_DIAGNOSTIC": false
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": false,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": false,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 0,
+          "B_VIEW_CE": 0
+        },
+        "extra_unsupported_vs_A": 1,
+        "extra_caps": {
+          "A_NATIVE": 2,
+          "B_VIEW_CE": 2
+        },
+        "pass": false
+      },
+      "status": "FIXED_INPUT_NOT_PROMOTED",
+      "unsupported": 33,
+      "caps": 2,
+      "report": "../fixed_input_v77_20261023/REPORT_ZH.md"
+    },
+    {
+      "version": 78,
+      "mechanism": "固定标签平滑",
+      "metrics": {
+        "T1L": 33,
+        "T1G": 40,
+        "T2G": 34,
+        "T2L": 1,
+        "T0": 10,
+        "REPHRASE_DIAGNOSTIC": 40
+      },
+      "gate": {
+        "T2G_net_vs_A": 1,
+        "positive_edits_vs_A": 2,
+        "B_T2G_correct_losses": 2,
+        "preserved": {
+          "A_NATIVE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          },
+          "B_VIEW_CE": {
+            "T0": true,
+            "T1G": true,
+            "REPHRASE_DIAGNOSTIC": true
+          }
+        },
+        "locality_not_lower": {
+          "A_NATIVE": {
+            "T1L": true,
+            "T2L": true
+          },
+          "B_VIEW_CE": {
+            "T1L": true,
+            "T2L": true
+          }
+        },
+        "extra_Base_correct_losses": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "extra_unsupported_vs_A": 1,
+        "extra_caps": {
+          "A_NATIVE": 1,
+          "B_VIEW_CE": 1
+        },
+        "pass": false
+      },
+      "status": "LABEL_SMOOTH_NOT_PROMOTED",
+      "unsupported": 35,
+      "caps": 1,
+      "report": "../label_smooth_v78_20261023/REPORT_ZH.md"
+    }
+  ],
+  "completed_costs": [
+    {
+      "scope": "V63 failed real admission",
+      "GPU_process_seconds": 48.62662672996521,
+      "forwards": 56,
+      "vision_forwards": 60,
+      "backwards": 0,
+      "updates": 0,
+      "generations": 0
+    },
+    {
+      "scope": "V64 source-view coverage",
+      "GPU_process_seconds": 2437.8414957523346,
+      "forwards": 16834,
+      "vision_forwards": 704,
+      "backwards": 6580,
+      "updates": 3200,
+      "generations": 442,
+      "status": "SOURCE_VIEW_COVERAGE_NOT_PROMOTED"
+    },
+    {
+      "scope": "V65 answer-position writer",
+      "GPU_process_seconds": 1306.7365765571594,
+      "forwards": 8612,
+      "vision_forwards": 399,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "status": "ANSWER_POSITION_WRITER_NOT_PROMOTED"
+    },
+    {
+      "scope": "V66 source initialization",
+      "GPU_process_seconds": 1285.6359317302704,
+      "forwards": 7836,
+      "vision_forwards": 459,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "status": "SOURCE_INITIALIZATION_NOT_PROMOTED"
+    },
+    {
+      "scope": "V67 native-priority gradient projection",
+      "GPU_process_seconds": 1295.7112708091736,
+      "forwards": 8526,
+      "vision_forwards": 399,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "status": "GRADIENT_PROJECTION_NOT_PROMOTED"
+    },
+    {
+      "scope": "V68 swapped-prefix Base anchor including failure and diagnostic",
+      "GPU_process_seconds": 2612.9890744686127,
+      "forwards": 34002,
+      "vision_forwards": 517,
+      "backwards": 5088,
+      "updates": 1600,
+      "generations": 221,
+      "status": "SWAPPED_PREFIX_ANCHOR_NOT_PROMOTED"
+    },
+    {
+      "scope": "V69 supervised output initialization",
+      "GPU_process_seconds": 1298.4575185775757,
+      "status": "OUTPUT_INITIALIZATION_NOT_PROMOTED",
+      "forwards": 7599,
+      "backwards": 3410,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 459,
+      "initialization_backwards": 30
+    },
+    {
+      "scope": "V70 full gradient initialization",
+      "GPU_process_seconds": 1440.695431470871,
+      "status": "FULL_GRADIENT_INITIALIZATION_NOT_PROMOTED",
+      "forwards": 10698,
+      "backwards": 3410,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 459,
+      "initialization_backwards": 30
+    },
+    {
+      "scope": "V71 fixed-tail root-only training",
+      "GPU_process_seconds": 1507.311824798584,
+      "status": "FIXED_TAIL_NOT_PROMOTED",
+      "forwards": 14849,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    },
+    {
+      "scope": "V72 core metric direction",
+      "GPU_process_seconds": 1437.0295314788818,
+      "status": "CORE_METRIC_NOT_PROMOTED",
+      "forwards": 12904,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    },
+    {
+      "scope": "V73 source-surprisal weighted CE",
+      "GPU_process_seconds": 2300.6492414474487,
+      "status": "SOURCE_SURPRISAL_NOT_PROMOTED",
+      "forwards": 9484,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    },
+    {
+      "scope": "V74 fixed source-span residual gate",
+      "GPU_process_seconds": 1299.9572486877441,
+      "status": "SOURCE_SPAN_NOT_PROMOTED",
+      "forwards": 8281,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    },
+    {
+      "scope": "V75 worst-view whole-answer CE",
+      "GPU_process_seconds": 1267.3528671264648,
+      "status": "WORST_VIEW_NOT_PROMOTED",
+      "forwards": 7544,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    },
+    {
+      "scope": "V76 target-complement conditional KL",
+      "GPU_process_seconds": 1303.0047347545624,
+      "status": "COMPLEMENT_KL_NOT_PROMOTED",
+      "forwards": 8201,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    },
+    {
+      "scope": "V77 fixed input trainable output pair",
+      "GPU_process_seconds": 1466.9134962558746,
+      "status": "FIXED_INPUT_NOT_PROMOTED",
+      "forwards": 13836,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    },
+    {
+      "scope": "V78 fixed uniform label smoothing",
+      "GPU_process_seconds": 1307.0651879310608,
+      "status": "LABEL_SMOOTH_NOT_PROMOTED",
+      "forwards": 8726,
+      "backwards": 3380,
+      "updates": 1600,
+      "generations": 221,
+      "vision_forwards": 399,
+      "initialization_backwards": 0
+    }
+  ],
+  "totals": {
+    "forwards": 177988,
+    "vision_forwards": 6648,
+    "backwards": 55668,
+    "updates": 25600,
+    "generations": 3536,
+    "GPU_process_seconds": 23615.978058576584
+  },
+  "storage_reserved_bytes": 29950000000,
+  "storage_remaining_closeout_only": 50000000
+}

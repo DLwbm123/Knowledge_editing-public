@@ -1,0 +1,19 @@
+{
+  "preregistered_before_unblinding": true,
+  "classes": [
+    "CORRECT",
+    "INCORRECT",
+    "UNCERTAIN",
+    "ABSTAIN"
+  ],
+  "reference": "Original benchmark reference, not captions or added clinical labels",
+  "correct": "Full requested finding/relation is supported; equivalent terms allowed, contradictory or unsupported specificity is not silently accepted",
+  "incorrect": "Wrong target, wrong finding or reference relation contradicted; frozen prior semantic verdicts retained for exactly identical question/reference/full answer text",
+  "uncertain": "Incomplete/ambiguous reference equivalence or insufficient supplied evidence",
+  "abstain": "Explicit refusal or no substantive answer",
+  "reuse": "Existing V22 frozen blinded semantic labels only; never claim historical model replay or input-token equality from label reuse",
+  "new_scoring": "Deduplicate exact question/reference/answer, shuffle fixed seed610022, hide arm/owner mapping; freeze every verdict before unblinding",
+  "truncation": "Record all EOS/caps; incomplete capped answers cannot be treated as complete without evidence",
+  "damage": "Only Base CORRECT consumers are damage denominator; zero denominator NA",
+  "source_echo": "Only two original consumers with reference-supported incompatible anatomical target, one unique input; INCORRECT plus exact normalized full source answer is conservative echo count, other relations UNKNOWN"
+}

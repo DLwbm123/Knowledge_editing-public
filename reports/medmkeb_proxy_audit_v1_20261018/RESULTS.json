@@ -1,0 +1,67 @@
+{
+  "status": "AUDIT_COMPLETE_INITIAL_DRIFT_PRESERVED_PREFILL_REPAIR_PASS",
+  "rows": 20,
+  "language_forwards": 120,
+  "vision_forwards": 240,
+  "new_generations": 0,
+  "updates": 0,
+  "NN_backwards": 0,
+  "all_mask_shift_loss_shared_context_checks_pass": true,
+  "positive_score_counts_by_Base_label": {
+    "CORRECT": {
+      "score_mean": 2,
+      "score_sum": 9,
+      "score_first_divergence": 9
+    },
+    "INCORRECT": {
+      "score_mean": 4,
+      "score_sum": 2,
+      "score_first_divergence": 3
+    },
+    "UNCERTAIN": {
+      "score_mean": 1,
+      "score_sum": 3,
+      "score_first_divergence": 3
+    }
+  },
+  "Base_correct_count": 9,
+  "mean_sum_sign_disagreements": 11,
+  "fixed_construct": {
+    "old_score": -0.45938539505004883,
+    "audit_score": -0.45966068903605145,
+    "difference": 0.00027529398600262267,
+    "first_divergence": 4.0734639167785645,
+    "sum": 4.931996027628581,
+    "pair_means": [
+      -0.20715093612670898,
+      -0.1825103759765625,
+      -0.9893207550048828
+    ]
+  },
+  "pair_NLLs_persisted": true,
+  "legacy_reproduction_tolerance": 1e-06,
+  "legacy_reproduction_pass": false,
+  "eval_used_for_metric_selection": false,
+  "alternate_metrics_used_for_training": false,
+  "preprocessing_seed_comparison_to_old_available": false,
+  "conditional_training_started": false,
+  "supplemental_language_forwards": 6,
+  "total_audit_and_repair_language_forwards": 126,
+  "prefill_repair": {
+    "status": "PASS",
+    "score": -0.45938539505004883,
+    "legacy_score": -0.45938539505004883,
+    "absolute_difference": 0.0,
+    "negative_score_preserved": true,
+    "backend": {
+      "flash": false,
+      "efficient": false,
+      "math": true,
+      "tf32": false
+    }
+  },
+  "mean_positive_S0_not_necessary_for_relative_hinge": true,
+  "alternate_metric_selected": false,
+  "conditional_V5_registered": true,
+  "conditional_V5_started": true
+}

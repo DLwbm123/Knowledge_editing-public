@@ -1,0 +1,35 @@
+{
+  "version": "V31",
+  "status": "FROZEN_BEFORE_RUN",
+  "arms": [
+    "EXPR_FORWARD",
+    "EXPR_REVERSE"
+  ],
+  "cases": 6,
+  "parameters": 7168,
+  "steps": 160,
+  "supervised_relations_per_step": 2,
+  "schedule": "FORWARD original odd/alternate even; REVERSE alternate odd/original even; each80/80 pairs",
+  "eval_questions": 60,
+  "base_generations": 60,
+  "method_generations": 120,
+  "source_correctness_gate": "Reuse V28 fixed 3/6 source opportunities; no new case filtering",
+  "budgets": {
+    "updates": 1920,
+    "backwards": 4000,
+    "forwards": 160000,
+    "generations": 180,
+    "gpu_hours": 2,
+    "wall_hours": 24,
+    "remote_bytes": 2000000000,
+    "local_bytes": 250000000
+  },
+  "eval_groups": {
+    "SOURCE": 12,
+    "OLD_PARAPHRASE": 24,
+    "V29_REPLAY": 24
+  },
+  "reconstruction": "FORWARD 160-step NLL vs V30 EXPR at fixed1e-5/5e-4; all60Base+60FORWARD bindings/tokens/answers exact",
+  "promotion_gate": "No automatic promotion: order sensitivity diagnostic on previously observed development questions; JOINT remains default.",
+  "hypothesis": "Changing only alternating phase can change regression behavior, despite same exposure and budget; not an isolated last-step intervention."
+}

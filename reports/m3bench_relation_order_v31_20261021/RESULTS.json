@@ -1,0 +1,798 @@
+{
+  "status": "COMPLETE_FIXED_REFERENCE_REVIEW",
+  "eligible_pairs": 3,
+  "parameters_per_edit": 7168,
+  "fp32_parameter_bytes": 28672,
+  "independent_confirmation": false,
+  "clinical_adjudication": false,
+  "arms": {
+    "BASE": {
+      "UPDATE": {
+        "n": 30,
+        "labels": {
+          "UNCERTAIN": 7,
+          "INCORRECT": 23
+        }
+      },
+      "PRESERVE": {
+        "n": 30,
+        "labels": {
+          "CORRECT": 12,
+          "UNCERTAIN": 9,
+          "INCORRECT": 9
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 0,
+        "eos": 60,
+        "tokens": 1905
+      },
+      "strata": {
+        "SOURCE_all": {
+          "update_correct": 0,
+          "update_n": 6,
+          "preserve_correct": 3,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 0,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 6,
+          "labels": {
+            "UNCERTAIN": 2,
+            "CORRECT": 3,
+            "INCORRECT": 7
+          },
+          "UPDATE_labels": {
+            "UNCERTAIN": 1,
+            "INCORRECT": 5
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 3,
+            "UNCERTAIN": 1,
+            "INCORRECT": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 336
+          }
+        },
+        "SOURCE_source_qualified": {
+          "update_correct": 0,
+          "update_n": 3,
+          "preserve_correct": 3,
+          "preserve_n": 3,
+          "update_base_nonC": 3,
+          "update_repairs": 0,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 3,
+          "labels": {
+            "UNCERTAIN": 1,
+            "CORRECT": 3,
+            "INCORRECT": 2
+          },
+          "UPDATE_labels": {
+            "UNCERTAIN": 1,
+            "INCORRECT": 2
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 3
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 6,
+            "tokens": 158
+          }
+        },
+        "OLD_PARAPHRASE_all": {
+          "update_correct": 0,
+          "update_n": 12,
+          "preserve_correct": 4,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 0,
+          "preserve_base_C": 4,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 12,
+          "labels": {
+            "INCORRECT": 11,
+            "UNCERTAIN": 9,
+            "CORRECT": 4
+          },
+          "UPDATE_labels": {
+            "INCORRECT": 8,
+            "UNCERTAIN": 4
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 5,
+            "CORRECT": 4,
+            "INCORRECT": 3
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 24,
+            "tokens": 740
+          }
+        },
+        "OLD_PARAPHRASE_source_qualified": {
+          "update_correct": 0,
+          "update_n": 6,
+          "preserve_correct": 4,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 0,
+          "preserve_base_C": 4,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 6,
+          "labels": {
+            "INCORRECT": 4,
+            "UNCERTAIN": 4,
+            "CORRECT": 4
+          },
+          "UPDATE_labels": {
+            "INCORRECT": 4,
+            "UNCERTAIN": 2
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 2,
+            "CORRECT": 4
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 321
+          }
+        },
+        "V29_REPLAY_all": {
+          "update_correct": 0,
+          "update_n": 12,
+          "preserve_correct": 5,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 0,
+          "preserve_base_C": 5,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 12,
+          "labels": {
+            "INCORRECT": 14,
+            "UNCERTAIN": 5,
+            "CORRECT": 5
+          },
+          "UPDATE_labels": {
+            "INCORRECT": 10,
+            "UNCERTAIN": 2
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 3,
+            "CORRECT": 5,
+            "INCORRECT": 4
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 24,
+            "tokens": 829
+          }
+        },
+        "V29_REPLAY_source_qualified": {
+          "update_correct": 0,
+          "update_n": 6,
+          "preserve_correct": 3,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 0,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 0,
+          "pair_n": 6,
+          "labels": {
+            "INCORRECT": 8,
+            "UNCERTAIN": 1,
+            "CORRECT": 3
+          },
+          "UPDATE_labels": {
+            "INCORRECT": 6
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 1,
+            "CORRECT": 3,
+            "INCORRECT": 2
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 356
+          }
+        }
+      },
+      "cross_relation_exact_copy": 0
+    },
+    "EXPR_FORWARD": {
+      "UPDATE": {
+        "n": 30,
+        "labels": {
+          "CORRECT": 24,
+          "INCORRECT": 3,
+          "ABSTAIN": 2,
+          "UNCERTAIN": 1
+        }
+      },
+      "PRESERVE": {
+        "n": 30,
+        "labels": {
+          "CORRECT": 27,
+          "UNCERTAIN": 2,
+          "INCORRECT": 1
+        }
+      },
+      "stability": {
+        "cap": 1,
+        "empty_decoded": 2,
+        "eos": 59,
+        "tokens": 1679
+      },
+      "strata": {
+        "SOURCE_all": {
+          "update_correct": 6,
+          "update_n": 6,
+          "preserve_correct": 6,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 6,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 6,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 12
+          },
+          "UPDATE_labels": {
+            "CORRECT": 6
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 6
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 116
+          }
+        },
+        "SOURCE_source_qualified": {
+          "update_correct": 3,
+          "update_n": 3,
+          "preserve_correct": 3,
+          "preserve_n": 3,
+          "update_base_nonC": 3,
+          "update_repairs": 3,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 3,
+          "pair_n": 3,
+          "labels": {
+            "CORRECT": 6
+          },
+          "UPDATE_labels": {
+            "CORRECT": 3
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 3
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 6,
+            "tokens": 53
+          }
+        },
+        "OLD_PARAPHRASE_all": {
+          "update_correct": 7,
+          "update_n": 12,
+          "preserve_correct": 9,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 7,
+          "preserve_base_C": 4,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 4,
+          "pair_n": 12,
+          "labels": {
+            "CORRECT": 16,
+            "UNCERTAIN": 3,
+            "INCORRECT": 4,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 7,
+            "INCORRECT": 3,
+            "ABSTAIN": 1,
+            "UNCERTAIN": 1
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 2,
+            "CORRECT": 9,
+            "INCORRECT": 1
+          },
+          "stability": {
+            "cap": 1,
+            "empty_decoded": 1,
+            "eos": 23,
+            "tokens": 1337
+          }
+        },
+        "OLD_PARAPHRASE_source_qualified": {
+          "update_correct": 3,
+          "update_n": 6,
+          "preserve_correct": 4,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 3,
+          "preserve_base_C": 4,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 1,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 7,
+            "UNCERTAIN": 2,
+            "INCORRECT": 2,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 3,
+            "INCORRECT": 2,
+            "ABSTAIN": 1
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 2,
+            "CORRECT": 4
+          },
+          "stability": {
+            "cap": 1,
+            "empty_decoded": 1,
+            "eos": 11,
+            "tokens": 1230
+          }
+        },
+        "V29_REPLAY_all": {
+          "update_correct": 11,
+          "update_n": 12,
+          "preserve_correct": 12,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 11,
+          "preserve_base_C": 5,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 11,
+          "pair_n": 12,
+          "labels": {
+            "CORRECT": 23,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 11,
+            "ABSTAIN": 1
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 12
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 1,
+            "eos": 24,
+            "tokens": 226
+          }
+        },
+        "V29_REPLAY_source_qualified": {
+          "update_correct": 5,
+          "update_n": 6,
+          "preserve_correct": 6,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 5,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 5,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 11,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 5,
+            "ABSTAIN": 1
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 6
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 1,
+            "eos": 12,
+            "tokens": 100
+          }
+        }
+      },
+      "cross_relation_exact_copy": 3
+    },
+    "EXPR_REVERSE": {
+      "UPDATE": {
+        "n": 30,
+        "labels": {
+          "CORRECT": 24,
+          "INCORRECT": 2,
+          "ABSTAIN": 2,
+          "UNCERTAIN": 2
+        }
+      },
+      "PRESERVE": {
+        "n": 30,
+        "labels": {
+          "CORRECT": 27,
+          "UNCERTAIN": 2,
+          "INCORRECT": 1
+        }
+      },
+      "stability": {
+        "cap": 0,
+        "empty_decoded": 2,
+        "eos": 60,
+        "tokens": 734
+      },
+      "strata": {
+        "SOURCE_all": {
+          "update_correct": 6,
+          "update_n": 6,
+          "preserve_correct": 6,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 6,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 6,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 12
+          },
+          "UPDATE_labels": {
+            "CORRECT": 6
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 6
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 12,
+            "tokens": 116
+          }
+        },
+        "SOURCE_source_qualified": {
+          "update_correct": 3,
+          "update_n": 3,
+          "preserve_correct": 3,
+          "preserve_n": 3,
+          "update_base_nonC": 3,
+          "update_repairs": 3,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 3,
+          "pair_n": 3,
+          "labels": {
+            "CORRECT": 6
+          },
+          "UPDATE_labels": {
+            "CORRECT": 3
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 3
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 0,
+            "eos": 6,
+            "tokens": 53
+          }
+        },
+        "OLD_PARAPHRASE_all": {
+          "update_correct": 7,
+          "update_n": 12,
+          "preserve_correct": 9,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 7,
+          "preserve_base_C": 4,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 4,
+          "pair_n": 12,
+          "labels": {
+            "CORRECT": 16,
+            "UNCERTAIN": 4,
+            "INCORRECT": 3,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 7,
+            "INCORRECT": 2,
+            "ABSTAIN": 1,
+            "UNCERTAIN": 2
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 2,
+            "CORRECT": 9,
+            "INCORRECT": 1
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 1,
+            "eos": 24,
+            "tokens": 392
+          }
+        },
+        "OLD_PARAPHRASE_source_qualified": {
+          "update_correct": 3,
+          "update_n": 6,
+          "preserve_correct": 4,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 3,
+          "preserve_base_C": 4,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 1,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 7,
+            "UNCERTAIN": 2,
+            "INCORRECT": 2,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 3,
+            "INCORRECT": 2,
+            "ABSTAIN": 1
+          },
+          "PRESERVE_labels": {
+            "UNCERTAIN": 2,
+            "CORRECT": 4
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 1,
+            "eos": 12,
+            "tokens": 269
+          }
+        },
+        "V29_REPLAY_all": {
+          "update_correct": 11,
+          "update_n": 12,
+          "preserve_correct": 12,
+          "preserve_n": 12,
+          "update_base_nonC": 12,
+          "update_repairs": 11,
+          "preserve_base_C": 5,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 11,
+          "pair_n": 12,
+          "labels": {
+            "CORRECT": 23,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 11,
+            "ABSTAIN": 1
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 12
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 1,
+            "eos": 24,
+            "tokens": 226
+          }
+        },
+        "V29_REPLAY_source_qualified": {
+          "update_correct": 5,
+          "update_n": 6,
+          "preserve_correct": 6,
+          "preserve_n": 6,
+          "update_base_nonC": 6,
+          "update_repairs": 5,
+          "preserve_base_C": 3,
+          "preserve_loss_nonC": 0,
+          "preserve_loss_I": 0,
+          "both_correct": 5,
+          "pair_n": 6,
+          "labels": {
+            "CORRECT": 11,
+            "ABSTAIN": 1
+          },
+          "UPDATE_labels": {
+            "CORRECT": 5,
+            "ABSTAIN": 1
+          },
+          "PRESERVE_labels": {
+            "CORRECT": 6
+          },
+          "stability": {
+            "cap": 0,
+            "empty_decoded": 1,
+            "eos": 12,
+            "tokens": 100
+          }
+        }
+      },
+      "cross_relation_exact_copy": 2
+    }
+  },
+  "paired": {
+    "SOURCE_UPDATE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 6
+      }
+    },
+    "SOURCE_UPDATE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 3
+      }
+    },
+    "SOURCE_PRESERVE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 6
+      }
+    },
+    "SOURCE_PRESERVE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 3
+      }
+    },
+    "OLD_PARAPHRASE_UPDATE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 7,
+        "INCORRECT->INCORRECT": 2,
+        "ABSTAIN->ABSTAIN": 1,
+        "UNCERTAIN->UNCERTAIN": 1,
+        "INCORRECT->UNCERTAIN": 1
+      }
+    },
+    "OLD_PARAPHRASE_UPDATE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 3,
+        "INCORRECT->INCORRECT": 2,
+        "ABSTAIN->ABSTAIN": 1
+      }
+    },
+    "OLD_PARAPHRASE_PRESERVE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "UNCERTAIN->UNCERTAIN": 2,
+        "CORRECT->CORRECT": 9,
+        "INCORRECT->INCORRECT": 1
+      }
+    },
+    "OLD_PARAPHRASE_PRESERVE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "UNCERTAIN->UNCERTAIN": 2,
+        "CORRECT->CORRECT": 4
+      }
+    },
+    "V29_REPLAY_UPDATE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 11,
+        "ABSTAIN->ABSTAIN": 1
+      }
+    },
+    "V29_REPLAY_UPDATE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 5,
+        "ABSTAIN->ABSTAIN": 1
+      }
+    },
+    "V29_REPLAY_PRESERVE_all": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 12
+      }
+    },
+    "V29_REPLAY_PRESERVE_source_qualified": {
+      "repairs": 0,
+      "losses": 0,
+      "transitions": {
+        "CORRECT->CORRECT": 6
+      }
+    }
+  },
+  "audit": {
+    "historical_JOINT_source": "V30 frozen outputs and labels; not newly trained",
+    "vs_historical_JOINT": {
+      "SOURCE": {
+        "repairs": 0,
+        "losses": 0
+      },
+      "OLD_PARAPHRASE": {
+        "repairs": 2,
+        "losses": 2
+      },
+      "V29_REPLAY": {
+        "repairs": 4,
+        "losses": 0
+      }
+    },
+    "changed_outputs": 2,
+    "shared_hidden_label_mismatches": 0,
+    "control_exact_replay_consumers": 120,
+    "forward_trajectory_passes": 6,
+    "hidden_unique_labels": {
+      "CORRECT": 63,
+      "INCORRECT": 35,
+      "UNCERTAIN": 21,
+      "ABSTAIN": 2
+    },
+    "retired_files": 24,
+    "retired_bytes": 850512
+  },
+  "cost": {
+    "code": 0,
+    "counts": {
+      "forwards": 8167,
+      "backwards": 3845,
+      "updates": 1920,
+      "generations": 180,
+      "vision_forwards": 116,
+      "query_keys": 0
+    },
+    "seconds": 1252.9097738265991,
+    "original_wall_seconds": 1318.205334186554
+  },
+  "decision": "JOINT_REMAINS_DEFAULT; phase swap does not repair two old-paraphrase losses"
+}

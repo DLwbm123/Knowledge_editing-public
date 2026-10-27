@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "visual": {
+    "status": "PASS",
+    "visual_only": true,
+    "prefix_teacher_equal": true,
+    "original_unchanged": true,
+    "original_identity": true,
+    "real_model_calls": 0
+  },
+  "cache": {
+    "status": "PASS",
+    "cache_three_batch_loss_gradient_exact": true,
+    "kind": "CPU_CAUSAL_FIXTURE_ONLY",
+    "zero_exact": true,
+    "single_position": true,
+    "no_alias": true,
+    "explicit_hook_exact": true,
+    "prefix_stepwise_exact": true,
+    "duplicate_gradient_update_exact": true,
+    "RNG_unchanged": true,
+    "detached_direction": true,
+    "random_recipe": true,
+    "real_model_calls": 0
+  },
+  "lora": {
+    "status": "PASS",
+    "real_model_calls": 0,
+    "normalized_LoRA_parameters": 18432,
+    "zero_residual": true,
+    "gradient_and_scalar_step": true,
+    "strict_margin_with_EOS": true,
+    "RNG_restored": true
+  }
+}

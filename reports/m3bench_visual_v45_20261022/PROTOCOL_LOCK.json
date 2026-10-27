@@ -1,0 +1,16 @@
+{
+  "version": "V45",
+  "time": 1792619799.8428879,
+  "purpose": "visual sensitivity diagnostic only; not accuracy or grounding confirmation",
+  "intervention": "fixed cyclic donor image from next case in original task order, same questions and generation; original references retained only as identity metadata never graded for swapped image",
+  "required_replay": "62 Base outputs exact before training; each rebuilt original-seed ADAPT original+SHORT tokens/text/EOS/cap exact before any swapped inference, all62 required for interpretation",
+  "seed": "original unchanged; reconstruct because previous weights retired",
+  "updates": 640,
+  "expected_backwards": 2570,
+  "backward_cap": 2600,
+  "new_outputs": 248,
+  "swapped_outputs": 124,
+  "analysis": "Base vs ADAPT exact token invariance to image substitution per context/group/role/case; paired invariance counts and length/EOS/cap, no correctness grading, no adoption gate",
+  "budget": "remote2GB/local250MB/2GPU process hours/24h original wall/80000forwards/0candidate",
+  "retirement": "8weights after replay and all original/swapped outputs; failed replay retains minimal recovery"
+}

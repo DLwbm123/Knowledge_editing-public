@@ -1,0 +1,70 @@
+{
+  "TT": {
+    "STAGE0_READY.json": {
+      "status": "PASS",
+      "arm": "ALL_TOKENS",
+      "source_gradient_norm": 0.31767154664484937,
+      "zero_logits_exact": true,
+      "cache_CE_gradient_exact": true,
+      "teacher_prefix_max_abs": 0.0,
+      "teacher_KV_max_abs": 4.38690185546875e-05,
+      "layout": {
+        "prefix_length": 595,
+        "visual_start": 5,
+        "visual_count": 576,
+        "raw_length": 20
+      },
+      "legacy_A_exact": true,
+      "pure_text_identity": false,
+      "counts": {
+        "forwards": 55,
+        "backwards": 4,
+        "updates": 0,
+        "generations": 1,
+        "admission_backwards": 4,
+        "vision_forwards": 2
+      },
+      "time": 1792674399.7923484
+    },
+    "BASE_REUSE_ADMISSION.json": {
+      "status": "PASS",
+      "zero_source_tokens_exact": true,
+      "base_unique_inputs": 183,
+      "old_semantic_labels_reused": false
+    }
+  },
+  "NORMALIZED_LORA_R1": {
+    "STAGE0_READY.json": {
+      "status": "PASS",
+      "arm": "ALL_TOKENS",
+      "source_gradient_norm": 0.5617545221148641,
+      "zero_logits_exact": true,
+      "cache_CE_gradient_exact": true,
+      "teacher_prefix_max_abs": 0.0,
+      "teacher_KV_max_abs": 2.574920654296875e-05,
+      "layout": {
+        "prefix_length": 595,
+        "visual_start": 5,
+        "visual_count": 576,
+        "raw_length": 20
+      },
+      "legacy_A_exact": true,
+      "pure_text_identity": false,
+      "counts": {
+        "forwards": 55,
+        "backwards": 4,
+        "updates": 0,
+        "generations": 1,
+        "admission_backwards": 4,
+        "vision_forwards": 2
+      },
+      "time": 1792674399.8895223
+    },
+    "BASE_REUSE_ADMISSION.json": {
+      "status": "PASS",
+      "zero_source_tokens_exact": true,
+      "base_unique_inputs": 183,
+      "old_semantic_labels_reused": false
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "status": "COMPLETE_LOCAL_WITNESSES_FOUND_CURRENT_AND_PROJECTED_FOLLOWUP_GATE_FAILED",
+  "source": "f7a393fdd5b9b048ae2719c765bfc6bd01ebb3f9",
+  "groups": 3,
+  "group_summaries": [
+    {
+      "task": "T07",
+      "current_witnesses": 4,
+      "projected_witnesses": 6,
+      "current_full_step_witness": true,
+      "projected_full_step_witness": true,
+      "projection": {
+        "converged": true,
+        "iterations": 1,
+        "constraints": 17,
+        "maximum_linear_violation": -0.00011187291753031141,
+        "displacement_norm_before": 0.0022053321843713497,
+        "displacement_norm_after": 0.0022053321843713497,
+        "nonnegative_dual": true,
+        "tolerance": 2.2053321843713497e-13
+      },
+      "current_full_step_replay_mean_drop": 0.00046641627947519027,
+      "projected_full_step_replay_mean_drop": 0.0017941693464917918
+    },
+    {
+      "task": "T12",
+      "current_witnesses": 3,
+      "projected_witnesses": 6,
+      "current_full_step_witness": true,
+      "projected_full_step_witness": true,
+      "projection": {
+        "converged": true,
+        "iterations": 2,
+        "constraints": 8,
+        "maximum_linear_violation": 5.082197683525802e-21,
+        "displacement_norm_before": 0.0016021559585640333,
+        "displacement_norm_after": 0.001602155446593808,
+        "nonnegative_dual": true,
+        "tolerance": 1.6021559585640334e-13
+      },
+      "current_full_step_replay_mean_drop": 0.00011789798736572266,
+      "projected_full_step_replay_mean_drop": 0.0013549327850341797
+    },
+    {
+      "task": "T13",
+      "current_witnesses": 7,
+      "projected_witnesses": 7,
+      "current_full_step_witness": true,
+      "projected_full_step_witness": false,
+      "projection": {
+        "converged": true,
+        "iterations": 11,
+        "constraints": 8,
+        "maximum_linear_violation": -5.759824041329242e-20,
+        "displacement_norm_before": 0.003914577699789152,
+        "displacement_norm_after": 0.003910721598783208,
+        "nonnegative_dual": true,
+        "tolerance": 3.914577699789152e-13
+      },
+      "current_full_step_replay_mean_drop": 0.0020121335983276367,
+      "projected_full_step_replay_mean_drop": 0.004240632057189941
+    }
+  ],
+  "complete": {
+    "status": "FINITE_TRAIN_WITNESS_AUDIT_COMPLETE",
+    "projected_groups_with_witness": [
+      "T07",
+      "T12",
+      "T13"
+    ],
+    "current_groups_with_witness": [
+      "T07",
+      "T12",
+      "T13"
+    ],
+    "bounded_function_guard_test_admissible": false,
+    "no_probe_committed": true,
+    "no_new_training_admitted_automatically": true,
+    "counts": {
+      "forwards": 3260,
+      "backwards": 2448,
+      "operator_backwards": 483,
+      "updates": 480,
+      "generations": 9,
+      "vision_forwards": 141,
+      "path_positions": 228,
+      "finite_probes": 48
+    },
+    "time": 1792904016.065647
+  },
+  "cost": {
+    "time": 1792904021.8474135,
+    "code": 0,
+    "phase_gpu_seconds": 876.7255353927612,
+    "prior_gpu_seconds": 26055.402016162872,
+    "total_gpu_seconds": 26932.127551555634
+  },
+  "all_rebuilds_frozen_before_probes": true,
+  "all160_loss_parity_groups": 3,
+  "finite_probe_states_committed": 0,
+  "new_performance_generations": 0,
+  "source_five_per_group_protection_requests_total": 18,
+  "live_workers_at_close": 0,
+  "latest_observed_bytes": 8907203166,
+  "latest_observed_phase_bytes": 28075416,
+  "storage_sample_not_peak": true,
+  "retirement": {
+    "retired_files": 6,
+    "retired_bytes": 185172,
+    "retained_Q_files": 3,
+    "retained_Q_bytes": 26153361,
+    "no_checkpoint_copy": true,
+    "retained_consumer": "V130 preregistered A/B shared Q; original fresh TT training, implementation pending"
+  }
+}

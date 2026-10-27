@@ -1,0 +1,30 @@
+{
+  "status": "FROZEN_BEFORE_BASE_QUALIFICATION",
+  "scope": "three preselected caption-grounded development cases; not current ten-edit replication",
+  "parameters_per_edit": 7168,
+  "steps": 160,
+  "arms": [
+    "JOINT",
+    "RELATION"
+  ],
+  "training_rows_per_case": 2,
+  "base_qualification_rows": 6,
+  "qualification": "At least one fixed case has UPDATE non-C and PRESERVE C on both source-grounded fixed-reference judgments; no cases dropped after qualification",
+  "new_clinical_facts": false,
+  "independent_confirmation": false,
+  "budget": {
+    "updates": 960,
+    "backwards": 2100,
+    "LMforwards": 100000,
+    "generations": 55,
+    "GPU_process_hours": 2,
+    "wall_hours": 24,
+    "remote_hard_bytes": 2000000000,
+    "remote_soft_bytes": 1500000000,
+    "local_bytes": 250000000,
+    "free_reserve_bytes": 8589934592
+  },
+  "data_gate": "source caption and exact panel/entity binding; no current evaluation references as supervision",
+  "training_release": "DATA_PASS + CPU_PASS + REAL_PASS + BASE_OPPORTUNITY_PASS + implementation admission",
+  "engineering_amendment": "One missing-output Base recovery, original attempt and clock retained; 54 scientific consumers plus one failed post-generation serialization attempt"
+}

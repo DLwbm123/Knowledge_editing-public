@@ -1,0 +1,229 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "model_calls": 0,
+  "medical_effect": "NOT_TESTED",
+  "cases": {
+    "zero_root": {
+      "base_relative_error": 0.0,
+      "unchanged_diagonal_gamma_relative_change": 0.0,
+      "transported_full_matrix_relative_error": 0.0,
+      "transfer_condition": 1.0000001829828762,
+      "transported_offdiagonal_norm": 0.5196284671729252,
+      "gamma": [
+        0.55,
+        0.85,
+        1.2,
+        1.45
+      ],
+      "pivots": [
+        [
+          41,
+          61,
+          73,
+          30,
+          47,
+          118,
+          0,
+          24
+        ],
+        [
+          777,
+          138,
+          93,
+          234
+        ],
+        [
+          138,
+          61,
+          60,
+          223,
+          22,
+          242,
+          183,
+          105
+        ]
+      ],
+      "input_probes": 8,
+      "model_calls": 0,
+      "scope": "Pure coordinate change only; not a clinical effect or a proposed trained fix"
+    },
+    "nonzero_initial": {
+      "base_relative_error": 7.388533470607238e-15,
+      "unchanged_diagonal_gamma_relative_change": 0.39045418042143715,
+      "transported_full_matrix_relative_error": 7.086745351956666e-15,
+      "transfer_condition": 1.0000001829828762,
+      "transported_offdiagonal_norm": 0.5196284671729252,
+      "gamma": [
+        0.55,
+        0.85,
+        1.2,
+        1.45
+      ],
+      "pivots": [
+        [
+          41,
+          61,
+          73,
+          30,
+          47,
+          118,
+          0,
+          24
+        ],
+        [
+          777,
+          138,
+          93,
+          234
+        ],
+        [
+          138,
+          61,
+          60,
+          223,
+          22,
+          242,
+          183,
+          105
+        ]
+      ],
+      "input_probes": 8,
+      "model_calls": 0,
+      "scope": "Pure coordinate change only; not a clinical effect or a proposed trained fix"
+    },
+    "canonical_initial": {
+      "base_relative_error": 2.104236261885241e-15,
+      "unchanged_diagonal_gamma_relative_change": 1.913229515176518e-15,
+      "transported_full_matrix_relative_error": 1.97559327321227e-15,
+      "transfer_condition": 1.0000000000000042,
+      "transported_offdiagonal_norm": 3.388158491937299e-16,
+      "gamma": [
+        0.55,
+        0.85,
+        1.2,
+        1.45
+      ],
+      "pivots": [
+        [
+          41,
+          61,
+          73,
+          30,
+          47,
+          118,
+          0,
+          24
+        ],
+        [
+          777,
+          138,
+          93,
+          234
+        ],
+        [
+          138,
+          61,
+          60,
+          223,
+          22,
+          242,
+          183,
+          105
+        ]
+      ],
+      "input_probes": 8,
+      "model_calls": 0,
+      "scope": "Pure coordinate change only; not a clinical effect or a proposed trained fix"
+    },
+    "perturbed_raw": {
+      "base_relative_error": 6.502039559946552e-15,
+      "unchanged_diagonal_gamma_relative_change": 0.35492527347905356,
+      "transported_full_matrix_relative_error": 5.8943826754150186e-15,
+      "transfer_condition": 1.0234285555590346,
+      "transported_offdiagonal_norm": 0.3465399726212204,
+      "gamma": [
+        0.55,
+        0.85,
+        1.2,
+        1.45
+      ],
+      "pivots": [
+        [
+          41,
+          61,
+          73,
+          30,
+          47,
+          80,
+          0,
+          62
+        ],
+        [
+          650,
+          214,
+          138,
+          385
+        ],
+        [
+          62,
+          137,
+          223,
+          183,
+          199,
+          130,
+          158,
+          219
+        ]
+      ],
+      "input_probes": 8,
+      "model_calls": 0,
+      "scope": "Pure coordinate change only; not a clinical effect or a proposed trained fix"
+    },
+    "actual_rms_synthetic_proposal": {
+      "base_relative_error": 4.680829214643419e-15,
+      "unchanged_diagonal_gamma_relative_change": 0.0011106811763649436,
+      "transported_full_matrix_relative_error": 4.843411746059355e-15,
+      "transfer_condition": 1.0002396186316491,
+      "transported_offdiagonal_norm": 0.0023124412498998275,
+      "gamma": [
+        0.55,
+        0.85,
+        1.2,
+        1.45
+      ],
+      "pivots": [
+        [
+          41,
+          61,
+          73,
+          30,
+          47,
+          118,
+          0,
+          24
+        ],
+        [
+          777,
+          138,
+          93,
+          234
+        ],
+        [
+          138,
+          61,
+          60,
+          223,
+          22,
+          242,
+          183,
+          105
+        ]
+      ],
+      "input_probes": 8,
+      "model_calls": 0,
+      "scope": "Pure coordinate change only; not a clinical effect or a proposed trained fix"
+    }
+  },
+  "interpretation": "The actual canonicalizer can change nonidentity diagonal conditioning while preserving the unconditioned map. Full matrix transport restores equivalence in this diagnostic; diagonal-only transport generally cannot. No fix applied to V50 or localization writers."
+}

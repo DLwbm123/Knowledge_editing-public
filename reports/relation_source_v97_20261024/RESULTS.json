@@ -1,0 +1,45 @@
+{
+  "status": "CLOSED_NO_QUALIFIED_CORRECTION_PROTECTION_PAIRS",
+  "original_patients": 24,
+  "source_excluded": 4,
+  "source_admitted": 20,
+  "source_admitted_laterality": {
+    "left": 7,
+    "right": 5,
+    "bilateral": 8
+  },
+  "questions": 80,
+  "all_EOS": true,
+  "all_bindings_match": true,
+  "core_correct": {
+    "target": 6,
+    "brief_control": 8,
+    "protect_fit": 1,
+    "protect_holdout": 1
+  },
+  "full_source_supported": {
+    "target": 5,
+    "brief_control": 8,
+    "protect_fit": 0,
+    "protect_holdout": 1
+  },
+  "target_errors_fixed_by_brief": 4,
+  "target_correct_broken_by_brief": 2,
+  "persistent_target_errors": 10,
+  "both_protections_correct": 0,
+  "qualified_pairs": 0,
+  "counts": {
+    "forwards": 1617,
+    "non_generation_forwards": 0,
+    "backwards": 0,
+    "operator_backwards": 0,
+    "updates": 0,
+    "teacher_generations": 0,
+    "evaluation_generations": 80
+  },
+  "gpu_process_seconds": 137.6791956424713,
+  "scoring": "Assistant full-text review of all 80 outputs; no independent clinical adjudication; deterministic summary parser validated against those readings",
+  "no_method_training": true,
+  "no_replacement": true,
+  "no_test_answer_use": true
+}

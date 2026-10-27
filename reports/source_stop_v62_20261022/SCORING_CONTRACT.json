@@ -1,0 +1,13 @@
+{
+  "version": "V62 unified semantic scoring v1, locked before new output inspection",
+  "scope": "All Base, TT160, TT source-stop, normalized-LoRA160, normalized-LoRA source-stop consumers together. V61 originals unchanged. Do not import prior semantic verdicts.",
+  "deduplication": "Exact question/reference/full-answer triples share one verdict within this new version; fixed blind shuffle seed620022; hide structure/state/owner mapping until all judgments frozen.",
+  "CORRECT": "All requested reference facts present by exact or equivalent meaning, with no contradictory or unsupported case-specific addition. Finite harmless repetition, punctuation, and general explanatory definitions do not alone fail correctness.",
+  "INCORRECT": "Explicit contradiction of reference polarity/side/target, replacement by a different organ/finding/function/relation, or a definite additional disease diagnosis not in the reference.",
+  "UNCERTAIN": "Partial requested list/relation; unresolved question-reference scope mismatch; full target accompanied by case-specific size/location/modality/operative status not established by question or reference; garbled or capped continuation that prevents clean equivalence. Unsupported specificity is treated alike for every arm and historical/new text.",
+  "ABSTAIN": "Empty answer, no interpretable substantive answer, or explicit refusal/deferral without a substantive case answer. A refusal followed by a specific conflicting answer is INCORRECT; a partial substantive answer is UNCERTAIN.",
+  "scope_conflict": "For main/primary cause wording with an unranked multi-cause reference, the complete reference list may pass; one unranked member alone remains UNCERTAIN. Do not infer which cause is primary.",
+  "evidence": "Only original question and reference plus full model text; no new clinical labels, no captions, no inferred findings from outside evidence. This is assistant semantic review, not independent clinical adjudication.",
+  "damage": "Relative to Base CORRECT consumers under this same unified version. Preserve all C/I/U/A transitions; zero denominator NA; show per-edit concentration.",
+  "reporting": "Show V61 frozen results separately; never select the favorable scoring version by arm. New primary comparisons use this common version. Counts are consumers, edits are the paired analysis unit; all data remain exposed development data. No post-result scoring-rule revision. Unresolvable cases remain UNCERTAIN."
+}

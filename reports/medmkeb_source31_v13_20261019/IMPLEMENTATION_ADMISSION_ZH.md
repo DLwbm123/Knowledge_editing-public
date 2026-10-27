@@ -1,0 +1,5 @@
+# V13实现准入
+
+完整父环境先导入module_run再导入study/独立source_path_v13/answer_check的集成检查通过。同路径零约束candidate逐tensor恒等与完整/缺失输出检查通过。完整64回答、22保护配对分母与冻结SEM源失败条件的汇总检查通过；缺失任何新评分拒绝完成。全部源码编译通过，0模型调用。
+
+初始源梯度复用、source raw proposal逐tensor核对与32实际绑定/来源状态save-load仍须运行时通过。每任务只31源更新，不加步、不重做SEM，不以CE下降替代实际回答。最后源教师前向仅附带捕获有效目标token诊断，不多调用模型。

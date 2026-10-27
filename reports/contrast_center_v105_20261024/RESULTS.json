@@ -1,0 +1,152 @@
+{
+  "status": "DEVELOPMENT_GATE_FAILED",
+  "table": {
+    "BASE": {
+      "train": {
+        "correct": 0,
+        "total": 2
+      },
+      "heldout": {
+        "correct": 0,
+        "total": 3
+      },
+      "clinical": {
+        "correct": 1,
+        "total": 10
+      },
+      "annotated": {
+        "correct": 1,
+        "total": 2
+      }
+    },
+    "JOINT_CE": {
+      "train": {
+        "correct": 2,
+        "total": 2
+      },
+      "heldout": {
+        "correct": 1,
+        "total": 3
+      },
+      "clinical": {
+        "correct": 1,
+        "total": 10
+      },
+      "annotated": {
+        "correct": 1,
+        "total": 2
+      }
+    },
+    "CENTERED_TT": {
+      "train": {
+        "correct": 2,
+        "total": 2
+      },
+      "heldout": {
+        "correct": 1,
+        "total": 3
+      },
+      "clinical": {
+        "correct": 1,
+        "total": 10
+      },
+      "annotated": {
+        "correct": 1,
+        "total": 2
+      }
+    }
+  },
+  "clinical_BaseC_retained": true,
+  "clinical_BaseC_denominator": 1,
+  "retention_control_losses": 0,
+  "heldout_improvements": 0,
+  "EOS": 51,
+  "at_cap": 0,
+  "bindings": 51,
+  "independent_confirmation": false,
+  "annotation_preserved": true,
+  "patient_independence": "UNKNOWN",
+  "counts": {
+    "forwards": 1661,
+    "backwards": 672,
+    "updates": 320,
+    "generations": 36,
+    "vision_forwards": 25
+  },
+  "cost": {
+    "time": 1792848629.6620376,
+    "code": 0,
+    "phase_gpu_seconds": 260.7445011138916,
+    "prior_gpu_seconds": 583.6799721717834,
+    "total_gpu_seconds": 844.424473285675,
+    "failed_attempt_seconds": 30.060168504714966,
+    "v105_including_failure_seconds": 290.80466961860657
+  },
+  "mechanism": {
+    "JOINT_CE": {
+      "initial_same_target_gradient": {
+        "cosine": 0.8402964516238938,
+        "norms": [
+          0.1319326883424187,
+          0.17174192887266285
+        ]
+      },
+      "final_same_target_gradient": {
+        "cosine": 0.8072548866603629,
+        "norms": [
+          0.06660626340188272,
+          6.595298135171486
+        ]
+      },
+      "save_load_exact": true,
+      "final_training_losses": [
+        0.0019234222127124667,
+        0.002910324838012457
+      ]
+    },
+    "CENTERED_TT": {
+      "initial_same_target_gradient": {
+        "cosine": 0.7538693411394188,
+        "norms": [
+          0.11046922266560028,
+          0.1874931914304482
+        ]
+      },
+      "final_same_target_gradient": {
+        "cosine": 0.7952554004194302,
+        "norms": [
+          0.028227699770825558,
+          8.001873617972068
+        ]
+      },
+      "save_load_exact": true,
+      "final_training_losses": [
+        0.0012606524396687746,
+        0.0016904417425394058
+      ]
+    }
+  },
+  "center": {
+    "source_prefix_only": true,
+    "features": 2,
+    "trainable_extra_parameters": 0,
+    "fixed_floats": 14336,
+    "norms": [
+      119.73214721679688,
+      119.73213958740234
+    ],
+    "difference_norm": 9.849748611450195,
+    "centered_norms": [
+      4.924874305725098,
+      4.924874305725098
+    ],
+    "time": 1792848401.4904857
+  },
+  "review": {
+    "exact_Base_label_reuse": 21,
+    "new_unique_full_answers_reviewed": 25,
+    "arm_mapping_read_after_verdict_freeze": true,
+    "independent_clinical_review": false
+  },
+  "decision": "CLOSE_FIXED_CENTERING_RECIPE; PRIORITIZE_EXISTING_M13P_EVIDENCE; NO_NEW_GPU_JOB"
+}

@@ -1,0 +1,247 @@
+{
+  "status": "REFERENCE_EOS_AUDIT_COMPLETE",
+  "states": 28,
+  "eligible_terminal_blocks": 28,
+  "reference_priority_mechanism_test_admissible": true,
+  "weights_unchanged_exact": true,
+  "counts": {
+    "forwards": 448,
+    "backwards": 448,
+    "operator_backwards": 28,
+    "updates": 0,
+    "generations": 0,
+    "vision_forwards": 308
+  },
+  "terminal_dual_conflict_blocks": [
+    {
+      "task_id": "T01",
+      "block": 0
+    },
+    {
+      "task_id": "T01",
+      "block": 1
+    },
+    {
+      "task_id": "T02",
+      "block": 0
+    },
+    {
+      "task_id": "T02",
+      "block": 1
+    },
+    {
+      "task_id": "T03",
+      "block": 0
+    },
+    {
+      "task_id": "T03",
+      "block": 1
+    },
+    {
+      "task_id": "T04",
+      "block": 0
+    },
+    {
+      "task_id": "T04",
+      "block": 1
+    },
+    {
+      "task_id": "T05",
+      "block": 0
+    },
+    {
+      "task_id": "T05",
+      "block": 1
+    },
+    {
+      "task_id": "T06",
+      "block": 0
+    },
+    {
+      "task_id": "T06",
+      "block": 1
+    },
+    {
+      "task_id": "T07",
+      "block": 0
+    },
+    {
+      "task_id": "T07",
+      "block": 1
+    },
+    {
+      "task_id": "T08",
+      "block": 0
+    },
+    {
+      "task_id": "T08",
+      "block": 1
+    },
+    {
+      "task_id": "T09",
+      "block": 0
+    },
+    {
+      "task_id": "T09",
+      "block": 1
+    },
+    {
+      "task_id": "T10",
+      "block": 0
+    },
+    {
+      "task_id": "T10",
+      "block": 1
+    },
+    {
+      "task_id": "T11",
+      "block": 0
+    },
+    {
+      "task_id": "T11",
+      "block": 1
+    },
+    {
+      "task_id": "T12",
+      "block": 0
+    },
+    {
+      "task_id": "T12",
+      "block": 1
+    },
+    {
+      "task_id": "T13",
+      "block": 0
+    },
+    {
+      "task_id": "T14",
+      "block": 0
+    },
+    {
+      "task_id": "T14",
+      "block": 1
+    }
+  ],
+  "summary": {
+    "INITIAL": {
+      "reference_vs_prefix_EOS": {
+        "total_blocks": 28,
+        "eligible_blocks": 14,
+        "negative_blocks": 10,
+        "minimum_cosine": -0.13935706038804224,
+        "median_cosine": -0.05329092080469243,
+        "median_norm_ratio": 2.610159388536668
+      },
+      "reference_vs_replay": {
+        "total_blocks": 28,
+        "eligible_blocks": 14,
+        "negative_blocks": 3,
+        "minimum_cosine": -0.008887548459410722,
+        "median_cosine": 0.17545381095255547,
+        "median_norm_ratio": 1.4216246877008616
+      },
+      "reference_vs_raw_fisher": {
+        "total_blocks": 28,
+        "eligible_blocks": 0,
+        "negative_blocks": 0,
+        "minimum_cosine": null,
+        "median_cosine": null,
+        "median_norm_ratio": null
+      },
+      "reference_vs_raw_combined_aux": {
+        "total_blocks": 28,
+        "eligible_blocks": 14,
+        "negative_blocks": 2,
+        "minimum_cosine": -0.06724286682573163,
+        "median_cosine": 0.055326963828714534,
+        "median_norm_ratio": 2.7291362500027923
+      },
+      "reference_vs_current_unclipped_total": {
+        "total_blocks": 28,
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.2348170296716179,
+        "median_cosine": 0.3964854586714306,
+        "median_norm_ratio": 3.069968532003429
+      },
+      "reference_vs_counterfactual_unclipped_total": {
+        "total_blocks": 28,
+        "eligible_blocks": 14,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.7071303873656747,
+        "median_cosine": 0.7264026399022387,
+        "median_norm_ratio": 1.4528052886597873
+      },
+      "current_negative_blocks": []
+    },
+    "TERMINAL": {
+      "reference_vs_prefix_EOS": {
+        "total_blocks": 28,
+        "eligible_blocks": 28,
+        "negative_blocks": 28,
+        "minimum_cosine": -0.9956803882945164,
+        "median_cosine": -0.9166830027151645,
+        "median_norm_ratio": 0.9328384885270352
+      },
+      "reference_vs_replay": {
+        "total_blocks": 28,
+        "eligible_blocks": 28,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.028317674304098962,
+        "median_cosine": 0.11277069958885955,
+        "median_norm_ratio": 1.012593664583411
+      },
+      "reference_vs_raw_fisher": {
+        "total_blocks": 28,
+        "eligible_blocks": 28,
+        "negative_blocks": 24,
+        "minimum_cosine": -0.20451230426427566,
+        "median_cosine": -0.03610318943746345,
+        "median_norm_ratio": 0.18590584351777262
+      },
+      "reference_vs_raw_combined_aux": {
+        "total_blocks": 28,
+        "eligible_blocks": 28,
+        "negative_blocks": 27,
+        "minimum_cosine": -0.9703690925486245,
+        "median_cosine": -0.4852389016425638,
+        "median_norm_ratio": 1.3533923435792983
+      },
+      "reference_vs_current_unclipped_total": {
+        "total_blocks": 28,
+        "eligible_blocks": 28,
+        "negative_blocks": 2,
+        "minimum_cosine": -0.6397997191304834,
+        "median_cosine": 0.3320261140977657,
+        "median_norm_ratio": 0.6787057537813259
+      },
+      "reference_vs_counterfactual_unclipped_total": {
+        "total_blocks": 28,
+        "eligible_blocks": 28,
+        "negative_blocks": 0,
+        "minimum_cosine": 0.7170435962152448,
+        "median_cosine": 0.7947683020892884,
+        "median_norm_ratio": 1.2588597232078067
+      },
+      "current_negative_blocks": [
+        {
+          "task_id": "T12",
+          "block": 0
+        },
+        {
+          "task_id": "T12",
+          "block": 1
+        }
+      ]
+    }
+  },
+  "cost": {
+    "time": 1792893940.4564466,
+    "code": 0,
+    "phase_gpu_seconds": 269.6021480560303,
+    "prior_gpu_seconds": 22165.36482977867,
+    "total_gpu_seconds": 22434.9669778347
+  },
+  "source": "f4a084bd4cf66e539d1dc1ba5dfb42df634bae38",
+  "scope": "Only training70 reference/prefixEOS contexts and84 protection. Fixed expected endpoint gradients, no updates/generation/causal trajectory reconstruction."
+}

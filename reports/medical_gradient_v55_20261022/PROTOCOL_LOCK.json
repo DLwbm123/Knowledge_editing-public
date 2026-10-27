@@ -1,0 +1,32 @@
+{
+  "version": "V55_TRAINING_ONLY_GRADIENT_DIAGNOSTIC",
+  "registered_at": 1792663055.607233,
+  "seed": 225034559,
+  "hard_end": 1792685766,
+  "states": [
+    "ZERO",
+    "V54_FINAL"
+  ],
+  "cases": 2,
+  "source": "Exact V54 training roles and target/competitor teacher-forcing inputs; no evaluation questions",
+  "purpose": "Quantify local gradient agreement/conflict between role CE and fixed increment constraints to guide TT mainline; no new loss/parameter search.",
+  "updates": 0,
+  "generations": 0,
+  "forwards": 48,
+  "backwards": 64,
+  "cache": "Disabled: direct full frozen-prefix forwards",
+  "metrics": [
+    "Role CE gradient cosine matrix per context",
+    "Positive/negative ratio score gradient relation",
+    "Directional derivatives along unit negative mean CE and unit negative full-objective gradient",
+    "Current constraint residuals at ZERO and V54_FINAL"
+  ],
+  "interpretation": "Local first-order diagnostics only, not global infeasibility, actual canonical-RMS trajectories, or clinical effectiveness.",
+  "last_weight_consumers": "This diagnostic consumes exactly the two retained V54 final deltas. Retire them after diagnostics and source/receipt checks; keep small gradient evidence privately.",
+  "storage_reservation": {
+    "remote_bytes": 100000000,
+    "local_bytes": 100000000
+  },
+  "original_deadline_unchanged": true,
+  "maximum_worker_seconds": 1800
+}

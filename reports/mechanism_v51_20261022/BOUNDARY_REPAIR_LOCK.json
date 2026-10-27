@@ -1,0 +1,33 @@
+{
+  "version": "V51B_BOUNDARY_PANEL_REPAIR",
+  "registered_at": 1792644209.7353,
+  "hard_end": 1792685766,
+  "parent": "V51 fixed16 review preserved",
+  "pool_indices": [
+    0,
+    21,
+    49
+  ],
+  "sources": [
+    "PMC9414113",
+    "PMC8407900",
+    "PMC8271216"
+  ],
+  "rationale": "Preidentified primary-caption panel distinctions; independent of four-case model outcomes. Only full original figure and same-question semantic binding repair.",
+  "maximum_figures": 3,
+  "maximum_panel_pairs": 3,
+  "local_additional_cap_bytes": 100000000,
+  "model_calls": 0,
+  "training": false,
+  "scope": "Source-local developmental support only. No independent-source/clinical/patient confirmation claim. No search outside original64 pool.",
+  "requirements": [
+    "Fetch and visually inspect original complete figures",
+    "Bind named panel and question to caption-supported target",
+    "Require same question with genuinely differing supported answer for paired panel",
+    "Preserve original bad-reference rejection, record any changed question or answer explicitly",
+    "Record source cluster and UNKNOWN patient identity",
+    "No negative inference from omission, black image, or mismatched anatomy"
+  ],
+  "stop": "Stop after these3 figures or cap/deadline; unsupported pairs remain UNKNOWN; no replacement sampling.",
+  "consumer": "Private admission report; publish only anonymous count/reasons. Gate training remains unadmitted until complete task and split/protection support."
+}

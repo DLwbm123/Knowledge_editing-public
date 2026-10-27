@@ -1,0 +1,18 @@
+{
+  "version": "V46",
+  "time": 1792621612.185216,
+  "purpose": "length-controlled output-distribution image sensitivity diagnostic",
+  "intervention": "same fixed cyclic donor images as V45; identical original reference token prefix for both images and algorithms, no updates or labels as donor truth",
+  "required_replay": "Base62 and reconstructed original ADAPT62 exact token/text/EOS/cap parity",
+  "primary": "mean full-vocabulary total variation over fixed reference predictor positions including EOS per query, then case means; ADAPT minus Base",
+  "secondary": "Jensen-Shannon nats and argmax-change fraction at same positions",
+  "updates": 640,
+  "expected_backwards": 2570,
+  "backward_cap": 2600,
+  "new_outputs": 124,
+  "distribution_queries": 62,
+  "extra_measurement_forwards": 248,
+  "budget": "remote2GB/local250MB/2GPU process hours/24h wall/80000F",
+  "retirement": "8weights only after124 replay outputs+62 distribution pairs/save-load; no further weight consumer",
+  "no_accuracy_or_grounding_claim": true
+}

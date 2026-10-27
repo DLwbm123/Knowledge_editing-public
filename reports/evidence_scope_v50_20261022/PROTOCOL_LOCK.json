@@ -1,0 +1,64 @@
+{
+  "version": "V50",
+  "prepared_at": 1792637628.0882702,
+  "hard_end": 1792644652.402982,
+  "arms": [
+    "BASE",
+    "W0",
+    "BE_RADIUS_TT",
+    "LDKE_ROUTER_TT_PROXY",
+    "B_GATE",
+    "B_COND"
+  ],
+  "data": "four fixed previously exposed cases; development only",
+  "seed": 225034559,
+  "steps": 160,
+  "writer_parameters": 7168,
+  "stage0": "CPU tests and all first source real gate/generation/localizer probes before release",
+  "stage1": "three paired writers per case; original/SHORT all31 queries; scope-only arms select input-routed exact free-output caches",
+  "negative_support": "black proxy only; no medical-negative claims",
+  "BE": {
+    "radius_definition": "official_code",
+    "alpha": 0.2,
+    "distance": "euclidean",
+    "anchors": 2,
+    "positive": "source SHORT context; not new medical facts"
+  },
+  "LDKE": {
+    "implementation": "paper-based source-local proxy adaptation",
+    "threshold": 0.5,
+    "bottleneck": 32,
+    "embedding": 64,
+    "steps": 100,
+    "lr": 0.01,
+    "margin": 0.1,
+    "loss_coefficients": [
+      1,
+      1,
+      1
+    ],
+    "classification_head": "residual representation per sec3.4; eq17 notation ambiguous"
+  },
+  "B": {
+    "evidence": "WEAK_EVIDENCE",
+    "gate": "per-edit binary MLP16 source-vs-black,100steps Adam.01",
+    "conditioner": "per-edit 256->16->4,zero final projection,Adam.001,rho.5",
+    "source_gates_frozen": true
+  },
+  "stage2": {
+    "localizer_pair": "conditional on stage1 admission, time and budget; not automatically launched",
+    "evidence_loss": "BLOCKED_NO_VERIFIED_MEDICAL_NEGATIVE_PAIRS"
+  },
+  "confirmation": "BLOCKED_NO_ADMITTED_INDEPENDENT_CASES",
+  "new_case_target": "8-12 requested; zero new cases admitted, existing four used only development",
+  "runtime": "unchanged inherited FP32/FP16prefill greedy1024",
+  "budget": {
+    "remote_bytes": 450000000,
+    "local_bytes": 150000000,
+    "total_reservation": 600000000,
+    "window_not_extended": true
+  },
+  "retention": "keep tiny deltas until permutation/final-consumer decision; no historical deletion",
+  "short_instruction": "Answer the question briefly with only the requested factual finding. Do not add explanations or information not requested.",
+  "finalist_rule": "strict no-new-W0-loss Pareto across source/heldout/clinical both contexts; at most2 by natural-arm order"
+}

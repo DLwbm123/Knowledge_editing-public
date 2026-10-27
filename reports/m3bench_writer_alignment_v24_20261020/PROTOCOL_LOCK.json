@@ -1,0 +1,123 @@
+{
+  "status": "COMPLETE_SCORED_DEVELOPMENT",
+  "question": "Target-module and token-scope alignment without extra protection",
+  "arms": [
+    {
+      "name": "A",
+      "target": "model.layers.21.mlp.down_proj",
+      "scope": "ANSWER_PREDICTORS",
+      "cores": [
+        [
+          1,
+          64,
+          8
+        ],
+        [
+          8,
+          64,
+          4
+        ],
+        [
+          4,
+          112,
+          8
+        ],
+        [
+          8,
+          128,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "B",
+      "target": "model.layers.21.mlp.down_proj",
+      "scope": "ALL_VALID_TOKENS",
+      "cores": [
+        [
+          1,
+          64,
+          8
+        ],
+        [
+          8,
+          64,
+          4
+        ],
+        [
+          4,
+          112,
+          8
+        ],
+        [
+          8,
+          128,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "C",
+      "target": "model.layers.31.mlp.up_proj",
+      "scope": "ALL_VALID_TOKENS",
+      "cores": [
+        [
+          1,
+          128,
+          8
+        ],
+        [
+          8,
+          112,
+          4
+        ],
+        [
+          4,
+          64,
+          8
+        ],
+        [
+          8,
+          64,
+          1
+        ]
+      ]
+    }
+  ],
+  "paired_contrasts": [
+    "B-A: scope at same target",
+    "C-B: target module at same scope"
+  ],
+  "excluded_redundant_arm": "Layer31 up_proj answer-only: final-layer tokenwise MLP gives identical supervised/generation outputs to all-valid scope; synthetic admission required",
+  "initialization": "V22 template seed and algorithm; A/B identical parameters; C shape-adapted orthogonal cores, zero G1; no retired weights",
+  "train_tasks": 10,
+  "updates_per_task_arm": 160,
+  "trainable_parameters": 7168,
+  "maximum_effective_rank": 4,
+  "method_answers": 648,
+  "base_answers": 180,
+  "total_generations": 828,
+  "maximum_updates": 4800,
+  "maximum_backwards": 5000,
+  "maximum_lm_forwards": 1100000,
+  "maximum_gpu_process_hours": 20,
+  "maximum_hours_per_shard": 4,
+  "maximum_elapsed_hours": 24,
+  "remote_hard_bytes": 2000000000,
+  "remote_soft_bytes": 1500000000,
+  "local_hard_bytes": 250000000,
+  "minimum_free_bytes": 8589934592,
+  "global_chat_budget_bytes": 20000000000,
+  "allowed_physical_gpus": [
+    0,
+    1,
+    3,
+    4,
+    5
+  ],
+  "cpu_admission": "PASS",
+  "real_model_admission": "PASS",
+  "monitor": "existing owner5 only",
+  "historical_BE": "reference only, no new BE arm",
+  "no_new_matrix_router_or_protection": true
+}

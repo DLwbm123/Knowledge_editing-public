@@ -1,0 +1,127 @@
+{
+  "status": "D_CAPABILITY_FAIL_C_SEALED",
+  "decision": {
+    "O": {
+      "gate_pass": false,
+      "forms": {
+        "direct": {
+          "correct_by_polarity": {
+            "positive": 0,
+            "negative": 8
+          },
+          "correct_by_class_polarity": {
+            "nodule_positive": 0,
+            "nodule_negative": 4,
+            "infiltrates_positive": 0,
+            "infiltrates_negative": 4
+          },
+          "pairs_both_correct": 0,
+          "gate_pass": false
+        },
+        "reverse": {
+          "correct_by_polarity": {
+            "positive": 0,
+            "negative": 8
+          },
+          "correct_by_class_polarity": {
+            "nodule_positive": 0,
+            "nodule_negative": 4,
+            "infiltrates_positive": 0,
+            "infiltrates_negative": 4
+          },
+          "pairs_both_correct": 0,
+          "gate_pass": false
+        }
+      },
+      "correct": 16,
+      "denominator": 32,
+      "unknown": 0
+    },
+    "M": {
+      "gate_pass": false,
+      "forms": {
+        "direct": {
+          "correct_by_polarity": {
+            "positive": 3,
+            "negative": 4
+          },
+          "correct_by_class_polarity": {
+            "nodule_positive": 1,
+            "nodule_negative": 0,
+            "infiltrates_positive": 2,
+            "infiltrates_negative": 4
+          },
+          "pairs_both_correct": 2,
+          "gate_pass": false
+        },
+        "reverse": {
+          "correct_by_polarity": {
+            "positive": 1,
+            "negative": 4
+          },
+          "correct_by_class_polarity": {
+            "nodule_positive": 0,
+            "nodule_negative": 0,
+            "infiltrates_positive": 1,
+            "infiltrates_negative": 4
+          },
+          "pairs_both_correct": 1,
+          "gate_pass": false
+        }
+      },
+      "correct": 12,
+      "denominator": 32,
+      "unknown": 17
+    },
+    "selected": null,
+    "all_64_image_outputs_reviewed": true
+  },
+  "engineering": {
+    "O": {
+      "outputs": 36,
+      "image": 32,
+      "no_image": 4,
+      "EOS": 36,
+      "at_cap": 0,
+      "vision_calls": 32,
+      "pixel_shapes": [
+        "[1, 3, 336, 336]"
+      ],
+      "forwards": 758
+    },
+    "M": {
+      "outputs": 36,
+      "image": 32,
+      "no_image": 4,
+      "EOS": 36,
+      "at_cap": 0,
+      "vision_calls": 32,
+      "pixel_shapes": [
+        "[1, 3, 896, 896]"
+      ],
+      "forwards": 5437
+    },
+    "completed_generations": 72,
+    "predecoder_failed_api_calls": 1,
+    "parameter_updates": 0,
+    "C_generations": 0,
+    "all_owned_gpu_workers_exited": true
+  },
+  "cost": {
+    "gpu_process_seconds": 553.6198036670685,
+    "failed_native_call_process_seconds": 146.7198941707611,
+    "wall_seconds_including_download_recovery_and_review": 7410.670421600342,
+    "remote_guard_final_bytes": 8773761100,
+    "server_limit_bytes": 20000000000,
+    "local_limit_bytes": 2000000000,
+    "gpu_limit_seconds": 3600,
+    "original_wall_limit_hours": 12
+  },
+  "mainline": {
+    "TT_admitted": false,
+    "reason": "Neither fixed Base passes positive/negative and two-form capability gate; no independent qualified edit/protection tasks admitted.",
+    "new_base_search": false,
+    "new_source_screening": false,
+    "new_training": false
+  }
+}

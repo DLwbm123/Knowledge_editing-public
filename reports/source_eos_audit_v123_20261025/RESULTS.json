@@ -1,0 +1,465 @@
+{
+  "status": "EOS_AUDIT_COMPLETE",
+  "rows": 70,
+  "matched": 70,
+  "cap_training_rows": 5,
+  "parity_failures": [],
+  "source_prefix_completion_test_admissible": true,
+  "counts": {
+    "forwards": 420,
+    "backwards": 0,
+    "operator_backwards": 0,
+    "updates": 0,
+    "generations": 0,
+    "vision_forwards": 140
+  },
+  "weights_unchanged_exact": true,
+  "prefix_gap_rows": [
+    {
+      "task_id": "T13"
+    },
+    {
+      "task_id": "T13"
+    },
+    {
+      "task_id": "T13"
+    },
+    {
+      "task_id": "T13"
+    },
+    {
+      "task_id": "T13"
+    }
+  ],
+  "conditions": {
+    "BASE": {
+      "original_EOS65": {
+        "n": 65,
+        "teacher": {
+          "EOS_strict_argmax": 65,
+          "EOS_NLL": {
+            "minimum": 4.08425504794252e-05,
+            "median": 0.006769348240997175,
+            "maximum": 0.9031571283609523
+          },
+          "EOS_probability": {
+            "minimum": 0.405288091239758,
+            "median": 0.9932535121843277,
+            "maximum": 0.9999591582835664
+          },
+          "EOS_rank": {
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "EOS_margin": {
+            "minimum": 1.1021976470947266,
+            "median": 5.94459342956543,
+            "maximum": 11.426599502563477
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.5866401541302741,
+            "median": 0.929689876506808,
+            "maximum": 0.9785457438735008
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 1.2132718563079834,
+            "median": 6.007899761199951,
+            "maximum": 11.794088363647461
+          }
+        },
+        "natural": {
+          "EOS_strict_argmax": 0,
+          "EOS_NLL": {
+            "minimum": 3.3707926503719907,
+            "median": 4.730744519674815,
+            "maximum": 9.906190094634727
+          },
+          "EOS_probability": {
+            "minimum": 4.9865055324037206e-05,
+            "median": 0.008819902004070054,
+            "maximum": 0.03436238918519783
+          },
+          "EOS_rank": {
+            "minimum": 5,
+            "median": 12,
+            "maximum": 21
+          },
+          "EOS_margin": {
+            "minimum": -9.853076934814453,
+            "median": -3.5840611457824707,
+            "maximum": -2.7285146713256836
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.840117098596562,
+            "median": 0.9205039547071111,
+            "maximum": 0.9917843869130315
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 6.557341575622559,
+            "median": 12.429490089416504,
+            "maximum": 25.531097412109375
+          }
+        }
+      },
+      "original_CAP5": {
+        "n": 5,
+        "teacher": {
+          "EOS_strict_argmax": 5,
+          "EOS_NLL": {
+            "minimum": 0.001336430124325716,
+            "median": 0.014168785515373372,
+            "maximum": 0.01775370762772077
+          },
+          "EOS_probability": {
+            "minimum": 0.982402960920277,
+            "median": 0.9859311193260993,
+            "maximum": 0.9986644625007235
+          },
+          "EOS_rank": {
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "EOS_margin": {
+            "minimum": 5.2788848876953125,
+            "median": 5.66481876373291,
+            "maximum": 8.168410301208496
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.8888252133769687,
+            "median": 0.938638619893552,
+            "maximum": 0.9464973523955287
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 12.484575271606445,
+            "median": 15.69155216217041,
+            "maximum": 17.318912506103516
+          }
+        },
+        "natural": {
+          "EOS_strict_argmax": 0,
+          "EOS_NLL": {
+            "minimum": 11.951720941770233,
+            "median": 13.709454658202347,
+            "maximum": 14.160447495831846
+          },
+          "EOS_probability": {
+            "minimum": 7.082650167617843e-07,
+            "median": 1.1118840288218684e-06,
+            "maximum": 6.448126452901594e-06
+          },
+          "EOS_rank": {
+            "minimum": 128,
+            "median": 374,
+            "maximum": 433
+          },
+          "EOS_margin": {
+            "minimum": -14.146564722061157,
+            "median": -13.699202537536621,
+            "maximum": -11.931740283966064
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.981722433271757,
+            "median": 0.9837751046555105,
+            "maximum": 0.985012232477045
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 10.42348575592041,
+            "median": 11.554944038391113,
+            "maximum": 11.873019218444824
+          }
+        }
+      }
+    },
+    "TRAINED_Q": {
+      "original_EOS65": {
+        "n": 65,
+        "teacher": {
+          "EOS_strict_argmax": 65,
+          "EOS_NLL": {
+            "minimum": 1.4355807465449288e-05,
+            "median": 0.000544420935959522,
+            "maximum": 0.14510863402566088
+          },
+          "EOS_probability": {
+            "minimum": 0.8649283273607851,
+            "median": 0.9994557272342263,
+            "maximum": 0.99998564429558
+          },
+          "EOS_rank": {
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "EOS_margin": {
+            "minimum": 3.390108108520508,
+            "median": 8.64663028717041,
+            "maximum": 12.68872356414795
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.5866401541302741,
+            "median": 0.929689876506808,
+            "maximum": 0.9785457438735008
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 1.2132718563079834,
+            "median": 6.007899761199951,
+            "maximum": 11.794088363647461
+          }
+        },
+        "natural": {
+          "EOS_strict_argmax": 0,
+          "EOS_NLL": {
+            "minimum": 4.872152814601106,
+            "median": 6.93714847717272,
+            "maximum": 11.510936666751746
+          },
+          "EOS_probability": {
+            "minimum": 1.0019907771893669e-05,
+            "median": 0.0009710345803534668,
+            "maximum": 0.007656863723841293
+          },
+          "EOS_rank": {
+            "minimum": 2,
+            "median": 2,
+            "maximum": 13
+          },
+          "EOS_margin": {
+            "minimum": -11.510634422302246,
+            "median": -6.929243087768555,
+            "maximum": -4.858687400817871
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.840117098596562,
+            "median": 0.9205039547071111,
+            "maximum": 0.9917843869130315
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 6.557341575622559,
+            "median": 12.429490089416504,
+            "maximum": 25.531097412109375
+          }
+        }
+      },
+      "original_CAP5": {
+        "n": 5,
+        "teacher": {
+          "EOS_strict_argmax": 5,
+          "EOS_NLL": {
+            "minimum": 0.00011829556917675177,
+            "median": 0.0009477538581919021,
+            "maximum": 0.005160809018505574
+          },
+          "EOS_probability": {
+            "minimum": 0.9948524850770981,
+            "median": 0.9990526951186468,
+            "maximum": 0.9998817114274666
+          },
+          "EOS_rank": {
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "EOS_margin": {
+            "minimum": 5.6449174880981445,
+            "median": 7.685249328613281,
+            "maximum": 10.165872573852539
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.8888252133769687,
+            "median": 0.938638619893552,
+            "maximum": 0.9464973523955287
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 12.484575271606445,
+            "median": 15.69155216217041,
+            "maximum": 17.318912506103516
+          }
+        },
+        "natural": {
+          "EOS_strict_argmax": 0,
+          "EOS_NLL": {
+            "minimum": 4.267655507279093,
+            "median": 5.823268176804021,
+            "maximum": 6.506852940976444
+          },
+          "EOS_probability": {
+            "minimum": 0.001493171435278685,
+            "median": 0.0029579223176972166,
+            "maximum": 0.014014601798671459
+          },
+          "EOS_rank": {
+            "minimum": 2,
+            "median": 3,
+            "maximum": 4
+          },
+          "EOS_margin": {
+            "minimum": -6.500185966491699,
+            "median": -5.782625198364258,
+            "maximum": -4.048891067504883
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.981722433271757,
+            "median": 0.9837751046555105,
+            "maximum": 0.985012232477045
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 10.42348575592041,
+            "median": 11.554944038391113,
+            "maximum": 11.873019218444824
+          }
+        }
+      }
+    },
+    "TRAINED_EMPTY_Q": {
+      "original_EOS65": {
+        "n": 65,
+        "teacher": {
+          "EOS_strict_argmax": 65,
+          "EOS_NLL": {
+            "minimum": 1.5971103334067038e-05,
+            "median": 0.0005150377518674532,
+            "maximum": 0.1406566354987504
+          },
+          "EOS_probability": {
+            "minimum": 0.8687875712999682,
+            "median": 0.9994850948573066,
+            "maximum": 0.9999840290242048
+          },
+          "EOS_rank": {
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "EOS_margin": {
+            "minimum": 3.44571590423584,
+            "median": 8.71920394897461,
+            "maximum": 12.608912467956543
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.5866401541302741,
+            "median": 0.929689876506808,
+            "maximum": 0.9785457438735008
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 2.1836838722229004,
+            "median": 6.063007831573486,
+            "maximum": 11.302099227905273
+          }
+        },
+        "natural": {
+          "EOS_strict_argmax": 0,
+          "EOS_NLL": {
+            "minimum": 4.835499137716948,
+            "median": 6.816819899612888,
+            "maximum": 10.271560688580248
+          },
+          "EOS_probability": {
+            "minimum": 3.46033282413488e-05,
+            "median": 0.0010951982305712803,
+            "maximum": 0.007942722822843808
+          },
+          "EOS_rank": {
+            "minimum": 2,
+            "median": 2,
+            "maximum": 13
+          },
+          "EOS_margin": {
+            "minimum": -10.271488189697266,
+            "median": -6.812993049621582,
+            "maximum": -4.821572303771973
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.840117098596562,
+            "median": 0.9205039547071111,
+            "maximum": 0.9917843869130315
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 4.047247886657715,
+            "median": 11.593338966369629,
+            "maximum": 25.428245544433594
+          }
+        }
+      },
+      "original_CAP5": {
+        "n": 5,
+        "teacher": {
+          "EOS_strict_argmax": 5,
+          "EOS_NLL": {
+            "minimum": 0.00012776161912952944,
+            "median": 0.0011968401332893563,
+            "maximum": 0.006031312853746584
+          },
+          "EOS_probability": {
+            "minimum": 0.9939868390021157,
+            "median": 0.9988038757942155,
+            "maximum": 0.9998722465420378
+          },
+          "EOS_rank": {
+            "minimum": 1,
+            "median": 1,
+            "maximum": 1
+          },
+          "EOS_margin": {
+            "minimum": 5.463576316833496,
+            "median": 7.376090049743652,
+            "maximum": 10.179360389709473
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.8888252133769687,
+            "median": 0.938638619893552,
+            "maximum": 0.9464973523955287
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 13.33610725402832,
+            "median": 16.18830680847168,
+            "maximum": 17.68572998046875
+          }
+        },
+        "natural": {
+          "EOS_strict_argmax": 0,
+          "EOS_NLL": {
+            "minimum": 4.295481790176421,
+            "median": 5.877153945372832,
+            "maximum": 6.4636942158159165
+          },
+          "EOS_probability": {
+            "minimum": 0.0015590256817597432,
+            "median": 0.0028027507162645426,
+            "maximum": 0.013630003313416258
+          },
+          "EOS_rank": {
+            "minimum": 2,
+            "median": 3,
+            "maximum": 4
+          },
+          "EOS_margin": {
+            "minimum": -6.456978797912598,
+            "median": -5.841509819030762,
+            "maximum": -4.096529006958008
+          },
+          "EOS_predictor_Q_retained_ratio": {
+            "minimum": 0.981722433271757,
+            "median": 0.9837751046555105,
+            "maximum": 0.985012232477045
+          },
+          "EOS_predictor_writer_norm": {
+            "minimum": 10.26271915435791,
+            "median": 11.326149940490723,
+            "maximum": 11.648764610290527
+          }
+        }
+      }
+    }
+  },
+  "cost": {
+    "time": 1792887281.3622034,
+    "code": 0,
+    "phase_gpu_seconds": 264.06141567230225,
+    "prior_gpu_seconds": 18477.292581558228,
+    "total_gpu_seconds": 18741.35399723053
+  },
+  "source": "18f827a5862400dd593e00dfb02fc114d670d189",
+  "scope": "All70 target training rows only; no held/protect/challenge/new8; no updates/generations. No disease validation."
+}

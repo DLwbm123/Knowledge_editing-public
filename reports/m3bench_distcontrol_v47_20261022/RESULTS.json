@@ -1,0 +1,2120 @@
+{
+  "status": "COMPLETE",
+  "admission": {
+    "status": "PASS",
+    "outputs": 124,
+    "base_replay": 62,
+    "cover_replay": 62,
+    "distribution_queries": 62,
+    "no_swapped_correctness_grading": true
+  },
+  "accuracy_test": false,
+  "grounding_confirmed": false,
+  "limited_improvement_gate": false,
+  "contexts": {
+    "ORIGINAL": {
+      "all": {
+        "n": 31,
+        "cases": 4,
+        "query_means": {
+          "base": {
+            "tv_mean": 0.07200845866689012,
+            "js_nats_mean": 0.018519079599567993,
+            "argmax_changed_fraction": 0.04766559605269283
+          },
+          "cover": {
+            "tv_mean": 0.05953689530146581,
+            "js_nats_mean": 0.021374261158159966,
+            "argmax_changed_fraction": 0.03843038681748359
+          },
+          "adapt_reference": {
+            "tv_mean": 0.06292381511603756,
+            "js_nats_mean": 0.022287816125138304,
+            "argmax_changed_fraction": 0.051398780431038495
+          }
+        },
+        "equal_case_means": {
+          "base": {
+            "tv_mean": 0.07235594107935422,
+            "js_nats_mean": 0.01857410948969237,
+            "argmax_changed_fraction": 0.04893965161822304
+          },
+          "cover": {
+            "tv_mean": 0.06007786132835109,
+            "js_nats_mean": 0.021753192376715823,
+            "argmax_changed_fraction": 0.03935528756957328
+          },
+          "adapt_reference": {
+            "tv_mean": 0.06345281942307097,
+            "js_nats_mean": 0.022637560972490985,
+            "argmax_changed_fraction": 0.05241445062873634
+          }
+        },
+        "equal_case_cover_minus_base": {
+          "tv_mean": -0.012278079751003132,
+          "js_nats_mean": 0.0031790828870234544,
+          "argmax_changed_fraction": -0.009584364048649763
+        },
+        "equal_case_adapt_minus_cover": {
+          "tv_mean": 0.003374958094719882,
+          "js_nats_mean": 0.0008843685957751618,
+          "argmax_changed_fraction": 0.013059163059163062
+        },
+        "queries_cover_tv_lower": 22,
+        "queries_cover_tv_higher": 9,
+        "per_case": {
+          "M01": {
+            "base": {
+              "tv_mean": 0.031875159828058275,
+              "js_nats_mean": 0.002356915884712699,
+              "argmax_changed_fraction": 0.013888888888888888
+            },
+            "cover": {
+              "tv_mean": 0.01786303140454393,
+              "js_nats_mean": 0.00197663238267295,
+              "argmax_changed_fraction": 0.0
+            },
+            "adapt_reference": {
+              "tv_mean": 0.01744487500620003,
+              "js_nats_mean": 0.0018726188820023866,
+              "argmax_changed_fraction": 0.0
+            }
+          },
+          "M02": {
+            "base": {
+              "tv_mean": 0.05517006743613384,
+              "js_nats_mean": 0.007777966879038955,
+              "argmax_changed_fraction": 0.0
+            },
+            "cover": {
+              "tv_mean": 0.03498436212078007,
+              "js_nats_mean": 0.007503232872771648,
+              "argmax_changed_fraction": 0.0
+            },
+            "adapt_reference": {
+              "tv_mean": 0.038742172877816144,
+              "js_nats_mean": 0.00787770833623658,
+              "argmax_changed_fraction": 0.05
+            }
+          },
+          "M03": {
+            "base": {
+              "tv_mean": 0.08312789586574104,
+              "js_nats_mean": 0.020280036083548014,
+              "argmax_changed_fraction": 0.08843537414965986
+            },
+            "cover": {
+              "tv_mean": 0.07684780816179497,
+              "js_nats_mean": 0.033500060151947404,
+              "argmax_changed_fraction": 0.06802721088435373
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07985195294110663,
+              "js_nats_mean": 0.033479651240423944,
+              "argmax_changed_fraction": 0.0839002267573696
+            }
+          },
+          "M04": {
+            "base": {
+              "tv_mean": 0.11925064118748374,
+              "js_nats_mean": 0.0438815191114698,
+              "argmax_changed_fraction": 0.09343434343434343
+            },
+            "cover": {
+              "tv_mean": 0.1106162436262854,
+              "js_nats_mean": 0.044032844099471294,
+              "argmax_changed_fraction": 0.08939393939393939
+            },
+            "adapt_reference": {
+              "tv_mean": 0.1177722768671611,
+              "js_nats_mean": 0.04732026543130102,
+              "argmax_changed_fraction": 0.07575757575757576
+            }
+          }
+        }
+      },
+      "groups": {
+        "HELDOUT": {
+          "n": 16,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.08150251579200994,
+              "js_nats_mean": 0.02132894695046325,
+              "argmax_changed_fraction": 0.0670995670995671
+            },
+            "cover": {
+              "tv_mean": 0.07240720632284595,
+              "js_nats_mean": 0.026263818544036723,
+              "argmax_changed_fraction": 0.042388167388167385
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07427971406120298,
+              "js_nats_mean": 0.026741372352759037,
+              "argmax_changed_fraction": 0.055014430014430016
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.08150251579200994,
+              "js_nats_mean": 0.02132894695046325,
+              "argmax_changed_fraction": 0.0670995670995671
+            },
+            "cover": {
+              "tv_mean": 0.07240720632284595,
+              "js_nats_mean": 0.026263818544036723,
+              "argmax_changed_fraction": 0.04238816738816739
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07427971406120298,
+              "js_nats_mean": 0.026741372352759037,
+              "argmax_changed_fraction": 0.055014430014430016
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.009095309469163995,
+            "js_nats_mean": 0.004934871593573472,
+            "argmax_changed_fraction": -0.024711399711399712
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.0018725077383570377,
+            "js_nats_mean": 0.00047755380872231343,
+            "argmax_changed_fraction": 0.012626262626262624
+          },
+          "queries_cover_tv_lower": 11,
+          "queries_cover_tv_higher": 5,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.03310926875997584,
+                "js_nats_mean": 0.0018833760146357945,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.021641168480647607,
+                "js_nats_mean": 0.0026093846724881465,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.020578869967747562,
+                "js_nats_mean": 0.0023827326703503874,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.05301453587959072,
+                "js_nats_mean": 0.005127337519069741,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.03424722297777463,
+                "js_nats_mean": 0.006853546599806219,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.037481883640176294,
+                "js_nats_mean": 0.006853010998034492,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.09356243124904001,
+                "js_nats_mean": 0.0213032821993162,
+                "argmax_changed_fraction": 0.15476190476190477
+              },
+              "cover": {
+                "tv_mean": 0.09000140031447346,
+                "js_nats_mean": 0.03740222794051219,
+                "argmax_changed_fraction": 0.09126984126984126
+              },
+              "adapt_reference": {
+                "tv_mean": 0.08778053664403551,
+                "js_nats_mean": 0.03447998741967176,
+                "argmax_changed_fraction": 0.11904761904761904
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.1463238272794332,
+                "js_nats_mean": 0.05700179206883127,
+                "argmax_changed_fraction": 0.11363636363636363
+              },
+              "cover": {
+                "tv_mean": 0.1437390335184881,
+                "js_nats_mean": 0.05819011496334034,
+                "argmax_changed_fraction": 0.07828282828282829
+              },
+              "adapt_reference": {
+                "tv_mean": 0.15127756599285258,
+                "js_nats_mean": 0.06324975832297951,
+                "argmax_changed_fraction": 0.10101010101010101
+              }
+            }
+          }
+        },
+        "LOCALITY_CLINICAL": {
+          "n": 3,
+          "cases": 3,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.059189738743243674,
+              "js_nats_mean": 0.013008483427362567,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "cover": {
+              "tv_mean": 0.059323152713288536,
+              "js_nats_mean": 0.011612406912988357,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "adapt_reference": {
+              "tv_mean": 0.059282412236130316,
+              "js_nats_mean": 0.011638774983169325,
+              "argmax_changed_fraction": 0.037037037037037035
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.059189738743243674,
+              "js_nats_mean": 0.013008483427362567,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "cover": {
+              "tv_mean": 0.059323152713288536,
+              "js_nats_mean": 0.011612406912988357,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "adapt_reference": {
+              "tv_mean": 0.059282412236130316,
+              "js_nats_mean": 0.011638774983169325,
+              "argmax_changed_fraction": 0.037037037037037035
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.00013341397004486277,
+            "js_nats_mean": -0.0013960765143742095,
+            "argmax_changed_fraction": 0.0
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": -4.07404771582201e-05,
+            "js_nats_mean": 2.6368070180967512e-05,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 2,
+          "queries_cover_tv_higher": 1,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.019912320668271793,
+                "js_nats_mean": 0.004317233419710833,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.03938374033802774,
+                "js_nats_mean": 0.00416723456762864,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.039636237648970056,
+                "js_nats_mean": 0.00414400517075721,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.08778185756311904,
+                "js_nats_mean": 0.0223844919222572,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.07690265738157642,
+                "js_nats_mean": 0.02320473782315879,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.08357784007635949,
+                "js_nats_mean": 0.02468133556375546,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.06987503799834019,
+                "js_nats_mean": 0.012323724940119669,
+                "argmax_changed_fraction": 0.1111111111111111
+              },
+              "cover": {
+                "tv_mean": 0.06168306042026144,
+                "js_nats_mean": 0.007465248348177639,
+                "argmax_changed_fraction": 0.1111111111111111
+              },
+              "adapt_reference": {
+                "tv_mean": 0.0546331589830614,
+                "js_nats_mean": 0.006090984214995305,
+                "argmax_changed_fraction": 0.1111111111111111
+              }
+            }
+          }
+        },
+        "LOCALITY_TECHNICAL": {
+          "n": 4,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.043205812681913786,
+              "js_nats_mean": 0.008954938582552864,
+              "argmax_changed_fraction": 0.0
+            },
+            "cover": {
+              "tv_mean": 0.04078368140398758,
+              "js_nats_mean": 0.007704146420390488,
+              "argmax_changed_fraction": 0.05
+            },
+            "adapt_reference": {
+              "tv_mean": 0.04388004010485169,
+              "js_nats_mean": 0.008191211918761886,
+              "argmax_changed_fraction": 0.1
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.043205812681913786,
+              "js_nats_mean": 0.008954938582552864,
+              "argmax_changed_fraction": 0.0
+            },
+            "cover": {
+              "tv_mean": 0.04078368140398758,
+              "js_nats_mean": 0.007704146420390488,
+              "argmax_changed_fraction": 0.05
+            },
+            "adapt_reference": {
+              "tv_mean": 0.04388004010485169,
+              "js_nats_mean": 0.008191211918761886,
+              "argmax_changed_fraction": 0.1
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.002422131277926204,
+            "js_nats_mean": -0.0012507921621623761,
+            "argmax_changed_fraction": 0.05
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.0030963587008641102,
+            "js_nats_mean": 0.00048706549837139804,
+            "argmax_changed_fraction": 0.05
+          },
+          "queries_cover_tv_lower": 3,
+          "queries_cover_tv_higher": 1,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.020990111586270038,
+                "js_nats_mean": 0.0015831478372746025,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.015824453945812944,
+                "js_nats_mean": 0.0011343289559053098,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.01638607045002808,
+                "js_nats_mean": 0.0012259042570159056,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.04642183925643646,
+                "js_nats_mean": 0.00805322885585018,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.05692685890119008,
+                "js_nats_mean": 0.007272225499879025,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.06719942817459058,
+                "js_nats_mean": 0.00884296578866692,
+                "argmax_changed_fraction": 0.4
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.05798153309629793,
+                "js_nats_mean": 0.015234769814534487,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.04973533538410277,
+                "js_nats_mean": 0.013558329933072516,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.046438117616804865,
+                "js_nats_mean": 0.012586920732812559,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.0474297667886507,
+                "js_nats_mean": 0.010948607822552189,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.040648077384844536,
+                "js_nats_mean": 0.008851701292705103,
+                "argmax_changed_fraction": 0.2
+              },
+              "adapt_reference": {
+                "tv_mean": 0.04549654417798323,
+                "js_nats_mean": 0.010109056896552159,
+                "argmax_changed_fraction": 0.0
+              }
+            }
+          }
+        },
+        "SOURCE": {
+          "n": 8,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.0722286873805061,
+              "js_nats_mean": 0.019747888970862073,
+              "argmax_changed_fraction": 0.036616161616161616
+            },
+            "cover": {
+              "tv_mean": 0.043253033678011116,
+              "js_nats_mean": 0.022090899097230544,
+              "argmax_changed_fraction": 0.025252525252525252
+            },
+            "adapt_reference": {
+              "tv_mean": 0.051099430811264876,
+              "js_nats_mean": 0.02442239620132342,
+              "argmax_changed_fraction": 0.025252525252525252
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.0722286873805061,
+              "js_nats_mean": 0.019747888970862073,
+              "argmax_changed_fraction": 0.036616161616161616
+            },
+            "cover": {
+              "tv_mean": 0.043253033678011116,
+              "js_nats_mean": 0.022090899097230544,
+              "argmax_changed_fraction": 0.025252525252525252
+            },
+            "adapt_reference": {
+              "tv_mean": 0.051099430811264876,
+              "js_nats_mean": 0.02442239620132342,
+              "argmax_changed_fraction": 0.025252525252525252
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.028975653702494983,
+            "js_nats_mean": 0.0023430101263684708,
+            "argmax_changed_fraction": -0.011363636363636364
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.00784639713325376,
+            "js_nats_mean": 0.002331497104092875,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 6,
+          "queries_cover_tv_higher": 2,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.04083088566501049,
+                "js_nats_mean": 0.0027107208810864896,
+                "argmax_changed_fraction": 0.05555555555555555
+              },
+              "cover": {
+                "tv_mean": 0.0005656915149601708,
+                "js_nats_mean": 3.697842394853278e-05,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.0006106060398059185,
+                "js_nats_mean": 4.00554734222139e-05,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.047549349575576154,
+                "js_nats_mean": 0.005638332088962647,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.004528244386187781,
+                "js_nats_mean": 0.0010673566299552444,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.004616290105436936,
+                "js_nats_mean": 0.0010426606726661397,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.07483200648386464,
+                "js_nats_mean": 0.020756176986518406,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.06409686024528413,
+                "js_nats_mean": 0.03566658968425527,
+                "argmax_changed_fraction": 0.05555555555555555
+              },
+              "adapt_reference": {
+                "tv_mean": 0.08070170319739971,
+                "js_nats_mean": 0.041925344135734,
+                "argmax_changed_fraction": 0.05555555555555555
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.1257025077975731,
+                "js_nats_mean": 0.04988632592688075,
+                "argmax_changed_fraction": 0.09090909090909091
+              },
+              "cover": {
+                "tv_mean": 0.10382133856561239,
+                "js_nats_mean": 0.05159267165076313,
+                "argmax_changed_fraction": 0.045454545454545456
+              },
+              "adapt_reference": {
+                "tv_mean": 0.11846912390241693,
+                "js_nats_mean": 0.05468152452347133,
+                "argmax_changed_fraction": 0.045454545454545456
+              }
+            }
+          }
+        }
+      },
+      "roles": {
+        "PRESERVE": {
+          "n": 12,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.08676829483314895,
+              "js_nats_mean": 0.025122646749422113,
+              "argmax_changed_fraction": 0.07683982683982683
+            },
+            "cover": {
+              "tv_mean": 0.05346326783621866,
+              "js_nats_mean": 0.019486942470142442,
+              "argmax_changed_fraction": 0.027056277056277056
+            },
+            "adapt_reference": {
+              "tv_mean": 0.05484658281835917,
+              "js_nats_mean": 0.020038693609002834,
+              "argmax_changed_fraction": 0.03463203463203463
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.08676829483314895,
+              "js_nats_mean": 0.02512264674942211,
+              "argmax_changed_fraction": 0.07683982683982685
+            },
+            "cover": {
+              "tv_mean": 0.05346326783621866,
+              "js_nats_mean": 0.019486942470142442,
+              "argmax_changed_fraction": 0.027056277056277056
+            },
+            "adapt_reference": {
+              "tv_mean": 0.05484658281835917,
+              "js_nats_mean": 0.020038693609002834,
+              "argmax_changed_fraction": 0.03463203463203463
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.03330502699693029,
+            "js_nats_mean": -0.005635704279279667,
+            "argmax_changed_fraction": -0.04978354978354979
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.0013833149821405114,
+            "js_nats_mean": 0.0005517511388603916,
+            "argmax_changed_fraction": 0.007575757575757576
+          },
+          "queries_cover_tv_lower": 11,
+          "queries_cover_tv_higher": 1,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.037962394431623775,
+                "js_nats_mean": 0.001990216884117018,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.020456862758874324,
+                "js_nats_mean": 0.002859152103936044,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.019505007145700942,
+                "js_nats_mean": 0.0025822694298326394,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.04484092076118659,
+                "js_nats_mean": 0.0035566234786569896,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.011492214693819579,
+                "js_nats_mean": 0.001319247896182329,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.011270733014862998,
+                "js_nats_mean": 0.0011364931228671443,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.05899197862936395,
+                "js_nats_mean": 0.006037157108974719,
+                "argmax_changed_fraction": 0.09523809523809523
+              },
+              "cover": {
+                "tv_mean": 0.02326994537431626,
+                "js_nats_mean": 0.0025417414886628204,
+                "argmax_changed_fraction": 0.047619047619047616
+              },
+              "adapt_reference": {
+                "tv_mean": 0.022106788035836118,
+                "js_nats_mean": 0.0021041649124089916,
+                "argmax_changed_fraction": 0.047619047619047616
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.20527788551042148,
+                "js_nats_mean": 0.08890658952593972,
+                "argmax_changed_fraction": 0.21212121212121213
+              },
+              "cover": {
+                "tv_mean": 0.15863404851786447,
+                "js_nats_mean": 0.07122762839178857,
+                "argmax_changed_fraction": 0.06060606060606061
+              },
+              "adapt_reference": {
+                "tv_mean": 0.16650380307703663,
+                "js_nats_mean": 0.07433184697090256,
+                "argmax_changed_fraction": 0.09090909090909091
+              }
+            }
+          }
+        },
+        "UNTRAINED_CLINICAL": {
+          "n": 3,
+          "cases": 3,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.059189738743243674,
+              "js_nats_mean": 0.013008483427362567,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "cover": {
+              "tv_mean": 0.059323152713288536,
+              "js_nats_mean": 0.011612406912988357,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "adapt_reference": {
+              "tv_mean": 0.059282412236130316,
+              "js_nats_mean": 0.011638774983169325,
+              "argmax_changed_fraction": 0.037037037037037035
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.059189738743243674,
+              "js_nats_mean": 0.013008483427362567,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "cover": {
+              "tv_mean": 0.059323152713288536,
+              "js_nats_mean": 0.011612406912988357,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "adapt_reference": {
+              "tv_mean": 0.059282412236130316,
+              "js_nats_mean": 0.011638774983169325,
+              "argmax_changed_fraction": 0.037037037037037035
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.00013341397004486277,
+            "js_nats_mean": -0.0013960765143742095,
+            "argmax_changed_fraction": 0.0
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": -4.07404771582201e-05,
+            "js_nats_mean": 2.6368070180967512e-05,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 2,
+          "queries_cover_tv_higher": 1,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.019912320668271793,
+                "js_nats_mean": 0.004317233419710833,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.03938374033802774,
+                "js_nats_mean": 0.00416723456762864,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.039636237648970056,
+                "js_nats_mean": 0.00414400517075721,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.08778185756311904,
+                "js_nats_mean": 0.0223844919222572,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.07690265738157642,
+                "js_nats_mean": 0.02320473782315879,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.08357784007635949,
+                "js_nats_mean": 0.02468133556375546,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.06987503799834019,
+                "js_nats_mean": 0.012323724940119669,
+                "argmax_changed_fraction": 0.1111111111111111
+              },
+              "cover": {
+                "tv_mean": 0.06168306042026144,
+                "js_nats_mean": 0.007465248348177639,
+                "argmax_changed_fraction": 0.1111111111111111
+              },
+              "adapt_reference": {
+                "tv_mean": 0.0546331589830614,
+                "js_nats_mean": 0.006090984214995305,
+                "argmax_changed_fraction": 0.1111111111111111
+              }
+            }
+          }
+        },
+        "UNTRAINED_TECHNICAL": {
+          "n": 4,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.043205812681913786,
+              "js_nats_mean": 0.008954938582552864,
+              "argmax_changed_fraction": 0.0
+            },
+            "cover": {
+              "tv_mean": 0.04078368140398758,
+              "js_nats_mean": 0.007704146420390488,
+              "argmax_changed_fraction": 0.05
+            },
+            "adapt_reference": {
+              "tv_mean": 0.04388004010485169,
+              "js_nats_mean": 0.008191211918761886,
+              "argmax_changed_fraction": 0.1
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.043205812681913786,
+              "js_nats_mean": 0.008954938582552864,
+              "argmax_changed_fraction": 0.0
+            },
+            "cover": {
+              "tv_mean": 0.04078368140398758,
+              "js_nats_mean": 0.007704146420390488,
+              "argmax_changed_fraction": 0.05
+            },
+            "adapt_reference": {
+              "tv_mean": 0.04388004010485169,
+              "js_nats_mean": 0.008191211918761886,
+              "argmax_changed_fraction": 0.1
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.002422131277926204,
+            "js_nats_mean": -0.0012507921621623761,
+            "argmax_changed_fraction": 0.05
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.0030963587008641102,
+            "js_nats_mean": 0.00048706549837139804,
+            "argmax_changed_fraction": 0.05
+          },
+          "queries_cover_tv_lower": 3,
+          "queries_cover_tv_higher": 1,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.020990111586270038,
+                "js_nats_mean": 0.0015831478372746025,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.015824453945812944,
+                "js_nats_mean": 0.0011343289559053098,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.01638607045002808,
+                "js_nats_mean": 0.0012259042570159056,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.04642183925643646,
+                "js_nats_mean": 0.00805322885585018,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.05692685890119008,
+                "js_nats_mean": 0.007272225499879025,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.06719942817459058,
+                "js_nats_mean": 0.00884296578866692,
+                "argmax_changed_fraction": 0.4
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.05798153309629793,
+                "js_nats_mean": 0.015234769814534487,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.04973533538410277,
+                "js_nats_mean": 0.013558329933072516,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.046438117616804865,
+                "js_nats_mean": 0.012586920732812559,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.0474297667886507,
+                "js_nats_mean": 0.010948607822552189,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.040648077384844536,
+                "js_nats_mean": 0.008851701292705103,
+                "argmax_changed_fraction": 0.2
+              },
+              "adapt_reference": {
+                "tv_mean": 0.04549654417798323,
+                "js_nats_mean": 0.010109056896552159,
+                "argmax_changed_fraction": 0.0
+              }
+            }
+          }
+        },
+        "UPDATE": {
+          "n": 12,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.07005418447653504,
+              "js_nats_mean": 0.016481208498436938,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "cover": {
+              "tv_mean": 0.07191502971291669,
+              "js_nats_mean": 0.03025874832006022,
+              "argmax_changed_fraction": 0.046296296296296294
+            },
+            "adapt_reference": {
+              "tv_mean": 0.0782593231374214,
+              "js_nats_mean": 0.03189806699555816,
+              "argmax_changed_fraction": 0.05555555555555555
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.07005418447653504,
+              "js_nats_mean": 0.016481208498436938,
+              "argmax_changed_fraction": 0.037037037037037035
+            },
+            "cover": {
+              "tv_mean": 0.07191502971291669,
+              "js_nats_mean": 0.03025874832006022,
+              "argmax_changed_fraction": 0.046296296296296294
+            },
+            "adapt_reference": {
+              "tv_mean": 0.0782593231374214,
+              "js_nats_mean": 0.03189806699555816,
+              "argmax_changed_fraction": 0.05555555555555555
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.0018608452363816502,
+            "js_nats_mean": 0.013777539821623282,
+            "argmax_changed_fraction": 0.009259259259259259
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.00634429342450471,
+            "js_nats_mean": 0.0016393186754979396,
+            "argmax_changed_fraction": 0.009259259259259259
+          },
+          "queries_cover_tv_lower": 6,
+          "queries_cover_tv_higher": 6,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.03340388769168434,
+                "js_nats_mean": 0.002328098389455035,
+                "argmax_changed_fraction": 0.037037037037037035
+              },
+              "cover": {
+                "tv_mean": 0.008775156225295932,
+                "js_nats_mean": 0.0006446797420138401,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.008340556837833087,
+                "js_nats_mean": 0.0006214111129160195,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.057544693461985146,
+                "js_nats_mean": 0.007038714606077763,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.03718957886733845,
+                "js_nats_mean": 0.00853038532352946,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.041782638575663354,
+                "js_nats_mean": 0.00869596198962294,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.11564593402526582,
+                "js_nats_mean": 0.03620467048112582,
+                "argmax_changed_fraction": 0.1111111111111111
+              },
+              "cover": {
+                "tv_mean": 0.1394631618751711,
+                "js_nats_mean": 0.07110562222152361,
+                "argmax_changed_fraction": 0.1111111111111111
+              },
+              "adapt_reference": {
+                "tv_mean": 0.14873506295447772,
+                "js_nats_mean": 0.07181938107097602,
+                "argmax_changed_fraction": 0.14814814814814814
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.07362222272720487,
+                "js_nats_mean": 0.020353350517089135,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.10223222188386127,
+                "js_nats_mean": 0.040754305993173964,
+                "argmax_changed_fraction": 0.07407407407407407
+              },
+              "adapt_reference": {
+                "tv_mean": 0.11417903418171144,
+                "js_nats_mean": 0.046455513808717666,
+                "argmax_changed_fraction": 0.07407407407407407
+              }
+            }
+          }
+        }
+      }
+    },
+    "_SHORT": {
+      "all": {
+        "n": 31,
+        "cases": 4,
+        "query_means": {
+          "base": {
+            "tv_mean": 0.06698726914794267,
+            "js_nats_mean": 0.017886942227171538,
+            "argmax_changed_fraction": 0.05794581762323698
+          },
+          "cover": {
+            "tv_mean": 0.06013711194753971,
+            "js_nats_mean": 0.021602969280784114,
+            "argmax_changed_fraction": 0.04868384303868175
+          },
+          "adapt_reference": {
+            "tv_mean": 0.061603810435193,
+            "js_nats_mean": 0.022484901415918523,
+            "argmax_changed_fraction": 0.047543406414374156
+          }
+        },
+        "equal_case_means": {
+          "base": {
+            "tv_mean": 0.06694408161057773,
+            "js_nats_mean": 0.017839509366865812,
+            "argmax_changed_fraction": 0.05826086116264688
+          },
+          "cover": {
+            "tv_mean": 0.06095096733715538,
+            "js_nats_mean": 0.02222423147684209,
+            "argmax_changed_fraction": 0.049784355029890745
+          },
+          "adapt_reference": {
+            "tv_mean": 0.06239996610598269,
+            "js_nats_mean": 0.02305019494381285,
+            "argmax_changed_fraction": 0.04867955705009276
+          }
+        },
+        "equal_case_cover_minus_base": {
+          "tv_mean": -0.005993114273422348,
+          "js_nats_mean": 0.004384722109976279,
+          "argmax_changed_fraction": -0.008476506132756134
+        },
+        "equal_case_adapt_minus_cover": {
+          "tv_mean": 0.0014489987688273073,
+          "js_nats_mean": 0.0008259634669707597,
+          "argmax_changed_fraction": -0.0011047979797979834
+        },
+        "queries_cover_tv_lower": 20,
+        "queries_cover_tv_higher": 11,
+        "per_case": {
+          "M01": {
+            "base": {
+              "tv_mean": 0.031004068523905227,
+              "js_nats_mean": 0.0025325824078954178,
+              "argmax_changed_fraction": 0.017857142857142856
+            },
+            "cover": {
+              "tv_mean": 0.01785855038898606,
+              "js_nats_mean": 0.001962089705906262,
+              "argmax_changed_fraction": 0.017857142857142856
+            },
+            "adapt_reference": {
+              "tv_mean": 0.01752422902157758,
+              "js_nats_mean": 0.00194867556282666,
+              "argmax_changed_fraction": 0.017857142857142856
+            }
+          },
+          "M02": {
+            "base": {
+              "tv_mean": 0.050407396041500706,
+              "js_nats_mean": 0.008767542872569596,
+              "argmax_changed_fraction": 0.05625
+            },
+            "cover": {
+              "tv_mean": 0.05013950134175555,
+              "js_nats_mean": 0.010994743155409244,
+              "argmax_changed_fraction": 0.06076388888888889
+            },
+            "adapt_reference": {
+              "tv_mean": 0.0441694150695566,
+              "js_nats_mean": 0.009211025287757751,
+              "argmax_changed_fraction": 0.06770833333333333
+            }
+          },
+          "M03": {
+            "base": {
+              "tv_mean": 0.06560526795226436,
+              "js_nats_mean": 0.01636909069738835,
+              "argmax_changed_fraction": 0.06802721088435373
+            },
+            "cover": {
+              "tv_mean": 0.086180484415241,
+              "js_nats_mean": 0.04148335955463939,
+              "argmax_changed_fraction": 0.0839002267573696
+            },
+            "adapt_reference": {
+              "tv_mean": 0.0870807919004629,
+              "js_nats_mean": 0.04057429430853694,
+              "argmax_changed_fraction": 0.0839002267573696
+            }
+          },
+          "M04": {
+            "base": {
+              "tv_mean": 0.12075959392464061,
+              "js_nats_mean": 0.04368882148960988,
+              "argmax_changed_fraction": 0.09090909090909091
+            },
+            "cover": {
+              "tv_mean": 0.08962533320263891,
+              "js_nats_mean": 0.034456733491413476,
+              "argmax_changed_fraction": 0.036616161616161616
+            },
+            "adapt_reference": {
+              "tv_mean": 0.10082542843233366,
+              "js_nats_mean": 0.04046678461613004,
+              "argmax_changed_fraction": 0.025252525252525252
+            }
+          }
+        }
+      },
+      "groups": {
+        "HELDOUT": {
+          "n": 16,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.0749504528198491,
+              "js_nats_mean": 0.020884643764660996,
+              "argmax_changed_fraction": 0.07278138528138528
+            },
+            "cover": {
+              "tv_mean": 0.07088523103249467,
+              "js_nats_mean": 0.02801286436795741,
+              "argmax_changed_fraction": 0.055014430014430016
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07511714747730974,
+              "js_nats_mean": 0.03004781871456253,
+              "argmax_changed_fraction": 0.05280483405483405
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.0749504528198491,
+              "js_nats_mean": 0.020884643764660996,
+              "argmax_changed_fraction": 0.07278138528138528
+            },
+            "cover": {
+              "tv_mean": 0.07088523103249467,
+              "js_nats_mean": 0.02801286436795741,
+              "argmax_changed_fraction": 0.055014430014430016
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07511714747730974,
+              "js_nats_mean": 0.03004781871456253,
+              "argmax_changed_fraction": 0.05280483405483405
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.004065221787354439,
+            "js_nats_mean": 0.007128220603296414,
+            "argmax_changed_fraction": -0.017766955266955264
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.004231916444815076,
+            "js_nats_mean": 0.0020349543466051216,
+            "argmax_changed_fraction": -0.002209595959595967
+          },
+          "queries_cover_tv_lower": 10,
+          "queries_cover_tv_higher": 6,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.030024840992776285,
+                "js_nats_mean": 0.0021876515634832775,
+                "argmax_changed_fraction": 0.03571428571428571
+              },
+              "cover": {
+                "tv_mean": 0.014499611413457953,
+                "js_nats_mean": 0.001561961106942143,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.013851791699619078,
+                "js_nats_mean": 0.0014823083346108057,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.042524072011032185,
+                "js_nats_mean": 0.0040596357028581,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.031200926279709957,
+                "js_nats_mean": 0.005309796140929109,
+                "argmax_changed_fraction": 0.027777777777777776
+              },
+              "adapt_reference": {
+                "tv_mean": 0.03131825196445408,
+                "js_nats_mean": 0.004819573443996919,
+                "argmax_changed_fraction": 0.041666666666666664
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.07859747415801606,
+                "js_nats_mean": 0.02058259802678477,
+                "argmax_changed_fraction": 0.11904761904761904
+              },
+              "cover": {
+                "tv_mean": 0.11028073274472955,
+                "js_nats_mean": 0.05156724460266575,
+                "argmax_changed_fraction": 0.11904761904761904
+              },
+              "adapt_reference": {
+                "tv_mean": 0.11270889762884823,
+                "js_nats_mean": 0.05141439161369146,
+                "argmax_changed_fraction": 0.11904761904761904
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.1486554241175719,
+                "js_nats_mean": 0.056708689765517836,
+                "argmax_changed_fraction": 0.13636363636363635
+              },
+              "cover": {
+                "tv_mean": 0.1275596536920812,
+                "js_nats_mean": 0.05361245562129264,
+                "argmax_changed_fraction": 0.07323232323232323
+              },
+              "adapt_reference": {
+                "tv_mean": 0.14258964861631757,
+                "js_nats_mean": 0.06247500146595094,
+                "argmax_changed_fraction": 0.050505050505050504
+              }
+            }
+          }
+        },
+        "LOCALITY_CLINICAL": {
+          "n": 3,
+          "cases": 3,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.07627569457437414,
+              "js_nats_mean": 0.018852675137824303,
+              "argmax_changed_fraction": 0.08333333333333333
+            },
+            "cover": {
+              "tv_mean": 0.08936694293795204,
+              "js_nats_mean": 0.01972864359414096,
+              "argmax_changed_fraction": 0.125
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07994540364838792,
+              "js_nats_mean": 0.01759017615131159,
+              "argmax_changed_fraction": 0.125
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.07627569457437414,
+              "js_nats_mean": 0.018852675137824303,
+              "argmax_changed_fraction": 0.08333333333333333
+            },
+            "cover": {
+              "tv_mean": 0.08936694293795204,
+              "js_nats_mean": 0.01972864359414096,
+              "argmax_changed_fraction": 0.125
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07994540364838792,
+              "js_nats_mean": 0.01759017615131159,
+              "argmax_changed_fraction": 0.125
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.013091248363577904,
+            "js_nats_mean": 0.0008759684563166559,
+            "argmax_changed_fraction": 0.04166666666666667
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": -0.009421539289564115,
+            "js_nats_mean": -0.0021384674428293685,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 1,
+          "queries_cover_tv_higher": 2,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.037681018064172074,
+                "js_nats_mean": 0.004115874410980629,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.04957866133052357,
+                "js_nats_mean": 0.004713470144073025,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.048639016968043174,
+                "js_nats_mean": 0.004584749320805201,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.11597390739392843,
+                "js_nats_mean": 0.03574044157507786,
+                "argmax_changed_fraction": 0.25
+              },
+              "cover": {
+                "tv_mean": 0.16634309275451942,
+                "js_nats_mean": 0.04655461813197626,
+                "argmax_changed_fraction": 0.375
+              },
+              "adapt_reference": {
+                "tv_mean": 0.1392500094106286,
+                "js_nats_mean": 0.03947520788302597,
+                "argmax_changed_fraction": 0.375
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.07517215826502191,
+                "js_nats_mean": 0.016701709427414422,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.05217907472881313,
+                "js_nats_mean": 0.007917842506373587,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.05194718456649203,
+                "js_nats_mean": 0.008710571250103601,
+                "argmax_changed_fraction": 0.0
+              }
+            }
+          }
+        },
+        "LOCALITY_TECHNICAL": {
+          "n": 4,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.048687912398155266,
+              "js_nats_mean": 0.011354744276503995,
+              "argmax_changed_fraction": 0.05
+            },
+            "cover": {
+              "tv_mean": 0.0594476045031435,
+              "js_nats_mean": 0.013288321246936616,
+              "argmax_changed_fraction": 0.03571428571428571
+            },
+            "adapt_reference": {
+              "tv_mean": 0.05429744641883298,
+              "js_nats_mean": 0.011955598024659961,
+              "argmax_changed_fraction": 0.03571428571428571
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.048687912398155266,
+              "js_nats_mean": 0.011354744276503995,
+              "argmax_changed_fraction": 0.05
+            },
+            "cover": {
+              "tv_mean": 0.0594476045031435,
+              "js_nats_mean": 0.013288321246936616,
+              "argmax_changed_fraction": 0.03571428571428571
+            },
+            "adapt_reference": {
+              "tv_mean": 0.05429744641883298,
+              "js_nats_mean": 0.011955598024659961,
+              "argmax_changed_fraction": 0.03571428571428571
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.010759692104988235,
+            "js_nats_mean": 0.0019335769704326208,
+            "argmax_changed_fraction": -0.01428571428571429
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": -0.005150158084310519,
+            "js_nats_mean": -0.0013327232222766546,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 2,
+          "queries_cover_tv_higher": 2,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.03504522729535392,
+                "js_nats_mean": 0.003995108137222719,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.03423829423632903,
+                "js_nats_mean": 0.00467892757019168,
+                "argmax_changed_fraction": 0.14285714285714285
+              },
+              "adapt_reference": {
+                "tv_mean": 0.034969330898455143,
+                "js_nats_mean": 0.005011272895706538,
+                "argmax_changed_fraction": 0.14285714285714285
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.05175112940008124,
+                "js_nats_mean": 0.008927136626500836,
+                "argmax_changed_fraction": 0.2
+              },
+              "cover": {
+                "tv_mean": 0.09798122864674791,
+                "js_nats_mean": 0.017077681986012384,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.07741512002375468,
+                "js_nats_mean": 0.01212528612071487,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.052883296624721646,
+                "js_nats_mean": 0.017841640048477686,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.05014559414547255,
+                "js_nats_mean": 0.017529690228736405,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.046755011268858934,
+                "js_nats_mean": 0.015679660501180324,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.05507199627246425,
+                "js_nats_mean": 0.01465509229381474,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.0554253009840245,
+                "js_nats_mean": 0.013866985202805996,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.05805032348426316,
+                "js_nats_mean": 0.015006172581038113,
+                "argmax_changed_fraction": 0.0
+              }
+            }
+          }
+        },
+        "SOURCE": {
+          "n": 8,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.0567274206441117,
+              "js_nats_mean": 0.014795488286031604,
+              "argmax_changed_fraction": 0.022727272727272728
+            },
+            "cover": {
+              "tv_mean": 0.028024440878423304,
+              "js_nats_mean": 0.013643375255852453,
+              "argmax_changed_fraction": 0.013888888888888888
+            },
+            "adapt_reference": {
+              "tv_mean": 0.03135222090419144,
+              "js_nats_mean": 0.01445924048848739,
+              "argmax_changed_fraction": 0.013888888888888888
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.0567274206441117,
+              "js_nats_mean": 0.014795488286031604,
+              "argmax_changed_fraction": 0.022727272727272728
+            },
+            "cover": {
+              "tv_mean": 0.028024440878423304,
+              "js_nats_mean": 0.013643375255852453,
+              "argmax_changed_fraction": 0.013888888888888888
+            },
+            "adapt_reference": {
+              "tv_mean": 0.03135222090419144,
+              "js_nats_mean": 0.01445924048848739,
+              "argmax_changed_fraction": 0.013888888888888888
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.028702979765688398,
+            "js_nats_mean": -0.0011521130301791506,
+            "argmax_changed_fraction": -0.00883838383838384
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.003327780025768133,
+            "js_nats_mean": 0.0008158652326349363,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 7,
+          "queries_cover_tv_higher": 1,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.027603469430305335,
+                "js_nats_mean": 0.001699535230513441,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.0005265009456020375,
+                "js_nats_mean": 2.8237752608408734e-05,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.0005891587538230027,
+                "js_nats_mean": 3.2074473829158775e-05,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.032718921746933624,
+                "js_nats_mean": 0.004617110983772839,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.005993992106968616,
+                "js_nats_mean": 0.001543230280784436,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.0057085916321266,
+                "js_nats_mean": 0.0014047072611667495,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.04598184120453231,
+                "js_nats_mean": 0.00720580136305085,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.05599743289114812,
+                "js_nats_mean": 0.03329242412153815,
+                "argmax_changed_fraction": 0.05555555555555555
+              },
+              "adapt_reference": {
+                "tv_mean": 0.05598747075949425,
+                "js_nats_mean": 0.03134141660190622,
+                "argmax_changed_fraction": 0.05555555555555555
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.12060545019467554,
+                "js_nats_mean": 0.045659505566789285,
+                "argmax_changed_fraction": 0.09090909090909091
+              },
+              "cover": {
+                "tv_mean": 0.049579837569974444,
+                "js_nats_mean": 0.01970960886847882,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.0631236624713219,
+                "js_nats_mean": 0.02505876361704743,
+                "argmax_changed_fraction": 0.0
+              }
+            }
+          }
+        }
+      },
+      "roles": {
+        "PRESERVE": {
+          "n": 12,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.07394086429967284,
+              "js_nats_mean": 0.022798095287428287,
+              "argmax_changed_fraction": 0.08441558441558442
+            },
+            "cover": {
+              "tv_mean": 0.04580748528631127,
+              "js_nats_mean": 0.01657724189120155,
+              "argmax_changed_fraction": 0.027056277056277056
+            },
+            "adapt_reference": {
+              "tv_mean": 0.0503951481856068,
+              "js_nats_mean": 0.018447105694333176,
+              "argmax_changed_fraction": 0.03336940836940837
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.07394086429967282,
+              "js_nats_mean": 0.022798095287428287,
+              "argmax_changed_fraction": 0.08441558441558442
+            },
+            "cover": {
+              "tv_mean": 0.04580748528631127,
+              "js_nats_mean": 0.01657724189120155,
+              "argmax_changed_fraction": 0.027056277056277056
+            },
+            "adapt_reference": {
+              "tv_mean": 0.050395148185606795,
+              "js_nats_mean": 0.018447105694333176,
+              "argmax_changed_fraction": 0.03336940836940837
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": -0.028133379013361555,
+            "js_nats_mean": -0.006220853396226737,
+            "argmax_changed_fraction": -0.05735930735930736
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.004587662899295526,
+            "js_nats_mean": 0.0018698638031316266,
+            "argmax_changed_fraction": 0.006313131313131312
+          },
+          "queries_cover_tv_lower": 10,
+          "queries_cover_tv_higher": 2,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.025459079771719528,
+                "js_nats_mean": 0.0012833202948018241,
+                "argmax_changed_fraction": 0.047619047619047616
+              },
+              "cover": {
+                "tv_mean": 0.017472427408479128,
+                "js_nats_mean": 0.0019329888747028285,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.01654522295896514,
+                "js_nats_mean": 0.0018196861846444916,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.028614457715382305,
+                "js_nats_mean": 0.0018974343017334715,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.011705757461067404,
+                "js_nats_mean": 0.000980987507992171,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.014668344231292641,
+                "js_nats_mean": 0.001245423951025736,
+                "argmax_changed_fraction": 0.05555555555555555
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.038089634153821154,
+                "js_nats_mean": 0.003711242620729802,
+                "argmax_changed_fraction": 0.047619047619047616
+              },
+              "cover": {
+                "tv_mean": 0.0233275575953915,
+                "js_nats_mean": 0.0032258032551004275,
+                "argmax_changed_fraction": 0.047619047619047616
+              },
+              "adapt_reference": {
+                "tv_mean": 0.027559198012642044,
+                "js_nats_mean": 0.0038521097601577773,
+                "argmax_changed_fraction": 0.047619047619047616
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.20360028555776832,
+                "js_nats_mean": 0.08430038393244806,
+                "argmax_changed_fraction": 0.24242424242424243
+              },
+              "cover": {
+                "tv_mean": 0.13072419868030705,
+                "js_nats_mean": 0.060169187927010766,
+                "argmax_changed_fraction": 0.06060606060606061
+              },
+              "adapt_reference": {
+                "tv_mean": 0.14280782753952737,
+                "js_nats_mean": 0.0668712028815047,
+                "argmax_changed_fraction": 0.030303030303030304
+              }
+            }
+          }
+        },
+        "UNTRAINED_CLINICAL": {
+          "n": 3,
+          "cases": 3,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.07627569457437414,
+              "js_nats_mean": 0.018852675137824303,
+              "argmax_changed_fraction": 0.08333333333333333
+            },
+            "cover": {
+              "tv_mean": 0.08936694293795204,
+              "js_nats_mean": 0.01972864359414096,
+              "argmax_changed_fraction": 0.125
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07994540364838792,
+              "js_nats_mean": 0.01759017615131159,
+              "argmax_changed_fraction": 0.125
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.07627569457437414,
+              "js_nats_mean": 0.018852675137824303,
+              "argmax_changed_fraction": 0.08333333333333333
+            },
+            "cover": {
+              "tv_mean": 0.08936694293795204,
+              "js_nats_mean": 0.01972864359414096,
+              "argmax_changed_fraction": 0.125
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07994540364838792,
+              "js_nats_mean": 0.01759017615131159,
+              "argmax_changed_fraction": 0.125
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.013091248363577904,
+            "js_nats_mean": 0.0008759684563166559,
+            "argmax_changed_fraction": 0.04166666666666667
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": -0.009421539289564115,
+            "js_nats_mean": -0.0021384674428293685,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 1,
+          "queries_cover_tv_higher": 2,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.037681018064172074,
+                "js_nats_mean": 0.004115874410980629,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.04957866133052357,
+                "js_nats_mean": 0.004713470144073025,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.048639016968043174,
+                "js_nats_mean": 0.004584749320805201,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.11597390739392843,
+                "js_nats_mean": 0.03574044157507786,
+                "argmax_changed_fraction": 0.25
+              },
+              "cover": {
+                "tv_mean": 0.16634309275451942,
+                "js_nats_mean": 0.04655461813197626,
+                "argmax_changed_fraction": 0.375
+              },
+              "adapt_reference": {
+                "tv_mean": 0.1392500094106286,
+                "js_nats_mean": 0.03947520788302597,
+                "argmax_changed_fraction": 0.375
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.07517215826502191,
+                "js_nats_mean": 0.016701709427414422,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.05217907472881313,
+                "js_nats_mean": 0.007917842506373587,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.05194718456649203,
+                "js_nats_mean": 0.008710571250103601,
+                "argmax_changed_fraction": 0.0
+              }
+            }
+          }
+        },
+        "UNTRAINED_TECHNICAL": {
+          "n": 4,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.048687912398155266,
+              "js_nats_mean": 0.011354744276503995,
+              "argmax_changed_fraction": 0.05
+            },
+            "cover": {
+              "tv_mean": 0.0594476045031435,
+              "js_nats_mean": 0.013288321246936616,
+              "argmax_changed_fraction": 0.03571428571428571
+            },
+            "adapt_reference": {
+              "tv_mean": 0.05429744641883298,
+              "js_nats_mean": 0.011955598024659961,
+              "argmax_changed_fraction": 0.03571428571428571
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.048687912398155266,
+              "js_nats_mean": 0.011354744276503995,
+              "argmax_changed_fraction": 0.05
+            },
+            "cover": {
+              "tv_mean": 0.0594476045031435,
+              "js_nats_mean": 0.013288321246936616,
+              "argmax_changed_fraction": 0.03571428571428571
+            },
+            "adapt_reference": {
+              "tv_mean": 0.05429744641883298,
+              "js_nats_mean": 0.011955598024659961,
+              "argmax_changed_fraction": 0.03571428571428571
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.010759692104988235,
+            "js_nats_mean": 0.0019335769704326208,
+            "argmax_changed_fraction": -0.01428571428571429
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": -0.005150158084310519,
+            "js_nats_mean": -0.0013327232222766546,
+            "argmax_changed_fraction": 0.0
+          },
+          "queries_cover_tv_lower": 2,
+          "queries_cover_tv_higher": 2,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.03504522729535392,
+                "js_nats_mean": 0.003995108137222719,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.03423829423632903,
+                "js_nats_mean": 0.00467892757019168,
+                "argmax_changed_fraction": 0.14285714285714285
+              },
+              "adapt_reference": {
+                "tv_mean": 0.034969330898455143,
+                "js_nats_mean": 0.005011272895706538,
+                "argmax_changed_fraction": 0.14285714285714285
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.05175112940008124,
+                "js_nats_mean": 0.008927136626500836,
+                "argmax_changed_fraction": 0.2
+              },
+              "cover": {
+                "tv_mean": 0.09798122864674791,
+                "js_nats_mean": 0.017077681986012384,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.07741512002375468,
+                "js_nats_mean": 0.01212528612071487,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.052883296624721646,
+                "js_nats_mean": 0.017841640048477686,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.05014559414547255,
+                "js_nats_mean": 0.017529690228736405,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.046755011268858934,
+                "js_nats_mean": 0.015679660501180324,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.05507199627246425,
+                "js_nats_mean": 0.01465509229381474,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.0554253009840245,
+                "js_nats_mean": 0.013866985202805996,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.05805032348426316,
+                "js_nats_mean": 0.015006172581038113,
+                "argmax_changed_fraction": 0.0
+              }
+            }
+          }
+        },
+        "UPDATE": {
+          "n": 12,
+          "cases": 4,
+          "query_means": {
+            "base": {
+              "tv_mean": 0.06381135322286711,
+              "js_nats_mean": 0.014911755256140777,
+              "argmax_changed_fraction": 0.027777777777777776
+            },
+            "cover": {
+              "tv_mean": 0.06738911667596381,
+              "js_nats_mean": 0.029868827436643302,
+              "argmax_changed_fraction": 0.05555555555555555
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07066252905360047,
+              "js_nats_mean": 0.031256146250741794,
+              "argmax_changed_fraction": 0.046296296296296294
+            }
+          },
+          "equal_case_means": {
+            "base": {
+              "tv_mean": 0.06381135322286711,
+              "js_nats_mean": 0.014911755256140777,
+              "argmax_changed_fraction": 0.027777777777777776
+            },
+            "cover": {
+              "tv_mean": 0.06738911667596383,
+              "js_nats_mean": 0.029868827436643302,
+              "argmax_changed_fraction": 0.05555555555555555
+            },
+            "adapt_reference": {
+              "tv_mean": 0.07066252905360047,
+              "js_nats_mean": 0.031256146250741794,
+              "argmax_changed_fraction": 0.046296296296296294
+            }
+          },
+          "equal_case_cover_minus_base": {
+            "tv_mean": 0.0035777634530967106,
+            "js_nats_mean": 0.014957072180502524,
+            "argmax_changed_fraction": 0.027777777777777776
+          },
+          "equal_case_adapt_minus_cover": {
+            "tv_mean": 0.0032734123776366475,
+            "js_nats_mean": 0.001387318814098492,
+            "argmax_changed_fraction": -0.009259259259259259
+          },
+          "queries_cover_tv_lower": 7,
+          "queries_cover_tv_higher": 5,
+          "per_case": {
+            "M01": {
+              "base": {
+                "tv_mean": 0.03297635450551908,
+                "js_nats_mean": 0.002766571943518173,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.0022113884398661677,
+                "js_nats_mean": 0.00016845110295896814,
+                "argmax_changed_fraction": 0.0
+              },
+              "adapt_reference": {
+                "tv_mean": 0.0023166051430756306,
+                "js_nats_mean": 0.00017810791072268858,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M02": {
+              "base": {
+                "tv_mean": 0.04989691946394969,
+                "js_nats_mean": 0.006593487291259221,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.03389147231652495,
+                "js_nats_mean": 0.007127560867102931,
+                "argmax_changed_fraction": 0.037037037037037035
+              },
+              "adapt_reference": {
+                "tv_mean": 0.03089505280939719,
+                "js_nats_mean": 0.006117145481747989,
+                "argmax_changed_fraction": 0.0
+              }
+            },
+            "M03": {
+              "base": {
+                "tv_mean": 0.09736155885988845,
+                "js_nats_mean": 0.028536088990350456,
+                "argmax_changed_fraction": 0.1111111111111111
+              },
+              "cover": {
+                "tv_mean": 0.16104504132501332,
+                "js_nats_mean": 0.08772547229614601,
+                "argmax_changed_fraction": 0.14814814814814814
+              },
+              "adapt_reference": {
+                "tv_mean": 0.16004431266548508,
+                "js_nats_mean": 0.08559469012603499,
+                "argmax_changed_fraction": 0.14814814814814814
+              }
+            },
+            "M04": {
+              "base": {
+                "tv_mean": 0.07501058006211124,
+                "js_nats_mean": 0.02175087279943526,
+                "argmax_changed_fraction": 0.0
+              },
+              "cover": {
+                "tv_mean": 0.07240856462245085,
+                "js_nats_mean": 0.0244538254803653,
+                "argmax_changed_fraction": 0.037037037037037035
+              },
+              "adapt_reference": {
+                "tv_mean": 0.08939414559644399,
+                "js_nats_mean": 0.03313464148446151,
+                "argmax_changed_fraction": 0.037037037037037035
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
