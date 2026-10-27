@@ -23,6 +23,27 @@ def score(cfg):
     from scripts.medtrace import stage17_judge as judge
     judge.PROTOCOL,judge.PROMPT,judge.schema,judge.validate=PROTOCOL,PROMPT,schema,validate
     contract=read(cfg['accepted_contract']);assert all(contract[k]==v for k,v in dict(protocol=PROTOCOL,prompt=PROMPT,model='gpt-6-astra',reasoning_effort='medium').items())
+    # This is a dependency gate, not a second experiment monitor. No judge
+    # attempts are launched until generation and both exit receipts succeed.
+    probe="""from pathlib import Path
+import json
+r=Path('/data/bmw/Knowledge_editing/outputs/med150-v1-20261027/run')
+def load(n):
+ p=r/n
+ return json.loads(p.read_text()) if p.exists() else None
+print(json.dumps({n:load(n) for n in ('EVAL_GENERATION_COMPLETE.json','EVAL_WORKER_EXIT.json','EVAL_GUARD_EXIT.json','EVAL_FAILURE.json','EVAL_GUARD_FAILURE.json')}))
+"""
+    while True:
+        assert time.time()<clock['hard_end']-620
+        status=subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=12','pro5000','/data/bmw/envs/v0/bin/python','-'],input=probe,text=True,capture_output=True,timeout=30)
+        assert status.returncode==0,status.stderr[-1000:]
+        state=json.loads(status.stdout)
+        assert not state['EVAL_FAILURE.json'] and not state['EVAL_GUARD_FAILURE.json'],'Generation failed; preserve partial outputs'
+        if state['EVAL_GENERATION_COMPLETE.json'] and state['EVAL_WORKER_EXIT.json'] and state['EVAL_GUARD_EXIT.json']:
+            assert state['EVAL_WORKER_EXIT.json']['code']==state['EVAL_GUARD_EXIT.json']['code']==0
+            break
+        write(local/'DEPENDENCY_WAIT.json',dict(time=time.time(),waiting_for='EVAL_GENERATION_AND_SUCCESSFUL_EXITS'))
+        time.sleep(30)
     command="""from pathlib import Path
 import json
 r=Path('/data/bmw/Knowledge_editing/outputs/med150-v1-20261027/run')
