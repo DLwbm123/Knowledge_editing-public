@@ -1,0 +1,194 @@
+{
+  "status": "COMPLETE",
+  "time": 1793141243.581011,
+  "groups": 31,
+  "queries": 93,
+  "reserved_groups_excluded": 1,
+  "unselected_QA_decoded": 0,
+  "scoring": {
+    "time": 1793140118.0140748,
+    "consumers": 186,
+    "unique_payloads": 117,
+    "reused": 0,
+    "new_attempt_items": 117,
+    "unknown": 0,
+    "generation_and_scoring_complete": true
+  },
+  "panels": {
+    "core_correct": {
+      "all": {
+        "known": 93,
+        "unknown": 0,
+        "base_correct": 52,
+        "MED_correct": 53,
+        "base_correct_lost": 1,
+        "base_incorrect_repaired": 2,
+        "n": 93,
+        "base_accuracy_percent": 55.913978494623656,
+        "MED_accuracy_percent": 56.98924731182796,
+        "delta_pp": 1.0752688172043012,
+        "source_group_bootstrap95_delta_pp": [
+          -2.1505376344086025,
+          4.301075268817205
+        ],
+        "base_correct_damage_rate_percent": 1.9230769230769231
+      },
+      "yes": {
+        "known": 31,
+        "unknown": 0,
+        "base_correct": 25,
+        "MED_correct": 25,
+        "base_correct_lost": 1,
+        "base_incorrect_repaired": 1,
+        "n": 31,
+        "base_accuracy_percent": 80.64516129032258,
+        "MED_accuracy_percent": 80.64516129032258,
+        "delta_pp": 0,
+        "source_group_bootstrap95_delta_pp": [
+          -9.67741935483871,
+          9.67741935483871
+        ],
+        "base_correct_damage_rate_percent": 4.0
+      },
+      "no": {
+        "known": 31,
+        "unknown": 0,
+        "base_correct": 14,
+        "MED_correct": 14,
+        "base_correct_lost": 0,
+        "base_incorrect_repaired": 0,
+        "n": 31,
+        "base_accuracy_percent": 45.16129032258065,
+        "MED_accuracy_percent": 45.16129032258065,
+        "delta_pp": 0,
+        "source_group_bootstrap95_delta_pp": [
+          0,
+          0
+        ],
+        "base_correct_damage_rate_percent": 0.0
+      },
+      "open": {
+        "known": 31,
+        "unknown": 0,
+        "base_correct": 13,
+        "MED_correct": 14,
+        "base_correct_lost": 0,
+        "base_incorrect_repaired": 1,
+        "n": 31,
+        "base_accuracy_percent": 41.935483870967744,
+        "MED_accuracy_percent": 45.16129032258065,
+        "delta_pp": 3.225806451612903,
+        "source_group_bootstrap95_delta_pp": [
+          0,
+          9.67741935483871
+        ],
+        "base_correct_damage_rate_percent": 0.0
+      }
+    },
+    "full_supported": {
+      "all": {
+        "known": 93,
+        "unknown": 0,
+        "base_correct": 25,
+        "MED_correct": 26,
+        "base_correct_lost": 3,
+        "base_incorrect_repaired": 4,
+        "n": 93,
+        "base_accuracy_percent": 26.881720430107528,
+        "MED_accuracy_percent": 27.956989247311828,
+        "delta_pp": 1.0752688172043012,
+        "source_group_bootstrap95_delta_pp": [
+          -4.301075268817205,
+          6.451612903225806
+        ],
+        "base_correct_damage_rate_percent": 12.0
+      },
+      "yes": {
+        "known": 31,
+        "unknown": 0,
+        "base_correct": 8,
+        "MED_correct": 8,
+        "base_correct_lost": 1,
+        "base_incorrect_repaired": 1,
+        "n": 31,
+        "base_accuracy_percent": 25.806451612903224,
+        "MED_accuracy_percent": 25.806451612903224,
+        "delta_pp": 0,
+        "source_group_bootstrap95_delta_pp": [
+          -9.67741935483871,
+          9.67741935483871
+        ],
+        "base_correct_damage_rate_percent": 12.5
+      },
+      "no": {
+        "known": 31,
+        "unknown": 0,
+        "base_correct": 8,
+        "MED_correct": 7,
+        "base_correct_lost": 2,
+        "base_incorrect_repaired": 1,
+        "n": 31,
+        "base_accuracy_percent": 25.806451612903224,
+        "MED_accuracy_percent": 22.580645161290324,
+        "delta_pp": -3.225806451612903,
+        "source_group_bootstrap95_delta_pp": [
+          -12.903225806451612,
+          6.451612903225806
+        ],
+        "base_correct_damage_rate_percent": 25.0
+      },
+      "open": {
+        "known": 31,
+        "unknown": 0,
+        "base_correct": 9,
+        "MED_correct": 11,
+        "base_correct_lost": 0,
+        "base_incorrect_repaired": 2,
+        "n": 31,
+        "base_accuracy_percent": 29.032258064516128,
+        "MED_accuracy_percent": 35.483870967741936,
+        "delta_pp": 6.451612903225806,
+        "source_group_bootstrap95_delta_pp": [
+          0,
+          16.129032258064516
+        ],
+        "base_correct_damage_rate_percent": 0.0
+      }
+    }
+  },
+  "diagnostic_signal": false,
+  "signal_rule": "BASE CORE support >=15 and MED CORE Base-correct damage rate >20%; false or UNKNOWN is not clinical evidence",
+  "paired_exact_same_payload": 69,
+  "input_and_forced_activation_audit": {
+    "queries": 93,
+    "same_inputs": 93,
+    "forced_nonzero_trace": 93,
+    "base_no_expert": 93,
+    "base_trace_empty": 93
+  },
+  "quality": {
+    "BASE": {
+      "consumers": 93,
+      "EOS": 93,
+      "at_cap": 0
+    },
+    "MED_FORCED": {
+      "consumers": 93,
+      "EOS": 93,
+      "at_cap": 0
+    }
+  },
+  "forced_activation": true,
+  "natural_routing": false,
+  "independent_confirmation": false,
+  "clinical_truth": "UNKNOWN",
+  "patient_independence": "UNKNOWN",
+  "generation_counts": {
+    "forwards": 3854,
+    "generations": 186,
+    "backwards": 0,
+    "updates": 0,
+    "vision_forwards": 93
+  },
+  "experiment_elapsed_seconds": 279.3550660610199
+}
