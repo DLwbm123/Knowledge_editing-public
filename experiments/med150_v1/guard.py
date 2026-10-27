@@ -30,6 +30,7 @@ def main():
         '--format=csv,noheader,nounits'],text=True).strip().split(',')
     assert row[0].strip()==lock['expected_GPU_UUID'] and int(row[1])>=lock['minimum_free_MiB']
     assert read('DATA_ADMISSION.json')['status']=='MECHANICAL_SOURCE_AND_ROLE_PASS_WITH_SEMANTIC_LIMIT'
+    assert read('TRAIN_CPU_ADMISSION.json')['status']=='PASS'
     assert time.time()<clock['hard_end']-620
     with (ROOT/'TRAIN_GUARD_ONCE').open('x'):pass
     write('TRAIN_GUARD_HEALTH.json',dict(time=time.time(),hard_end=clock['hard_end'],new_bytes=size(ROOT)))
