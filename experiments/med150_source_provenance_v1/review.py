@@ -39,7 +39,7 @@ def main():
     private=dict(status='SOURCE_ANNOTATION_AUDIT_COMPLETE_NOT_CLINICALLY_ADMITTED',time=time.time(),per_group=per,clinical='UNKNOWN',patient_independence='UNKNOWN')
     target=OUT/'REVIEW_PRIVATE.json';assert not target.exists();target.write_text(json.dumps(private,indent=2)+'\n')
     public=dict(status=private['status'],groups=8,detection_files=8,detection_nonempty_groups=8-nempty,detection_empty_groups=nempty,
-        positive_object_annotations=total,prior_base_potential_groups=6,prior_base_protection_questions=9,
+        positive_object_annotations=total,prior_base_potential_groups=6,prior_base_protection_questions=9,joint_positive_annotation_groups=joint,
         target_positive_category_present=t['EXPLICIT_POSITIVE_CATEGORY_PRESENT'],target_unknown_no_positive_category=t['UNKNOWN_NO_MATCHING_POSITIVE_CATEGORY'],
         protection_positive_category_present=p['EXPLICIT_POSITIVE_CATEGORY_PRESENT']+p['BILATERAL_CATEGORY_PRESENT'],
         protection_unknown_no_positive_category=p['UNKNOWN_NO_MATCHING_POSITIVE_CATEGORY'],
