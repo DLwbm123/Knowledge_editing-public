@@ -35,6 +35,7 @@ def main():
     t=collections.Counter(v['target_source_status'] for v in per if 'target_source_status' in v)
     p=collections.Counter(x['source_status'] for v in per for x in v.get('protections',[]))
     assert sum(t.values())==6 and sum(p.values())==9
+    joint=sum(v.get('target_source_status')=='EXPLICIT_POSITIVE_CATEGORY_PRESENT' and any(x['source_status']!='UNKNOWN_NO_MATCHING_POSITIVE_CATEGORY' for x in v.get('protections',[])) for v in per)
     private=dict(status='SOURCE_ANNOTATION_AUDIT_COMPLETE_NOT_CLINICALLY_ADMITTED',time=time.time(),per_group=per,clinical='UNKNOWN',patient_independence='UNKNOWN')
     target=OUT/'REVIEW_PRIVATE.json';assert not target.exists();target.write_text(json.dumps(private,indent=2)+'\n')
     public=dict(status=private['status'],groups=8,detection_files=8,detection_nonempty_groups=8-nempty,detection_empty_groups=nempty,
@@ -50,7 +51,7 @@ def main():
 
 [SLAKE原论文](https://arxiv.org/html/2102.09542)称有经验的医师参与视觉语义标注、医生提出问题；这提供数据集级来源信息，并不是本次对每个病例重新进行的医师核验，也不能保证本地数据版本与论文原版完全一致。
 
-八个固定TRAIN_DEV组的`detection.json`均存在且可解析；6组有正向目标框标注，2组为空。依据此前固定的6个Base潜在目标与9个潜在保护问题，来源类别标注与**1/6个目标**、**3/9个保护问题**存在直接的正向对应。其余5个目标和6个保护问题缺少可对应的正向类别标注，仍为UNKNOWN；尤其空检测结果或未标注类别不能解释为无病、无器官或问题错误。该对照只说明数据源内部的类别一致性，不代表框、问答、图像判断或临床诊断已被独立验证。
+八个固定TRAIN_DEV组的`detection.json`均存在且可解析；6组有正向目标框标注，2组为空。依据此前固定的6个Base潜在目标与9个潜在保护问题，来源类别标注与**1/6个目标**、**3/9个保护问题**存在直接的正向对应。六组中没有一组同时有目标和保护问题的正向类别对应；其余5个目标和6个保护问题缺少可对应的正向类别标注，仍为UNKNOWN；尤其空检测结果或未标注类别不能解释为无病、无器官或问题错误。该对照只说明数据源内部的类别一致性，不代表框、问答、图像判断或临床诊断已被独立验证。
 
 这8个检测文件的数据结构只包含类别及框坐标，未提供患者身份或研究级关联字段；患者独立性仍为UNKNOWN。全部6个目标和9个保护问题的独立临床真实性仍为UNKNOWN，不能当作正式合格训练样本或临床保护证明。2个上轮没有Base潜在组合的组仍保留，不因标注筛掉或补组。
 
