@@ -35,6 +35,11 @@ def main():
     for changed in [dict(binding,effective_state='y'),dict(binding,input=dict(prompt_ids=[1,3],runtime='same')),dict(binding,generation={'do_sample':True}),dict(binding,source_code='fixtureB')]:
         assert r.c.digest(binding)!=r.c.digest(changed)
     import med133_report as report
+    assert report.no_regression([(True,True),(None,True)]) is None
+    assert report.no_regression([(False,True),(None,True)]) is False
+    assert report.no_regression([(True,True),(False,False)]) is True
+    assert report.display_metric(report.summary({1:[None]})).startswith('UNKNOWN')
+    assert report.display_metric(report.summary({1:[]})).startswith('NA')
     fake=[];decisions={}
     for row in f['plan']:
         q=row['query'];active={(t['native']['image_sha256'],t['native']['question']) for t in f['tasks'][:row['prefix']]}

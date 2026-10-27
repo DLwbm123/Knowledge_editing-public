@@ -8,6 +8,20 @@ FIELDS=('core_correct','full_supported')
 ROLES=('T0','FIT','T1G','T2G','T1L','T2L')
 
 
+def no_regression(pairs):
+    if any(a is False and b is True for a,b in pairs):return False
+    if not pairs or any(a is None or b is None for a,b in pairs):return None
+    return True
+
+
+def display_metric(value):
+    if not value['n']:return 'NA（空支持）'
+    if value['unknown']:
+        lo,hi=value['macro_bounds']
+        return f"UNKNOWN [{lo:.4f}, {hi:.4f}]"
+    return f"{value['macro_percent']:.4f}"
+
+
 def summary(byowner):
     values=[v for rows in byowner.values() for v in rows]
     usable={o:rows for o,rows in byowner.items() if rows}
@@ -60,7 +74,7 @@ def summarize(packet,consumers,decisions,missing,stage,cost):
                     if not m:counts['newly_damaged']+=1
                 elif m:counts['old_damage_repaired']+=1
         den=counts['Base_and_legacy_correct']
-        return dict(counts,qualified_support=den,zero_new_damage=(counts['newly_damaged']==0) if den and not counts['unknown'] else None,
+        return dict(counts,qualified_support=den,zero_new_damage=False if counts['newly_damaged'] else (True if den and not counts['unknown'] else None),
             reference_scope='Current common epoch; FULL conservative source entailment, not clinical truth')
     for mode,n in phases:
         label=f'{mode}_{n}';ts=tasks if mode=='single' else tasks[:n]
@@ -137,8 +151,8 @@ def summarize(packet,consumers,decisions,missing,stage,cost):
              for a,b in zip(owner_panels[label]['MED'][role]['full_supported'][t['order']],owner_panels[label]['LEGACY'][role]['full_supported'][t['order']])]
         medfull=panels[label]['MED']['T2G']['full_supported']['macro_percent'];legacyfull=panels[label]['LEGACY']['T2G']['full_supported']['macro_percent']
         gates[label]=dict(T2G_plus3pp=a-b>=3 if a is not None and b is not None else None,
-            source_CORE_no_legacy_regression=all(a is not None and b is not None and (not b or a) for a,b in fit),
-            source_FULL_no_legacy_regression=all(a is not None and b is not None and (not b or a) for a,b in full_fit),
+            source_CORE_no_legacy_regression=no_regression(fit),
+            source_FULL_no_legacy_regression=no_regression(full_fit),
             T2G_FULL_no_legacy_regression=medfull>=legacyfull if medfull is not None and legacyfull is not None else None,
             CORE_no_new_damage=protection[label]['all_nonnative_evaluation']['core_correct']['zero_new_damage'],
             FULL_no_new_damage=protection[label]['all_nonnative_evaluation']['full_supported']['zero_new_damage'])
@@ -160,9 +174,9 @@ def summarize(packet,consumers,decisions,missing,stage,cost):
         '|阶段|方法|T2G CORE宏平均|T2G FULL宏平均|T2L CORE支持|', '|---|---|---:|---:|---:|']
     for label,v in panels.items():
         for arm in ('MED','LEGACY','BASE'):
-            a=v[arm]['T2G']['core_correct']['macro_percent'];b=v[arm]['T2G']['full_supported']['macro_percent'];c=v[arm]['T2L']['core_correct']
-            lines.append(f"|{label}|{arm}|{a if a is not None else 'NA'}|{b if b is not None else 'NA'}|{c['known_correct']}/{c['n']}|")
-    lines+=['','百分比为编辑宏平均；空支持为NA，UNKNOWN与错误分列。逐编辑配对区间、原资格掩码、fresh CORE/FULL损伤与旧伤修复、生成完整性和费用见JSON。',
+            a=display_metric(v[arm]['T2G']['core_correct']);b=display_metric(v[arm]['T2G']['full_supported']);c=v[arm]['T2L']['core_correct']
+            lines.append(f"|{label}|{arm}|{a}|{b}|{c['known_correct']}/{c['n']}；UNKNOWN {c['unknown']}|")
+    lines+=['','百分比为编辑宏平均；空支持为NA。UNKNOWN后的范围为将缺失全判错或全判对的上下界，不是置信区间；不把缺失评分视为已知错误。逐编辑配对区间、原资格掩码、fresh CORE/FULL损伤与旧伤修复、生成完整性和费用见JSON。',
         '顺序阶段真实计算未编辑Base的R0选择；相同专家状态、完整输入及确定性解码身份允许复用同一回答，每个消费者均保留独立实际路由绑定。',
         '所有146个MED终态专家与复现配置保留。科学负结果不取消已登记顺序阶段。','']
     return result,'\n'.join(lines),owner_panels

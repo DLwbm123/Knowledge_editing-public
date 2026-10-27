@@ -1,0 +1,106 @@
+{
+  "status": "INCOMPLETE_SCORING",
+  "engineering_terminal": true,
+  "generation_consumers": 7494,
+  "single": 2956,
+  "insertion": 146,
+  "bank": 4392,
+  "scoring_consumers": 22482,
+  "scored_consumers": 22138,
+  "unknown_consumers": 344,
+  "arms": {
+    "MED": {
+      "consumers": 7494,
+      "unknown": 106
+    },
+    "LEGACY": {
+      "consumers": 7494,
+      "unknown": 109
+    },
+    "BASE": {
+      "consumers": 7494,
+      "unknown": 129
+    }
+  },
+  "unique_payloads": 4754,
+  "valid_unique_payloads": 4674,
+  "failed_unique_payloads": 80,
+  "failed_batches": 2,
+  "failure_cause": "Two connection-send failures; no disallowed tool events",
+  "retries": 0,
+  "judge_new_attempt_items": 4614,
+  "inherited_unique_payloads_used": 140,
+  "original_small_accepted_available": 144,
+  "exit_codes": {
+    "GPU_worker": 0,
+    "remote_guard": 0,
+    "local_scorer": 0,
+    "local_guard": 0
+  },
+  "source_training_commit": "04782d88d5effccda5e75339dcbe29c483f23bdf",
+  "scientific_training_updates": 23360,
+  "actual_generations": 3226,
+  "strict_reuse_consumers": 4268,
+  "actual_Base_feature_queries": 2093,
+  "original_clock_preserved": true,
+  "total_elapsed_seconds": 19257.19712138176,
+  "actual_GPU_worker_lifetime_seconds": 19132.64226937294,
+  "mask_derivative": {
+    "status": "PASS",
+    "finite_difference": 0.09930133819580078,
+    "analytic": 0.09813211113214493,
+    "step": 0.001,
+    "actual_injection_mask_exact": true,
+    "predictor_positions": 11,
+    "EOS_scored": true,
+    "last_prompt_predictor_selected": true
+  },
+  "V132_curvature_parity": {
+    "status": "PASS",
+    "same_31_anchors": true,
+    "trace_rtol": 3e-05
+  },
+  "missing_score_T2G_delta_outer_bounds_pp": {
+    "single_1": {
+      "core_correct": [
+        -0.5136986301370001,
+        1.8835616438356197
+      ],
+      "full_supported": [
+        -0.1712328767123239,
+        2.2260273972602818
+      ]
+    },
+    "bank_146": {
+      "core_correct": [
+        -0.5136986301369717,
+        1.8835616438356197
+      ],
+      "full_supported": [
+        -0.1712328767123381,
+        2.2260273972602675
+      ]
+    }
+  },
+  "predeclared_plus3pp_impossible_with_any_missing_labels": true,
+  "confidence_intervals_for_incomplete_endpoints": null,
+  "known_CORE_new_damage": 1,
+  "zero_CORE_new_damage_gate": false,
+  "source_no_regression_gate": null,
+  "retention": {
+    "FINAL_experts": 146,
+    "canonical_libraries": 1,
+    "independent_local_backups": 1,
+    "canonical_bytes": 7950955,
+    "backup_load_cpu_finite_states_R0_tasks_calibration146": "PASS",
+    "deleted_intermediate_files": 149,
+    "deleted_intermediate_bytes": 782671169,
+    "deleted_only_consumed_optimizer_resumes_and_curvature_caches": true,
+    "original_curves_inputs_outputs_tokens_configuration_and_failures_retained": true,
+    "bytewise_copy_equality_not_claimed": true
+  },
+  "no_NEW_GPU_or_Judge_for_closeout": true,
+  "reporting_correction": "Missing scoring is UNKNOWN, empty support is NA; unknown-only source gates undetermined, observed damage stays failure",
+  "independent_confirmation": false,
+  "medical_unique_gain_identifiable": false
+}
