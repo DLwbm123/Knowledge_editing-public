@@ -62,7 +62,9 @@ print(json.dumps([json.loads(p.read_text()) for p in sorted((r/'base_outputs').g
     rows={};consumers=[]
     for v in values:
         q=v['binding']['input'];b=v['binding']['judge_input'];answer=v['R0']
-        assert q['question']==b['question'] and q['reference']==b['reference'] and q['image_sha256']==b['image_sha256']
+        assert q['question']==b['question'] and q['reference']==b['reference'] and q['image_path']==b['image_path']
+        assert not q.get('image_sha256') or q['image_sha256']==b['image_sha256']
+        assert b['image_sha256'], 'Generated Base input must bind its actual image identity'
         key=digest(dict(query_id=q['query_id'],question=b['question'],reference=b['reference'],image_sha256=b['image_sha256'],prompt_ids=b['prompt_ids'],answer=answer))
         row=dict(opaque_query_id=key,question=b['question'],gold_answer=b['reference'],raw_base_answer=answer['raw_answer'])
         assert key not in rows or rows[key]==row;rows[key]=row
