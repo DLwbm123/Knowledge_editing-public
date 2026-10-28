@@ -85,7 +85,9 @@ def main():
         query = dict(entry['source_rows'][0], query_id=task['edit_id'])
         query['dataset'] = task['native']['dataset']
         query['image_path'] = local_path(query['image_path'])
-        query['expected_prompt_ids'] = expected[entry['source_rows'][0]['query_id']][3]
+        native_rows = [v['query'] for v in plan if v['mode'] == 'single' and v['owner'] == task['order'] and v['query']['audit_role'] == 'T0']
+        assert len(native_rows) == 1 and all(native_rows[0][k] == query[k] for k in ('question', 'reference', 'image_sha256'))
+        query['expected_prompt_ids'] = expected[native_rows[0]['query_id']][3]
         additions.append(dict(edit_id=task['edit_id'], order=task['order'], native=query,
                               reference=c['tasks'][index]['reference']))
     statistics_root = ROOT / 'statistics'
