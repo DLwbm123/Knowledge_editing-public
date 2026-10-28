@@ -8,7 +8,7 @@ import sys
 import time
 import traceback
 
-ROOT = Path(os.environ['RUN_ROOT'])
+ROOT = Path(os.environ['EXTENSION_ROOT'])
 
 
 def read(name):

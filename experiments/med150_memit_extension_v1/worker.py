@@ -7,7 +7,7 @@ import sys
 import time
 import traceback
 
-ROOT = Path(os.environ['RUN_ROOT'])
+ROOT = Path(os.environ['EXTENSION_ROOT'])
 PARENT = Path(os.environ['PARENT_RUN'])
 OLD = Path(os.environ['MEMIT_ROOT'])
 MED = Path(os.environ['MED150_ROOT'])
