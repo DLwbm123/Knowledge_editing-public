@@ -38,5 +38,15 @@ for index in range(8):
         pass
     else:
         raise AssertionError('zero probe covariance accepted')
+unit = torch.ones(1, 1, dtype=torch.float64)
+primary = dict(x=unit, y=torch.tensor([[[1., 0., 0.]]], dtype=torch.float64))
+equal = [dict(x=unit, y=torch.zeros(1, 8, 3, dtype=torch.float64)) for _ in range(4)]
+equal[0]['y'][0, 0, 1] = 1
+equal[0]['y'][0, 1, 2] = 1
+assert projected_direction(equal, primary, 2., gram, energy, build)[1] == 'PROJECTED_TOP_TIE'
+equal[0]['y'].zero_()
+equal[0]['y'][0, 0, 0] = 1
+assert projected_direction(equal, primary, 1., gram, energy, build)[1] == 'PROJECTED_DEGENERATE'
 print(json.dumps(dict(status='PASS', cases=8, dense_principal=True, factor_gradients=True,
-                      orthogonal_trace=True, invalid_zero_rejected=True, max_eigen_error=max_error)))
+                      orthogonal_trace=True, invalid_zero_rejected=True, top_tie_fallback=True,
+                      degenerate_fallback=True, max_eigen_error=max_error)))
