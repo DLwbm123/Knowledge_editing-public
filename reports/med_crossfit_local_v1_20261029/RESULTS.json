@@ -1,0 +1,24 @@
+{
+  "status": "PRIMARY_NO_SIGNAL_AUDIT_INCOMPLETE",
+  "cohort": {"edits": 4, "seeds_per_edit": 2, "fit_pairs": 32, "independent_patients": null, "development_exposed": true},
+  "primary_other_fit_nll_gain_difference": {
+    "cross_minus_ordinary": {"mean": -6.208817164103228e-8, "units_above_1e-5": 0, "total_units": 8, "unit_differences": [-1.7881393432617166e-7, 4.1723251342773395e-7, -5.960464477539062e-7, 5.56310017903643e-7, -3.9736429850260424e-7, 2.582867940266924e-7, -4.371007283528646e-7, -1.1920928955078083e-7]},
+    "cross_minus_self": {"mean": -1.266598701477055e-7, "units_above_1e-5": 0, "total_units": 8, "unit_differences": [1.986821492513035e-8, 2.582867940266924e-7, -3.97364298502607e-8, 3.973642985025816e-8, -1.7881393432617188e-7, -1.9868214925130265e-7, -2.384185791015626e-7, -6.755193074544272e-7]}
+  },
+  "equal_parameter_update_norm": {
+    "cross_minus_ordinary_mean": 5.7121117909748855e-8,
+    "cross_minus_self_mean": -1.2417634328206892e-8,
+    "units_above_1e-5": 0
+  },
+  "mean_nll_gain": {
+    "ordinary": {"native": 1.4185905456542969e-5, "current_fit": 1.4536082744598389e-5, "other_fit": 1.4369686444600424e-5},
+    "self": {"native": 1.4252960681915283e-5, "current_fit": 1.4938414096832275e-5, "other_fit": 1.4434258143107096e-5},
+    "cross": {"native": 1.4334917068481445e-5, "current_fit": 1.4342367649078369e-5, "other_fit": 1.430759827295939e-5}
+  },
+  "execution": {"forwards": 1232, "backwards": 192, "pairs": 32, "generated_answers": 0, "judge_calls": 0, "persistent_experts": 0, "worker_exit": 0, "guard_exit": 0, "elapsed_seconds": 392.28386068344116, "last_guard_allocated_bytes": 98304, "wrapper_bytes_in_guard_count": false},
+  "missing_preregistered_metrics": ["gradient cosine", "functional output difference", "per-unit repeat-noise amplitude"],
+  "mechanical_limits": ["zero-inner check synthetic only", "NumPy state array checked but not every field"],
+  "preparation_disclosure": "Two preparatory whole-file deserializations loaded the four development evaluation records into remote process memory; only field names were printed and the records were not used in selection or model input. The worker selectively decoded training fields.",
+  "independent_validation": false,
+  "clinical_claim": false
+}
