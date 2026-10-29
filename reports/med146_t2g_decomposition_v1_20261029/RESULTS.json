@@ -1,0 +1,85 @@
+{
+  "status": "PARTIAL_RUNTIME_BINDING_NOT_INDEPENDENTLY_VERIFIED",
+  "n_events": 557,
+  "support_edits": 146,
+  "input_identity_checked": [
+    "query_id",
+    "question",
+    "reference",
+    "image_sha256"
+  ],
+  "contract": "same frozen Astra medium scoring package",
+  "runtime_causal_attribution": "not established by consumer packet alone",
+  "independent_confirmation": false,
+  "panels": {
+    "core_correct": {
+      "groups": {
+        "all": {
+          "n": 557,
+          "same_payload": 542,
+          "single_off": 0,
+          "both_correct": 430,
+          "both_wrong": 115,
+          "single_correct_bank_wrong": 10,
+          "single_wrong_bank_correct": 2
+        },
+        "same_owner": {
+          "n": 540,
+          "same_payload": 540,
+          "single_off": 0,
+          "both_correct": 428,
+          "both_wrong": 112
+        },
+        "different_owner": {
+          "n": 17,
+          "same_payload": 2,
+          "single_off": 0,
+          "single_correct_bank_wrong": 10,
+          "single_wrong_bank_correct": 2,
+          "both_correct": 2,
+          "both_wrong": 3
+        },
+        "OFF": {}
+      },
+      "single_bank_macro_percent": [
+        78.93835616438356,
+        77.51141552511416
+      ]
+    },
+    "full_supported": {
+      "groups": {
+        "all": {
+          "n": 557,
+          "same_payload": 542,
+          "single_off": 0,
+          "both_correct": 414,
+          "both_wrong": 133,
+          "single_correct_bank_wrong": 8,
+          "single_wrong_bank_correct": 2
+        },
+        "same_owner": {
+          "n": 540,
+          "same_payload": 540,
+          "single_off": 0,
+          "both_correct": 412,
+          "both_wrong": 128
+        },
+        "different_owner": {
+          "n": 17,
+          "same_payload": 2,
+          "single_off": 0,
+          "single_correct_bank_wrong": 8,
+          "both_wrong": 5,
+          "single_wrong_bank_correct": 2,
+          "both_correct": 2
+        },
+        "OFF": {}
+      },
+      "single_bank_macro_percent": [
+        75.7420091324201,
+        74.65753424657534
+      ]
+    }
+  },
+  "note": "Input question/reference/image and frozen score contract checked; full per-consumer prompt/runtime/generation identity not independently checked; prior protocol requires this as a stop gate."
+}
