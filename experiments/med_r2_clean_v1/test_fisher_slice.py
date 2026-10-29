@@ -34,4 +34,17 @@ try:
         raise AssertionError('duplicate source accepted')
 finally:
     os.close(fd)
+buffer = io.BytesIO()
+torch.save(dict(x=source['x'].T, y=source['y'], token_counts=source['token_counts']), buffer)
+fd = os.memfd_create('synthetic-invalid-layout')
+try:
+    os.write(fd, buffer.getvalue())
+    try:
+        extract_fd(fd, list(range(0, 58, 2)), (61, 3, 2, 4))
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('wrong tensor stride accepted')
+finally:
+    os.close(fd)
 print('FISHER_RANGE_SYNTHETIC_PASS')
