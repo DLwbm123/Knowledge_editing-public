@@ -83,6 +83,7 @@ def audit_mapping(stream, deny):
     reserved = set(deny['V95']) | set(deny['V111'])
     assert s.nonspace(stream) == b'{'
     found, total, overlap = False, 0, 0
+    per_role = collections.Counter()
     while True:
         assert s.nonspace(stream) == b'"'
         key = s.string(stream, True)
@@ -100,7 +101,10 @@ def audit_mapping(stream, deny):
                 match = re.fullmatch(r'SLAKE:(xmlab\d+)', row['source_group'], re.I)
                 assert match, 'unrecognized mapping source group'
                 total += 1
-                overlap += match.group(1).lower() in reserved
+                group = match.group(1).lower()
+                overlap += group in reserved
+                for role in ('V95', 'V111'):
+                    per_role[role] += group in set(deny[role])
                 delimiter = s.nonspace(stream)
                 if delimiter == b']':
                     break
@@ -112,4 +116,5 @@ def audit_mapping(stream, deny):
             break
         assert delimiter == b','
     assert found and total == 31
-    return dict(mapped_sources=total, reserved_group_overlap=overlap, QA_or_labels_decoded=0)
+    return dict(mapped_sources=total, reserved_group_overlap=overlap,
+                overlap_by_role={k: per_role[k] for k in ('V95', 'V111')}, QA_or_labels_decoded=0)
