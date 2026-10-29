@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL_RUNTIME_BINDING_NOT_INDEPENDENTLY_VERIFIED",
+  "status": "COMPLETE",
   "n_events": 557,
   "support_edits": 146,
   "input_identity_checked": [
@@ -9,7 +9,7 @@
     "image_sha256"
   ],
   "contract": "same frozen Astra medium scoring package",
-  "runtime_causal_attribution": "not established by consumer packet alone",
+  "runtime_causal_attribution": "557 matched saved input, model, execution, generation and RNG bindings; observational differences do not establish causal attribution",
   "independent_confirmation": false,
   "panels": {
     "core_correct": {
@@ -81,5 +81,10 @@
       ]
     }
   },
-  "note": "Input question/reference/image and frozen score contract checked; full per-consumer prompt/runtime/generation identity not independently checked; prior protocol requires this as a stop gate."
+  "runtime_binding_audit": {
+    "paired_events": 557,
+    "complete_binding_mismatch": 0,
+    "missing_or_invalid": 0,
+    "verdict": "PASS"
+  }
 }
