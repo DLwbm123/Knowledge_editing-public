@@ -35,6 +35,9 @@ def fields(f, kind):
         elif key == 'source_qid' and kind == 'row':
             assert b in b'0123456789' and key not in result
             result[key] = s.scalar(f, b, True)
+        elif key == 'index' and kind in ('mapping', 'unmapped'):
+            assert b in b'0123456789' and key not in result
+            result[key] = s.scalar(f, b, True)
         elif key == 'qid_pool' and kind == 'candidate':
             assert b == b'[' and key not in result
             result[key] = int_list(f)
@@ -48,7 +51,7 @@ def fields(f, kind):
         assert b == b','
 
 
-def array_from_root(f, name, kind):
+def array_from_root(f, name, kind, include_spans=False):
     assert s.nonspace(f) == b'{'
     found = False
     rows = []
@@ -64,7 +67,11 @@ def array_from_root(f, name, kind):
                 b = s.nonspace(f)
                 if b == b']': break
                 assert b == b'{' 
-                rows.append(fields(f, kind))
+                start = f.tell() - 1
+                value = fields(f, kind)
+                if include_spans:
+                    value['_span'] = (start, f.tell())
+                rows.append(value)
                 b = s.nonspace(f)
                 if b == b']': break
                 assert b == b','
