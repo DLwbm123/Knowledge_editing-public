@@ -71,6 +71,8 @@ def audit(stream, deny):
                         counts['reserved'] += group in reserved
                     else:
                         counts['unresolved'] += 1
+                        counts['unresolved_vqa_rad_path'] += ('vqa' in v['query'].lower() and 'rad' in v['query'].lower())
+                        counts['unresolved_component_vqa_rad'] += any(p in ('vqa-rad', 'vqa_rad', 'vqarad') for p in v['query'].lower().split('/'))
                 b = s.nonspace(stream)
                 if b == b']': break
                 assert b == b','
@@ -80,4 +82,5 @@ def audit(stream, deny):
         assert b == b','
     assert found and counts['total'] == 69
     return dict(total=69, slake=counts['slake'], reserved=counts['reserved'],
-                unresolved=counts['unresolved'], QA_decoded=0)
+                unresolved=counts['unresolved'], unresolved_vqa_rad_path=counts['unresolved_vqa_rad_path'],
+                unresolved_component_vqa_rad=counts['unresolved_component_vqa_rad'], QA_decoded=0)
