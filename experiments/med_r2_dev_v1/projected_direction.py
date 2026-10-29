@@ -32,3 +32,40 @@ def projected_direction(full, primary, trace, gram, energy, build):
                    for i, b in enumerate(full)])
     result = build(primary, dict(x=x, y=y), trace, gram, energy)
     return result, 'OK'
+
+
+def runtime_fp32(block, trace, gram):
+    """Make the V133 penalty-compatible cache and enforce trace parity."""
+    converted = dict(x=block['x'].float(), y=block['y'].float(),
+                     token_counts=list(block['token_counts']))
+    observed = gram(converted, converted)
+    expected = torch.eye(2, dtype=torch.float64, device=observed.device) * (trace / 2)
+    if not torch.isfinite(observed).all():
+        raise ValueError('nonfinite float32 curvature')
+    torch.testing.assert_close(observed, expected, rtol=3e-5, atol=3e-5 * trace)
+    return converted
+
+
+def pack_mapped(blocks):
+    """Retain independent source terms while padding fallback to two columns."""
+    xs, ys, counts = [], [], []
+    for block in blocks:
+        x, y = block['x'].float(), block['y'].float()
+        if x.ndim != 2 or y.ndim != 3 or x.shape[0] != y.shape[0] or y.shape[1] not in (1, 2):
+            raise ValueError('invalid mapped block')
+        if y.shape[1] == 1:
+            y = torch.cat((y, torch.zeros_like(y)), dim=1)
+        xs.append(x)
+        ys.append(y)
+        counts.append(len(x))
+    if not counts:
+        raise ValueError('no mapped blocks')
+    return dict(x=torch.cat(xs), y=torch.cat(ys), token_counts=counts)
+
+
+def mapped_block(full, med, audit, gram, energy, build):
+    """Transform one V133 source and expose the predeclared fallback reason."""
+    result, reason = projected_direction(full, med, audit['full_trace'], gram, energy, build)
+    if result is None:
+        return dict(x=med['x'].float(), y=med['y'].float()), reason
+    return runtime_fp32(result, audit['full_trace'], gram), reason

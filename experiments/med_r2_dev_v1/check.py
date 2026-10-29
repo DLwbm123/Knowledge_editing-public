@@ -10,6 +10,26 @@ for index in range(8):
     full, primary, audit = med_anchor(paths, [-1., -2., -3., -2.5], index)
     result, status = projected_direction(full, primary, audit['full_trace'], gram, energy, build)
     assert status == 'OK'
+    fp = runtime_fp32(result, audit['full_trace'], gram)
+    bound, status = mapped_block(full, primary, audit, gram, energy, build)
+    assert status == 'OK' and bound['x'].dtype == torch.float32 and bound['y'].dtype == torch.float32
+    torch.testing.assert_close(bound['y'], fp['y'])
+    fleft = torch.randn(5, 2, generator=g, dtype=torch.float32, requires_grad=True)
+    fright = torch.randn(2, 7, generator=g, dtype=torch.float32, requires_grad=True)
+    fvalue = penalty(dict(left=fleft, right=fright), dict(parts=[fp]), lambda s: (s['left'], s['right']))
+    fm = torch.einsum('tso,ti->soi', fp['y'].double(), fp['x'].double())
+    fexpected = torch.einsum('soi,oi->s', fm, (fleft.double() @ fright.double())).square().sum()
+    torch.testing.assert_close(fvalue.double(), fexpected, rtol=3e-5, atol=1e-4)
+    fg = torch.autograd.grad(fvalue, (fleft, fright), retain_graph=True)
+    fh = torch.autograd.grad(fexpected, (fleft, fright))
+    for a, b in zip(fg, fh):
+        torch.testing.assert_close(a, b, rtol=3e-5, atol=1e-4)
+    merged = pack_mapped([fp, primary])
+    fstate = dict(left=fleft, right=fright)
+    fallback = {k: v.float() for k, v in primary.items()}
+    separate = penalty(fstate, dict(parts=[fp, concatenate([fallback])]), lambda s: (s['left'], s['right']))
+    packed = penalty(fstate, dict(parts=[merged]), lambda s: (s['left'], s['right']))
+    torch.testing.assert_close(packed, separate, rtol=3e-5, atol=1e-4)
     target = torch.eye(2, dtype=torch.float64) * audit['full_trace'] / 2
     torch.testing.assert_close(gram(result, result), target, rtol=1e-9, atol=1e-9)
     probes = torch.cat([torch.einsum('tso,ti->soi', b['y'], b['x']).reshape(8, -1)
@@ -49,4 +69,5 @@ equal[0]['y'][0, 0, 0] = 1
 assert projected_direction(equal, primary, 1., gram, energy, build)[1] == 'PROJECTED_DEGENERATE'
 print(json.dumps(dict(status='PASS', cases=8, dense_principal=True, factor_gradients=True,
                       orthogonal_trace=True, invalid_zero_rejected=True, top_tie_fallback=True,
-                      degenerate_fallback=True, max_eigen_error=max_error)))
+                      degenerate_fallback=True, float32_penalty_gradients=True,
+                      mapped_fallback_packing=True, max_eigen_error=max_error)))
