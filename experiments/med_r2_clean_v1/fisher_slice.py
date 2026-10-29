@@ -70,9 +70,9 @@ def _tensor_schema(pickle_bytes):
 
 
 def extract_fd(fd, allowed_indices, expected_shape):
-    """Return FP32 x/y arrays for exactly the 29 allowed fallback sources."""
-    if len(allowed_indices) != 29 or len(set(allowed_indices)) != 29:
-        raise ValueError('expected 29 unique permitted fallback indices')
+    """Return FP32 x/y arrays for the 29 fallback or all 59 allowed sources."""
+    if len(allowed_indices) not in (29, 59) or len(set(allowed_indices)) != len(allowed_indices):
+        raise ValueError('expected 29 or 59 unique permitted source indices')
     if any(not isinstance(i, int) or not 0 <= i < 61 for i in allowed_indices):
         raise ValueError('invalid source index')
     with os.fdopen(os.dup(fd), 'rb') as stream, zipfile.ZipFile(stream) as archive:
@@ -116,11 +116,11 @@ def extract_fd(fd, allowed_indices, expected_shape):
         return blocks
 
 
-def extract_from_lock(fd, lock, expected_shape):
+def extract_from_lock(fd, lock, expected_shape, include_mapped=False):
     if lock.get('label') != 'IDENTITY_LOCK_ONLY':
         raise ValueError('source identity lock missing')
     kept = lock['keep']
-    selected = [v['index'] for v in kept if v['kind'] == 'fallback']
+    selected = [v['index'] for v in kept if include_mapped or v['kind'] == 'fallback']
     excluded = {v['index'] for v in lock['excluded']}
     if excluded.intersection(selected):
         raise ValueError('excluded source requested')
