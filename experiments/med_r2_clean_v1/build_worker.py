@@ -16,6 +16,10 @@ def build(source):
     start = text.index('    # Same original optimizer and cache, versus the new factor-container dispatch.\n')
     end = text.index('    runtime = load_real_runtime(', start)
     text = text[:start] + "    assert json.loads((ROOT/'CPU_ADMISSION.json').read_text())['status']=='PASS'\n" + text[end:]
+    text = replace_once(text, "    bindings = r.c.read(PARENT/'private/EVAL_BINDINGS.json')\n",
+        "    assert json.loads((ROOT/'ROLE_ADMISSION.json').read_text())['status']=='PASS'\n"
+        "    bindings = r.c.read(ROOT/'private/EVAL_BINDINGS_CLEAN.json')\n"
+        "    assert bindings\n")
     text = replace_once(text, "for name in ('FULL_CTX','MED')}", "for name in ('FULL_CTX','CLEAN_MED1','CLEAN_MED2')}")
     old = """        legacy = r.p.load_state(PARENT/'private/OPERATOR_FISHER.pt')
         basis, _ = r.q.split()
