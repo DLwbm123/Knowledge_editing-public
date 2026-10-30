@@ -73,9 +73,9 @@ def main():
     if json.loads((ROOT / 'GUARD_EXIT.json').read_text())['code'] != 0:
         raise ValueError('Training guard failed')
     admission = json.loads((ROOT / 'ROLE_ADMISSION.json').read_text())
-    sources = json.loads((ROOT / 'TRAIN_SOURCE_BOUND_PRIVATE.json').read_text())
+    tasks = json.loads((ROOT / 'TASK_IDENTITIES_PRIVATE.json').read_text())
     owner = admission['owners'][0]
-    task = sources[0]['task']
+    task = tasks[0]
     if task['order'] != owner:
         raise ValueError('First owner mismatch')
     rows = [x for x in json.loads((ROOT / 'EVAL_INPUTS_PRIVATE.json').read_text()) if x['owner'] == owner]
