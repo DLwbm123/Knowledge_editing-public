@@ -3,7 +3,9 @@ import json, pathlib, subprocess, sys
 root=pathlib.Path(__file__).resolve().parents[2]
 snap=json.loads((root/'.private/prospective_confirmation_v111_20261025/EXPOSURE_SNAPSHOT.json').read_text())
 v106=snap['V106_audited']
-history=sorted(set(snap['history_groups'])-set(snap['replay64']))
+# Do not subtract replay identities: a group in both sets may have another
+# protected historical role, and subtracting it erases that overlap.
+history=sorted(set(snap['history_groups']))
 source=(root/'experiments/med150_source_review_v1/stream_extract.py').read_text().split("if __name__==",1)[0]
 script='V106='+repr(v106)+'\nHISTORY='+repr(history)+'\n'+source+'''\nimport json, pathlib, re, collections
 cfg=json.loads(pathlib.Path('/data/bmw/.q.20261027.150/ENV.json').read_text()); replay=pathlib.Path(cfg['REPLAY_PARENT'])
@@ -53,7 +55,7 @@ def scan(name,expected):
 rows=scan('REPLAY_FIT.json','REPLAY_FIT')
 checks=set(scan('REPLAY_CHECK.json','REPLAY_CHECK'));assert len(checks)==32
 counts=collections.Counter(rows);assert len(rows)==192 and len(counts)==64 and set(counts.values())=={3}
-print(json.dumps({'records':len(rows),'groups':len(counts),'protected_overlap_groups':len(set(counts)&reserve),'panel_overlap_groups':len(set(counts)&panel),'check_overlap_groups':len(set(counts)&checks),'other_historical_overlap_groups':len(set(counts)&historic),'surviving_groups':len(set(counts)-reserve-panel-checks-historic),'qa_decoded':0,'scope':'identity_only','content_admitted':False}))
+print(json.dumps({'records':len(rows),'groups':len(counts),'protected_overlap_groups':len(set(counts)&reserve),'panel_overlap_groups':len(set(counts)&panel),'check_overlap_groups':len(set(counts)&checks),'historical_overlap_groups':len(set(counts)&historic),'surviving_groups':len(set(counts)-reserve-panel-checks-historic),'qa_decoded':0,'scope':'identity_only','content_admitted':False}))
 '''
 r=subprocess.run(['ssh','-o','BatchMode=yes','-o','ConnectTimeout=8','pro5000','python3','-'],input=script,text=True,capture_output=True,timeout=60)
 if r.returncode: raise RuntimeError('identity audit failed: '+r.stderr[-1000:])
