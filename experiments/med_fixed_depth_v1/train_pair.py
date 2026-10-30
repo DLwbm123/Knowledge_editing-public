@@ -93,11 +93,17 @@ def train_pair(runtime, r, task, source_rows, bindings, admission, root, budget)
                 delta = math.sqrt(sum(float((after[k].double() - before[k].double()).square().sum()) for k in before))
                 curve.append(dict(step=step, source_nll=losses, grad_norm=float(norm), update_norm=delta))
             final = r.old.snapshot(expert)
+            target = root / f'{owner}_{arm}.pt'
+            save_new(target, dict(state=final, initial_digest=state_digest(initial), module=path, steps=160, curve=curve))
             budget()
             active, target_tokens = r.q.logits(runtime, hook, batches[0])
             hook.enabled = False
             try:
-                base, base_tokens = r.q.logits(runtime, hook, batches[0])
+                with torch.inference_mode():
+                    out = runtime.model(**batches[0].forward_kwargs())
+                    mask = batches[0].labels[:, 1:] != -100
+                    base = out.logits[:, :-1][mask].detach().cpu().double()
+                    base_tokens = batches[0].labels[:, 1:][mask].cpu()
             finally:
                 hook.enabled = True
             if not torch.equal(target_tokens, base_tokens):
@@ -105,8 +111,6 @@ def train_pair(runtime, r, task, source_rows, bindings, admission, root, budget)
             response_norm = float((active - base).norm())
             if not math.isfinite(response_norm) or response_norm == 0:
                 raise ValueError('No finite expert response after training')
-            target = root / f'{owner}_{arm}.pt'
-            save_new(target, dict(state=final, initial_digest=state_digest(initial), module=path, steps=160, curve=curve))
             loaded = torch.load(target, map_location='cpu', weights_only=True)
             if any(not torch.equal(v.cpu(), loaded['state'][k]) for k, v in final.items()):
                 raise ValueError('Save/reload mismatch')
