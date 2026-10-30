@@ -1,0 +1,35 @@
+{
+  "editors": 16,
+  "t2g_net": {
+    "zero": 12,
+    "positive": 4
+  },
+  "t2l_net": {
+    "negative": 4,
+    "zero": 10,
+    "positive": 2
+  },
+  "cross": {
+    "zero_T2G__negative_T2L": 3,
+    "zero_T2G__zero_T2L": 7,
+    "positive_T2G__zero_T2L": 3,
+    "zero_T2G__positive_T2L": 2,
+    "positive_T2G__negative_T2L": 1
+  },
+  "correlations": {
+    "t2g": {
+      "n": 16,
+      "spearman": -0.4383570037596047
+    },
+    "t2l": {
+      "n": 16,
+      "spearman": 0.5219889141261415
+    }
+  },
+  "limitations": [
+    "post hoc descriptive association, not causation",
+    "response norm measured on source not T2L",
+    "DEV cohort, no patient independence or clinical truth",
+    "no new model or score calls"
+  ]
+}
