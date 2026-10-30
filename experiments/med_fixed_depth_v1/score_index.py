@@ -99,7 +99,7 @@ def consumers(path, allowed):
 
 
 def decisions(path, allowed):
-    wanted = {'core_correct', 'full_supported'}
+    wanted = {'opaque_query_id', 'core_correct', 'full_supported', 'unsupported_expansion', 'extra_contradiction'}
     result = {}
     with open(path, 'rb') as f:
         if s.nonspace(f) != b'{':
@@ -147,4 +147,9 @@ def decisions(path, allowed):
                 raise ValueError('Expected root delimiter')
     if set(result) != set(allowed) or any(set(v) != wanted for v in result.values()):
         raise ValueError('Selected original decisions incomplete')
+    for key, row in result.items():
+        if row['opaque_query_id'] != key or any(type(row[k]) is not bool for k in wanted - {'opaque_query_id'}):
+            raise ValueError('Selected original decision is invalid')
+        if row['full_supported'] and (not row['core_correct'] or row['unsupported_expansion'] or row['extra_contradiction']):
+            raise ValueError('Selected original FULL decision is inconsistent')
     return result
