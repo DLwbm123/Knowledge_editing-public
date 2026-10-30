@@ -76,8 +76,9 @@ def main():
     results = []
     try:
         for entry in assigned:
-            results.extend(train_pair.train_pair(runtime, r, entry['task'], entry['source_rows'],
-                                                {'configuration_only': config}, admission, ROOT / 'batch', budget))
+            pair = train_pair.train_pair(runtime, r, entry['task'], entry['source_rows'],
+                                         {'configuration_only': config}, admission, ROOT / 'batch', budget)
+            results.extend(dict(item, owner=entry['task']['order']) for item in pair)
             write(f'BATCH_PROGRESS_{PART}.json', dict(time=time.time(), completed_owners=len(results) // 2,
                                                       assigned_owners=len(assigned), counts=COUNTS))
         if COUNTS['updates'] != 320 * len(assigned) or COUNTS['backwards'] != 640 * len(assigned):
