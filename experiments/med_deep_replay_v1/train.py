@@ -32,7 +32,9 @@ def train(runtime,r,task,source_batches,replay_batches,role_receipt,output,budge
         for step in range(1,161):
             budget();before=r.old.snapshot(expert)
             _,source_losses=trajectory.source_gradients(r,runtime,hook,expert,source_batches,step)
-            b=replay_batches[(step-1)%len(replay_batches)]
+            # Replay batches stay on the CPU between steps; only the scheduled
+            # batch is transferred to the model device.
+            b=r.old.batch_on(runtime,replay_batches[(step-1)%len(replay_batches)])
             hook.set_teacher_routing(b.labels)
             loss=runtime.compute_loss(b)
             if not torch.isfinite(loss): raise ValueError('nonfinite replay CE')
@@ -43,14 +45,33 @@ def train(runtime,r,task,source_batches,replay_batches,role_receipt,output,budge
             after=r.old.snapshot(expert)
             if step==1 and all(torch.equal(after[k],before[k]) for k in before): raise ValueError('zero first update')
             delta=math.sqrt(sum(float((after[k].double()-before[k].double()).square().sum()) for k in before))
-            curve.append(dict(step=step,source_nll=source_losses,replay_nll=float(loss.detach()),grad_norm=float(norm),update_norm=delta))
+            curve.append(dict(step=step,source_nll=source_losses,replay_nll=float(loss.detach()),
+                              replay_index=(step-1)%len(replay_batches),grad_norm=float(norm),update_norm=delta))
         final=r.old.snapshot(expert)
         save_new(Path(output),dict(state=final,initial_digest=state_digest(initial),module=path,steps=160,curve=curve,
                                    replay_weight=1.,replay_schedule='fixed_allowed_order_cyclic'))
+        budget()
+        active,target_tokens=r.q.logits(runtime,hook,source_batches[0])
+        hook.enabled=False
+        try:
+            with torch.inference_mode():
+                out=runtime.model(**source_batches[0].forward_kwargs())
+                mask=source_batches[0].labels[:,1:]!=-100
+                base=out.logits[:,:-1][mask].detach().cpu().double()
+                base_tokens=source_batches[0].labels[:,1:][mask].cpu()
+        finally:
+            hook.enabled=True
+        if not torch.equal(target_tokens,base_tokens): raise ValueError('Response token bindings differ')
+        response_norm=float((active-base).norm())
+        if not math.isfinite(response_norm) or response_norm==0: raise ValueError('No finite expert response')
         reloaded=torch.load(output,map_location='cpu',weights_only=True)
         if any(not torch.equal(v.cpu(),reloaded['state'][k]) for k,v in final.items()): raise ValueError('state reload mismatch')
         expert.load_state_dict(reloaded['state'])
+        restored,restored_tokens=r.q.logits(runtime,hook,source_batches[0])
+        if not torch.equal(active,restored) or not torch.equal(target_tokens,restored_tokens):
+            raise ValueError('Reload changed model output')
         if any(p._version!=versions[name] for name,p in runtime.model.named_parameters()): raise ValueError('Base parameter modified')
         return {'module':path,'steps':160,'parameters':7168,'initial_digest':state_digest(initial),
-                'final_digest':state_digest(final),'save_reload_state_equal':True,'replay_batches':len(replay_batches)}
+                'final_digest':state_digest(final),'save_reload_state_equal':True,'save_reload_output_equal':True,
+                'response_norm':response_norm,'replay_batches':len(replay_batches)}
     finally: hook.detach()
