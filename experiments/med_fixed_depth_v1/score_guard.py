@@ -45,7 +45,7 @@ def main():
     write('WORKER_IDENTITY.json', dict(pid=child.pid, time=time.time()))
     try:
         while child.poll() is None:
-            used = allocated(ROOT) + allocated(neutral.parent)
+            used = allocated(ROOT) + allocated(neutral.parent) + allocated(Path(os.environ['FIXED_PRIVATE_ROOT']))
             st = os.statvfs(ROOT)
             free = st.f_bavail * st.f_frsize
             write('GUARD_HEALTH.json', dict(time=time.time(), bytes=used, free=free, hard_end=DEADLINE))

@@ -78,6 +78,7 @@ def build(root, source):
             raise ValueError('Payload collision')
         payloads[key] = record
         consumers.append(dict(owner=owner, query_id=qid, arm=arm, key=key, eos=row['eos'], at_cap=row['at_cap'],
+                              empty=not row['raw_answer'].strip(),
                               route=row['route'], prediction_reused_from=row['prediction_reused_from']))
     packet = dict(status='SCORE_PACKET_FROZEN', consumers=consumers, payloads=payloads,
                   source_events=len(expected), frozen_time=completion['time'], method_blind=True)
