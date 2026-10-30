@@ -94,6 +94,7 @@ print((r/'SCORE_PACKET_PRIVATE.json').read_text())
     charge_lock = threading.Lock()
     write('BATCH_MANIFEST.json', dict(batches=batches, reused=len(payloads)-len(pending),
                                      maximum_new_attempt_items=1016, automatic_retry=False))
+    write('DECISIONS.json', dict(decisions=decisions, unknown=unknown))
 
     def execute(batch):
         nonlocal charged
