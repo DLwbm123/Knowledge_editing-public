@@ -4,6 +4,19 @@ import torch
 import objective
 
 
+def cache_digest(cache):
+    digest = hashlib.sha256()
+    for row in cache:
+        digest.update(row['input_digest'].encode())
+        for key in ('labels', 'targets', 'log_probs'):
+            x = row[key].detach().cpu().contiguous()
+            meta = repr((key, str(x.dtype), tuple(x.shape))).encode()
+            digest.update(len(meta).to_bytes(8, 'big')); digest.update(meta)
+            raw = x.reshape(-1).view(torch.uint8).numpy().tobytes()
+            digest.update(len(raw).to_bytes(8, 'big')); digest.update(raw)
+    return digest.hexdigest()
+
+
 def input_digest(batch):
     digest = hashlib.sha256()
     def frame(tag, data):
@@ -50,3 +63,26 @@ def build(runtime, hook, batches, byte_limit, budget):
             raise ValueError('Teacher cache exceeds its fixed bound')
         cache.append(dict(input_digest=binding, labels=labels, targets=targets, log_probs=log_probs))
     return cache, total
+
+
+def freeze(packets, expected_states, vocabulary_size, byte_limit):
+    """Validate all fixed owners before any student is trained."""
+    if len(expected_states) != 16 or set(packets) != set(expected_states) or vocabulary_size <= 0:
+        raise ValueError('Teacher owner coverage invalid')
+    records, total = {}, 0
+    for owner, packet in packets.items():
+        if packet['teacher_state_digest'] != expected_states[owner] or len(packet['cache']) != 5:
+            raise ValueError('Teacher identity or input coverage differs')
+        for row in packet['cache']:
+            labels, targets, logp = row['labels'], row['targets'], row['log_probs']
+            if labels.ndim != 2 or logp.ndim != 2 or logp.dtype != torch.float32 or logp.shape != (targets.numel(), vocabulary_size):
+                raise ValueError('Teacher mask or vocabulary invalid')
+            if not torch.equal(labels[:, 1:][labels[:, 1:] != -100], targets) or not targets.numel():
+                raise ValueError('Teacher labels and targets differ')
+            if logp.requires_grad or not bool(torch.isfinite(logp).all()) or not torch.allclose(logp.logsumexp(-1), torch.zeros(targets.numel()), atol=1e-5, rtol=0):
+                raise ValueError('Teacher distribution invalid')
+            total += sum(x.numel() * x.element_size() for x in (labels, targets, logp))
+            if total > byte_limit:
+                raise ValueError('Aggregate cache bound exceeded')
+        records[owner] = dict(teacher_state_digest=expected_states[owner], cache_digest=cache_digest(packet['cache']))
+    return dict(status='ALL_80_TEACHERS_FROZEN', count=80, tensor_bytes=total, owners=records)

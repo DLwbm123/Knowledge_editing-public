@@ -12,6 +12,9 @@ def train(runtime, r, task, batches, teachers, frozen, output, budget):
         raise ValueError('All fixed teacher outputs must be frozen first')
     if len(batches) != 5 or len(teachers) != 5:
         raise ValueError('Expected native and four FIT batches')
+    owner = task['order']
+    if owner not in frozen.get('owners', {}) or frozen['owners'][owner]['cache_digest'] != teacher_cache.cache_digest(teachers):
+        raise ValueError('Teacher cache differs from frozen owner receipt')
     if any(teacher_cache.input_digest(batch) != item['input_digest'] for batch, item in zip(batches, teachers)):
         raise ValueError('Teacher and student inputs differ')
     if any(p.requires_grad for p in runtime.model.parameters()) or len(runtime.model.model.layers) != 32:
