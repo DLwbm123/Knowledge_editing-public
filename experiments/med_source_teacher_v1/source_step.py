@@ -3,7 +3,7 @@ import torch
 import objective
 
 
-def backwards(runtime, hook, expert, batches, teachers, step, budget):
+def backwards(runtime, hook, expert, batches, teachers, step, budget, counts):
     if len(batches) != 5 or len(teachers) != 5 or not 1 <= step <= 160:
         raise ValueError('Expected native and four fixed FIT batches')
     expert.zero_grad(set_to_none=True)
@@ -19,5 +19,6 @@ def backwards(runtime, hook, expert, batches, teachers, step, budget):
         targets = teacher['targets'].to(output.logits.device)
         total, kl = objective.loss(output, batch.labels, log_probs, targets)
         (0.5 * total).backward()
+        counts['backwards'] += 1
         rows.append({'index': index, 'ce': float(output.loss.detach()), 'kl': float(kl.detach())})
     return rows
