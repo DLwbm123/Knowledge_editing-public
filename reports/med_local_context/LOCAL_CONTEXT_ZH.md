@@ -30,7 +30,7 @@ MED150 是原146个编辑加4个新增开发编辑；一次编辑以图像、源
 |MED150 source/FIT与评价|146+4训练、55新增single、4插入及2148 bank已完成；原146的2093共同查询重算并核验|完成回执证明旧实验执行，不能据此声称本次150扩展的隔离切片和消费者已经接入。|
 |历史生成和评分|固定面板1016个候选消费者、549唯一载荷：376复用、173新评分，UNKNOWN 0；MED150原记录2149唯一载荷、2094复用、55新评分|缓存只对输入和合同相匹配的载荷复用；全项目历史尝试清单不完整。|
 |已运行入口|固定层位 [`train_pair.py`](../../experiments/med_fixed_depth_v1/train_pair.py)、[`generate.py`](../../experiments/med_fixed_depth_v1/generate.py)、[`score_worker.py`](../../experiments/med_fixed_depth_v1/score_worker.py)|旧入口只支持C21/CDEEP TT。不能改旧实验时钟、原地覆盖或以文件存在推断新入口准入。|
-|新LoRA入口|[`lora.py`](../../experiments/med_deep_lora_frontier_v1/lora.py)、[`lora_train.py`](../../experiments/med_deep_lora_frontier_v1/lora_train.py)、[`generate.py`](../../experiments/med_deep_lora_frontier_v1/generate.py)已编写；远端CPU仅验证零初始化及首步梯度|旧版摘要整理时未在真实模型贯通；后续运行状态以最新实验报告为准。|
+|新LoRA入口|[`frontier_lora.py`](../../experiments/med_deep_lora_frontier_v1/frontier_lora.py)、[`lora_train.py`](../../experiments/med_deep_lora_frontier_v1/lora_train.py)、[`frontier_generate.py`](../../experiments/med_deep_lora_frontier_v1/frontier_generate.py)已编写；远端CPU仅验证零初始化及首步梯度|旧版摘要整理时未在真实模型贯通；后续运行状态以最新实验报告为准。|
 
 本次元数据检查仅针对已知固定层位资产，不是全项目角色审查。参考、缓存和 MED150 权重的现在逐项可读性没有在此次摘要中重新验证。未公开私有文件路径、问答、图像、权重或身份映射。
 

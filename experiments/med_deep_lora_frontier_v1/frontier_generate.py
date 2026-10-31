@@ -3,7 +3,7 @@ import copy
 from pathlib import Path
 import numpy as np
 import torch
-import lora
+import frontier_lora
 from train_pair import state_digest
 
 
@@ -49,7 +49,7 @@ def generate_one(runtime, r, task, query, route, prior_input, prior_route, state
     hook = None
     try:
         if selected:
-            expert = lora.create(runtime.get_module(expected), runtime.device, gamma)
+            expert = frontier_lora.create(runtime.get_module(expected), runtime.device, gamma)
             expert.load_state_dict(state['state_dict'])
             expert.requires_grad_(False)
             hook = r.q.scoped.replay.MedTraceLayerHook(runtime.get_module(expected), expert)

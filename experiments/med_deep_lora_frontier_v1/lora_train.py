@@ -2,7 +2,7 @@
 import math
 from pathlib import Path
 import torch
-import lora
+import frontier_lora
 import trajectory
 from train_pair import save_new, state_digest
 
@@ -20,7 +20,7 @@ def train(runtime, r, task, rows, bindings, admission, root, budget):
     path = f'model.layers.{len(runtime.model.model.layers)-2}.mlp.down_proj'
     if path != 'model.layers.30.mlp.down_proj':
         raise ValueError('Unexpected model depth')
-    expert = lora.create(runtime.get_module(path), runtime.device)
+    expert = frontier_lora.create(runtime.get_module(path), runtime.device)
     if torch.count_nonzero(expert.B):
         raise ValueError('Initial expert is not zero')
     initial = {k: v.detach().cpu().clone() for k, v in expert.state_dict().items()}

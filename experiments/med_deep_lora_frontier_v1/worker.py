@@ -51,7 +51,7 @@ def main():
     import module_run as r
     import runtime_binding
     import lora_train
-    import generate
+    import frontier_generate
     from first_eval import rng_digest
     from types import SimpleNamespace
     from scripts.medtrace.run_realmodel_core import load_real_runtime
@@ -105,7 +105,7 @@ def main():
             key = hashlib.sha256(json.dumps([owner, query['query_id'], gamma], separators=(',', ':')).encode()).hexdigest()
             write('attempts/'+key+'.json', dict(time=time.time(), gamma=gamma), once=True)
             COUNTS['generations'] += 1
-            value = generate.generate_one(runtime, r, taskmap[owner], query, route, binding, route,
+            value = frontier_generate.generate_one(runtime, r, taskmap[owner], query, route, binding, route,
                 ROOT/'weights'/f'{owner}.pt', 'DEEP_LORA_R4', rng, budget, gamma)
             value.update(owner=owner, original_consumer_id=old['consumer_id'], original_execution_binding=old['prediction_binding'],
                          original_route=original, prediction_reused_from=None)
