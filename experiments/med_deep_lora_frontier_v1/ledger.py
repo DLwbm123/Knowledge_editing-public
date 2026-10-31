@@ -4,6 +4,7 @@ from pathlib import Path
 import history_index
 import partition
 import score_index
+import stream_extract as stream
 
 
 def build(destination, baseline_bindings, prior_decisions, fixed_packet, fixed_decisions, manifests):
@@ -46,3 +47,58 @@ def build(destination, baseline_bindings, prior_decisions, fixed_packet, fixed_d
     destination.chmod(0o600)
     return dict(status=result['status'], valid=len(valid), attempts=len(attempts),
                 semantic_valid=len(semantic_valid), manifests=len(manifests), history_coverage_complete=False)
+
+
+def selected_decisions(path, allowed):
+    """Decode only requested opaque identities; skip all other old judgments."""
+    allowed = set(allowed)
+    result = {}
+    wanted = {'opaque_query_id', *partition.FIELDS}
+    with Path(path).open('rb') as f:
+        if stream.nonspace(f) != b'{':
+            raise ValueError('Decision object expected')
+        while True:
+            token = stream.nonspace(f)
+            if token == b'}':
+                break
+            if token != b'"':
+                raise ValueError('Decision field expected')
+            name = stream.string(f, True)
+            if stream.nonspace(f) != b':':
+                raise ValueError('Decision colon expected')
+            token = stream.nonspace(f)
+            if name != 'decisions':
+                score_index.skip(f, token)
+            else:
+                if token != b'{':
+                    raise ValueError('Decision map expected')
+                while True:
+                    token = stream.nonspace(f)
+                    if token == b'}':
+                        break
+                    if token != b'"':
+                        raise ValueError('Decision identity expected')
+                    key = stream.string(f, True)
+                    if stream.nonspace(f) != b':':
+                        raise ValueError('Decision colon expected')
+                    token = stream.nonspace(f)
+                    if key in allowed:
+                        if token != b'{' or key in result:
+                            raise ValueError('Invalid selected decision')
+                        row = score_index.fields(f, wanted)
+                        if set(row) != wanted or row['opaque_query_id'] != key:
+                            raise ValueError('Incomplete selected decision')
+                        result[key] = row
+                    else:
+                        score_index.skip(f, token)
+                    token = stream.nonspace(f)
+                    if token == b'}':
+                        break
+                    if token != b',':
+                        raise ValueError('Decision delimiter expected')
+            token = stream.nonspace(f)
+            if token == b'}':
+                break
+            if token != b',':
+                raise ValueError('Decision delimiter expected')
+    return result
