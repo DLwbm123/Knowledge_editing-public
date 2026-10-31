@@ -42,7 +42,7 @@ def main():
     with (ROOT / 'GUARD_ONCE').open('x'): pass
     neutral = Path(os.environ['NEUTRAL_ENTRY'])
     def limit(): resource.setrlimit(resource.RLIMIT_FSIZE, (1024**3, 1024**3))
-    for phase in ('train', 'eval'):
+    for phase in ('train', 'eval', 'packet'):
         write('GUARD_HEALTH.json', dict(time=time.time(), hard_end=DEADLINE, bytes=allocated(ROOT)))
         with (ROOT / f'{phase}.log').open('a') as log:
             child = subprocess.Popen([sys.executable, str(neutral)], env=dict(os.environ, ENTRY_MODE=phase),
