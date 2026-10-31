@@ -50,7 +50,7 @@ def main():
     import torch
     import module_run as r
     import runtime_binding
-    import train
+    import lora_train
     import generate
     from first_eval import rng_digest
     from types import SimpleNamespace
@@ -88,7 +88,7 @@ def main():
     completed = []
     try:
         def fit(entry):
-            result = train.train(runtime, r, entry['task'], entry['source_rows'], {'configuration_only': config},
+            result = lora_train.train(runtime, r, entry['task'], entry['source_rows'], {'configuration_only': config},
                                  admission, ROOT/'weights', budget)
             completed.append(result)
             write('TRAIN_PROGRESS.json', dict(completed=len(completed), counts=COUNTS))
