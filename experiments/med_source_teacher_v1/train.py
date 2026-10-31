@@ -1,5 +1,6 @@
 """Fixed deep expert training after externally verified teacher-cache freeze."""
 import copy
+import math
 import torch
 import source_step
 import teacher_cache
@@ -50,8 +51,29 @@ def train(runtime, r, task, batches, teachers, frozen, output, budget):
         reloaded = torch.load(output, map_location='cpu', weights_only=True)
         if any(not torch.equal(v.cpu(), reloaded['state'][k]) for k, v in final.items()):
             raise ValueError('Saved candidate state differs')
+        budget()
+        active, targets = r.q.logits(runtime, hook, batches[0])
+        hook.enabled = False
+        try:
+            with torch.no_grad():
+                base_output = runtime.model(**batches[0].forward_kwargs())
+                mask = batches[0].labels[:, 1:] != -100
+                base = base_output.logits[:, :-1][mask].detach().cpu().double()
+                base_targets = batches[0].labels[:, 1:][mask].cpu()
+        finally:
+            hook.enabled = True
+        if not torch.equal(targets, base_targets):
+            raise ValueError('Expert and base targets differ')
+        response = float((active - base).norm())
+        if not math.isfinite(response) or response == 0:
+            raise ValueError('Expert activation is absent or nonfinite')
+        expert.load_state_dict(reloaded['state'])
+        restored, restored_targets = r.q.logits(runtime, hook, batches[0])
+        if not torch.equal(active, restored) or not torch.equal(targets, restored_targets):
+            raise ValueError('Reloaded expert output differs')
         if any(p._version != versions[name] for name, p in runtime.model.named_parameters()):
             raise ValueError('Frozen base parameter changed')
-        return dict(steps=160, initial_digest=state_digest(initial), final_digest=state_digest(final))
+        return dict(steps=160, initial_digest=state_digest(initial), final_digest=state_digest(final),
+                    activation_norm=response, reload_output_equal=True)
     finally:
         hook.detach()

@@ -6,19 +6,26 @@ import objective
 
 def input_digest(batch):
     digest = hashlib.sha256()
+    def frame(tag, data):
+        digest.update(tag)
+        digest.update(len(data).to_bytes(8, 'big'))
+        digest.update(data)
     def visit(value):
         if isinstance(value, torch.Tensor):
             x = value.detach().cpu().contiguous()
-            digest.update(repr((str(x.dtype), tuple(x.shape))).encode())
-            digest.update(x.numpy().tobytes())
+            frame(b'T', repr((str(x.dtype), tuple(x.shape))).encode())
+            frame(b'V', x.reshape(-1).view(torch.uint8).numpy().tobytes())
         elif isinstance(value, dict):
+            frame(b'D', str(len(value)).encode())
             for key in sorted(value):
-                digest.update(repr(key).encode()); visit(value[key])
+                if not isinstance(key, str):
+                    raise ValueError('Model input keys must be strings')
+                frame(b'K', key.encode()); visit(value[key])
         elif isinstance(value, (list, tuple)):
-            digest.update(repr((type(value).__name__, len(value))).encode())
+            frame(b'L', repr((type(value).__name__, len(value))).encode())
             for item in value: visit(item)
         elif value is None or isinstance(value, (str, int, float, bool)):
-            digest.update(repr((type(value).__name__, value)).encode())
+            frame(b'S', repr((type(value).__name__, value)).encode())
         else:
             raise ValueError('Unsupported model input type')
     visit(batch.forward_kwargs())
