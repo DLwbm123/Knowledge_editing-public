@@ -64,7 +64,6 @@ def main():
     code = child.wait()
     write('GUARD_EXIT.json', dict(time=time.time(), code=code, hard_end=DEADLINE))
     if code == 0:
-        import sys
         sys.path.insert(0, str(Path(os.environ['FIXED_WORKTREE']) / 'experiments/med_deep_lora_frontier_v1'))
         import report_driver
         report_driver.main()
