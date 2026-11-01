@@ -8,7 +8,7 @@ from train_pair import save_new, state_digest
 from robust_objective import weights_and_value, view_loss
 
 
-def terms(runtime, hook, batch, row, length, spans):
+def terms(runtime, hook, batch, row, length, spans, view):
     hook.set_teacher_routing(batch.labels)
     output = runtime.model(**batch.forward_kwargs())
     ce = output.loss
@@ -17,13 +17,20 @@ def terms(runtime, hook, batch, row, length, spans):
     labels = batch.labels[:, 1:]
     mask = labels != -100
     ids = labels[mask]
-    if ids.numel() < length or any(int(x) != runtime.adapter.tokenizer.eos_token_id for x in ids[length:]):
-        raise ValueError('Expanded target length or suffix mismatch')
-    decoded = runtime.adapter.tokenizer.decode(ids[:length].tolist(), skip_special_tokens=False).strip()
+    raw = runtime._tokenize_prompt(runtime.adapter._prompt(row['question'], row['reference']))[0]
+    start, end = view['answer_start_label'], view['answer_end_label']
+    if not (0 <= start < end <= raw.numel()) or end - start != length:
+        raise ValueError('Frozen answer positions do not fit the raw prompt')
+    target = raw[start:end].cpu()
+    hits = [j for j in range(ids.numel() - length + 1) if torch.equal(ids[j:j+length].cpu(), target)]
+    if len(hits) != 1:
+        raise ValueError('Frozen answer tokens do not uniquely match expanded labels')
+    offset = hits[0]
+    decoded = runtime.adapter.tokenizer.decode(ids[offset:offset+length].tolist(), skip_special_tokens=False).strip()
     if decoded != row['reference'].strip():
         raise ValueError('Expanded target does not match the source answer')
     per_token = F.cross_entropy(output.logits[:, :-1, :].float().reshape(-1, output.logits.shape[-1]),
-                                labels.reshape(-1), ignore_index=-100, reduction='none').reshape(labels.shape)[mask][:length]
+                                labels.reshape(-1), ignore_index=-100, reduction='none').reshape(labels.shape)[mask][offset:offset+length]
     if not spans or any(not (0 <= a < b <= length) for a, b in spans):
         raise ValueError('Invalid frozen answer span')
     losses = torch.stack([per_token[a:b].mean() for a,b in spans])
@@ -75,10 +82,10 @@ def train(runtime, r, task, rows, bindings, admission, lock, root, budget):
                     return lock['views'][i]['medical']
                 expert.zero_grad(set_to_none=True)
                 with torch.no_grad():
-                    first=[terms(runtime,hook,batches[i],rows[i],lock['answer_tokens'],spans_for(i)) for i in selected]
+                    first=[terms(runtime,hook,batches[i],rows[i],lock['answer_tokens'],spans_for(i),lock['views'][i]) for i in selected]
                 w,actual=weights_and_value(first[0][1],first[1][1],1.0)
                 for j,i in enumerate(selected):
-                    ce,span=terms(runtime,hook,batches[i],rows[i],lock['answer_tokens'],spans_for(i))
+                    ce,span=terms(runtime,hook,batches[i],rows[i],lock['answer_tokens'],spans_for(i),lock['views'][i])
                     if not torch.allclose(ce.detach(), first[j][0], atol=1e-5, rtol=1e-5) or not torch.allclose(span.detach(),first[j][1],atol=1e-5,rtol=1e-5):
                         raise ValueError('Recomputed forward differs')
                     view_loss(ce,span,w[j],1.0).backward()
