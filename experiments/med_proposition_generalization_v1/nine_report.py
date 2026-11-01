@@ -56,7 +56,8 @@ def evaluate(packet,decisions,baseline,roles,oldpacket,olddecisions):
         gates[role]=None if d is None or m is None else d>=m-(5 if role=='T2L' else 0)-1e-10
     tg=panels['T2G']['core_correct'];d=tg['D']['macro_percent']
     gates['D_vs_B_C_T2G']=None if d is None or any(tg[x]['macro_percent'] is None for x in ('B','C')) else all(d>tg[x]['macro_percent'] for x in ('B','C'))
-    return dict(status='INCONCLUSIVE' if any(x is None for x in gates.values()) else ('DEV_SIGNAL' if all(gates.values()) else 'DEV_FAIL'),
+    gates['T1L']=None
+    return dict(status='DEV_FAIL' if any(x is False for x in gates.values()) else ('INCONCLUSIVE' if any(x is None for x in gates.values()) else 'DEV_SIGNAL'),
                 panels=panels,gates=gates,t1l='NA',scope='nine-editor exposed development panel',
                 evaluation_events=371,scorer_snapshot='unknown; user accepted comparison')
 
@@ -67,7 +68,7 @@ def publish(root,worktree):
     packet=json.loads((root/'PACKET_PRIVATE.json').read_text())
     judgments=json.loads((root/'DECISIONS.json').read_text())['decisions']
     oldroot=Path('/private/tmp/.q.fxdscore')
-    sys.path[:0]=[str(worktree/'experiments/med_fixed_depth_v1'),str(worktree/'experiments/med150_source_review_v1')]
+    sys.path[:0]=[str(worktree/'experiments/med_fixed_depth_v1'),str(worktree/'experiments/med150_source_review_v1'),str(worktree/'experiments/med_source_teacher_v1')]
     import stream_extract as stream
     import score_index
     import prior_binding
@@ -117,6 +118,10 @@ def publish(root,worktree):
         def fmt(v):return 'NA/UNKNOWN' if v is None else f'{v:.4f}%'
         lines.append('| '+role+' | '+' | '.join(fmt(x[a]['macro_percent']) for a in ('MED','A','B','C','D'))+' |')
     lines+=['','数值为编辑宏平均；分母、FULL及配对增损见结果文件。T1L无支持；开发集已曝光。',
-            '匹配项是弱词面代理，并非已确认的医学关系。原C21没有原MED保护曲率；评分历史不完整，未知历史载荷本轮最多一次，存在潜在历史重复。']
+            'D相对MED的T2L下降9.2593个百分点，超过允许的5个百分点，保护门槛失败。T1L无支持，不能判定其保护是否达标。',
+            '371个事件的三条新臂共1113项预测已冻结。148个唯一评分载荷中96个复用、51个本轮提交且有效，1个因既有证据冲突保留UNKNOWN，对应9个非资格角色消费者；评分整体不完整，不重试该载荷。',
+            '匹配项是弱词面代理，并非已确认的医学关系。原C21没有原MED保护曲率；评分历史不完整，未知历史载荷本轮最多一次，存在潜在历史重复。评分模型为gpt-6-astra、medium，快照未知，按用户授权作比较。',
+            '正式训练4320次更新；前两次工程故障分别发生在模型调用前和首次前向后，均无更新。评分守卫完成评分后报告程序因缺少导入路径失败；已仅修复汇总并生成报告，没有重试评分。',
+            '这是已曝光开发子集上的方法对照，不能据此自动替换MED。']
     (dest/'NINE_REPORT_ZH.md').write_text('\n'.join(lines)+'\n')
     (root/'REPORT_COMPLETE.json').write_text(json.dumps(dict(status=result['status'])))
