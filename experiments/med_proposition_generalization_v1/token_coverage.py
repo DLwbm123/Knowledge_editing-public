@@ -88,7 +88,9 @@ def main():
                 if ids[:len(pref_ids)] != pref_ids:
                     raise ValueError('Full prompt does not preserve prefix tokens')
                 answer_end = answer_start + len(answer)
-                positions = [i for i,(a,b) in enumerate(offsets) if i>=len(pref_ids) and b>a and a>=answer_start and b<=answer_end]
+                positions = [i for i,(a,b) in enumerate(offsets) if i>=len(pref_ids) and b>a and a<answer_end and answer_start<b]
+                if any(full[a:min(b,answer_start)].strip() or full[max(a,answer_end):b].strip() for i in positions for a,b in [offsets[i]]):
+                    raise MappingUnknown('Answer boundary mixes nonspace content')
                 if not positions or positions != list(range(positions[0],positions[-1]+1)):
                     raise ValueError('Answer token positions noncontiguous or empty')
                 target_ids = [ids[i] for i in positions]
