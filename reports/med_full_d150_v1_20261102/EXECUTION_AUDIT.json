@@ -1,0 +1,77 @@
+{
+  "status": "EVALUATION_INCONCLUSIVE_WITH_UNKNOWN",
+  "scope": "150-editor exposed DEV; 25 MED+D experts and 125 original MED fallbacks",
+  "clock_utc": {
+    "start": "2026-11-02T07:39:53Z",
+    "hard_end": "2026-11-03T06:39:53Z",
+    "not_reset": true
+  },
+  "coverage": {
+    "total_owners": 150,
+    "source_examined": 101,
+    "source_unresolved": 49,
+    "matched": 25,
+    "unmatched": 76,
+    "groups": {
+      "original": {
+        "examined": 97,
+        "matched": 25,
+        "unmatched": 72
+      },
+      "additional": {
+        "examined": 4,
+        "matched": 0,
+        "unmatched": 4
+      }
+    }
+  },
+  "training": {
+    "owners": 25,
+    "updates": 4000,
+    "forward_calls": 16050,
+    "backward_calls": 8000,
+    "operator_backward_calls": 4000
+  },
+  "evaluation": {
+    "events": 2148,
+    "forward_calls": 11942,
+    "generated": 392,
+    "reused": 1756
+  },
+  "scoring": {
+    "status": "COMPLETE_WITH_POSSIBLE_UNKNOWN",
+    "events": 2148,
+    "unique_payloads": 1429,
+    "reused_valid": 1376,
+    "unknown": 53,
+    "new_attempts": 0,
+    "history_coverage_complete": false,
+    "legacy_decision_files_scanned": 5
+  },
+  "exit_codes": {
+    "coverage_worker": 0,
+    "coverage_guard": 0,
+    "training_workers": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "training_guard": 0,
+    "evaluation_workers": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "evaluation_guard": 0,
+    "score_worker": 0,
+    "score_guard": 0
+  },
+  "limits": "GPU guard 30GB prestop, 1GiB per-file limit, 8GiB free reserve; actual peak not measured and no aggregate filesystem quota",
+  "vision_calls": "not independently instrumented",
+  "data_boundary": "User authorized existing V95/V106-derived curvature only for this experiment; no sealed original answers were read. The 49 unresolved source roles were not used for training.",
+  "prior_failures": "First bank-input identity pass failed before generation/score due to missing source_group handling; read-only route scan first import failed before data; 1 historical DEV question was decoded in schema check, no answer/score. Receipts retained.",
+  "scoring_limit": "Known valid verdicts reused, known failed or historically unverified remain UNKNOWN; no new Judge requests.",
+  "version": "b84c9c92"
+}
