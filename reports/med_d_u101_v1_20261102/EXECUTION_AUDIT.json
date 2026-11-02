@@ -1,0 +1,43 @@
+{
+  "status": "COMPLETE_WITH_UNKNOWNS",
+  "events_per_arm": 2148,
+  "DU": {
+    "experts_trained": 101,
+    "updates": 16160,
+    "fallback_experts": 49,
+    "generated": 1513,
+    "reused": 635,
+    "valid_reused_scores": 1413,
+    "unknown_original": 161
+  },
+  "D": {
+    "experts_trained": 25,
+    "updates": 4000,
+    "fallback_experts": 125,
+    "generated": 392,
+    "reused": 1756,
+    "valid_reused_scores": 1388,
+    "unknown_original": 44
+  },
+  "GPU_train_eval_workers_and_guards_exit": 0,
+  "local_scoring_drivers_and_guards_exit": 0,
+  "original_scoring_new_attempts": 0,
+  "DU_T2G_supplement": {
+    "valid_new": 14,
+    "pre_call_reserved_failure_unknown": 42,
+    "actual_first_stage_requests": 0,
+    "supplement_remaining_unique_unknown": 147
+  },
+  "limitations": [
+    "exposed DEV",
+    "101 DU experts plus 49 MED fallback; 25 D plus 125 MED fallback",
+    "R0 OFF support zero",
+    "unknown judgments not imputed",
+    "BalancEdit runtime precision differs",
+    "resource peak not independently measured; guard pre-stop is not aggregate quota"
+  ],
+  "failures": [
+    "original coverage wrapper syntax failed before data access",
+    "T2G supplement first 42 reservations failed before call from scorer interface mismatch; two batches proxy preflight failed; preserved"
+  ]
+}
