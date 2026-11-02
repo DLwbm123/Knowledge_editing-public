@@ -20,7 +20,7 @@ def summarize(rows):
             'unknown':unknown,'macro_percent':lower if not unknown else None,'bounds':[lower,upper]}
 
 
-def run(packet,decisions,roles,scoring):
+def run(packet,decisions,roles,scoring,cohorts=None):
     if packet.get('status')!='SCORE_PACKET_FROZEN' or len(packet['consumers'])!=4296:
         raise ValueError('score packet not complete')
     if roles.get('status')!='EVALUATION_ROLES_FROZEN' or roles.get('owners')!=150:
@@ -32,7 +32,10 @@ def run(packet,decisions,roles,scoring):
         pairs[key]=row['key']
     if len(pairs)!=4296:raise ValueError('bank score pair coverage mismatch')
     result={}
-    for cohort,selected in (('all',range(1,151)),('original',range(1,147)),('additional',range(147,151))):
+    cohorts = cohorts or {}
+    selections = [('all',range(1,151)),('original',range(1,147)),('additional',range(147,151))]
+    selections.extend(cohorts.items())
+    for cohort,selected in selections:
         result[cohort]={}
         for role in ROLES:
             entries=[(o,q) for o in selected for q in roles['roles'][str(o)][role]]
