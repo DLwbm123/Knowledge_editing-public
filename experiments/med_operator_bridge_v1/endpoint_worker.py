@@ -47,7 +47,7 @@ def main():
     import torch
     import module_run as r
     import runtime_binding
-    import endpoint
+    import operator_endpoint as endpoint
     from train_pair import state_digest
     from types import SimpleNamespace
     from scripts.medtrace.run_realmodel_core import load_real_runtime

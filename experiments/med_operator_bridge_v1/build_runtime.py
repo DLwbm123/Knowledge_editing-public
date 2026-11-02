@@ -82,7 +82,7 @@ endpoint_worker = endpoint_worker.replace('TRAIN_', 'ENDPOINT_').replace('traini
 endpoint_worker = endpoint_worker.replace('ENDPOINT_SOURCE_BOUND_PRIVATE.json', 'TRAIN_SOURCE_BOUND_PRIVATE.json')
 endpoint_worker = replace_once(endpoint_worker, "    if counts['updates'] > 40 * 101 or counts['generations'] != 0:",
     "    if counts['updates'] != 0 or counts['generations'] != 0 or counts['forwards'] > 101:")
-endpoint_worker = replace_once(endpoint_worker, '    import bridge_train as train\n', '    import endpoint\n')
+endpoint_worker = replace_once(endpoint_worker, '    import bridge_train as train\n', '    import operator_endpoint as endpoint\n')
 endpoint_worker = replace_once(endpoint_worker,
     "            completed.append(train.train(runtime, r, task, entry['source_rows'], config,\n                {'status':'SOURCE_101_ROLES_ADMITTED','owners':admission['owners']}, med, du, root/'weights'/f'{owner}_mix.json', budget))",
     "            completed.append(endpoint.check(runtime, r, task, entry['source_rows'], config, med, du, budget))")
