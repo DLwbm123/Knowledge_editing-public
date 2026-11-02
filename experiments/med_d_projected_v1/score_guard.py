@@ -65,7 +65,7 @@ def main():
     write('GUARD_EXIT.json', dict(time=time.time(), code=code, hard_end=DEADLINE))
     if code == 0:
         root=Path(os.environ['FIXED_WORKTREE'])
-        for relative in ('experiments/med_source_teacher_v1','experiments/med150_source_review_v1','experiments/med_fixed_depth_v1','experiments/med_d_projected_v1'):
+        for relative in ('experiments/med_source_teacher_v1','experiments/med150_source_review_v1','experiments/med_fixed_depth_v1','experiments/med_proposition_generalization_v1','experiments/med_full_d_v1','experiments/med_d_projected_v1'):
             sys.path.insert(0,str(root/relative))
         import report
         report.run(ROOT,root)
