@@ -55,6 +55,16 @@ def launch():
         raise ValueError('prior binding incomplete')
     if json.loads((root/'ROUTES_FROZEN.json').read_text()).get('generated') != 1513:
         raise ValueError('candidate routes not frozen')
+    while not (root/'ENDPOINT_GUARD_EXIT.json').exists():
+        if (root/'ENDPOINT_GUARD_FAILURE.json').exists() or (root/'ENDPOINT_STOP.json').exists():
+            raise RuntimeError('endpoint guard failed')
+        if time.time() >= deadline-660: raise TimeoutError('original deadline')
+        time.sleep(5)
+    if json.loads((root/'ENDPOINT_GUARD_EXIT.json').read_text()).get('code') != 0:
+        raise ValueError('endpoint guard failed')
+    endpoint=json.loads((root/'ENDPOINT_FROZEN.json').read_text())
+    if endpoint.get('status') != 'REAL_LAYER_ENDPOINTS_PASS' or endpoint.get('owners') != 101:
+        raise ValueError('pre-prediction endpoint coverage missing')
     gpu=[]
     text=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.free','--format=csv,noheader,nounits'],text=True)
     for line in text.splitlines():
