@@ -56,9 +56,10 @@ def main():
     pending=[payloads[k] for k in categories['history_unverified']]
     disputed=[payloads[k] for k in categories['conflict_unknown']]
     groups=[('history_unverified',pending[i:i+7]) for i in range(0,len(pending),7)]+[('conflict_adjudication',disputed)]
-    batches=[dict(batch_id=digest([PROTOCOL,'MED_FULL_D150_SUPPLEMENT_V1',kind,rows]),records=rows,category=kind) for kind,rows in groups]
+    batches=[dict(batch_id=digest([PROTOCOL,'MED_FULL_D150_SUPPLEMENT_V1',kind,rows]),records=rows) for kind,rows in groups]
+    batch_categories={batch['batch_id']:kind for batch,(kind,_) in zip(batches,groups)}
     decisions={};unknown=[];charged=0;charge_lock=threading.Lock()
-    write('BATCH_MANIFEST.json',dict(batches=batches,original_valid_reused=1376,history_unverified=48,
+    write('BATCH_MANIFEST.json',dict(batches=batches,batch_categories=batch_categories,original_valid_reused=1376,history_unverified=48,
         conflict_adjudication=5,known_failed=0,maximum_new_attempt_items=53,automatic_retry=False))
     write('DECISIONS.json',dict(decisions=decisions,unknown=unknown))
 
