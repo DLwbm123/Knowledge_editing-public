@@ -1,0 +1,55 @@
+{
+  "status": "DEV_FAIL",
+  "protocol": "fixed 0.5 output-space diagnostic; 101 mixed experts and 49 original MED fallback",
+  "endpoint_admission": {
+    "owners": 101,
+    "actual_model_forwards": 101,
+    "endpoint_checks_per_owner": 2,
+    "midpoint_checks_per_owner": 1,
+    "worker_exit_codes": [0, 0, 0, 0],
+    "guard_exit_code": 0,
+    "method": "Compare original expert hooks and bridge endpoints on actual layer inputs and layer output, using admitted source inputs before candidate predictions; no separate full-model output comparison."
+  },
+  "generation": {
+    "events": 2148,
+    "actual_generations": 1513,
+    "reused_MED": 635,
+    "model_forwards": 38131,
+    "worker_exit_codes": [0, 0, 0, 0],
+    "guard_exit_code": 0,
+    "input_route_mismatches_vs_trained_bridge": 0,
+    "weights_or_output_equality_claimed": false
+  },
+  "scoring": {
+    "unique_payloads": 1521,
+    "reused_valid": 1377,
+    "unknown": 144,
+    "new_judge_attempts": 0,
+    "driver_exit_code": 0,
+    "guard_exit_code": 0,
+    "history_coverage_complete": false
+  },
+  "failure_history": [
+    "Initial remote setup command failed shell parsing before reading data.",
+    "The first four endpoint workers imported a conflicting module and exited with zero forwards, updates, or generations. The dependent score worker made no requests. Original receipts are retained; corrected module binding and only unattempted work resumed on the original clock.",
+    "A short CPU synthetic import check included a project path in its process arguments; this exposure was transient and no questions or model outputs were displayed."
+  ],
+  "budget": {
+    "start_utc": "2026-11-02T19:31:34Z",
+    "hard_end_utc": "2026-11-03T18:31:34Z",
+    "prestop_bytes": 30000000000,
+    "per_file_limit_bytes": 1073741824,
+    "free_reserve_gib": 8,
+    "last_guard_observed_bytes": 28119040,
+    "peak_storage_and_gpu_memory": "not measured",
+    "aggregate_filesystem_quota": "not installed"
+  },
+  "limitations": [
+    "exposed DEV; not independent confirmation",
+    "T2G and T2L contain unknown judgments and bounds are not confidence intervals",
+    "T1L two events; T2L 54 events across 31 edits; no OFF support",
+    "no new protected curvature read; MED weights carry historical protection training impact",
+    "BalancEdit historical adjudication and different precision are retained",
+    "fixed scalar mixing is an ablation, not the final paper method"
+  ]
+}
