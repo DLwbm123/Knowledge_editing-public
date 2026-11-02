@@ -1,0 +1,41 @@
+{
+  "status": "DEV_SIGNAL",
+  "source_experiment": "f7801657 and 34d10808; original reports unchanged",
+  "frozen_events": 2148,
+  "candidate_generation": 0,
+  "candidate_training": 0,
+  "original_valid_reused": 1376,
+  "requested_targets": 53,
+  "history_unverified": 48,
+  "conflict_adjudications": 5,
+  "actual_new_attempt_items": 53,
+  "remaining_unknown": 0,
+  "score_worker_exit": 0,
+  "score_guard_exit": 0,
+  "method_model": "gpt-6-astra",
+  "reasoning": "medium",
+  "immutable_snapshot": "unknown",
+  "original_clock_hard_end_utc": "2026-11-03T06:39:53Z",
+  "no_automatic_retry": true,
+  "comparison_input_admission": {
+    "status": "PASS",
+    "bank_query_events": 2148,
+    "question_image_prompt_attention_generation_mismatches": 0,
+    "reference_or_answer_decoded": 0,
+    "runtime_precision_identical": false,
+    "method_scope": "source MED150 to BalancEdit, candidate MED+D input bound to source MED150"
+  },
+  "limitations": [
+    "48 historical attempt statuses cannot be verified; historical repeats cannot be ruled out",
+    "five historical conflicts receive one independent adjudication; original discordance retained, sensitivity reported",
+    "25 MED+D and 125 original MED experts",
+    "no OFF support; exposed development data",
+    "BalancEdit and MED+D use different numerical precision"
+  ],
+  "cli_version": "0.166.0-alpha.5.1",
+  "report_only_failure": "Initial report import collided by module name; fixed import and recomputed frozen judgments without training, generation or scoring retry.",
+  "validated_batches": 8,
+  "validated_attempt_items": 53,
+  "duplicate_attempts": 0,
+  "conflict_adjudications_matching_at_least_one_historical_verdict": 5
+}
