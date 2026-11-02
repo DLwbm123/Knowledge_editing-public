@@ -1,0 +1,19 @@
+{
+  "scoring": {
+    "original_reused": 1413,
+    "first_pre_call_reservations": 42,
+    "first_actual_requests": 0,
+    "first_unsent_preflight": 14,
+    "recovery_reservations": 14,
+    "recovery_valid": 14,
+    "remaining_unknown": 147,
+    "history_coverage_complete": false
+  },
+  "actual_request_caveat": "first 42 reservations failed with Python TypeError before entering run_batch, so no request sent; preserved as unknown and not retried",
+  "first_error": "incompatible run_batch signature; two batches proxy preflight failed",
+  "recovery": "only 14 preflight-unreserved payloads, same deadline and corrected historical scorer",
+  "no_training_generation": true,
+  "model": "gpt-6-astra",
+  "reasoning": "medium",
+  "snapshot": "unknown"
+}
