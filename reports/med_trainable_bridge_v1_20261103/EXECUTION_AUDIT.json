@@ -1,0 +1,61 @@
+{
+  "status": "INCONCLUSIVE",
+  "train": {
+    "admitted_editors": 101,
+    "updates": 4040,
+    "backwards": 8080,
+    "only_trainable_parameters_per_editor": 1,
+    "model_and_experts_frozen": true,
+    "worker_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "guard_exit_code": 0
+  },
+  "generation": {
+    "events": 2148,
+    "actual_generations": 1513,
+    "reused_MED": 635,
+    "worker_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "guard_exit_code": 0
+  },
+  "scoring": {
+    "initial_reused": 1366,
+    "initial_unknown": 139,
+    "later_existing_compatible_reused": 2,
+    "remaining_unknown": 137,
+    "new_judge_attempts": 0,
+    "driver_exit_code": 0,
+    "guard_exit_code": 0,
+    "history_coverage_complete": false
+  },
+  "endpoint_checks": "source training code checks both alpha endpoints at the first actual residual call for each trained editor; no independent standalone full-model endpoint output comparison was recorded",
+  "bounds": "adversarial unknown assignment, not confidence interval",
+  "fixed_coefficient_control": "not run",
+  "budget": {
+    "start_utc": "2026-11-02T16:12:35Z",
+    "hard_end_utc": "2026-11-03T15:12:35Z",
+    "prestop_bytes": 30000000000,
+    "per_file_limit_bytes": 1073741824,
+    "free_reserve_gib": 8,
+    "peak_storage_and_gpu_memory": "not measured",
+    "aggregate_filesystem_quota": "not installed"
+  },
+  "limitations": [
+    "exposed DEV",
+    "101 trained mixed experts and 49 original MED fallback",
+    "no OFF support",
+    "T1L two events and T2L 54 events",
+    "existing score evidence incomplete",
+    "BalancEdit precision differs from MED",
+    "protective source curvature not read; MED weights carry historical protection training effect",
+    "simple learned scalar is diagnostic, not final paper method"
+  ]
+}
