@@ -71,6 +71,8 @@ def run(root,worktree):
     for role in ('T0','FIT','T1G','T1L','T2L'):
         panel=panels[role]['core_correct'];a=panel['MED']['macro_percent'];b=panel['MED_D']['macro_percent']
         gates[role]=None if a is None or b is None else b>=a-(5 if role=='T2L' else 0)-1e-10
+    tg=panels['T2G']['core_correct']; med_tg=tg['MED']['macro_percent']; candidate_tg=tg['MED_D']['macro_percent']
+    gates['T2G_improved']=None if med_tg is None or candidate_tg is None else candidate_tg > med_tg + 1e-10
     status='DEV_FAIL' if any(v is False for v in gates.values()) else ('INCONCLUSIVE' if any(v is None for v in gates.values()) else 'DEV_SIGNAL')
     out=dict(status=status,events=371,panels=panels,gates=gates,scoring=json.loads((root/'COMPLETE.json').read_text()),
              scope='nine-editor exposed development panel; protected-derived curvature authorized; T1L NA')
