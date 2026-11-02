@@ -8,3 +8,9 @@
 - MED 的 T1G/T2G/T1L/T2L 具有项目特定定义与资格口径。只在实际输入、参考、资格与统计定义逐项一致后映射；否则保留原论文名称并分别报告。
 
 本次只核对公开论文，没有访问私有问答、图像或模型结果，没有完成使用许可核查、数据集构建或评测。
+
+## 上游公开使用条件的初步核查（2026-11-03）
+
+MedMKEB 的[官方说明](https://github.com/pkusixspace/MedMKEB)列出 GMAI-MMBench、MedMCQA、PMC-VQA 和 LMKG 等来源；仓库元数据未标明许可证，不能据此推断 MedMKEB 派生文件的再发布条件。[GMAI-MMBench 数据卡](https://huggingface.co/datasets/OpenGVLab/GMAI-MMBench)标示 Apache-2.0，同时要求接受访问条件；[MedMCQA 数据卡](https://huggingface.co/datasets/openlifescienceai/medmcqa)标示 Apache-2.0；[PMC-VQA 数据卡](https://huggingface.co/datasets/RadGenome/PMC-VQA)说明其数据集采用 CC BY-SA，并说明上游文章许可。各卡片的声明不自动证明本地版本、全部组成素材和派生任务具有相同再发布权限，也不解除项目已登记的数据角色约束。未下载数据，未建立新任务清单或改变任何角色。
+
+访问边界：读取上游公开数据卡时，页面自动返回了公开示例问答，其中部分内容进入工具响应。未核验示例是否与项目保留角色重叠，未用其选题或设计方法；不能将本次核查表述为未接触任何问答。后续获取许可信息时应优先选择不带数据预览的元数据接口或只读取许可证文件。
