@@ -1,5 +1,6 @@
 """Four-shard GPU guard with fixed original clock and independent storage checks."""
 import json
+import fcntl
 import os
 from pathlib import Path
 import resource
@@ -44,15 +45,25 @@ def launch():
             if time.time()>=deadline-660:raise TimeoutError('original deadline')
             time.sleep(5)
         if json.loads((root/'TRAIN_GUARD_EXIT.json').read_text()).get('code')!=0:raise RuntimeError('training did not succeed')
-        for i in range(4):
+        for i in range(2):
             if json.loads((root/f'TRAIN_EXIT_{i}.json').read_text()).get('code')!=0:raise RuntimeError('training shard failed')
+    # Acquire only after dependencies, to avoid blocking a pending training guard.
+    lease = (root.parent/'GPU_LEASE.lock').open('a')
+    while True:
+        try:
+            fcntl.flock(lease.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            break
+        except BlockingIOError:
+            if time.time() >= deadline-660:
+                raise TimeoutError('original deadline while waiting for two-GPU lease')
+            time.sleep(5)
     gpu=[]
     text=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.free','--format=csv,noheader,nounits'],text=True)
     for line in text.splitlines():
         index,uuid,free=(x.strip() for x in line.split(','))
         if int(free)>=45056:gpu.append((index,uuid))
-    if len(gpu)<4:raise RuntimeError('four GPUs with sufficient free memory unavailable')
-    gpu=gpu[:4]
+    if len(gpu)<2:raise RuntimeError('two GPUs with sufficient free memory unavailable')
+    gpu=gpu[:2]
     (root/'weights').mkdir(exist_ok=True)
     write(f'{phase}_GUARD_HEALTH.json',{'time':time.time(),'hard_end':deadline,'bytes':used_bytes()})
     children=[]
@@ -74,9 +85,9 @@ def launch():
                 raise RuntimeError('resource or original deadline stop')
             time.sleep(5)
         codes=[p.wait() for p in children]
-        if codes!=[0,0,0,0]:raise RuntimeError('nonzero shard exit')
+        if codes!=[0,0]:raise RuntimeError('nonzero shard exit')
         if phase=='TRAIN':
-            totals=[json.loads((root/f'TRAIN_COMPLETE_{i}.json').read_text()) for i in range(4)]
+            totals=[json.loads((root/f'TRAIN_COMPLETE_{i}.json').read_text()) for i in range(2)]
             owners=[row['owner'] for x in totals for row in x['results']]
             if len(owners)!=expected or len(set(owners))!=expected or sum(x['counts']['updates'] for x in totals)!=160*expected:
                 raise ValueError('actual training counts differ')
@@ -86,7 +97,7 @@ def launch():
         if phase=='EVAL':
             records=list((root/'predictions').glob('*.json'))
             if len(records)!=2148:raise ValueError('bank prediction count differs')
-            totals=[json.loads((root/f'EVAL_COMPLETE_{i}.json').read_text()) for i in range(4)]
+            totals=[json.loads((root/f'EVAL_COMPLETE_{i}.json').read_text()) for i in range(2)]
             if sum(x['counts']['generations'] for x in totals)!=generations or sum(x['counts']['reused'] for x in totals)!=2148-generations:
                 raise ValueError('actual/reused prediction counts differ')
             write('PREDICTIONS_FROZEN.json',{'status':'ALL_PREDICTIONS_FROZEN','events':2148,'generated':generations,'reused':2148-generations})

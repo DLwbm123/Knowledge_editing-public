@@ -63,7 +63,7 @@ def main():
     for n in ('TRAIN_GUARD_EXIT.json',):
         if json.loads((root/n).read_text()).get('code') != 0:
             raise ValueError('training guard did not succeed')
-    if any(json.loads((root/f'TRAIN_EXIT_{i}.json').read_text()).get('code')!=0 for i in range(4)):
+    if any(json.loads((root/f'TRAIN_EXIT_{i}.json').read_text()).get('code')!=0 for i in range(2)):
         raise ValueError('training shard failed')
     if json.loads((root/'SCORING_CHAIN_ADMISSION.json').read_text()).get('status')!='SCORING_CHAIN_ADMITTED_WITH_UNKNOWN_PRESERVED':
         raise ValueError('scoring dependency missing')
@@ -90,7 +90,7 @@ def main():
         budget();counts['forwards']+=1
     handle=runtime.model.register_forward_pre_hook(count,with_kwargs=True)
     try:
-        selected=[x for i,x in enumerate(inputs['records']) if i%4==shard]
+        selected=[x for i,x in enumerate(inputs['records']) if i%2==shard]
         for index,row in enumerate(selected):
             cid=row['consumer_id']
             key=hashlib.sha256(cid.encode()).hexdigest()

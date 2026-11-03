@@ -69,7 +69,7 @@ def main():
     if len(span) != 25 or set(span) != weak_owners:
         raise ValueError('frozen coverage count changed')
     selected = [x for x in entries if x['task']['order'] in span]
-    selected = [x for i,x in enumerate(selected) if i % 4 == shard]
+    selected = [x for i,x in enumerate(selected) if i % 2 == shard]
     with (parent/'private/EVAL_BINDINGS.json').open('rb') as f:
         config = runtime_binding.extract(f)['configuration_only']
     runtime = load_real_runtime(SimpleNamespace(cpu_gate=parent/'private/cpu_gate'))
