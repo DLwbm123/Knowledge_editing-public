@@ -135,6 +135,27 @@ def main():
     result['scoring'] = scoring
     result['new_judge_attempts'] = 0
     write('RESULTS.json', result)
+    destination = worktree / 'reports/med_common25_loss_ablation_v1_20261103'
+    out = destination / 'RESULTS.json'
+    with out.open('x') as f:
+        json.dump(result, f, ensure_ascii=False, indent=2)
+    lines = ['# 共同25专家损失消融：开发集结果', '',
+             '固定392个原路由事件，对原MED、D、D-U、普通CE和均匀跨度做同支持比较；新臂各训练25个专家。',
+             '新Judge请求为0；无法核实或存在冲突的历史判断保留UNKNOWN。', '']
+    for role in summary.ROLES:
+        panel = result['panels'][role]['core_correct']['arms']
+        text = []
+        for arm in ('MED', 'D', 'DU', 'CE', 'UNIFORM'):
+            x = panel[arm]
+            text.append(arm + ' ' + ('NA' if x['bounds'] is None else
+                        f"{x['bounds'][0]:.4f}–{x['bounds'][1]:.4f}%（未知{x['unknown']}）"))
+        lines.append(role + ' CORE：' + '；'.join(text) + '。')
+        lines.append('')
+    lines += ['上下界表示未知赋值范围，不是置信区间。完整CORE/FULL、角色支持、配对增损和门槛见RESULTS.json。',
+              '这是已曝光开发集消融；原MED包含历史保护训练影响，不能将差异全部归因于损失。', '']
+    with (destination / 'REPORT_ZH.md').open('x') as f:
+        f.write('\n'.join(lines))
+    write('REPORT_COMPLETE.json', {'status': result['status'], 'events': 392})
     write('COMPLETE.json', {'status': result['status'], 'events': 392, 'new_judge_attempts': 0})
 
 
