@@ -1,0 +1,11 @@
+{
+  "status": "COMPLETED_DEV_FAIL_T2L",
+  "original_start_utc": "2026-11-03T03:58:40Z",
+  "original_deadline_utc": "2026-11-04T02:58:40Z",
+  "training": {"CE": {"experts": 25, "updates": 4000, "shard_exit_codes": [0, 0], "guard_exit_code": 0}, "UNIFORM": {"experts": 25, "updates": 4000, "shard_exit_codes": [0, 0], "guard_exit_code": 0}},
+  "prediction_per_arm": {"events": 2148, "generated": 392, "reused": 1756, "shard_exit_codes": [0, 0], "guard_exit_code": 0},
+  "evaluation": {"common_routed_events": 392, "new_judge_attempts": 0, "driver_exit_code": 0, "guard_exit_code": 0},
+  "resources": {"gpu_concurrency_limit": 2, "shared_exclusive_lease": true, "combined_guard_exit_code": 0, "last_recorded_bytes": 32456704, "aggregate_filesystem_quota": false, "peak_not_measured": true},
+  "retained_failures": "Initial incompatible environment failed before model forward in both arms; first two local scoring dependency guards exited with zero requests. Same original clock; only unattempted work was resumed.",
+  "limitations": "Exposed development panel; incomplete historical scoring and conflicts remain UNKNOWN. T1L unsupported. Existing MED incorporates historical protection training, unlike new arms. Unknown bounds are not confidence intervals."
+}
