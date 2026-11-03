@@ -12,7 +12,7 @@ from span_train import terms
 from train_pair import save_new, state_digest
 
 
-def train(runtime, r, task, rows, bindings, admission, lock, arm, root, budget):
+def train(runtime, r, task, rows, bindings, admission, lock, arm, root, budget, expected_initial):
     owner = task['order']
     if admission.get('status') != 'SOURCE_101_ROLES_ADMITTED' or len(admission.get('owners', [])) != 101:
         raise ValueError('101-source admission missing')
@@ -36,6 +36,8 @@ def train(runtime, r, task, rows, bindings, admission, lock, arm, root, budget):
     initial = {k: v.detach().cpu().clone() for k, v in r.p.tr.TT4(task['seed'], 8, 8).state_dict().items()}
     if sum(v.numel() for v in initial.values()) != 7168 or torch.count_nonzero(initial['G1']):
         raise ValueError('TT initialization differs')
+    if state_digest(initial) != expected_initial:
+        raise ValueError('seed initialization differs from the bound D-U state')
     runtime.model.half()
     try:
         prepared = r.s.prepare(runtime, bindings, task, rows, True)

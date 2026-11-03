@@ -33,7 +33,7 @@ def ssh(script, timeout=60):
 def main():
     sys.path[:0] = [str(worktree / 'experiments' / name) for name in
                     ('med_common25_loss_ablation_v1', 'med_fixed_depth_v1', 'med150_source_review_v1',
-                     'med_proposition_generalization_v1')]
+                     'med_proposition_generalization_v1', 'med_source_teacher_v1')]
     import identities, ledger, score_reuse, summary
     d = identities.consumers(Path('/private/tmp/.r.20261102.06/PACKET_PRIVATE.json'))
     du = identities.consumers(Path('/private/tmp/.r.20261102.05/PACKET_PRIVATE.json'))

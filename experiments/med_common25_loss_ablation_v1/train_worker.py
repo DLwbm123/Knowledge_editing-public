@@ -61,13 +61,18 @@ def main():
         raise ValueError('scoring dependency missing')
     if admission.get('status') != 'TRAINING_SOURCE_ROLE_ADMITTED' or lock.get('status') != 'WEAK_TOKEN_PROXY_ONLY':
         raise ValueError('training identity or token lock missing')
-    if [x['task']['order'] for x in entries] != admission['owners'] or [x['order'] for x in lock['records']] != admission['owners']:
-        raise ValueError('source and token identities differ')
+    if [x['order'] for x in lock['records']] != admission['owners']:
+        raise ValueError('weak coverage and role identities differ')
     weak_owners = {x['order'] for x in lock['records'] if x['status'] == 'WEAK_TOKEN_MATCH'}
+    if len(entries) != 25 or {x['task']['order'] for x in entries} != weak_owners:
+        raise ValueError('selected source identities differ')
     lock = json.loads((root/'TOKEN_LOCK.private.json').read_text())
     span = {x['order']:x for x in lock['records'] if x['status'] == 'TOKEN_BOUND' and x['order'] in weak_owners}
     if len(span) != 25 or set(span) != weak_owners:
         raise ValueError('frozen coverage count changed')
+    states = json.loads((root/'STATE_BINDING.private.json').read_text())
+    if states.get('status') != 'STATE_BINDING_PASS' or set(map(int, states['initial_digests'])) != weak_owners:
+        raise ValueError('state binding incomplete')
     selected = [x for x in entries if x['task']['order'] in span]
     selected = [x for i,x in enumerate(selected) if i % 2 == shard]
     with (parent/'private/EVAL_BINDINGS.json').open('rb') as f:
@@ -86,7 +91,8 @@ def main():
         for entry in selected:
             owner = entry['task']['order']
             completed.append(train.train(runtime, r, entry['task'], entry['source_rows'], {'configuration_only':config},
-                {'status':'SOURCE_101_ROLES_ADMITTED','owners':admission['owners']}, span[owner], arm, root/'weights', budget))
+                {'status':'SOURCE_101_ROLES_ADMITTED','owners':admission['owners']}, span[owner], arm, root/'weights', budget,
+                states['initial_digests'][str(owner)]))
             write(f'TRAIN_PROGRESS_{shard}.json', {'completed':len(completed),'expected':len(selected),'counts':counts})
         if counts['updates'] != 160 * len(selected):
             raise ValueError('training update count mismatch')
