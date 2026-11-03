@@ -12,7 +12,7 @@ parent = Path(os.environ['PARENT_RUN'])
 original = Path(os.environ['ORIGINAL_ROOT'])
 extra = Path(os.environ['ADDITIONS_ROOT'])
 arm = os.environ['ARM']
-if arm not in ('CE','DU'): raise ValueError('invalid arm')
+if arm not in ('MCE','MDU'): raise ValueError('invalid arm')
 shard = int(os.environ['SHARD'])
 deadline = float(os.environ['EXPERIMENT_DEADLINE'])
 counts = dict(forwards=0, backwards=0, updates=0, generations=0, vision_forwards=0, operator_backwards=0)

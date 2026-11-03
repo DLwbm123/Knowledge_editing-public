@@ -109,7 +109,7 @@ def main():
         if sum(v.numel() for v in state.values()) != 7168 or any(not torch.isfinite(v).all() for v in state.values()):
             raise ValueError('invalid MED state')
         med_initial[owner] = h
-    for arm in ('CE', 'DU'):
+    for arm in ('MCE', 'MDU'):
         root = new / arm
         root.mkdir(mode=0o700, parents=True, exist_ok=False)
         (root / 'tools').mkdir(mode=0o700)

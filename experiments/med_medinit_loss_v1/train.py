@@ -18,7 +18,7 @@ def train(runtime, r, task, rows, bindings, admission, lock, arm, root, budget, 
         raise ValueError('101-source admission missing')
     if owner not in admission['owners'] or len(set(admission['owners'])) != 101 or any(not 1 <= x <= 150 for x in admission['owners']):
         raise ValueError('Owner not admitted')
-    if arm not in ('CE', 'DU') or lock['order'] != owner or len(lock['views']) != 5:
+    if arm not in ('MCE', 'MDU') or lock['order'] != owner or len(lock['views']) != 5:
         raise ValueError('Arm or source identity differs')
     if lock['status'] != 'TOKEN_BOUND':
         raise ValueError('Bound universal span lock required')
@@ -64,7 +64,7 @@ def train(runtime, r, task, rows, bindings, admission, lock, arm, root, budget, 
             expert.zero_grad(set_to_none=True)
             with torch.no_grad():
                 first = [calculate(i) for i in chosen]
-            if arm == 'DU':
+            if arm == 'MDU':
                 weights, robust = weights_and_value(first[0][1], first[1][1], 1.0)
             else:
                 weights = torch.full((2, len(lock['spans'])), 0.5, device=first[0][1].device)
@@ -74,7 +74,7 @@ def train(runtime, r, task, rows, bindings, admission, lock, arm, root, budget, 
                 if not torch.allclose(ce.detach(), first[j][0], atol=1e-5, rtol=1e-5) or not torch.allclose(
                         spans.detach(), first[j][1], atol=1e-5, rtol=1e-5):
                     raise ValueError('View recomputation changed')
-                view_loss(ce, spans, weights[j], 0.0 if arm == 'CE' else 1.0).backward()
+                view_loss(ce, spans, weights[j], 0.0 if arm == 'MCE' else 1.0).backward()
                 r.COUNTS['backwards'] += 1
             norm = torch.nn.utils.clip_grad_norm_(expert.parameters(), 1.0)
             if not torch.isfinite(norm) or not torch.isfinite(robust):
