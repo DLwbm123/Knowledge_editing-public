@@ -4,7 +4,7 @@ from pathlib import Path
 w=Path(os.environ['WORKTREE']); out=Path(os.environ['PRIVATE_OUT'])
 sys.path[:0]=[str(w/'experiments'/x) for x in ('med_common25_loss_ablation_v1','med_full_d150_v1','med150_source_review_v1','med_fixed_depth_v1','med_medinit_101_v1')]
 from selected_records import identities
-import ledger,summary
+import ledger,summary,prior_binding,stream_extract
 be=w/'.private/med150_balancedit_v1_20261028/scoring'
 base=json.loads(Path('/private/tmp/.r.20261104.102prep/BASELINE.private.json').read_text())
 first=json.loads(Path('/private/tmp/.r.20261104.102/DECISIONS.json').read_text())['decisions']
@@ -21,7 +21,11 @@ decisions=ledger.selected_decisions(be/'DECISIONS.json',{r['key'] for r in bank}
 cons=base['consumers']; assert len(cons)==2148*3
 keys={(r['arm'],r['query_id']):r['key'] for r in cons};assert len(keys)==len(cons)
 bekeys={r['query_id']:r['key'] for r in bank}
-conf=set(json.loads(Path('/private/tmp/.r.20261104.102/SUPPLEMENT_INPUT.private.json').read_text())['categories']['conflict_unknown']) | set(json.loads(Path('/private/tmp/.r.20261104.103/SUPPLEMENT_INPUT.private.json').read_text())['categories']['conflict_unknown'])
+def conflicts_only(path):
+ with Path(path).open('rb') as f:
+  data=prior_binding.select(f,stream_extract.nonspace(f),{'categories'})
+ return set(data['categories']['conflict_unknown'])
+conf=conflicts_only('/private/tmp/.r.20261104.102/SUPPLEMENT_INPUT.private.json') | conflicts_only('/private/tmp/.r.20261104.103/SUPPLEMENT_INPUT.private.json')
 result={}
 for sensitivity in ('adjudicated','conflicts_unknown'):
  d=judgments if sensitivity=='adjudicated' else {k:v for k,v in judgments.items() if k not in conf}
