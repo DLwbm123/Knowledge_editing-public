@@ -1,0 +1,69 @@
+{
+  "status": "COMPLETE_WITH_UNKNOWN",
+  "clock_utc_start": "2026-11-04T04:18:42.229208Z",
+  "clock_utc_deadline": "2026-11-05T03:18:42.229208Z",
+  "arms": {
+    "MCE": {
+      "new_experts": 76,
+      "updates": 12160,
+      "events": 2148,
+      "generated": 1121,
+      "old25_reused": 392,
+      "med_fallback_reused": 635,
+      "training_shard_exit_codes": [
+        0,
+        0
+      ],
+      "training_guard_exit_code": 0,
+      "evaluation_shard_exit_codes": [
+        0,
+        0
+      ],
+      "evaluation_guard_exit_code": 0
+    },
+    "MDU": {
+      "new_experts": 76,
+      "updates": 12160,
+      "events": 2148,
+      "generated": 1121,
+      "old25_reused": 392,
+      "med_fallback_reused": 635,
+      "training_shard_exit_codes": [
+        0,
+        0
+      ],
+      "training_guard_exit_code": 0,
+      "evaluation_shard_exit_codes": [
+        0,
+        0
+      ],
+      "evaluation_guard_exit_code": 0
+    }
+  },
+  "scoring": {
+    "new_judge_attempts": 0,
+    "driver_exit_code": 0,
+    "guard_exit_code": 0,
+    "history_coverage_complete": false,
+    "per_arm": {
+      "MCE": {
+        "known_valid": 973,
+        "known_unknown": 2,
+        "conflict_unknown": 4,
+        "history_unverified": 85
+      },
+      "MDU": {
+        "known_valid": 973,
+        "known_unknown": 0,
+        "conflict_unknown": 4,
+        "history_unverified": 85
+      }
+    }
+  },
+  "combined_guard_exit_code": 0,
+  "combined_guard_last_observed_bytes": 53624832,
+  "resource_note": "30 GB pre-stop, per-file 1 GiB and 8 GiB free reserve; not a filesystem aggregate quota, peak not measured.",
+  "engineering_failures": "Initial preparation import failed before data/model access; local deployment text failed before remote access; initial runtime import missing helper before model call. Preserved private receipts and original clock.",
+  "data_boundary": "Only 101 admitted training sources; 49 unadmitted training QA not read; original MED and held-out data protected.",
+  "interpretation": "DEV; unknown assignment bounds are not confidence intervals; original MED carries historical protection training; no clinical or independent confirmation claim."
+}
