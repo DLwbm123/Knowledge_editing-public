@@ -1,0 +1,65 @@
+{
+  "train_counts": [
+    {
+      "forwards": 16050,
+      "backwards": 8000,
+      "updates": 4000,
+      "generations": 0,
+      "vision_forwards": 0,
+      "operator_backwards": 0
+    },
+    {
+      "forwards": 15408,
+      "backwards": 7680,
+      "updates": 3840,
+      "generations": 0,
+      "vision_forwards": 0,
+      "operator_backwards": 0
+    }
+  ],
+  "eval_counts": [
+    {
+      "forwards": 5690,
+      "generations": 326,
+      "reused": 748
+    },
+    {
+      "forwards": 5079,
+      "generations": 309,
+      "reused": 765
+    }
+  ],
+  "train_frozen": {
+    "status": "ALL_EXPERTS_TRAINED",
+    "owners": 49,
+    "updates": 7840
+  },
+  "eval_frozen": {
+    "status": "ALL_PREDICTIONS_FROZEN",
+    "events": 2148,
+    "generated": 635,
+    "reused": 1513
+  },
+  "clock": {
+    "start_conservative": 1793887661.0,
+    "hard_end": 1793970461.0,
+    "hours": 23
+  },
+  "cpu_guard_exit": 0,
+  "train_guard_exit": 0,
+  "eval_guard_exit": 0,
+  "status": "COMPLETE_WITH_REUSED_SCORING",
+  "events": 2148,
+  "new_judge_attempts": 0,
+  "scoring_partition": {
+    "known_valid": 479,
+    "known_unknown": 0,
+    "conflict_unknown": 1,
+    "history_unverified": 49
+  },
+  "score_driver_exit": 0,
+  "score_guard_exit": 0,
+  "history_coverage_complete": false,
+  "resource_limit_note": "30 GB polling stop and 1 GiB per-file limit, not an aggregate filesystem quota",
+  "test_scope": "32 historical sealed questions exact normalized text and original146 DEV input check; not semantic deduplication or full historical test coverage"
+}
