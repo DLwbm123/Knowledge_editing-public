@@ -1,0 +1,1 @@
+固定检查来源：experiments/med_d_universal_v1/coverage.py、experiments/med_medinit_loss_v1/train.py、experiments/med_proposition_generalization_v1/robust_objective.py、已有公开 TOKEN_COVERAGE_REPORT_ZH.md 与 med_medinit_101_v1 预登记及运行报告。检查仅代码与公开报告，不读私有数据。审计拟输出这些资料可直接支持的结论及不支持的结论，不将语义推测填入数据字段。
