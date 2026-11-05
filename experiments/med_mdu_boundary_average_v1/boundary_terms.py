@@ -32,4 +32,3 @@ def terms(runtime, hook, batch, row, length, spans, view):
     if not torch.isfinite(losses).all():
         raise ValueError('Invalid span loss')
     return ce, losses
-
