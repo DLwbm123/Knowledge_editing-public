@@ -1,0 +1,39 @@
+{
+  "status": "INCOMPLETE_SCORING",
+  "mechanical_source_edits": 4,
+  "mechanical_updates": 200,
+  "formal_edits": 154,
+  "formal_updates": 7700,
+  "diagnostic_generations": 12,
+  "formal_generations": 2207,
+  "actual_new_judge_items": 105,
+  "unknown_payloads": 50,
+  "inherited_unknown_payloads": 50,
+  "automatic_retry": false,
+  "mechanical_cache_and_restore_pass": true,
+  "backbone_versions_unchanged": true,
+  "cached_generated_token_replacements": 0,
+  "worker_exit": 0,
+  "gpu_guard_exit": 0,
+  "score_guard_exit": 0,
+  "clock": {
+    "start": 1793981318.524509,
+    "hard_end": 1794064118.524509,
+    "hours": 23
+  },
+  "fixed_config": {
+    "method": "GRACE_MM_LLAMA_REFERENCE_CACHE_CONSISTENT_V1",
+    "target": "model.layers.27.mlp.down_proj",
+    "distance": "euclidean",
+    "eps_init": 1.0,
+    "optimizer": "Adam",
+    "learning_rate": 1.0,
+    "steps_per_edit": 50,
+    "value_init": "cold uniform [0,1)",
+    "replacement": "replace_last at expanded last-prompt position",
+    "cache": "prefill-only intervention, query-anchored full-context equivalence",
+    "label_collision": "exact target token tuple equality, declared multimodal adaptation",
+    "reference_commit": "3a3e2682c37e3e6da4e6dbcfcacc109481e66175",
+    "reference_file": "hparams/GRACE/llama-7b.yaml"
+  }
+}
