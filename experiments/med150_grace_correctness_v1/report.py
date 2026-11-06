@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import random
+import shutil
 import statistics
 import subprocess
 import sys
@@ -80,6 +81,17 @@ if (evidence['MECHANICAL_COMPLETE.json']['status']!='PASS' or evidence['WORKER_E
         or evidence['GENERATION_COMPLETE.json']['counts']!=dict(edits=158,inserted=150,generation_attempts=2207,formal_consumers=2207,diagnostic_generation_attempts=12)):
     raise ValueError('Actual mechanical/training/generation evidence differs')
 completion = read(local/'COMPLETE.json')
+durable = w/'.private/med150_grace_correctness_v1_20261107/scoring'
+durable.mkdir(parents=True,exist_ok=False)
+for name in ('config.json','clock.json','CPU_CHECKS.json','PACKET_PRIVATE.json','BATCH_MANIFEST.json','DECISIONS.json','COST.json','COMPLETE.json','GUARD_EXIT.json'):
+    if (local/name).exists():shutil.copy2(local/name,durable/name)
+for bundle in (local/'batches').glob('*'):
+    source=bundle/'operator';dest=durable/'batches'/bundle.name/'operator';dest.mkdir(parents=True)
+    for name in ('ATTEMPT.json','PREFLIGHT.json','FAILURE_NO_RETRY.json'):
+        if (source/name).exists():shutil.copy2(source/name,dest/name)
+    for name in ('execution_evidence','responses'):
+        if (source/name).exists():shutil.copytree(source/name,dest/name)
+
 result = dict(status='COMPLETE' if not judgments['unknown'] else 'INCOMPLETE_SCORING',
               cohort='exposed 146+4 development; final 150-edit state',panels=panels,
               scoring=completion,quality=evidence['quality'],selected_main_unchanged=True,

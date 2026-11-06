@@ -46,6 +46,9 @@ def main():
     sys.path[:0] = [str(ROOT / 'tools'), str(SOURCE), str(PARENT / 'private/tools'), str(PARENT / 'private/official_llava')]
     import torch
     import common as c
+    # common supplies old data-path helpers; keep model/editor imports bound to
+    # this experiment's declared frozen runtime rather than common's own parent.
+    sys.path.insert(0, str(SOURCE))
     from editor import CorrectedGraceEditor
     from m3bench_repro.editors.llava_runtime import seed_everything
     from scripts.medtrace.run_realmodel_core import load_real_runtime
