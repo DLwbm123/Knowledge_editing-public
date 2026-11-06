@@ -67,8 +67,13 @@ print(json.dumps(new))
     assert result.returncode==0,result.stderr[-1000:]
     values=json.loads(result.stdout);assert len(values)==2207
     known=read(cfg['accepted_decisions'])['decisions'].copy()
-    for d in read(Path(cfg['base_score_root'])/'PARTIAL_DECISIONS.json')['decisions'].values():
-        k=d['opaque_query_id'];assert k not in known or known[k]==d;known[k]=d
+    optional_base_cache=Path(cfg['base_score_root'])/'PARTIAL_DECISIONS.json'
+    if optional_base_cache.is_file():
+        for d in read(optional_base_cache)['decisions'].values():
+            k=d['opaque_query_id'];assert k not in known or known[k]==d;known[k]=d
+    else:
+        write(local/'OPTIONAL_BASE_CACHE_MISSING.private.json',dict(path=str(optional_base_cache),
+            consequence='No labels imported from this retired temporary cache; durable accepted/prior ledgers remain authoritative.'))
     rows={};consumers=[]
     for v in values:
         q=v['binding']['input'];b=v['binding']['judge_input'];answer=v['R0']
@@ -148,7 +153,7 @@ print(json.dumps(new))
             unknown.extend(failed);write(local/'DECISIONS.json',dict(decisions=decisions,unknown=unknown))
             write(local/'PROGRESS.json',dict(time=time.time(),finished_batches=sum(f.done() for f in futures),total_batches=len(futures),attempt_items=charged,unknown=len(unknown)))
     assert set(rows)==set(decisions)|set(unknown)
-    write(local/'COMPLETE.json',dict(time=time.time(),consumers=2207,unique_payloads=len(rows),reused=reused,inherited_unknown=inherited_unknown,new_attempt_items=charged,unknown=len(unknown),generation_and_scoring_complete=True))
+    write(local/'COMPLETE.json',dict(time=time.time(),consumers=2207,unique_payloads=len(rows),reused=reused,inherited_unknown=inherited_unknown,new_attempt_items=charged,unknown=len(unknown),history_coverage_complete=False,generation_and_scoring_complete=True))
 
 
 def guard(cfg):
