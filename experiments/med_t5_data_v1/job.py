@@ -40,7 +40,7 @@ def publish(cfg):
     subprocess.run(['git','add',relative],cwd=w,check=True)
     staged=subprocess.check_output(['git','diff','--cached','--name-only'],cwd=w,text=True).splitlines()
     assert staged and all(p.startswith(relative+'/') for p in staged),'Publication scope changed concurrently'
-    subprocess.run(['git','commit','-m','Report constructed T5 data and completed bounded asset transfer'],cwd=w,check=True)
+    subprocess.run(['git','commit','-m','Report '+report.name+' results and execution evidence'],cwd=w,check=True)
     head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=w,text=True).strip()
     branch=subprocess.check_output(['git','branch','--show-current'],cwd=w,text=True).strip()
     env=dict(os.environ,HTTP_PROXY=cfg['proxy'],HTTPS_PROXY=cfg['proxy'],ALL_PROXY=cfg['proxy'],
@@ -48,7 +48,8 @@ def publish(cfg):
     subprocess.run(['git','-c','http.proxy='+cfg['proxy'],'push','origin','HEAD:refs/heads/'+branch],cwd=w,env=env,check=True)
     actual=subprocess.check_output(['git','-c','http.proxy='+cfg['proxy'],'ls-remote','origin','refs/heads/'+branch],cwd=w,env=env,text=True).split()[0]
     assert actual==head
-    url=cfg['public_raw_base']+'/'+head+'/'+relative+'/SUMMARY.json'
+    artifact=next(name for name in ('RESULTS.json','SUMMARY.json','INPUT_ADMISSION.json') if (report/name).is_file())
+    url=cfg['public_raw_base']+'/'+head+'/'+relative+'/'+artifact
     result=subprocess.run(['curl','--proxy',cfg['proxy'],'--connect-timeout','8','--max-time','30','-sS',
         '-o','/dev/null','-w','%{http_code}',url],text=True,capture_output=True,env=env)
     assert result.returncode==0 and result.stdout=='200'
@@ -64,14 +65,14 @@ def worker(cfg):
     summary=read(package/'SUMMARY.json');write(Path(cfg['report'])/'SUMMARY.json',summary)
     for phase,source,target,extra in [('MAIN_UPLOAD','archives/',cfg['remote_neutral']+'/incoming/',
             ['--include=PadChest_GR.zip.[0-9][0-9][0-9]','--exclude=*']),
-        ('T5_UPLOAD','dataset/',cfg['remote_neutral']+'/dataset/',[])]:
+        ('T5_UPLOAD','dataset/',cfg['remote_neutral']+'/dataset/',['--exclude=._*'])]:
         write(control/'PROGRESS.json',dict(phase=phase,time=time.time()))
         result=subprocess.run(['rsync','-rt','--partial','--partial-dir=.partial']+extra+[source,cfg['ssh_host']+':'+target],cwd=control)
         assert result.returncode==0,(phase,result.returncode)
         write(control/(phase+'_EXIT.json'),dict(code=0,time=time.time()))
     # One low-cost target check: expected paths, sizes, manifests and case count.
     expected={p.name:p.stat().st_size for p in (Path(cfg['source'])/'Padchest_GR_files').glob('PadChest_GR.zip.[0-9][0-9][0-9]')}
-    expected_images={p.name:p.stat().st_size for p in (package/'images').iterdir()}
+    expected_images={p.name:p.stat().st_size for p in (package/'images').iterdir() if p.suffix=='.png' and not p.name.startswith('._')}
     check='from pathlib import Path\nimport json\nr=Path('+repr(cfg['remote_main'])+');d=Path('+repr(cfg['remote_package'])+')\nexpected='+repr(expected)+'\nimages='+repr(expected_images)+'\nassert all((r/n).is_file() and (r/n).stat().st_size==size for n,size in expected.items())\nassert all((d/"images"/n).is_file() and (d/"images"/n).stat().st_size==size for n,size in images.items())\nrows=[json.loads(x) for x in (d/"T5_CANONICAL.private.jsonl").read_text().splitlines()]\nassert len(rows)=='+str(summary['canonical_cases'])+'\nassert all((d/t[k]["relative_image_path"]).is_file() for t in rows for k in ["edit_case","eval_case"])\nprint(json.dumps({"archive_parts":len(expected),"archive_bytes":sum(expected.values()),"images":len(images),"image_bytes":sum(images.values()),"cases":len(rows),"path_and_size_check":"PASS","byte_identical_not_asserted":True}))'
     receipt=remote(cfg,check)
     write(Path(cfg['private_root'])/'TRANSFER_RECEIPT.private.json',receipt)
