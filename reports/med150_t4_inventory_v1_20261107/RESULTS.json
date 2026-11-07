@@ -1,0 +1,151 @@
+{
+  "status": "READ_ONLY_T4_ASSET_AND_ROLE_AUDIT_COMPLETE_NOT_EVALUATION_RESULT",
+  "date": "2026-11-07",
+  "main_method": "selected MDU150, original R0, manuscript CORE",
+  "ledger": {
+    "tasks": 594,
+    "events": 1012,
+    "queries": 1976,
+    "T4G_total_events": 108,
+    "T4G_additional_to_original146": 106,
+    "T4L_total_events": 69
+  },
+  "role_protocol": {
+    "exclude_entire_event_if_any_member_conflicts": true,
+    "exclusion_sources": [
+      "V95 reserved 24",
+      "V106 audited 8",
+      "V111 all 15",
+      "REPLAY_FIT 64",
+      "REPLAY_CHECK 32"
+    ],
+    "alias_rule": "Reuse known image identity aliases within the frozen ledger; no new image hashes.",
+    "no_replacement": true,
+    "student_scores_used": false,
+    "current150_evaluation_overlap_is_exposure_not_a_new_independent_cohort": true,
+    "scope": "Enumerated registered source groups only; not a universal patient identity audit"
+  },
+  "assets": {
+    "selected_expert_weight_files": 150,
+    "distinct_owner_ids": 150,
+    "owner_ids_complete": true,
+    "verification": "Nonempty files and owner/admission bindings; no torch load or GPU parity test.",
+    "role_clear_query_bindings": 213,
+    "unique_readable_image_files": 109,
+    "missing_or_unreadable_images": 0,
+    "source_T4G_metadata_rows": 1000,
+    "source_T4L_metadata_rows": 257,
+    "source_relation_verification": "Frozen image pairs match existing released image relation metadata; QA and clinical-semantic validity not re-reviewed."
+  },
+  "tasks": {
+    "T4G": {
+      "historical_events": 108,
+      "excluded_events": 29,
+      "exclusions_by_reason": {
+        "V106_audited": 25,
+        "V111": 4,
+        "REPLAY_FIT": 5,
+        "V95_reserved": 1
+      },
+      "metadata_role_clear_events": 79,
+      "probe_occurrences": 194,
+      "unique_probes": 18,
+      "current150_anchor_overlap": 5,
+      "additional_anchor_requests": 74,
+      "additional_anchor_on_current_eval_image": 29,
+      "events_probe_in_current_native": 0,
+      "events_probe_image_in_current_native": 46,
+      "legacy_mask_supported_edits": 32,
+      "legacy_mask_probe_occurrences": 95,
+      "legacy_mask_unique_probes": 12,
+      "legacy_mask_supported_current150_edits": 0,
+      "current150_probe_occurrences": 14,
+      "source_image_pair_unmatched": 0,
+      "same_image_pair_occurrences": 0,
+      "legacy_native_Base_wrong": 79,
+      "legacy_supported_native_images": 25
+    },
+    "T4L": {
+      "historical_events": 69,
+      "excluded_events": 11,
+      "exclusions_by_reason": {
+        "V111": 9,
+        "REPLAY_FIT": 2
+      },
+      "metadata_role_clear_events": 58,
+      "probe_occurrences": 75,
+      "unique_probes": 64,
+      "current150_anchor_overlap": 0,
+      "additional_anchor_requests": 58,
+      "additional_anchor_on_current_eval_image": 58,
+      "events_probe_in_current_native": 0,
+      "events_probe_image_in_current_native": 31,
+      "legacy_mask_supported_edits": 44,
+      "legacy_mask_probe_occurrences": 52,
+      "legacy_mask_unique_probes": 42,
+      "legacy_mask_supported_current150_edits": 0,
+      "current150_probe_occurrences": 0,
+      "source_image_pair_unmatched": 0,
+      "same_image_pair_occurrences": 75,
+      "legacy_native_Base_wrong": 58,
+      "legacy_supported_native_images": 36
+    },
+    "T3": {
+      "historical_events": 1,
+      "excluded_events": 0,
+      "exclusions_by_reason": {},
+      "metadata_role_clear_events": 1,
+      "probe_occurrences": 1,
+      "unique_probes": 1,
+      "current150_anchor_overlap": 1,
+      "additional_anchor_requests": 0,
+      "additional_anchor_on_current_eval_image": 0,
+      "events_probe_in_current_native": 0,
+      "events_probe_image_in_current_native": 0,
+      "legacy_mask_supported_edits": 1,
+      "legacy_mask_probe_occurrences": 1,
+      "legacy_mask_unique_probes": 1,
+      "legacy_mask_supported_current150_edits": 1,
+      "current150_probe_occurrences": 1,
+      "source_image_pair_unmatched": 0,
+      "same_image_pair_occurrences": 0,
+      "legacy_native_Base_wrong": 1,
+      "legacy_supported_native_images": 1
+    }
+  },
+  "metric_qualification": {
+    "existing_labels": "Frozen Stage17 Astra high Base correctness; not current Astra medium CORE qualification",
+    "T4G": "Fix over probes that Base answered incorrectly, edit macro. Existing five MDU150 anchors have fourteen historical pre-correct probes and zero eligible Fix probes.",
+    "T4L": "Retention over probes Base answered correctly, edit macro. No current150 corresponding anchor.",
+    "no_final_denominator_claim": true,
+    "prior_mask_counts_not_current_CORE_results": true,
+    "shared_probe_counts_are_not_independent_samples": true
+  },
+  "conclusion": {
+    "T4G_current150_direct_Fix": "NOT_SUPPORTED_BY_HISTORICAL_MASK",
+    "T4L_current150_direct_result": "NO_MATCHING_EDIT_ANCHORS",
+    "T3": "One historical pre-correct probe supports only a tiny locality diagnostic; no broad T3G/T3L result.",
+    "next_step": "Freeze separate task-specific DEV evaluation cohort and common CORE Base qualification before task editing or scoring; preserve current150 main table unchanged.",
+    "T4L_priority": "Do not immediately train T4L on the current evaluation images; resolve reuse protocol and role constraints first.",
+    "independent_confirmation": false
+  },
+  "execution": {
+    "GPU_calls": 0,
+    "training_updates": 0,
+    "answer_generations": 0,
+    "Judge_calls": 0,
+    "sealed_QA_values_decoded": 0,
+    "QA_values_decoded": 0,
+    "new_image_hashes": 0,
+    "historical_artifacts_modified": false,
+    "new_remote_files": 0,
+    "engineering_note": "Initial obsolete-path stat raised PermissionError; checked registered relocated data paths without escalation; recovery retained privately."
+  },
+  "sources": [
+    "experiments/medtrace_stage17_20260912/scripts/medtrace/stage17_freeze.py",
+    "experiments/medtrace_stage17_20260912/scripts/medtrace/stage17_prepare.py",
+    "experiments/med_full_d150_v1/identity_lock.py",
+    "m3bench_reproduction/configs/protocols/paper.yaml",
+    "reports/med150_feasibility_20261027/REPORT_ZH.md"
+  ]
+}
