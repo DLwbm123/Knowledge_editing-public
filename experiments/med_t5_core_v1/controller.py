@@ -148,6 +148,7 @@ def main(cfg):
     write(control/'clock.json',clock);write(private/'CLOCK.json',clock)
     remote_cfg=dict(cfg['remote_config'],source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=w,text=True).strip())
     code=deployment_code(cfg['remote_root'],remote_cfg,sources,clock)
+    write(control/'PROGRESS.json',dict(phase='INPUT_PREPROCESSING_RUNNING',time=time.time()))
     started=ssh(cfg,code,1500);write(private/'BASE_START.private.json',started)
     public_admission={k:v for k,v in started['source_admission'].items() if k!='excluded_case_ids'}
     write(Path(cfg['report'])/'INPUT_ADMISSION.json',public_admission)
