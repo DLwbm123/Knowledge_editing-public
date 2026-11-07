@@ -1,0 +1,55 @@
+{
+  "status": "COMPLETE",
+  "time": 1794064182.4103801,
+  "clock": {
+    "original_start": 1794031897.369663,
+    "hard_end": 1794114697.369663,
+    "scope": "T5 input admission, Base generation/CORE qualification, fixed MDU training and evaluation; no clock reset"
+  },
+  "source_model_generation_precision": "FP32 for both Base and MDU; archived generation dtype remains historical metadata",
+  "stages": {
+    "GUARD_EXIT.json": {
+      "code": 0,
+      "time": 1794064073.603439
+    },
+    "EVAL_GENERATION_COMPLETE.json": {
+      "status": "ALL_CONSUMERS_FROZEN",
+      "time": 1794064069.4075918,
+      "counts": {
+        "forwards": 3917,
+        "generations": 1010,
+        "consumers": 1752,
+        "reused": 742
+      },
+      "experts": 148,
+      "expected_consumers": 1752,
+      "original_R0": true,
+      "separate_T5_bank": true
+    },
+    "BASE_GENERATION_COMPLETE.json": {
+      "status": "ALL_BASE_OUTPUTS_FROZEN",
+      "time": 1794033345.2578738,
+      "consumers": 644,
+      "counts": [
+        {
+          "forwards": 6269,
+          "generations": 322,
+          "consumers": 322,
+          "reused": 0,
+          "diagnostic_generations": 1
+        },
+        {
+          "forwards": 6257,
+          "generations": 322,
+          "consumers": 322,
+          "reused": 0,
+          "diagnostic_generations": 1
+        }
+      ],
+      "actual_precision": "float32"
+    }
+  },
+  "main150_modified": false,
+  "transfer_artifacts_read_only": true,
+  "source_raw_images_unchanged": true
+}
