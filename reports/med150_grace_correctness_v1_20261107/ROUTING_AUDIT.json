@@ -1,0 +1,18 @@
+{
+  "scope": "Frozen eligible final-bank role events; read-only output-route audit",
+  "new_training": 0,
+  "new_generation": 0,
+  "new_judge": 0,
+  "roles": {
+    "T0": {"events": 150, "ON": 143, "OFF": 7, "cap": 0},
+    "FIT": {"events": 600, "ON": 0, "OFF": 600, "cap": 0},
+    "T1G": {"events": 578, "ON": 286, "OFF": 292, "cap": 1},
+    "T2G": {"events": 571, "ON": 0, "OFF": 571, "cap": 0},
+    "T1L": {"events": 2, "ON": 0, "OFF": 2, "cap": 0},
+    "T2L": {"events": 54, "ON": 0, "OFF": 54, "cap": 0}
+  },
+  "FIT_OFF_nearest_distance_range": [2.039255380630493, 9.347784042358398],
+  "T2G_OFF_nearest_distance_range": [4.045909404754639, 28.992826461791992],
+  "interpretation": "All eligible FIT and T2G events defer to the frozen Base; their low scores do not measure edited-value answer quality on activated generalization inputs. All T2L events also defer, so locality must be interpreted jointly with generalization coverage.",
+  "caution": "This does not establish why the reference configuration transfers poorly, or authorize tuning the radii on exposed evaluation events. Preserve the reference configuration, original failed adaptation, and all inherited UNKNOWNs."
+}
