@@ -40,6 +40,7 @@ def main():
     torch.set_num_threads(1);torch.use_deterministic_algorithms(True);r.c.budget=budget
     data=json.loads((ROOT/'TASK_INPUTS.private.json').read_text());tasks=data['tasks'];byid={t['edit_id']:t for t in tasks}
     config=json.loads((ROOT/'BASE_CONFIGURATION.private.json').read_text())
+    expectations=json.loads((ROOT/'BASE_EXPECTATIONS.private.json').read_text())
     bindings={'configuration_only':config}
     runtime=load_real_runtime(SimpleNamespace(cpu_gate=parent/'private/cpu_gate'));runtime.model.eval();r.old.fp32(runtime)
     assert runtime.generation_config==config['generation'] and not any(p.requires_grad for p in runtime.model.parameters())
@@ -74,6 +75,8 @@ def main():
                 decision=route_cache[routerkey].route(features[qkey].to(runtime.device))
                 chosen=decision.logical_edit_id if decision.activated else None
                 item=r.s.prepare(runtime,bindings,task,[query])[0]
+                if query['query_id'] in expectations:
+                    assert all(item[4][k]==v for k,v in expectations[query['query_id']].items()),'Base/method inference input mismatch'
             finally:r.old.fp32(runtime)
             signature=dict(input=item[4],effective_state=hashes[chosen] if chosen else 'UNEDITED_BASE')
             key=r.c.digest(signature);reused=key in cache

@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import statistics
 import subprocess
 import sys
 import threading
@@ -100,6 +101,29 @@ def qualify(cfg):
                 total_batches=len(futures), valid=len(decisions), unknown=len(set(unknown))))
     assert set(packet['payloads']) == set(decisions) | set(unknown)
     write(root/'DECISIONS.json', dict(decisions=decisions, unknown=sorted(set(unknown))))
+    if cfg.get('stage') == 'method':
+        panels = {}
+        for mode in ('single', 'bank'):
+            panels[mode] = {}
+            for role in ('T0', 'FIT', 'T4G', 'T4L'):
+                rows = [c for c in packet['consumers'] if c['mode']==mode and c['role']==role]
+                owners = {}
+                for c in rows:
+                    owners.setdefault(c['owner'], []).append(decisions.get(c['key'], {}).get('core_correct'))
+                lower = [sum(v is True for v in values)/len(values) for values in owners.values()]
+                upper = [sum(v is not False for v in values)/len(values) for values in owners.values()]
+                panels[mode][role] = dict(supported_edits=len(owners),events=len(rows),
+                    unknown_events=sum(v is None for values in owners.values() for v in values),
+                    lower_pct=100*statistics.mean(lower) if lower else None,
+                    upper_pct=100*statistics.mean(upper) if upper else None)
+        result = dict(status='COMPLETE' if not unknown else 'COMPLETE_WITH_UNKNOWN',time=time.time(),
+            protocol=PROTOCOL,metric='CORE edit-macro; T4G pre-wrong Fix, T4L pre-correct Retention',
+            panels=panels,new_attempt_items=charged,reused_payloads=len(packet['known_valid']),
+            unknown_payloads=len(set(unknown)),cohort='Separate exposed DEV T4 bank; not main MDU150',
+            main150_modified=False,independent_confirmation=False)
+        write(Path(cfg['report'])/'RESULTS.json',result)
+        write(root/'COMPLETE.json',result)
+        return
     by_query = {c['query_id']:decisions.get(c['key'], {}).get('core_correct') for c in packet['consumers']}
     events, counts = [], {}
     for e in read(root/'EVENTS_FROZEN.private.json')['events']:

@@ -21,7 +21,7 @@ def main():
     sources['stream_extract.py']=(w/'experiments/med150_source_review_v1/stream_extract.py').read_text()
     # The remote projector may only deserialize the locked native/FIT and probe IDs.
     all_bindings=json.loads((local/'BASE_BINDINGS.private.json').read_text())
-    selected_bindings={b['query_id']:b for b in all_bindings['bindings'].values() if b['query_id'] in native_ids}
+    selected_bindings={b['query_id']:b for b in all_bindings['bindings'].values()}
     payload=dict(events=selected,native_ids=native_ids,expected=selected_bindings,
         configuration=all_bindings['configuration'],clock=json.loads(Path(cfg['clock']).read_text()),
         sources=sources,paths=cfg['remote_paths'],source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip())
@@ -65,6 +65,7 @@ write('TRAIN_SOURCE_BOUND_PRIVATE.json',entries)
 write('ROLE_ADMISSION.json',{'status':'TRAINING_SOURCE_ROLE_ADMITTED','owners':[e['task']['order'] for e in entries]})
 write('SPAN_LOCK.private.json',{'records':[]})
 write('BASE_CONFIGURATION.private.json',PAYLOAD['configuration'])
+write('BASE_EXPECTATIONS.private.json',{q:{k:b[k] for k in ['question','reference','image_sha256','prompt_ids','attention_mask']} for q,b in PAYLOAD['expected'].items()})
 base_env=json.loads(Path(PAYLOAD['paths']['environment']).read_text())
 for name in ['tmp','cuda','torch','rpc']:(neutral/name).mkdir()
 base_env.update(TMPDIR=str(neutral/'tmp'),CUDA_CACHE_PATH=str(neutral/'cuda'),TORCH_EXTENSIONS_DIR=str(neutral/'torch'),VLLM_RPC_BASE_PATH=str(neutral/'rpc'))
