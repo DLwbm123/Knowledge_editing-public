@@ -1,0 +1,219 @@
+{
+  "status": "COMPLETED_READ_ONLY_AUDIT",
+  "checks": {
+    "all_outputs_and_consumers_unique": true,
+    "complete_known_scoring": true,
+    "qualified_edit_set_unchanged": true,
+    "Base_native_and_probe_contract": true,
+    "no_duplicate_plan": true,
+    "plan_to_output_binding": true,
+    "effective_state_binding": true,
+    "router_activation_binding": true,
+    "scoring_consumer_binding": true,
+    "judge_visible_payload_binding": true,
+    "single_expert_identity": true,
+    "Base_to_method_binding": true,
+    "OFF_output_tokens_match_frozen_Base": true,
+    "training_prior_only_five_views": true,
+    "all_training_token_bound": true,
+    "training_completed_without_failure": true,
+    "fixed_update_total": true,
+    "composition_labels": true,
+    "no_identical_input_reference_conflict": true,
+    "reported_edit_macro_reproduced": true,
+    "all_selected_pairs_in_original_composition_metadata": true,
+    "T4G_distinct_source_and_probe_images": true
+  },
+  "recomputed_panels": {
+    "single": {
+      "T0": {
+        "edits": 67,
+        "events": 67,
+        "correct_events": 67,
+        "edit_macro_pct": 100.0,
+        "edit_macro_fraction": "1",
+        "event_micro_pct": 100.0
+      },
+      "FIT": {
+        "edits": 67,
+        "events": 268,
+        "correct_events": 268,
+        "edit_macro_pct": 100.0,
+        "edit_macro_fraction": "1",
+        "event_micro_pct": 100.0
+      },
+      "T4G": {
+        "edits": 32,
+        "events": 95,
+        "correct_events": 9,
+        "edit_macro_pct": 13.005952380952381,
+        "edit_macro_fraction": "437/3360",
+        "event_micro_pct": 9.473684210526315
+      },
+      "T4L": {
+        "edits": 35,
+        "events": 42,
+        "correct_events": 42,
+        "edit_macro_pct": 100.0,
+        "edit_macro_fraction": "1",
+        "event_micro_pct": 100.0
+      }
+    },
+    "bank": {
+      "T0": {
+        "edits": 67,
+        "events": 67,
+        "correct_events": 67,
+        "edit_macro_pct": 100.0,
+        "edit_macro_fraction": "1",
+        "event_micro_pct": 100.0
+      },
+      "FIT": {
+        "edits": 67,
+        "events": 268,
+        "correct_events": 268,
+        "edit_macro_pct": 100.0,
+        "edit_macro_fraction": "1",
+        "event_micro_pct": 100.0
+      },
+      "T4G": {
+        "edits": 32,
+        "events": 95,
+        "correct_events": 15,
+        "edit_macro_pct": 14.434523809523808,
+        "edit_macro_fraction": "97/672",
+        "event_micro_pct": 15.789473684210526
+      },
+      "T4L": {
+        "edits": 35,
+        "events": 42,
+        "correct_events": 42,
+        "edit_macro_pct": 100.0,
+        "edit_macro_fraction": "1",
+        "event_micro_pct": 100.0
+      }
+    }
+  },
+  "T4G_diagnostics": {
+    "single": {
+      "events": 95,
+      "route_ON": 94,
+      "own_expert": 94,
+      "other_expert": 0,
+      "selected_expert_origin": {
+        "T4G": 94
+      },
+      "at_cap": 0,
+      "unique_probe_queries": 12,
+      "unique_probe_images": 12,
+      "unique_anchor_images": 25,
+      "question_form_strata": {
+        "diagnosis_to_color": {
+          "events": 7,
+          "correct": 0
+        },
+        "diagnosis_to_location": {
+          "events": 56,
+          "correct": 0
+        },
+        "location_to_color": {
+          "events": 3,
+          "correct": 0
+        },
+        "location_to_location": {
+          "events": 17,
+          "correct": 8
+        },
+        "location_to_presence": {
+          "events": 4,
+          "correct": 0
+        },
+        "other_to_presence": {
+          "events": 3,
+          "correct": 0
+        },
+        "presence_to_location": {
+          "events": 1,
+          "correct": 0
+        },
+        "presence_to_presence": {
+          "events": 4,
+          "correct": 1
+        }
+      },
+      "changed_reference_events": 87,
+      "selected_expert_native_same_probe_image": 0
+    },
+    "bank": {
+      "events": 95,
+      "route_ON": 95,
+      "own_expert": 1,
+      "other_expert": 94,
+      "selected_expert_origin": {
+        "T4L": 70,
+        "T4G": 25
+      },
+      "at_cap": 0,
+      "unique_probe_queries": 12,
+      "unique_probe_images": 12,
+      "unique_anchor_images": 25,
+      "question_form_strata": {
+        "diagnosis_to_color": {
+          "events": 7,
+          "correct": 0
+        },
+        "diagnosis_to_location": {
+          "events": 56,
+          "correct": 10
+        },
+        "location_to_color": {
+          "events": 3,
+          "correct": 0
+        },
+        "location_to_location": {
+          "events": 17,
+          "correct": 3
+        },
+        "location_to_presence": {
+          "events": 4,
+          "correct": 0
+        },
+        "other_to_presence": {
+          "events": 3,
+          "correct": 1
+        },
+        "presence_to_location": {
+          "events": 1,
+          "correct": 0
+        },
+        "presence_to_presence": {
+          "events": 4,
+          "correct": 1
+        }
+      },
+      "changed_reference_events": 87,
+      "selected_expert_native_same_probe_image": 55
+    }
+  },
+  "original_source_pairs": 75,
+  "original_source_target_lesions": {
+    "non-enhancing tumor": 1,
+    "Brain Edema": 63,
+    "cardiomegaly": 7,
+    "atelectasis": 2,
+    "edema": 1,
+    "small bowel obstruction": 1
+  },
+  "model_calls": 0,
+  "Judge_calls": 0,
+  "new_hashes": 0,
+  "changed_labels": 0,
+  "changed_method_results": false,
+  "diagnosis": "No score aggregation/input/state-binding defect found. Mixed question attributes and joint T4G/T4L R0 bank confound a narrow interpretation as pure compositional transfer.",
+  "limitations": [
+    "Question-form strata are descriptive string heuristics, not post-hoc cohort eligibility.",
+    "Other-expert routing is an observation of the frozen R0 rule, not proof that forcing the owner would improve answers.",
+    "Composition metadata is source annotation, not independent clinical verification.",
+    "The original negative result remains unchanged; no tuning or new claim of superiority."
+  ]
+}
