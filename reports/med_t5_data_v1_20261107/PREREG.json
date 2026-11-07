@@ -1,0 +1,44 @@
+{
+  "status": "FROZEN_BEFORE_MATERIALIZATION",
+  "authorization": "User explicitly requested T5 data construction, then reuse/download to DataP and upload to server. Existing full image archive found, so no download needed.",
+  "data_only": true,
+  "model_calls": 0,
+  "Judge_calls": 0,
+  "progression_mapping": {
+    "stable": "11",
+    "improving": "11",
+    "worsening": "11",
+    "new": "01",
+    "resolved": "10"
+  },
+  "source": "Existing user-authorized PadChest-GR reports and master table",
+  "inclusion": "All rows with an explicit prior image and one supported progression category; join label/progression to the original report. No method output used.",
+  "canonicalization": "Merge identical same-pair/finding binary-presence tasks, preserve source row bindings and progression categories; exclude conflicting binary references or explicit patient/date conflicts. Do not force paper counts.",
+  "time_and_patient_evidence": "Cross-check both dates and patient IDs when prior metadata exists; otherwise retain the explicit PreviousStudy link as source-linked, without claiming independent verification.",
+  "outputs": [
+    "canonical single-edit manifest",
+    "conservative sequential image-role-safe subset",
+    "four prior-only FIT views per case",
+    "lossless selected source PNG images",
+    "source-row mapping and exclusions",
+    "aggregate report"
+  ],
+  "image_policy": "Use split ZIPs as a virtual seekable archive; no concatenated copy, no full extraction, preserve original bit depth. ZIP CRC is checked by the library while reading selected images; no full-archive re-test or extra hashes.",
+  "transfer_policy": "Upload all37 already-downloaded main volumes, then only required T5 images/manifests. Keep raw data and patient linkage private.",
+  "qualification": "Base wrong eligibility and model input preprocessing admission remain pending; dataset build is not a T5 experiment result.",
+  "limits": {
+    "clock": {
+      "original_start": 1794029702.799776,
+      "hard_end": 1794112502.799776,
+      "scope": "T5 dataset construction and transfer; no model/Judge calls; read-only inventory preceded materialization"
+    },
+    "new_remote_bytes_limit": 47000000000,
+    "new_local_bytes_limit": 8000000000,
+    "reserve_remote_bytes": 2147483648,
+    "free_space_reserve": 8589934592
+  },
+  "public_sources": [
+    "https://arxiv.org/html/2607.05310v1",
+    "https://www.microsoft.com/en-us/research/publication/padchest-gr/"
+  ]
+}
