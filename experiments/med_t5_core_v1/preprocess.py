@@ -71,7 +71,7 @@ def main():
         native=query('edit_case','NATIVE');follow=query('eval_case','T5')
         task=dict(order=owner,edit_id=case['case_id'],seed=int(common.digest([20261107,case['case_id']])[:8],16),
             native=native,fit_questions=fits,fit_status='SUPPORTED_SOURCE_ONLY',
-            patient_id=case['patient_id'],presence_code=case['presence_code'],sequential_role_safe=case['case_id'] in sequential,
+            patient_id=case['patient_id'],sequential_role_safe=case['case_id'] in sequential,
             linkage_audit=case['linkage_audit'],source_split=case['source_split'])
         tasks.append(task)
         events.append(dict(event_id=case['case_id'],owner=owner,edit_query_id=native['query_id'],
