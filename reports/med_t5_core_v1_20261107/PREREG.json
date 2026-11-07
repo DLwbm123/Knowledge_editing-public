@@ -1,0 +1,84 @@
+{
+  "status": "FROZEN_BEFORE_T5_MODEL_OUTPUTS",
+  "authorization": "User explicitly requested CORE Base qualification after upload and continuation of usable T5 edits.",
+  "dependency": "Verified data-transfer receipt; no T5 medical image generation before upload completion.",
+  "cohort": {
+    "canonical_single_candidates": 322,
+    "conservative_sequential_candidates": 315,
+    "image_pairs": 220,
+    "patient_groups": 212,
+    "labels": 67,
+    "exact_author_cohort": false,
+    "source": "Immutable canonical PadChest-GR dataset; all cases admitted unless global same-image/question references conflict, explicit source/pixel admission fails, or CORE eligibility is unknown."
+  },
+  "preprocessing": {
+    "rule": "Per-image full-range min/max affine mapping from decoded grayscale to rounded uint8 RGB; no crop, resize, percentile/window search or label-dependent operation. Raw images unchanged.",
+    "admission": "All channels and dimensions verified by PNG save/reload pixel roundtrip; constant/invalid range fails closed.",
+    "scientific_input_identity": "Only the newly rendered inputs receive required image SHA bindings for the existing prediction/Judge cache; no rehash of original images or archives.",
+    "results_used_to_choose_preprocessing": false
+  },
+  "Base": {
+    "queries_max": 644,
+    "generation_attempts_max_including_parity": 646,
+    "actual_decoder_precision": "FP32 for both Base and MDU; legacy generation-dtype metadata explicitly distinguished",
+    "generation": "Same backbone, native prompt, frozen greedy config,1024 cap, original RNG; no teacher forcing or answer-derived stop.",
+    "workers_max": 2,
+    "mechanical_gate": "First fixed query per shard generated twice with identical token outputs"
+  },
+  "CORE": {
+    "protocol": "MEDPROP_SMALL4_CORE_FULL_SOURCE_V1",
+    "model": "gpt-6-astra",
+    "reasoning": "medium",
+    "rubric": "Identical accepted CORE/FULL contract; CORE only in reported main tables.",
+    "batch_size": 20,
+    "workers": 4,
+    "attempt_timeout_seconds": 600,
+    "automatic_retry": false,
+    "prior_failed_or_conflicting_payloads": "UNKNOWN preserved; no inferred labels"
+  },
+  "eligibility": {
+    "prior": "CORE incorrect",
+    "followup": "CORE judgment known, either correct or wrong; pre-correct is not a gate",
+    "source_and_token_admission": "Five prior-only views; fixed universal token lock; no outcome-based replacement",
+    "method_outputs_used_for_selection": false
+  },
+  "method": {
+    "name": "Selected fixed MDU recipe, separate T5 task cohort",
+    "new_expert_steps": {
+      "C_calibration": 160,
+      "MED_initialization": 160,
+      "MDU": 160
+    },
+    "maximum_new_updates": 154560,
+    "maximum_independent_training_workers": 4,
+    "router": "Original R0 with fixed alpha, canonical case order and seed mapping; no radius/layer search",
+    "single": "All confirmed usable canonical cases",
+    "bank": "Only predeclared global image-role-safe subset; real final bank, not average single results",
+    "generation_consumers_max": 4000,
+    "main_MDU150_unchanged": true,
+    "MCE_and_GRACE_runs": false
+  },
+  "metrics": {
+    "T0": "CORE reliability on Base-wrong prior cases",
+    "primary_T5": "1 - fraction of all eligible edits with pre-correct followup becoming post-wrong; explicit operationalization of paper prose",
+    "secondary": [
+      "retention among pre-correct followups",
+      "fix among pre-wrong followups",
+      "Base and post followup accuracy",
+      "delta_ACC in percentage points",
+      "stratification by presence codes11/01/10 and R0 activation"
+    ],
+    "unknown": "Bounds for missing method labels, not confidence intervals",
+    "independent_confirmation": false
+  },
+  "resources": {
+    "model_experiment_clock": "One23h clock starting at first actual rendered-input preprocessing, includes Base,CORE qualification,training,generation and post scoring; never reset",
+    "remote_owned_new_bytes_limit": 4000000000,
+    "local_owned_new_bytes_limit": 4000000000,
+    "free_space_reserve_bytes": 8589934592,
+    "T4_GPU_protection": "Reserve physical2/3 while the T4 GPU guard has not completed successfully",
+    "new_GPU_admission": "At least45056MiB free plus UUID check; share only with sufficient memory; never terminate other work",
+    "data_job": "Separate prior data-build/transfer clock remains unchanged; archives and raw input package are read-only shared assets"
+  },
+  "delivery": "Public code/configuration/aggregate CORE results through proxy; private QA,images,patient identifiers,tokens and checkpoints retained privately."
+}

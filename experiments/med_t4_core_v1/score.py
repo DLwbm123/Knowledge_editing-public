@@ -101,6 +101,11 @@ def qualify(cfg):
                 total_batches=len(futures), valid=len(decisions), unknown=len(set(unknown))))
     assert set(packet['payloads']) == set(decisions) | set(unknown)
     write(root/'DECISIONS.json', dict(decisions=decisions, unknown=sorted(set(unknown))))
+    if cfg.get('stage') in ('t5_base', 't5_method'):
+        sys.path.insert(0,cfg['t5_source'])
+        from panels import finalize
+        finalize(cfg,packet,decisions,unknown,charged)
+        return
     if cfg.get('stage') == 'method':
         panels = {}
         for mode in ('single', 'bank'):
