@@ -1,0 +1,90 @@
+{
+  "status": "COMPLETED_OFFLINE_DISCRIMINATION_AUDIT",
+  "time": 1794128242.125429,
+  "setting": "Frozen T5 final-bank subset; no eligibility or existing labels modified",
+  "bank_n": 144,
+  "Base_pre_correct": 1,
+  "source_and_qualification_strata": {
+    "11": {
+      "BASE_ELIGIBLE": 147,
+      "FOLLOWUP_BASE_UNKNOWN": 8,
+      "NATIVE_UNKNOWN": 133
+    },
+    "01": {
+      "NATIVE_UNKNOWN": 19,
+      "NATIVE_BASE_CORRECT": 9
+    },
+    "10": {
+      "FOLLOWUP_BASE_UNKNOWN": 3,
+      "BASE_ELIGIBLE": 1,
+      "NATIVE_UNKNOWN": 2
+    }
+  },
+  "methods": {
+    "MDU": {
+      "n": 144,
+      "answer_prefix_counts": {
+        "yes": 144
+      },
+      "reference_counts": {
+        "yes": 143,
+        "no": 1
+      },
+      "post_accuracy": 99.30555555555556,
+      "primary": 99.30555555555556,
+      "retention_correct": 0,
+      "retention_denominator": 1
+    },
+    "BALANCEDIT": {
+      "n": 144,
+      "answer_prefix_counts": {
+        "yes": 144
+      },
+      "reference_counts": {
+        "yes": 143,
+        "no": 1
+      },
+      "post_accuracy": 99.30555555555556,
+      "primary": 99.30555555555556,
+      "retention_correct": 0,
+      "retention_denominator": 1
+    },
+    "LORA": {
+      "n": 144,
+      "answer_prefix_counts": {
+        "yes": 144
+      },
+      "reference_counts": {
+        "yes": 143,
+        "no": 1
+      },
+      "post_accuracy": 99.30555555555556,
+      "primary": 99.30555555555556,
+      "retention_correct": 0,
+      "retention_denominator": 1
+    }
+  },
+  "primary_definition": "1 - count(pre-correct AND post-wrong)/all eligible edits",
+  "primary_mathematical_floor_pct": 99.30555555555556,
+  "primary_mathematical_ceiling_pct": 100,
+  "analytical_controls": {
+    "unchanged_Base": {
+      "primary_pct": 100,
+      "followup_accuracy_pct": 0.6944444444444444
+    },
+    "always_Yes": {
+      "primary_pct": 99.30555555555556,
+      "followup_accuracy_pct": 99.30555555555556
+    }
+  },
+  "control_provenance": "Analytical controls from frozen binary references and pre-correct masks, not new model/Judge results",
+  "conclusion": "Current cohort and all-edit denominator make the primary metric nearly nondiscriminative. All three completed methods match the always-Yes accuracy baseline and lose the sole pre-correct followup. High score does not establish temporal reasoning or advantage.",
+  "limitations": [
+    "GRACE T5 remains pending in this snapshot.",
+    "No independent image-aware causality test was run; output prefixes and accepted CORE scores support the observed majority-answer behavior.",
+    "This is the local preregistered operationalization, not a reconstruction of the authors hidden scoring implementation.",
+    "Original MDU/comparator scores remain unchanged."
+  ],
+  "new_model_calls": 0,
+  "new_Judge_calls": 0
+}
