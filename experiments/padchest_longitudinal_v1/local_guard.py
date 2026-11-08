@@ -26,7 +26,7 @@ signal.signal(signal.SIGTERM,lambda *_:(terminate(),sys.exit(1)))
 try:
  while child.poll() is None:
   used=0
-  for base in [root,Path(cfg['private_root'])]:
+  for base in [root,Path(cfg['private_root'])]+[Path(p) for p in cfg.get('additional_local_owned_roots',[])]:
    for directory,dirs,files in os.walk(base,followlinks=False):
     for name in files:
      p=Path(directory)/name

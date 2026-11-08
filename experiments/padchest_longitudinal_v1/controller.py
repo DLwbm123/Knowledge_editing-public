@@ -16,7 +16,7 @@ def fetch(cfg,sub):
 def budget(cfg):
  assert time.time()<cfg['clock']['hard_end']-660
  used=0
- for base in [Path(cfg['control']),Path(cfg['private_root'])]:
+ for base in [Path(cfg['control']),Path(cfg['private_root'])]+[Path(p) for p in cfg.get('additional_local_owned_roots',[])]:
   for directory,dirs,files in os.walk(base,followlinks=False):
    for name in files:
     p=Path(directory)/name
@@ -59,7 +59,9 @@ def main(cfg):
    write(private/'BASE_MASK_FROZEN.private.json',mask)
    remote(cfg,'from pathlib import Path\nimport json\np=Path('+repr(cfg['remote_root'])+')/"BASE_MASK_FROZEN.private.json"\nwith p.open("x") as f:json.dump('+repr(mask)+',f)\nprint("{}")')
    write(report/'BASE_QUALIFICATION.json',dict(candidates=6,confirmed_wrong=sum(v is False for v in native.values()),correct=sum(v is True for v in native.values()),unknown=sum(v is None for v in native.values()),
-      probe_correct=sum(base_core[q['query_id']] is True for q in source['probes']),probe_n=6,source_class_support={s:sum(v is False and t['progression']==s for t in source['tasks'] for k,v in native.items() if k==t['edit_id']) for s in ['improving','stable','worsening']},**cost['BASE']))
+      probe_correct=sum(base_core[q['query_id']] is True for q in source['probes']),probe_n=6,
+      probe_known_wrong=sum(base_core[q['query_id']] is False for q in source['probes']),probe_unknown=sum(base_core[q['query_id']] is None for q in source['probes']),
+      probe_Base_accuracy_lower_pct=100*sum(base_core[q['query_id']] is True for q in source['probes'])/6,probe_Base_accuracy_upper_pct=100*sum(base_core[q['query_id']] is not False for q in source['probes'])/6,source_class_support={s:sum(v is False and t['progression']==s for t in source['tasks'] for k,v in native.items() if k==t['edit_id']) for s in ['improving','stable','worsening']},**cost['BASE']))
    qualified=True
   for method in ['MDU','BALANCEDIT','GRACE','LORA']:
    key='MDU/GENERATION_COMPLETE.json' if method=='MDU' else method+'/T5/GENERATION_COMPLETE.json'

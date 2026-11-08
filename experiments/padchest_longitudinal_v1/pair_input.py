@@ -34,6 +34,9 @@ def install():
         ids=tokenizer_image_token(rendered,self.tokenizer,IMAGE_TOKEN_INDEX,return_tensors='pt').unsqueeze(0).to(self.device)
         positions=torch.where(ids[0]==IMAGE_TOKEN_INDEX)[0]
         assert len(positions)==2 and int(positions[1]-positions[0])==1
+        for path in pair['paths']:
+            with Image.open(path) as image:
+                assert image.mode=='RGB','Real pairs must use pre-admitted RGB display images, not raw uint16'
         processed=[deterministic_process_image(p,self.image_processor,self.model.config) for p in pair['paths']]
         assert all(isinstance(x[0],torch.Tensor) and x[0].shape[0]==1 for x in processed)
         pixels=torch.cat([x[0] for x in processed],dim=0).to(self.device,dtype=next(self.model.parameters()).dtype)

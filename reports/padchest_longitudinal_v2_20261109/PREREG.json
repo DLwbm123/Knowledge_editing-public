@@ -1,0 +1,79 @@
+{
+  "experiment": "PadChest longitudinal comparative-fact editing DEV v2, input-render repair",
+  "frozen_before_new_model_outputs": true,
+  "main_method": "MDU150 recipe, new separate dual-image DEV expert bank; existing main150 unchanged",
+  "candidate_source": "61 source-sorted finding sentences associated with pleural effusion or alveolar pattern and improving/stable/worsening",
+  "review": {
+    "explicit_comparative_text_supported": 24,
+    "dated_reference_mismatch": 2,
+    "dated_reference_unverified": 6,
+    "uncertain_finding": 1,
+    "label_scope_issue": 1,
+    "insufficient_explicit_comparative_text": 27
+  },
+  "selection": "First complete lexicographic patient-disjoint assignment: six probe strata followed by six anchor strata; labels pleural effusion/alveolar pattern, states improving/stable/worsening. Source image ID order and original finding order; no model-based backfill.",
+  "panel": {
+    "anchor_candidates": 6,
+    "probe_pairs": 6,
+    "patient_groups": 12,
+    "classes": [
+      "improving",
+      "stable",
+      "worsening"
+    ],
+    "source_images": 24,
+    "Base_queries": 48
+  },
+  "source_evidence_limit": "Definite bilingual comparative finding text plus concordant official metadata pointers. Independent prior patient/date/report verification is incomplete. This is source-agreement DEV, not independent clinical truth or a held-out test. All candidates involve patients exposed in earlier T5.",
+  "original_split": "Preserved privately as provenance; this small exposed DEV panel mixes source splits and makes no official train/test performance claim.",
+  "input": "Same two native ordered image tokens and per-image deterministic preparation. Use the existing old-T5 per-image full-range affine min/max rounded uint8 RGB display images. The 24 mapped images must match the fixed expected pixels exactly before any model call. Raw uint16 pairs are rejected. No window/prompt/label search.",
+  "Base_eligibility": "Re-generate the same 48 queries once on correct image identities and requalify the same six fixed anchor candidates. Only CORE-confirmed native wrong answers admitted, no replacement or probe-dependent selection. Prior invalid-image eligibility is not inherited.",
+  "scoring": "Unchanged CORE contract and exact semantic payload reuse from v1 and prior runs, including inherited UNKNOWN; no automatic retry of failed payloads. Corrected input may yield genuinely new answer payloads.",
+  "training": {
+    "MDU": "Unchanged fixed C160+MED160+MDU160, TT88/7168 parameters, original curvature/calibration resources; five source-only native/FIT views. Answer-token partition unchanged, no task-specific tuning.",
+    "BALANCEDIT": "Project paper-spec recipe, native-only50, independent writers plus real R0 bank",
+    "GRACE": "Benchmark100/cosine eps1/final-up-projection with the declared prompt/cache repair",
+    "LORA": "rank16 alpha16 all LM MLP AdamW5e-5 fixed5",
+    "MEND": "Not admitted: matched trained meta-editor unavailable"
+  },
+  "evaluation": "Single and actual final bank; native, four training FIT rewrites (reported as training fit), two unseen paraphrases, one same-disease probe for each of the three true progressions. Patient-disjoint edit/probe pools. Same native dual-image interface/FP32 decoder and frozen FP16 multimodal prefill for all methods.",
+  "mechanical_gates": [
+    "Exactly two native image markers and two image tensors",
+    "Ordered per-image pixels and identities; swapping changes ordered pair identity",
+    "Two realized visual feature blocks and target-only label masking",
+    "Exact source training-token/prompt binding across all five views",
+    "Comparator first-source Base output token parity",
+    "Saved state parity and GRACE cache/no-cache parity"
+  ],
+  "primary_metrics": [
+    "Unseen three-state probe balanced accuracy (class-macro CORE bounds)",
+    "Joint native plus all three same-disease probes correct, fixed edit denominator"
+  ],
+  "secondary_metrics": [
+    "Native edit correctness",
+    "Training FIT correctness",
+    "Unseen paraphrase correctness",
+    "Same-state transfer and other-state contrasts",
+    "Retention among CORE-confirmed pre-correct non-target probes, with its denominator",
+    "Pre/post CORE probe accuracy and bounds",
+    "Actual routing activation"
+  ],
+  "controls": "Constant-class and edit-answer-copy controls: 33.33% three-state balanced accuracy and 0% native-plus-three-state joint success analytically, if all three probe classes present. No promise of main-method superiority.",
+  "uncertainty": "Report fixed-denominator UNKNOWN bounds. Repeated probes across edited states are dependent; six or fewer source patients and six probe patients do not support a confirmatory superiority claim. No nominal iid confidence interval or resampling of model outputs.",
+  "budgets": {
+    "wall_hours": 23,
+    "original_clock": "SHARED WITH v1:1794146646.4666255–1794229446.4666255. No reset for this input repair; coupled byte accounting across both revisions.",
+    "remote_new_bytes_limit": 12000000000,
+    "remote_reserve_bytes": 2147483648,
+    "local_new_bytes_limit": 2000000000,
+    "free_reserve_bytes": 8589934592,
+    "max_GPU_workers": 1,
+    "GPU_admission_free_MiB": 60000,
+    "generation_margin_seconds": 1200
+  },
+  "lifecycle": "Preserve both v1 and corrected own-method canonical banks and small independent backups. Do not reuse invalid-input experts as corrected-input experts; all admitted methods retrained under unchanged recipes.",
+  "stop": "First failed mechanical/admission gate stops that dependent pipeline with durable failure; no score-based recipe/prompt/cohort changes. Budget guard terminates only owned process groups. Finite collection/scoring/publication dependency, no duplicate recurring monitor.",
+  "publication": "Source, preregistration, aggregate results and execution limitations only; raw CXR, patient IDs/dates, pair manifests, full answers, source phrases, weights and private paths remain private.",
+  "previous_revision": "v1 INVALID_INPUT_RENDERING; all prior outputs retained as failure evidence; no method capability inference from v1.",
+  "panel_unchanged": true
+}

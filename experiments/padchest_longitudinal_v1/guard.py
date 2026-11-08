@@ -7,7 +7,7 @@ def write(p,x):
  p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);t=p.with_suffix('.tmp');t.write_text(json.dumps(x));t.replace(p)
 def health(phase):
  size=0
- for base in [ROOT,Path(cfg['neutral'])]:
+ for base in [ROOT,Path(cfg['neutral'])]+[Path(p) for p in cfg.get('additional_owned_roots',[])]:
   for directory,dirs,files in os.walk(base,followlinks=False):
    for name in files:
     p=Path(directory)/name
@@ -35,6 +35,7 @@ def run(phase,name,extra=None,gpu=True):
   time.sleep(10)
  health(phase)
  env=dict(os.environ,CURRENT_SOURCE=str(ROOT/'tools'/name),**(extra or {}))
+ if cfg.get('peft_path'):env['PYTHONPATH']=cfg['peft_path']+os.pathsep+env.get('PYTHONPATH','')
  with (ROOT/(phase+'.log')).open('x') as log:
   active=subprocess.Popen([cfg['python'],str(Path(cfg['neutral'])/'w.py')],env=env,cwd='/data/bmw',stdout=log,stderr=subprocess.STDOUT,start_new_session=True,
    preexec_fn=lambda:resource.setrlimit(resource.RLIMIT_FSIZE,(1024**3,1024**3)))
@@ -44,6 +45,7 @@ def run(phase,name,extra=None,gpu=True):
 
 def main():
  (ROOT/'GUARD_ONCE').touch(exist_ok=False)
+ run('INPUT','pixel_preflight.py',gpu=False)
  run('BASE','base.py')
  while not (ROOT/'BASE_MASK_FROZEN.private.json').exists():health('WAIT_CORE_BASE');time.sleep(10)
  run('SETUP','setup_train.py',gpu=False)

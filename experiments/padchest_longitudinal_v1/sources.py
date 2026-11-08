@@ -39,7 +39,7 @@ def build(w):
     s=once(s,"assert all(binding[k] == expected[k] for k in binding)","assert all(binding[k] == expected[k] for k in expected)")
     s=once(s,"assert counts['consumers'] == 2696","assert counts['consumers'] == 2*len(plan)")
     out['comparator.py']=s;out['cache_editor.py']=(w/'experiments/med150_grace_correctness_v1/editor.py').read_text()
-    for name in ['pair_input.py','base.py','setup_train.py','guard.py']:
+    for name in ['pair_input.py','base.py','setup_train.py','guard.py','pixel_preflight.py']:
         out[name]=(w/'experiments/padchest_longitudinal_v1'/name).read_text()
     for name,source in out.items():compile(source,name,'exec')
     return out
