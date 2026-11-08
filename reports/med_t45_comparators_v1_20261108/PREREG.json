@@ -1,0 +1,112 @@
+{
+  "status": "FROZEN_BEFORE_NEW_COMPARATOR_MODEL_OUTPUTS",
+  "time": 1794109202.3666508,
+  "authorization": "User requests MEND, GRACE, BalancEdit, LoRA T4/T5 on the current experiments.",
+  "cohorts": {
+    "T4": {
+      "single_edits": 67,
+      "bank_edits": 67,
+      "T4G_edits": 32,
+      "T4G_events": 95,
+      "T4L_edits": 35,
+      "T4L_events": 42,
+      "consumers_per_method": 944,
+      "bank": "Same combined T4G/T4L order as frozen MDU bank"
+    },
+    "T5": {
+      "single_edits": 148,
+      "bank_edits": 144,
+      "consumers_per_method": 1752,
+      "bank": "Same predeclared global image-role-safe subset/order as MDU"
+    }
+  },
+  "selection": "Reuse unchanged frozen CORE Base eligibility, native/FIT inputs, image rendering, prompt tokens and task probes. No new Base selection, test tuning or cohort expansion.",
+  "methods": {
+    "BALANCEDIT": {
+      "status": "ADMITTED_FIXED_PROJECT_PAPER_SPEC_ADAPTATION",
+      "scope": "final-layer LM MLP up projection",
+      "steps": 50,
+      "lr": 0.01,
+      "optimizer": "Adam",
+      "alpha": 0.2,
+      "distance": "euclidean",
+      "training": "Native only, first frozen FIT as positive radius anchor, black-image negative anchor",
+      "bank": "Independent per-edit writers and true original ordered R0 bank, consistent with existing project comparator; this adaptation is not claimed identical to author hidden implementation"
+    },
+    "GRACE": {
+      "status": "ADMITTED_FIXED_BENCHMARK_HPARAMS_WITH_CACHE_REPAIR",
+      "scope": "final-layer LM MLP up projection",
+      "steps": 100,
+      "lr": 1.0,
+      "optimizer": "Adam",
+      "eps_init": 1.0,
+      "distance": "cosine",
+      "replacement": "replace_prompt through expanded final prompt position; prefill-only cache-consistent generation",
+      "training": "Native only; exact label-token collision semantics",
+      "bank": "Real stateful sequential insertion, not independent single averaging",
+      "prior_grace_correction": "Separate experiment from earlier 50-step L2 layer27 reference; earlier results unchanged"
+    },
+    "LORA": {
+      "status": "ADMITTED_FIXED_BENCHMARK_HPARAMS",
+      "scope": "all LM MLP projections",
+      "rank": 16,
+      "alpha": 16,
+      "dropout": 0.0,
+      "steps": 5,
+      "lr": 5e-05,
+      "optimizer": "AdamW",
+      "training": "Native only, fixed 5 epochs; no success-driven stopping",
+      "bank": "Cumulative LoRA updates in same frozen sequence; no R0 gating"
+    },
+    "MEND": {
+      "status": "BLOCKED_NO_VERIFIED_MATCHED_META_EDITOR",
+      "requirement": "Trained meta-editor for exact LLaVA-Med-v1.5/Mistral backbone with independent edit-training and locality data provenance",
+      "observed": "Benchmark public release contains data/task builders, no trained editors. Checked EasyEdit MEND configs include Mistral text, BLIP2 and MiniGPT4, but no verified exact LLaVA-Med multimodal editor checkpoint.",
+      "no_substitution": "Do not call ordinary gradient steps or random meta-network MEND; do not train on this evaluation cohort.",
+      "followup": "Continue bounded source/artifact verification while the three executable methods run."
+    }
+  },
+  "precision": "FP32 decoder with frozen FP16 multimodal prefill for matched Base/MDU inference. Frozen backbone; no precision search. First source query per cohort must reproduce stored Base tokens; first actual edit must pass save/load generation parity; GRACE also fixed 16-token cache/no-cache parity.",
+  "generation": {
+    "greedy": true,
+    "max_new_tokens": 1024,
+    "source_RNG": "same archived original RNG",
+    "new_formal_consumers": 8088,
+    "per_method": 2696,
+    "new_update_ceiling": {
+      "BALANCEDIT": 10750,
+      "GRACE": 42600,
+      "LORA": 2130
+    }
+  },
+  "scoring": {
+    "protocol": "MEDPROP_SMALL4_CORE_FULL_SOURCE_V1",
+    "model": "gpt-6-astra",
+    "reasoning": "medium",
+    "batch": 20,
+    "workers": 4,
+    "attempt_timeout_seconds": 600,
+    "automatic_retry": false,
+    "accepted_labels_immutable": true,
+    "unknown": "Exact failed/conflicting historical payloads remain UNKNOWN; only exact same contract text payloads reused"
+  },
+  "metrics": "Same T4 edit-macro pre-wrong Fix/pre-correct Retention; T5 frozen no-introduced-error/all-edits plus pre-correct retention, pre-wrong fix, followup accuracy and delta; explicit denominators and 11/01/10 strata. FIT diagnostic only.",
+  "fairness": "Standard native-only comparator optimization and five-view MDU training differ and must be disclosed. T4 probes are shared; T5 is dominated by persistent-positive cases. No independent-confirmation or guaranteed-superiority claim.",
+  "resources": {
+    "shared_wall_hours": 23,
+    "clock_start": "First actual comparator GPU/model execution; all methods/cohorts/repairs/scoring share one clock, no reset",
+    "per_server_new_bytes_limit": 47000000000,
+    "remote_guard_reserve_bytes": 2147483648,
+    "minimum_free_bytes": 8589934592,
+    "generation_stop_margin_seconds": 1200,
+    "local_new_bytes_limit": 2000000000,
+    "concurrent_model_workers": 3,
+    "minimum_free_gpu_MiB": 60000,
+    "checkpoint_lifecycle": "T4 method states consumed and exactly retired before T5 bank; keep output/token/config/failure evidence. No existing data/model/MDU/MED/M13P deletion."
+  },
+  "references": [
+    "https://arxiv.org/html/2607.05310v1#A4",
+    "https://github.com/BioMed-AI-Lab-U-Michgan/M3Bench",
+    "https://github.com/zjunlp/EasyEdit/tree/main/hparams/MEND"
+  ]
+}
