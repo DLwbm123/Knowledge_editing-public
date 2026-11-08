@@ -1,0 +1,72 @@
+{
+  "status": "FROZEN_BEFORE_CORRECTED_COHORT_MODEL_OUTPUTS",
+  "time": 1794129312.1960828,
+  "authorization": "User explicitly requested comparing the original M3Bench paper/code and correcting local T5 selection and metric to its specification.",
+  "upstream": {
+    "repository": "BioMed-AI-Lab-U-Michgan/M3Bench",
+    "commit": "03c6fda3813301dab3be5831fdc94b493c10afc9",
+    "commit_date": "2026-06-28T14:42:16Z",
+    "paper": "arXiv2607.05310v1"
+  },
+  "source_findings": {
+    "paper": "Earlier wrong edit, later same-patient same-finding query; prose 1-minus introduced factual errors;324instances/440images/43diseases.",
+    "public_release": "task_config.yaml and README specify prior is_correct=false and dataset-level delta_ACC. No follow-up correctness eligibility gate. Public README still says T5 not run; no T5 builder, evaluator, metadata or author case manifest is present.",
+    "not_reconstructed": "Paper T5 table actual denominator/case selection,43-label mapping and440-image cohort cannot be recovered from this release."
+  },
+  "corrections": {
+    "primary": "delta_ACC(T2) = ACC_after(T2) - ACC_before(T2), percentage points",
+    "secondary": [
+      "ACC_before",
+      "ACC_after",
+      "known-pre-correct retention",
+      "known-pre-wrong fix",
+      "presence-code strata",
+      "always-Yes control",
+      "unchanged-Base control"
+    ],
+    "eligibility": "Prior CORE false only. Follow-up unknown retained as unknown; no model-output selection.",
+    "sequence": "All159 qualified canonical edits in frozen source order. Prior additional global-image-role filter is not part of released specification; include its4 previously omitted qualified entries, disclose exposure and keep prior results unchanged.",
+    "denominators": "All admitted pairs retained for accuracy means. Unknown labels produce conservative bounds, never dropped or treated false."
+  },
+  "cohort": {
+    "canonical_source_cases": 322,
+    "original_source_rows": 324,
+    "known_prior_wrong": 159,
+    "prior_correct_excluded": 9,
+    "prior_unknown_unresolved": 154,
+    "followup_unknown_included": 11,
+    "presence_codes": {
+      "11": 155,
+      "10": 4,
+      "01": 0
+    },
+    "single_edits": 159,
+    "bank_edits": 159,
+    "consumers_per_method": 1908,
+    "old_confirmed_single": 148,
+    "new_MDU_experts": 11,
+    "reused_MDU_experts": 148,
+    "source_labels": 67,
+    "author_label_map_missing": true
+  },
+  "data_integrity": "Source progression-to-presence mapping matches paper. Existing explicit prior-study links and known dates retained; unavailable prior dates remain null, no fabricated dates or additional raw data. Two redundant source rows stay mapped to canonical cases; author exact instance manifest unavailable, no forced count matching.",
+  "methods": "Fixed selected MDU recipe C160+MED160+MDU160 for11 new experts; preserve/reuse148 own experts and matching single outputs. Fixed prior comparator configurations (native-only standard BE50,GRACE100-cosine-cache-consistent,LoRA5 rank16) rebuilt for159-case cohort because consumed external method state files were retired; no retuning.",
+  "new_updates_max": {
+    "MDU": 5280,
+    "BALANCEDIT": 7950,
+    "GRACE": 31800,
+    "LORA": 1590
+  },
+  "precision": "Same original frozen FP16 multimodal prefill + FP32 decoder, same greedy1024/RNG and prior Base-token/save-load/cache mechanical gates.",
+  "judge": "Same accepted MED133 CORE/Astra medium contract (an LLM judging option allowed by release). Exact payload reuse. Do not retry historical failed/conflicted scores or alter accepted labels; preserve all unresolved eligibility and delta bounds.",
+  "resources": {
+    "original_clock": "New independent corrected-cohort experiment; one23h clock starts at first corrected input/token admission and is shared by all models/scoring; old experiments retain their clocks.",
+    "max_new_bytes_per_server": 47000000000,
+    "remote_reserve_bytes": 2147483648,
+    "local_limit_bytes": 2000000000,
+    "min_free_bytes": 8589934592,
+    "max_model_workers": 4,
+    "generation_stop_margin_seconds": 1200
+  },
+  "limitations": "Released-spec alignment under the same CORE judge, not exact author-table reproduction. Positive-label dominance and unresolved prior eligibility remain; no class balancing or cohort tuning to method outcomes. MEND remains blocked without matched trained editor."
+}
