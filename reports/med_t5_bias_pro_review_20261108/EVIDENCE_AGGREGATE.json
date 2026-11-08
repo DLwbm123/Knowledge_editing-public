@@ -1,0 +1,208 @@
+{
+  "report_type": "OFFLINE_AGGREGATE_BIAS_REVIEW_NOT_FINAL_MODEL_RESULTS",
+  "evidence_snapshot_CST": "2026-11-08 18:11:29 +08:00",
+  "upstream_commit": "03c6fda3813301dab3be5831fdc94b493c10afc9",
+  "stages": {
+    "canonical_source": {
+      "n": 322,
+      "presence_codes": {
+        "11": 288,
+        "01": 28,
+        "10": 6
+      },
+      "followup_Yes": 316,
+      "followup_No": 6,
+      "always_Yes_accuracy_pct": 98.13664596273291
+    },
+    "prior_wrong_only_159": {
+      "n": 159,
+      "presence_codes": {
+        "11": 155,
+        "01": 0,
+        "10": 4
+      },
+      "followup_Yes": 155,
+      "followup_No": 4,
+      "always_Yes_accuracy_pct": 97.48427672955975
+    },
+    "old_followup_known_single_148": {
+      "n": 148,
+      "presence_codes": {
+        "11": 147,
+        "01": 0,
+        "10": 1
+      },
+      "followup_Yes": 147,
+      "followup_No": 1,
+      "always_Yes_accuracy_pct": 99.32432432432432
+    },
+    "old_role_safe_bank_144": {
+      "n": 144,
+      "presence_codes": {
+        "11": 143,
+        "01": 0,
+        "10": 1
+      },
+      "followup_Yes": 143,
+      "followup_No": 1,
+      "always_Yes_accuracy_pct": 99.30555555555556
+    }
+  },
+  "canonical_qualification_by_presence_code": {
+    "11": {
+      "BASE_ELIGIBLE": 147,
+      "FOLLOWUP_BASE_UNKNOWN": 8,
+      "NATIVE_UNKNOWN": 133
+    },
+    "01": {
+      "NATIVE_UNKNOWN": 19,
+      "NATIVE_BASE_CORRECT": 9
+    },
+    "10": {
+      "FOLLOWUP_BASE_UNKNOWN": 3,
+      "BASE_ELIGIBLE": 1,
+      "NATIVE_UNKNOWN": 2
+    }
+  },
+  "new_followup_Base": {
+    "False": 147,
+    "None": 11,
+    "True": 1
+  },
+  "new_Base_accuracy_bounds_pct": [
+    0.6289308176100629,
+    7.547169811320755
+  ],
+  "new_analytical_always_Yes_delta_ACC_bounds_pp": [
+    89.937106918239,
+    96.85534591194968
+  ],
+  "unknown_prior_eligibility": 154,
+  "unknown_prior_by_presence_code": {
+    "11": 133,
+    "01": 19,
+    "10": 2
+  },
+  "missingness_only_recovery_bound": {
+    "assumption": "Keep all159 confirmed prior-wrong cases; add only actually prior-wrong members of154 unresolved cases; retain existing references. No new source data or outcome-based deletions.",
+    "minimum_always_Yes_accuracy_pct": 96.27329192546584,
+    "minimum_attained_when": "Only the two unresolved10cases are added; any unresolved11/01cases add a Yes reference.",
+    "all154_admitted_hypothetical_accuracy_pct": 98.08306709265176,
+    "not_an_observed_result": true
+  },
+  "old_bank": {
+    "status": "COMPLETED_OFFLINE_DISCRIMINATION_AUDIT",
+    "time": 1794128242.125429,
+    "setting": "Frozen T5 final-bank subset; no eligibility or existing labels modified",
+    "bank_n": 144,
+    "Base_pre_correct": 1,
+    "source_and_qualification_strata": {
+      "11": {
+        "BASE_ELIGIBLE": 147,
+        "FOLLOWUP_BASE_UNKNOWN": 8,
+        "NATIVE_UNKNOWN": 133
+      },
+      "01": {
+        "NATIVE_UNKNOWN": 19,
+        "NATIVE_BASE_CORRECT": 9
+      },
+      "10": {
+        "FOLLOWUP_BASE_UNKNOWN": 3,
+        "BASE_ELIGIBLE": 1,
+        "NATIVE_UNKNOWN": 2
+      }
+    },
+    "methods": {
+      "MDU": {
+        "n": 144,
+        "answer_prefix_counts": {
+          "yes": 144
+        },
+        "reference_counts": {
+          "yes": 143,
+          "no": 1
+        },
+        "post_accuracy": 99.30555555555556,
+        "primary": 99.30555555555556,
+        "retention_correct": 0,
+        "retention_denominator": 1
+      },
+      "BALANCEDIT": {
+        "n": 144,
+        "answer_prefix_counts": {
+          "yes": 144
+        },
+        "reference_counts": {
+          "yes": 143,
+          "no": 1
+        },
+        "post_accuracy": 99.30555555555556,
+        "primary": 99.30555555555556,
+        "retention_correct": 0,
+        "retention_denominator": 1
+      },
+      "LORA": {
+        "n": 144,
+        "answer_prefix_counts": {
+          "yes": 144
+        },
+        "reference_counts": {
+          "yes": 143,
+          "no": 1
+        },
+        "post_accuracy": 99.30555555555556,
+        "primary": 99.30555555555556,
+        "retention_correct": 0,
+        "retention_denominator": 1
+      }
+    },
+    "primary_definition": "1 - count(pre-correct AND post-wrong)/all eligible edits",
+    "primary_mathematical_floor_pct": 99.30555555555556,
+    "primary_mathematical_ceiling_pct": 100,
+    "analytical_controls": {
+      "unchanged_Base": {
+        "primary_pct": 100,
+        "followup_accuracy_pct": 0.6944444444444444
+      },
+      "always_Yes": {
+        "primary_pct": 99.30555555555556,
+        "followup_accuracy_pct": 99.30555555555556
+      }
+    },
+    "control_provenance": "Analytical controls from frozen binary references and pre-correct masks, not new model/Judge results",
+    "conclusion": "Current cohort and all-edit denominator make the primary metric nearly nondiscriminative. All three completed methods match the always-Yes accuracy baseline and lose the sole pre-correct followup. High score does not establish temporal reasoning or advantage.",
+    "limitations": [
+      "GRACE T5 remains pending in this snapshot.",
+      "No independent image-aware causality test was run; output prefixes and accepted CORE scores support the observed majority-answer behavior.",
+      "This is the local preregistered operationalization, not a reconstruction of the authors hidden scoring implementation.",
+      "Original MDU/comparator scores remain unchanged."
+    ],
+    "new_model_calls": 0,
+    "new_Judge_calls": 0
+  },
+  "new_runtime_snapshot": {
+    "MDU": {
+      "new_experts_complete": 5,
+      "new_experts_total": 11,
+      "updates_latest": 2500,
+      "updates_ceiling": 5280,
+      "old_experts_readonly_reuse": 148
+    },
+    "LORA": {
+      "single_outputs_complete": true,
+      "bank_edits_inserted": 100,
+      "bank_edits_total": 159
+    },
+    "GRACE": "QUEUED",
+    "BALANCEDIT": "QUEUED",
+    "final_CORE_scores": "NOT_AVAILABLE"
+  },
+  "model_calls_added_by_this_report": 0,
+  "Judge_calls_added_by_this_report": 0,
+  "limitations": [
+    "Case counts are not independent patients or unique Judge payloads.",
+    "Analytical binary-reference controls are not freshly judged literal constant responses.",
+    "Unknown bounds are not confidence intervals.",
+    "Paper table implementation and author cohort are unavailable in pinned release."
+  ]
+}
