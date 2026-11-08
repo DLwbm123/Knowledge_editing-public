@@ -1,0 +1,24 @@
+{
+  "status": "FROZEN_BEFORE_CASE_TEXT_REVIEW",
+  "scope": "All34 canonical change tasks:28new/01 and6resolved/10, irrespective of Base/method outputs",
+  "checks": [
+    "source row binding",
+    "same current patient and study",
+    "explicit previous-image/study pointer",
+    "independent dates and patient metadata where available",
+    "finding label and location binding",
+    "English and Spanish progression scope",
+    "single/bank image exposure",
+    "reference/QA presence direction"
+  ],
+  "outputs": "Private case-level source/text evidence; public aggregate and sanitized findings. No raw patient/image/date/text release.",
+  "constraints": {
+    "model_calls": 0,
+    "Judge_calls": 0,
+    "historical_UNKNOWN_retries": 0,
+    "cohort_changes": 0,
+    "existing_experiments": "continue without stopping/restarting/reconfiguring",
+    "image_review": "No clinical pixel-based truth certification; assess source consistency and report unresolved clinical ambiguity."
+  },
+  "stop": "One finite pass over all34 tasks; confirmed source errors would require a separately versioned correction, not rewriting frozen results."
+}

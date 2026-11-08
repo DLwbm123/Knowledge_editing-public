@@ -1,0 +1,97 @@
+{
+  "status": "SOURCE_AUDIT_COMPLETE_WITH_SEMANTIC_CONCERNS",
+  "tasks": 34,
+  "unique_pairs": 22,
+  "unique_patient_groups": 22,
+  "unique_images": 44,
+  "presence_codes": {
+    "01": 28,
+    "10": 6
+  },
+  "structural_checks": {
+    "source_row_image_pair_label": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "source_row_current_study": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "explicit_previous_pointer": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "distinct_images": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "same_current_patient_and_date": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "source_progression_to_binary": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "source_finding_en_es_location": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "same_question_and_references": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "no_global_same_input_reference_conflict": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "prepared_prior_followup_bindings": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "prepared_raw_and_render_path_basenames": {
+      "pass_count": 34,
+      "fail_count": 0
+    },
+    "training_native_bound_to_prior": {
+      "pass_count": 34,
+      "fail_count": 0
+    }
+  },
+  "independent_prior_patient_date_tasks": 4,
+  "independent_prior_patient_date_pairs": 1,
+  "independent_patient_date_pass": 4,
+  "explicit_previous_pointer_only_tasks": 30,
+  "manual_en_es_context_reviewed": 34,
+  "semantic_flags": {
+    "UNCERTAINTY_REMOVED_BY_BINARY_REFERENCE": 3,
+    "CT_COMPARISON_NOT_BOUND_TO_LINKED_CXR": 1,
+    "TARGET_LABEL_NOT_EXPLICIT_IN_MATCHED_PHRASE": 1,
+    "SAME_LABEL_OTHER_CURRENT_FINDING": 1
+  },
+  "tasks_with_specific_semantic_flags": 5,
+  "new_tasks_own_sentence_explicit_new": 8,
+  "new_tasks_without_explicit_new_word": 20,
+  "prior_reports_available_tasks": 4,
+  "source_location_present_but_not_in_question_tasks": 29,
+  "another_current_finding_has_same_label_tasks": 1,
+  "followup_is_another_admitted_prior_tasks": 0,
+  "base_qualification_status_counts": {
+    "NATIVE_UNKNOWN": 21,
+    "NATIVE_BASE_CORRECT": 9,
+    "FOLLOWUP_BASE_UNKNOWN": 3,
+    "BASE_ELIGIBLE": 1
+  },
+  "admitted_change_tasks": 4,
+  "specific_CT_comparison_concern_admitted_tasks": 1,
+  "images": "Existing selected34-task PNG headers/readability checked; no pixel-level radiologist validation or archive re-extraction.",
+  "changes": {
+    "model_calls": 0,
+    "Judge_calls": 0,
+    "UNKNOWN_retries": 0,
+    "cohort_changes": 0,
+    "label_changes": 0,
+    "stopped_or_restarted_existing_jobs": 0
+  },
+  "limitation": "Metadata and bilingual source consistency audit; generic disease presence, uncertain findings and actual clinical image truth are not independently validated. Lack of temporal words alone is not a labeling error."
+}
