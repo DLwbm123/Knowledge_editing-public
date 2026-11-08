@@ -25,7 +25,8 @@ def remote(cfg,code,timeout=120):
 def main(cfg):
     local=Path(cfg['control']);private=Path(cfg['private_root']);w=Path(cfg['worktree'])
     clock=read(local/'clock.json');signal.alarm(max(1,int(clock['hard_end']-time.time()-30)))
-    with (local/'CONTROLLER_ONCE').open('x'):pass
+    marker='CONTROLLER_RESUME_ONCE' if cfg.get('engineering_resume') else 'CONTROLLER_ONCE'
+    with (local/marker).open('x'):pass
     sys.path.insert(0,str(w/'experiments/med_t5_core_v1'))
     from controller import score
     history=list(cfg['history_roots']);done={};failed={}

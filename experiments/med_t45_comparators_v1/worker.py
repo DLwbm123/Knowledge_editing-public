@@ -26,7 +26,7 @@ def write(p, value):
 def budget():
     assert time.time() < read(ROOT / 'CLOCK.json')['hard_end'] - 1200
     assert not (ROOT / 'STOP.json').exists()
-    assert time.time() - read(ROOT / 'HEALTH.json')['time'] < 60
+    assert time.time() - read(ROOT / os.environ.get('COMPARE_HEALTH_FILE','HEALTH.json'))['time'] < 60
 
 
 def main():
@@ -64,6 +64,9 @@ def main():
         editor.route_generation = CorrectedGraceEditor.route_generation.__get__(editor)
     else:raise ValueError(METHOD)
     actual = editor.config_lock()
+    if METHOD == 'LORA':
+        import importlib.metadata
+        actual['source'] = 'PEFT '+importlib.metadata.version('peft')+'; compatibility dependency, unchanged fixed LoRA equations/hyperparameters'
     write(JOB / 'METHOD_CONFIG.json', dict(config=actual, actual_decoder_precision='float32',
         multimodal_prefill='frozen FP16, identical to MDU input construction',
         cache_repair=METHOD == 'GRACE', training='native only; BE positive anchor uses first frozen FIT rewrite'))
