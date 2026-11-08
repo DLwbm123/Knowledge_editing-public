@@ -60,7 +60,7 @@ def main():
         by_presence_code={code:summarize([x for x in records if x['presence_code']==code]) for code in ['11','01','10']},
         clean_base={arm:read(r/arm/'CLEAN_BASE.private.json') for arm in ['A','B']},
         generation_parameter_dtypes={arm:read(r/arm/'answers/00.json')['parameter_dtypes'] for arm in ['A','B']},
-        limitations=['A/B differ in loader/entry and precision; output differences do not isolate either factor.',
+        limitations=['A/B share the official-native loader but differ in generation entry and precision; output differences do not isolate either factor.',
             'Cross-precision logits are descriptive; no posthoc tolerance or higher-accuracy implementation selection.',
             'Includes one known source CT-comparison concern for engineering only; no clinical correctness claim.',
             'Deterministic per-image preprocessing seed shared; actual pixel tensors compared.'])

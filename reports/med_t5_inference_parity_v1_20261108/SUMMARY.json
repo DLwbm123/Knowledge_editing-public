@@ -1,5 +1,5 @@
 {
-  "status": "COMPLETE_ENGINEERING_DIAGNOSTIC_NOT_CORE_EVALUATION",
+  "status": "COMPLETE_WITH_RECORDED_ARM_A_INITIALIZATION_DEVIATION",
   "time": 1794142726.3197696,
   "full_generations": 64,
   "updates": 0,
@@ -531,9 +531,11 @@
     }
   },
   "limitations": [
-    "A/B differ in loader/entry and precision; output differences do not isolate either factor.",
+    "A/B share official-native loader; generation entry, precision and backend initialization may differ. Output equality is not full numerical-path equality.",
     "Cross-precision logits are descriptive; no posthoc tolerance or higher-accuracy implementation selection.",
     "Includes one known source CT-comparison concern for engineering only; no clinical correctness claim.",
-    "Deterministic per-image preprocessing seed shared; actual pixel tensors compared."
-  ]
+    "Deterministic per-image preprocessing seed shared; actual pixel tensors compared.",
+    "A runner omitted the pre-loop fp32 initialization present in original base.py; first preparation may use different backend initialization. Source fixed afterward; no generation rerun."
+  ],
+  "executed_worker_commit": "cebe33099cec20954e6a20dde7a32010bca2f58a"
 }

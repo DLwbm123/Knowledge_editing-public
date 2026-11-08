@@ -45,6 +45,9 @@ def main():
         from scripts.medtrace.run_realmodel_core import load_real_runtime
         local.c.budget=budget
         runtime=load_real_runtime(SimpleNamespace(cpu_gate=parent/'private/cpu_gate'))
+        # Match base.py's pre-loop initialization, including SDP backend flags.
+        # The first executed64-call run omitted this; its deviation stays recorded.
+        local.old.fp32(runtime)
         runtime.run_root=OUT/'runtime';runtime.run_root.mkdir()
         adapter=runtime.adapter;model=runtime.model
         configuration=json.loads((frozen/'BASE_CONFIGURATION.private.json').read_text())
