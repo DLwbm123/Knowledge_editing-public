@@ -25,7 +25,8 @@ def remote(cfg,code,timeout=120):
 def main(cfg):
     w=Path(cfg['worktree']);control=Path(cfg['control']);private=Path(cfg['private_root']);clock=read(control/'clock.json')
     signal.alarm(max(1,int(clock['hard_end']-time.time()-30)))
-    with (control/'CONTROLLER_ONCE').open('x'):pass
+    marker='CONTROLLER_RESUME_ONCE' if cfg.get('engineering_resume') else 'CONTROLLER_ONCE'
+    with (control/marker).open('x'):pass
     sys.path.insert(0,str(w/'experiments/med_t5_core_v1'))
     from controller import packet
     history=cfg['history_roots'];done={};failed={}
@@ -40,6 +41,11 @@ def main(cfg):
                 assert len(values)==len({v['consumer_id'] for v in values})==1908
                 folder=control/method;folder.mkdir();durable=private/method;durable.mkdir();report=Path(cfg['report'])/method;report.mkdir()
                 write(durable/'OUTPUTS.private.json',values)
+                if method=='MDU':
+                    code='from pathlib import Path\nimport sys\nsys.stdout.buffer.write((Path('+repr(cfg['remote_root'])+')/"MDU/T5_CANONICAL.pt").read_bytes())'
+                    copy=subprocess.run(['ssh','-o','BatchMode=yes','pro5000',cfg['remote_python'],'-'],input=code.encode(),capture_output=True,timeout=180)
+                    assert copy.returncode==0 and 0<len(copy.stdout)<20_000_000,copy.stderr[-1000:]
+                    with (durable/'T5_CANONICAL.pt').open('xb') as f:f.write(copy.stdout)
                 write(folder/'PACKET_PRIVATE.json',packet(cfg,values,history))
                 write(folder/'EVENTS_FROZEN.private.json',read(private/'BASE_MASK_FROZEN.private.json'))
                 settings=dict(cfg,root=str(folder),private_root=str(durable),report=str(report),clock=str(control/'clock.json'),

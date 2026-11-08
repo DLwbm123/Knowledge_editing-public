@@ -1,0 +1,31 @@
+{
+  "status": "RUNNING_MDU_AND_LORA_TWO_QUEUED_LANES",
+  "clock": {
+    "original_start": 1794129601.8448837,
+    "hard_end": 1794212401.8448842,
+    "scope": "Release-aligned159-case correction, first actual token admission; both queued GPU lanes and all scoring share this clock"
+  },
+  "gpus": {
+    "MDU": "4",
+    "GRACE": "4",
+    "LORA": "7",
+    "BALANCEDIT": "7"
+  },
+  "schedule": "MDU then GRACE on first admitted GPU; LoRA then BalancEdit on second;60GB gate unchanged",
+  "new_MDU_experts": 11,
+  "reused_MDU_experts": 148,
+  "cohort": 159,
+  "primary": "delta_ACC",
+  "old_runs_unchanged": true,
+  "source_commit": "34c7ede1",
+  "earlier_preflight": "Four free60GB slots unavailable; no model/token job or clock had started; existing prepared files reused",
+  "engineering_recovery1": true,
+  "mechanical": {
+    "LORA": "Base and save/load PASS",
+    "MDU": "11 new source/token admissions PASS; fixed expert training running"
+  },
+  "queued": [
+    "GRACE",
+    "BALANCEDIT"
+  ]
+}
