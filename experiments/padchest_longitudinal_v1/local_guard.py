@@ -2,10 +2,11 @@
 import json,os,signal,subprocess,sys,time
 from pathlib import Path
 cfg=json.loads(Path(os.environ['LONG_LOCAL_CONFIG']).read_text());root=Path(cfg['control'])
-(root/'LOCAL_GUARD_ONCE').touch(exist_ok=False)
-with (root/'controller.log').open('x') as log:
- child=subprocess.Popen([sys.executable,str(root/'q.py')],env=dict(os.environ,CURRENT_SOURCE=str(Path(cfg['worktree'])/'experiments/padchest_longitudinal_v1/controller.py')),stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-(root/'CONTROLLER_IDENTITY.private.json').write_text(json.dumps(dict(pid=child.pid,time=time.time())))
+suffix=cfg.get('run_suffix','')
+(root/('LOCAL_GUARD'+suffix+'_ONCE')).touch(exist_ok=False)
+with (root/('controller'+suffix+'.log')).open('x') as log:
+ child=subprocess.Popen([sys.executable,str(root/'q.py')],env=dict(os.environ,CURRENT_SOURCE=cfg.get('controller_source',str(Path(cfg['worktree'])/'experiments/padchest_longitudinal_v1/controller.py'))),stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+(root/('CONTROLLER_IDENTITY'+suffix+'.private.json')).write_text(json.dumps(dict(pid=child.pid,time=time.time())))
 def terminate():
  rows=[r.split(None,2) for r in subprocess.check_output(['ps','-ww','-eo','pid=,ppid=,args='],text=True).splitlines()]
  family={child.pid}
@@ -34,8 +35,8 @@ try:
      except FileNotFoundError:pass
   assert used+256*1024**2<2_000_000_000 and time.time()<cfg['clock']['hard_end']-60
   fs=os.statvfs(root);assert fs.f_bavail*fs.f_frsize>8*1024**3
-  (root/'LOCAL_GUARD_HEALTH.json').write_text(json.dumps(dict(time=time.time(),bytes=used)))
+  (root/('LOCAL_GUARD_HEALTH'+suffix+'.json')).write_text(json.dumps(dict(time=time.time(),bytes=used)))
   time.sleep(5)
- (root/'LOCAL_GUARD_EXIT.json').write_text(json.dumps(dict(code=child.returncode,time=time.time())))
+ (root/('LOCAL_GUARD_EXIT'+suffix+'.json')).write_text(json.dumps(dict(code=child.returncode,time=time.time())))
 except BaseException:
  terminate();raise
