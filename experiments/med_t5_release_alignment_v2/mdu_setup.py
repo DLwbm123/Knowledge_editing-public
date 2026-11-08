@@ -35,6 +35,7 @@ def setup(root,cfg,data):
     remote_ops.launch=lambda *args,**kwargs:None
     remote_ops.devices=lambda *_:[cfg['gpus']['MDU']]
     prepared=remote_ops.train(new)
+    assert prepared['admission']['admitted_cases']==11, 'Do not silently shrink the corrected cohort'
     created=read(new/'TASK_INPUTS.private.json')
     shards={str(t['order']):str(old/previous['owner_shards'][str(t['order'])]) for t in previous['tasks']}
     shards.update(created['owner_shards'])

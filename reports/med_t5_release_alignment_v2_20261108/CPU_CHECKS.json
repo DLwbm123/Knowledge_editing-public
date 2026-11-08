@@ -11,5 +11,22 @@
   "compiled_sources": 16,
   "case_count": 159,
   "followup_unknown_retained": 11,
-  "all_native_and_followup_questions_match_Base": true
+  "all_native_and_followup_questions_match_Base": true,
+  "metric_selfcheck": {
+    "status": "PASS",
+    "gates": [
+      "prior-only eligibility",
+      "unknown follow-up retained",
+      "unchanged model delta zero",
+      "gain and damage cancel",
+      "unknown paired baseline bounds",
+      "missing prediction denominator retained"
+    ]
+  },
+  "analytical_controls_implemented": [
+    "unchanged Base delta0",
+    "always Yes",
+    "always No",
+    "paired advantage over always Yes"
+  ]
 }

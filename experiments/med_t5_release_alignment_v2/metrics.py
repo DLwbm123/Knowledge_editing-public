@@ -30,6 +30,8 @@ def temporal(events, after):
     delta = dict(n=len(events), lower_pp=result['lower_pct']-pre['upper_pct'] if events else None,
         upper_pp=result['upper_pct']-pre['lower_pct'] if events else None,
         unknown_before=pre['unknown'], unknown_after=result['unknown'])
+    delta.update(lower=delta['lower_pp']/100 if events else None,
+        upper=delta['upper_pp']/100 if events else None,units='lower/upper are fractions; lower_pp/upper_pp are percentage points')
     retention = [v for e,v in zip(events,post) if e['followup_core'] is True]
     fix = [v for e,v in zip(events,post) if e['followup_core'] is False]
     return dict(primary='delta_ACC_T2', ACC_before_T2=pre, ACC_after_T2=result, delta_ACC=delta,
@@ -41,14 +43,25 @@ def temporal(events, after):
 
 def evaluate(events, consumers, decisions):
     panels = {}
+    yes={e['owner']:e['presence_code'][1]=='1' for e in events}
+    no={owner:not value for owner,value in yes.items()}
+    majority_accuracy=100*sum(yes.values())/len(events)
     for mode in ('single','bank'):
         rows = [r for r in consumers if r['mode']==mode]
         by_owner = {r['owner']:decisions.get(r['key'],{}).get('core_correct') for r in rows if r['role']=='T5'}
         assert set(by_owner)=={e['owner'] for e in events}, 'Do not drop missing or incorrect follow-ups'
+        future=temporal(events,by_owner)
+        future['delta_advantage_over_always_Yes_pp'] = dict(
+            lower_pp=future['ACC_after_T2']['lower_pct']-majority_accuracy,
+            upper_pp=future['ACC_after_T2']['upper_pct']-majority_accuracy,
+            explanation='Shared Base term cancels; equivalent to post-accuracy difference on the identical cohort')
         panels[mode] = dict(T0=bounds([decisions.get(r['key'],{}).get('core_correct') for r in rows if r['role']=='T0']),
-            T5=temporal(events,by_owner))
+            T5=future)
     return dict(primary='delta_ACC_T2',aggregation='dataset-level mean over all prior-incorrect admitted pairs',
         panels=panels,unknowns='Conservative unknown-label bounds, not confidence intervals',
+        analytical_controls=dict(unchanged_Base=dict(ACC_T2=bounds([e['followup_core'] for e in events]),delta_ACC_pp=0),
+            always_Yes=temporal(events,yes),always_No=temporal(events,no),
+            provenance='Computed from frozen binary references; no new model/Judge calls'),
         correctness='Unchanged CORE LLM contract; a permitted LLM option in the public release',
         exact_author_paper_reproduction=False)
 
