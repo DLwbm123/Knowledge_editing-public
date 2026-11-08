@@ -1,0 +1,63 @@
+{
+  "status": "FROZEN_BEFORE_NEW_MODEL_OUTPUTS",
+  "authorization": "User: 好的，按照你的想法继续; fixed16 longitudinal tasks/64 Base generation comparison as explained immediately before authorization",
+  "selection": {
+    "code10_all": 6,
+    "code01_first_by_source_order": 5,
+    "code11_first_by_source_order": 5,
+    "events": 16,
+    "queries": 32,
+    "patient_groups": 13,
+    "unique_images": 26,
+    "not_a_new_evaluation_cohort": true
+  },
+  "arms": {
+    "A": "Exact frozen local preparation: official-native loader; FP16 multimodal prepare, full model FP32 generation via existing prepared-input intercept",
+    "B": "Same official checkpoint and official-native loader; manual native mistral_instruct prompt + original model.generate in FP16; deterministic per-image RNG wrapper around official process_images to match pixels"
+  },
+  "held_fixed": [
+    "checkpoint",
+    "existing rendered RGB images",
+    "original presence questions",
+    "greedy decoding max1024",
+    "single fresh process per arm",
+    "same deterministic per-image preprocessing seed"
+  ],
+  "measurements": [
+    "actual pixel_values",
+    "prompt text/token IDs",
+    "vision features",
+    "projector output",
+    "fused inputs_embeds",
+    "attention masks",
+    "first-layer position IDs if exposed",
+    "first-step logits",
+    "raw generated IDs/text/EOS",
+    "A historical32-output parity"
+  ],
+  "comparison_policy": "Exact token/input matches plus descriptive max-absolute/relative-L2/logit-KL. Do not tune numeric tolerances or select highest-accuracy implementation. Initial arm difference confounds entry/precision; cross-conditions require separate preregistration after inspection.",
+  "official_source_commit": "30697ca50b5c29a8e955c99330b259776aef27b9",
+  "generation_attempts_max": 64,
+  "updates": 0,
+  "Judge_calls": 0,
+  "eligibility_changes": 0,
+  "historical_UNKNOWN_retries": 0,
+  "clinical_limits": "Includes known CT-comparison concern for engineering only; labels do not determine acceptance; no clinical correctness or temporal capability evaluation",
+  "resources": {
+    "clock": {
+      "original_start": 1794142410.003862,
+      "hard_end": 1794149610.003862,
+      "scope": "CPU assembly, both fresh Base processes,64generation attempts and CPU comparison; no reset"
+    },
+    "hard_wall_seconds": 7200,
+    "GPU_workers_concurrent": 1,
+    "GPU_min_free_MiB": 60000,
+    "remote_new_byte_limit": 3000000000,
+    "remote_storage_reserve": 536870912,
+    "local_new_byte_limit": 100000000,
+    "free_reserve_bytes": 8589934592,
+    "no_new_weights_or_downloads": true
+  },
+  "failure_policy": "Preserve attempts, startup failures and original clock; do not restart completed work. An attempted generation is not silently retried. Existing T5 jobs and frozen protocol remain untouched.",
+  "privacy": "Private tensors, source bindings and raw answers; public source/config/aggregate diagnostics only"
+}
