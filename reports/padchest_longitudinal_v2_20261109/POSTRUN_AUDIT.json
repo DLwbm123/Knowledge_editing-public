@@ -1,0 +1,31 @@
+{
+  "status": "CORRECTED_INPUT_RUN_COMPLETE_WITH_UNKNOWN",
+  "input_check": {
+    "images": 24,
+    "exact_fixed_RGB_mapping": 24,
+    "all48_Base_pair_identities_changed": 48,
+    "Base_answer_tokens_changed": 21
+  },
+  "MDU_bank": {
+    "probe_evaluations": 12,
+    "unique_probe_pairs": 6,
+    "route_ON": 12,
+    "cross_finding_routes": 6,
+    "unique_cross_finding_queries": 3,
+    "answer_equals_selected_expert_source_class": 12,
+    "answer_counts": {
+      "Stable": 4,
+      "Worsening": 8
+    }
+  },
+  "LoRA_bank_probe_answer_counts": {
+    "Worsening": 12
+  },
+  "interpretation": "Correcting display pixels did not resolve the shared aggregate-score outcome. Distinct prediction patterns can share33.33% on this tiny balanced probe panel. MDU deployment includes cross-finding routes and selected-source-category copying; causal attribution between router/expert/backbone needs a separate controlled diagnostic.",
+  "evidence_limits": [
+    "Four admitted source patients; six distinct probe pairs reused across edited states.",
+    "No improving-class edit sources were admitted because both were Base-correct.",
+    "Existing semantic CORE verdict reuse is distinct from prediction reuse; unresolved payloads remain UNKNOWN.",
+    "This is exposed DEV source-agreement evaluation, not independent clinical verification."
+  ]
+}
