@@ -1,0 +1,63 @@
+{
+  "status": "RECORDED_TRAINING_PREDICTION_SCORING_PATHS_AUDITED",
+  "paired_evaluations_per_method": 80,
+  "prediction_packet_binding": {
+    "MDU": 80,
+    "BALANCEDIT": 80,
+    "GRACE": 80,
+    "LORA": 80,
+    "check": "Each scoring payload raw answer equals its own method consumer output; one-to-one consumer IDs in all four packets"
+  },
+  "MDU_BE": {
+    "exact_tokens_equal": 80,
+    "selected_source_and_activation_equal": 80,
+    "full_route_numeric_JSON_equal": 0,
+    "all_routes_active_each": 80,
+    "source_labels": {
+      "stable": 2,
+      "worsening": 2
+    },
+    "MDU_trainable_parameters": 7168,
+    "BE_trainable_parameters": 58720256,
+    "MDU_training_updates": 1920,
+    "BE_training_updates": 200,
+    "native_training_loss_saturated_below": 0.001,
+    "loss_caveat": "Separate methods own last-step training losses, not a matched cross-model logit comparison"
+  },
+  "raw_token_agreement_with_MDU": {
+    "single": {
+      "BALANCEDIT": "40/40",
+      "GRACE": "2/40",
+      "LORA": "34/40"
+    },
+    "bank": {
+      "BALANCEDIT": "40/40",
+      "GRACE": "0/40",
+      "LORA": "22/40"
+    }
+  },
+  "recorded_comparator_execution": {
+    "BALANCEDIT": {
+      "training_records": 4,
+      "updates": 200,
+      "generations": 83
+    },
+    "GRACE": {
+      "training_records": 8,
+      "updates": 800,
+      "generations": 84
+    },
+    "LORA": {
+      "training_records": 8,
+      "updates": 40,
+      "generations": 83
+    }
+  },
+  "finding": "No output misjoin or cross-method prediction-cache copy found in inspected paths. MDU and BE were separately trained with different parameters/targets; their selected source IDs and final short category outputs coincide on every evaluated input.",
+  "interpretation": "Shared route decisions and saturation on two short edit-source labels provide a concrete explanation of the observed MDU/BE output equality. Other methods differ at raw-output level despite equal coarse aggregate scores. This DEV panel does not isolate the benefit of the MDU training objective.",
+  "limits": [
+    "No claim that the two methods have identical learned parameters or logits.",
+    "No claim of exhaustive implementation correctness or equality on other cohorts.",
+    "Keep all frozen primary results and negative evidence; no retrospective score/cohort change."
+  ]
+}
