@@ -1,0 +1,95 @@
+{
+  "clock": {
+    "original_start": 1794534399.01455,
+    "hard_end": 1794617199.01455,
+    "scope": "New November13 real-model mechanism preflight plus conditional matched CE/MDU; no Nov9 model run existed. Includes all preparation, admission, training, evaluation, scoring and repairs without reset."
+  },
+  "completed_conditions": [],
+  "failure": true,
+  "DATA_ADMISSION": {
+    "status": "PASS",
+    "images": 28,
+    "exact_RGB_display_mapping": 28,
+    "source_patients": 4,
+    "auxiliary_patients": 4,
+    "probe_patients": 6,
+    "patient_role_overlap": 0,
+    "mean_white_fraction": 0.009333192348749967,
+    "method_outputs_used_for_selection": false
+  },
+  "TRAIN_ONLY_ADMISSION": {
+    "status": "PASS",
+    "source_patients": 4,
+    "auxiliary_patients": 4,
+    "evaluation_probe_patients": 6,
+    "scope_source_views": 20,
+    "protected_contexts_per_expert": 5,
+    "bases": {
+      "2": {
+        "predictors": 63,
+        "rank": 63,
+        "dimension": 14336,
+        "relative_cutoff": 1e-06,
+        "source_retained_norm_fraction": 0.0640869066119194
+      },
+      "3": {
+        "predictors": 65,
+        "rank": 65,
+        "dimension": 14336,
+        "relative_cutoff": 1e-06,
+        "source_retained_norm_fraction": 0.0589657723903656
+      },
+      "5": {
+        "predictors": 68,
+        "rank": 68,
+        "dimension": 14336,
+        "relative_cutoff": 1e-06,
+        "source_retained_norm_fraction": 0.055803969502449036
+      },
+      "6": {
+        "predictors": 69,
+        "rank": 69,
+        "dimension": 14336,
+        "relative_cutoff": 1e-06,
+        "source_retained_norm_fraction": 0.0634140893816948
+      }
+    },
+    "scope": [
+      {
+        "concept": "pleural effusion",
+        "radius": 0.6446146965026855,
+        "positive_max": 0.39181917905807495,
+        "negative_min": 0.8974102139472961
+      },
+      {
+        "concept": "pleural effusion",
+        "radius": 0.6343794465065002,
+        "positive_max": 0.3827047049999237,
+        "negative_min": 0.8860542178153992
+      },
+      {
+        "concept": "alveolar pattern",
+        "radius": 0.7204198241233826,
+        "positive_max": 0.39501047134399414,
+        "negative_min": 1.045829176902771
+      },
+      {
+        "concept": "alveolar pattern",
+        "radius": 0.7264755964279175,
+        "positive_max": 0.3885227143764496,
+        "negative_min": 1.064428448677063
+      }
+    ],
+    "test_queries_used_for_calibration": false,
+    "counts": {
+      "generations": 8,
+      "updates": 0,
+      "backwards": 0,
+      "forwards": 130
+    },
+    "time": 1794534838.0270236
+  },
+  "TRAIN_COMPLETE": null,
+  "old_states_unchanged": true,
+  "new_Judge_policy": "Exact accepted reuse, inherited UNKNOWN unchanged, no automatic retry"
+}
