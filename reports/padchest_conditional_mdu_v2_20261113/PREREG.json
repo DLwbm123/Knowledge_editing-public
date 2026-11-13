@@ -1,0 +1,79 @@
+{
+  "experiment": "Conditional MDU real-model admission and matched mechanism test v2",
+  "date": "2026-11-13",
+  "frozen_before_new_model_outputs": true,
+  "previous_preparation": "November9 draft expired before any remote deployment/training/generation/Judge. Original clock and incomplete code preserved; no model run or checkpoint is resumed.",
+  "clock": {
+    "original_start": 1794534399.01455,
+    "hard_end": 1794617199.01455,
+    "scope": "New November13 real-model mechanism preflight plus conditional matched CE/MDU; no Nov9 model run existed. Includes all preparation, admission, training, evaluation, scoring and repairs without reset."
+  },
+  "data": {
+    "edit_sources": 4,
+    "auxiliary_patients": 4,
+    "probe_patients": 6,
+    "patient_role_overlap": 0,
+    "source": "Same four admitted source patients and six fixed probes from corrected longitudinal v2. Four improving auxiliary patients are the first two reviewed non-panel patients per disease in source order.",
+    "auxiliary_role": "Protection/calibration only; no replacement of original evaluation probes and no selection by model scores.",
+    "gold": "Previously reviewed bilingual comparative phrases and official image pointers; prior independent patient/date verification incomplete. All patients exposed in historical T5:DEV only.",
+    "pixel_contract": "Existing fixed per-image affine min/max rounded uint8 RGB; all28 image mappings checked exactly before model loading; two native ordered images/1152 visual tokens."
+  },
+  "mechanism": {
+    "R1": "Question-only disease admissibility; normalized last-prompt input at layer21 down_projection concatenated with normalized ordered CLIP difference. Center from five training views, radius midpoint of maximum positive and minimum real-negative distance. Seven same-disease negative views per source, no probe features for calibration; nonseparation stops admission.",
+    "preservation": "Per-expert orthogonal basis of actual clean-Base autoregressive layer21 inputs from the three other editing sources and two same-disease auxiliary patients. Normalize the original activation before projection and do not renormalize the remaining evidence; numerical remnants <=1e-5 relative norm are zeroed. SVD cutoff1e-6, maximum640 predictor vectors.",
+    "train_initialization": "Same preserved MED state from corrected v2 for both CE and MDU; same rank88/7168parameters, optimizer groups lr1e-4/1e-3, gradient clip1, seeds and native/FIT cycle.",
+    "CE": "160updates/source, .5nativeCE+.5cyclicFITCE",
+    "MDU": "160updates/source, unchanged original MDU two-view/two-span robust objective at strength1/temperature1.",
+    "no_other_changes": "Original main150, standard comparator recipes and earlier results unchanged; no auxiliary clinical target answers are directly trained."
+  },
+  "dependency_gates": [
+    "Patient isolation and exact28RGB mapping",
+    "Eight clean-Base generations with hidden activations; four old source Base token replays exact",
+    "Source-only R1 positive/negative separation and all20source/FIT routing correct",
+    "Four original MDU source deployments replay exact",
+    "Twenty projected original-expert protected outputs replay complete Base tokens before training; four projected native outputs are diagnostic only",
+    "After training forty protected outputs replay complete Base tokens, first-owner save/load token parity for each arm",
+    "All parameters/scope frozen before unseen paraphrase/probe feature extraction"
+  ],
+  "conditions": [
+    "ORIGINAL_MDU_R0 reused from frozen v2",
+    "ROUTE_ONLY original MDU+R1",
+    "CONDITIONAL_CE projection+CE+R1",
+    "CONDITIONAL_MDU projection+MDU+R1 PRIMARY",
+    "CE_OLD_ROUTE projection+CE+R0",
+    "MDU_OLD_ROUTE projection+MDU+R0"
+  ],
+  "comparison": "Primary mechanism test CONDITIONAL_MDU vs CONDITIONAL_CE, sharing all new data/routing/protection/initialization/steps; shared-repair gains are not evidence of an MDU-objective gain.",
+  "metrics": "Unchanged CORE native/FIT/unseen-paraphrase, three-class probe macro, joint native+three-state success, pre-correct retention and fixed UNKNOWN bounds; also routeON, same-state ON-and-correct and cross-disease routes.",
+  "claim_gates": [
+    "Four native sources and eight unseen paraphrases all CORE-confirmed correct",
+    "At least one same-state probe is routedON and correct, so all-OFF does not qualify",
+    "Primary MDU probe macro lower bound exceeds matchedCE upper bound",
+    "No cross-disease R1 activation"
+  ],
+  "uncertainty": "Only4source and6probe patients, repeated probes across edited states; passing gates is an exposed-DEV signal, not independent superiority or clinical validation. Missing/unknown results remain in fixed denominators.",
+  "scoring": "Existing CORE MEDPROP_SMALL4_CORE_FULL_SOURCE_V1, gpt-6-astra medium, exact accepted semantic payload reuse across all prior stages, inherited UNKNOWN preserved; one attempt per genuinely new payload, no automatic retries.",
+  "budgets": {
+    "wall_hours": 23,
+    "remote_new_bytes": 8000000000,
+    "remote_reserve_bytes": 2147483648,
+    "local_new_bytes": 2000000000,
+    "local_reserve_bytes": 268435456,
+    "free_disk_bytes": 8589934592,
+    "GPU_workers": 1,
+    "physical_GPU": 2,
+    "admission_free_MiB": 60000,
+    "max_generations": 500,
+    "max_updates": 1280,
+    "max_backwards": 2560,
+    "max_forwards": 600000,
+    "generation_margin_seconds": 1200
+  },
+  "lifecycle": "Existing libraries read-only. Preserve the new own-method conditional bank and an independent small local backup. No comparator reconstruction, raw-data downloads, historical deletion or extra recurring monitor. Finite resource guard plus collection/scoring/publication dependency.",
+  "stop": "Any predeclared mechanical/data/protection/resource failure blocks dependent training/evaluation and preserves evidence. No test-driven radius/basis/step search or cohort backfill.",
+  "references": {
+    "scope": "https://arxiv.org/abs/2206.06520",
+    "nullspace": "https://arxiv.org/abs/2410.02355"
+  },
+  "novelty_boundary": "Scope classification and null-space protection are established ideas. This is a task-specific conditional-TT repair hypothesis, not an AlphaEdit/SERAC reproduction or an established novel/SOTA claim."
+}
