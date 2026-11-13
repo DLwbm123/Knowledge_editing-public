@@ -63,10 +63,14 @@ def build(worktree):
  out['conditional_admission.py']=admission
  guard=out['guard.py']
  for old,new in [('GUARD_ONCE','GUARD_RECOVERY1_ONCE'),('worker.log','worker_recovery1.log'),('IDENTITY.private.json','IDENTITY_RECOVERY1.private.json'),('GUARD_EXIT.json','GUARD_EXIT_RECOVERY1.json'),('GUARD_FAILURE.private.json','GUARD_FAILURE_RECOVERY1.private.json')]:guard=guard.replace(old,new)
- out['guard_recovery1.py']=guard
+ out['guard_recovery1.py']=guard.replace("ROOT/'tools/worker.py'","ROOT/'tools/worker_recovery1.py'")
+ out['worker_recovery1.py']=worker.replace('import conditional_geometry as g','import conditional_geometry_recovery1 as g').replace('from conditional_admission import check','from conditional_admission_recovery1 import check')
+ out['conditional_geometry_recovery1.py']=out['conditional_geometry.py']
+ out['conditional_admission_recovery1.py']=out['conditional_admission.py']
  closeout=out['closeout.py']
  closeout=closeout.replace("(control/'CLOSEOUT_ONCE')","(control/'CLOSEOUT_RECOVERY1_ONCE')")
  for old,new in [('FAILURE.private.json','FAILURE_RECOVERY1.private.json'),('GUARD_FAILURE.private.json','GUARD_FAILURE_RECOVERY1.private.json'),('GUARD_EXIT.json','GUARD_EXIT_RECOVERY1.json')]:closeout=closeout.replace(old,new)
+ closeout=closeout.replace("independent_confirmation=False,","independent_confirmation=False,historical_engineering_failure_preserved=True,")
  out['closeout_recovery1.py']=closeout
  for name,source in out.items():compile(source,name,'exec')
  return out
