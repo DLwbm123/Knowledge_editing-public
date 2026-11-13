@@ -75,5 +75,15 @@
     "scope": "https://arxiv.org/abs/2206.06520",
     "nullspace": "https://arxiv.org/abs/2410.02355"
   },
-  "novelty_boundary": "Scope classification and null-space protection are established ideas. This is a task-specific conditional-TT repair hypothesis, not an AlphaEdit/SERAC reproduction or an established novel/SOTA claim."
+  "novelty_boundary": "Scope classification and null-space protection are established ideas. This is a task-specific conditional-TT repair hypothesis, not an AlphaEdit/SERAC reproduction or an established novel/SOTA claim.",
+  "engineering_recovery1": {
+    "reason": "Inherited raw32 generator required a nonzero residual for every active hook, conflicting with protected zero residuals. Initial preflight stopped before training.",
+    "initial_generation_attempts": 13,
+    "initial_completed_outputs": 12,
+    "initial_updates": 0,
+    "changes": "Task-local generator accepts zero only for explicitly projected experts; keeps exact prefill-once, active predictor trace and ordinary-expert nonzero checks. No parent runtime files changed.",
+    "reuse": "Reuse12 complete outputs,8Base hidden traces, frozen protection bases and R1 calibration. No pixel/role/geometry/optimizer/cohort change.",
+    "registered_replay": "One generation completed inside the old helper but its output was not returned/saved before the assertion. Exactly that named attempt is explicitly retried once with a new marker; original attempt retained and counted. No Judge or UNKNOWN replay.",
+    "clock": "Same original November13 start/deadline and500total-generation cap; no reset."
+  }
 }
