@@ -25,5 +25,8 @@ def build(worktree):
  assert protected_equal==20,'Structural protection did not replay clean Base; no training admission'
 '''
  out['worker.py']=out['worker.py'].replace(marker,preflight+marker)
+ out['conditional_geometry.py']=out.pop('geometry.py')
+ out['conditional_admission.py']=out.pop('admission.py')
+ out['worker.py']=out['worker.py'].replace('import geometry as g','import conditional_geometry as g').replace('from admission import check','from conditional_admission import check')
  for name,source in out.items():compile(source,name,'exec')
  return out
