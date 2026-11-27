@@ -49,11 +49,15 @@ def main(root):
 
     manifest=read(root/'panel.json')
     all_items=manifest['entries']
-    assert manifest['status']=='MACHINE_READY_BLIND_REVIEW_PENDING' and len(all_items)==30
-    assert len({i['source']['source_rows'][0]['image_sha256'] for i in all_items})==30
+    calibration = plan.get('kl_calibration', False)
+    if calibration:
+        assert manifest['status'] == 'DEVELOPMENT_KL_ONLY' and len(all_items) == 8
+    else:
+        assert manifest['status'] == 'MACHINE_READY_BLIND_REVIEW_PENDING' and len(all_items) == 30
+    assert len({i['source']['source_rows'][0]['image_sha256'] for i in all_items}) == len(all_items)
     items=all_items[lane::2]
     rows=[]
-    for item in items:
+    for item in ([] if calibration else items):
         src=item['source']
         def add(role,q,reference,base=None):
             rows.append({'n':len(rows),'owner':item['owner'],'role':role,'question':q,'reference':reference,
@@ -70,7 +74,7 @@ def main(root):
             assert row['label']=='independent' and b['sequence_contract']=='continuation_only' and b['raw_token_ids']
             assert row['image_sha256']==src['source_rows'][0]['image_sha256']
             add('holdout_independent',row['question'],row['gold_answer'],b)
-    assert len(rows)==120
+    assert len(rows) == (0 if calibration else 120)
     bank=load(outputs/'med150-v1-20261027/run/retained/MED150.pt')
     med=bank['states']
     tasks={r['edit_id']:r for r in bank['tasks']}
@@ -124,26 +128,6 @@ def main(root):
             file,src['source_rows'][0]['original_image_path'],row['owner'],'FROZEN_PILOT_REFERENCE')
 
     print('MODEL_READY',flush=True)
-    with torch.no_grad():
-        routes=[]
-        for row in rows:
-            if not row['role'].startswith('holdout'):
-                continue
-            seed_everything(row['source']['seed'])
-            batch=runtime.build_question_batch(record(row,''))
-            assert batch.image_sha256==row['image_sha']
-            key=runtime.extract_layer_input_key(batch,module_path=routing_layer,pooling='mean')
-            decision=router.route(key.to(runtime.device))
-            route=decision_as_json(decision)
-            selected=decision.logical_edit_id if decision.activated else None
-            assert selected is None or selected in tasks
-            row['route']=route
-            row['routed']=selected
-            counts['routes']+=1
-            routes.append({'n':row['n'],'route':route,'own':selected==row['source']['edit_id']})
-    assert counts['routes']==45
-    (root/f'routes{lane}.json').write_text(json.dumps(routes,allow_nan=False))
-    runtime.model.float()
     prefill=(runtime.model.model.embed_tokens,runtime.model.model.mm_projector,runtime.model.get_vision_tower())
 
     def prepare(r,q,raw_ids=None):
@@ -168,6 +152,34 @@ def main(root):
                     'use_cache':False,'return_dict':True}
         finally:
             for module in prefill:module.float()
+
+    if plan.get('gradient_preflight') or calibration:
+        from p import gradient_preflight
+        runtime.model.float()
+        gradient_preflight(root, plan, lane, items, runtime, layer, med, mdu, TT4,
+                           MedTraceLayerHook, prepare, record, seed_everything)
+        return
+
+    with torch.no_grad():
+        routes=[]
+        for row in rows:
+            if not row['role'].startswith('holdout'):
+                continue
+            seed_everything(row['source']['seed'])
+            batch=runtime.build_question_batch(record(row,''))
+            assert batch.image_sha256==row['image_sha']
+            key=runtime.extract_layer_input_key(batch,module_path=routing_layer,pooling='mean')
+            decision=router.route(key.to(runtime.device))
+            route=decision_as_json(decision)
+            selected=decision.logical_edit_id if decision.activated else None
+            assert selected is None or selected in tasks
+            row['route']=route
+            row['routed']=selected
+            counts['routes']+=1
+            routes.append({'n':row['n'],'route':route,'own':selected==row['source']['edit_id']})
+    assert counts['routes']==45
+    (root/f'routes{lane}.json').write_text(json.dumps(routes,allow_nan=False))
+    runtime.model.float()
 
     def attach(arm,edit):
         if edit is None or arm=='Base':return None,None

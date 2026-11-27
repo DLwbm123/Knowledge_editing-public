@@ -435,6 +435,10 @@ MDU 的全 T2L 与间接提问读入比中位数差为 **−0.174 [−0.247, −
 [t5]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/med_t5_release_alignment_v2_20261108/RESULTS.json
 [longitudinal]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_longitudinal_v2_20261109/REPORT_ZH.md
 [temporal]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_temporal_mechanism_v1_20261109/REPORT_ZH.md
+### 5.10 MDU-v2 新面板 CORE 和梯度准入
+
+在 30 图冻结面板上，MED 和 MDU150 两类留出正例均为 28/30 CORE，同图独立负例均为 16/30。三组配对均无增损。GPT-6.2 Astra 复核 176/176 条视图通过，独立人工复核为 0。GPU 6/7 的梯度预跑得到每步约 5.5 秒，KL 系数初值为 0.27008，正式训练由开发集标定结果决定。[执行报告](MDU_V2_STAGE0_CORE_AND_GRADIENT_ZH.md)
+
 [conditional]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_conditional_mdu_v2_20261113/REPORT_ZH.md
 [conditional-json]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_conditional_mdu_v2_20261113/RESULTS.json
 [med-prereg]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/med146_single_sequential_v133_20261027/PREREG_ZH.md

@@ -31,7 +31,6 @@ def main():
     sys.path[:0] = [str(WORKTREE / 'experiments/med150_source_review_v1'),
                     str(WORKTREE / 'experiments/med_fixed_depth_v1'),
                     str(WORKTREE / 'experiments/medical_proposition_v133'), str(SOURCE)]
-    import score_index
     from med133_score_contract import PROTOCOL, PROMPT, digest, schema, validate
     from scripts.medtrace import stage17_judge as judge
     judge.PROTOCOL, judge.PROMPT, judge.schema, judge.validate = PROTOCOL, PROMPT, schema, validate
@@ -42,16 +41,20 @@ def main():
     source_input=json.loads((ROOT/'SUPPLEMENT_INPUT.private.json').read_text())
     if source_input.get('status')!='SUPPLEMENT_IDENTITIES_FROZEN':raise ValueError('supplement identities not frozen')
     categories=source_input['categories'];payloads=source_input['payloads']
-    if len(categories['history_unverified'])!=35 or len(categories['conflict_unknown'])!=0 or len(categories['known_unknown'])!=0 or len(payloads)!=35:
-        raise ValueError('supplement count mismatch')
+    count = int(os.environ.get('FIXED_ITEM_COUNT', '35'))
+    epoch = os.environ.get('FIXED_SCORING_EPOCH', 'MED_MDU150_T2G_SUPPLEMENT_V1')
+    if not 0 < count <= 180 or len(categories['history_unverified']) != count or len(payloads) != count:
+        raise ValueError('scoring count mismatch')
+    if categories['conflict_unknown'] or categories['known_unknown'] or set(categories['history_unverified']) != set(payloads):
+        raise ValueError('scoring roles mismatch')
     pending=[payloads[k] for k in categories['history_unverified']]
     disputed=[payloads[k] for k in categories['conflict_unknown']]
     groups=[('history_unverified',pending[i:i+7]) for i in range(0,len(pending),7)]+([('conflict_adjudication',disputed)] if disputed else [])
-    batches=[dict(batch_id=digest([PROTOCOL,'MED_MDU150_T2G_SUPPLEMENT_V1',kind,rows]),records=rows) for kind,rows in groups]
+    batches=[dict(batch_id=digest([PROTOCOL,epoch,kind,rows]),records=rows) for kind,rows in groups]
     batch_categories={batch['batch_id']:kind for batch,(kind,_) in zip(batches,groups)}
     decisions={};unknown=[];charged=0;charge_lock=threading.Lock()
-    write('BATCH_MANIFEST.json',dict(batches=batches,batch_categories=batch_categories,original_valid_reused=None,history_unverified=35,
-        conflict_adjudication=0,known_failed=0,maximum_new_attempt_items=35,automatic_retry=False))
+    write('BATCH_MANIFEST.json',dict(batches=batches,batch_categories=batch_categories,original_valid_reused=None,history_unverified=count,
+        conflict_adjudication=0,known_failed=0,maximum_new_attempt_items=count,automatic_retry=False))
     write('DECISIONS.json',dict(decisions=decisions,unknown=unknown))
 
     def execute(batch):
@@ -83,7 +86,7 @@ def main():
                 with attempt.open('x') as f:
                     json.dump(dict(time=time.time(), items=len(batch['records']), automatic_retry=False), f)
                 charged += len(batch['records'])
-                if charged > 35:
+                if charged > count:
                     raise RuntimeError('Scoring attempt budget exceeded')
                 write('COST.json', dict(attempt_items=charged, time=time.time()))
             def terminate():
@@ -118,8 +121,8 @@ def main():
     if set(payloads) != set(decisions) | set(unknown):
         raise ValueError('Scoring coverage mismatch')
     write('COMPLETE.json', dict(time=time.time(),status='COMPLETE' if not unknown else 'INCOMPLETE',
-        target_payloads=35,original_valid_reused=None,conflict_adjudication=0,
-        history_unverified=35,new_attempt_items=charged,unknown=len(unknown)))
+        target_payloads=count,original_valid_reused=None,conflict_adjudication=0,
+        history_unverified=count,new_attempt_items=charged,unknown=len(unknown)))
 
 
 if __name__ == '__main__':
