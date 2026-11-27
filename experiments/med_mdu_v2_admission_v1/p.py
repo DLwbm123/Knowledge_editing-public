@@ -16,6 +16,10 @@ def gradient_preflight(root, plan, lane, items, runtime, layer, med, mdu, tt,
     timings = []
     updates = 0
     calibration = plan.get('kl_calibration', False)
+    formal = plan.get('formal_pilot', False)
+    versions = [v._version for v in runtime.model.parameters()] if formal else []
+    if formal:
+        (root / 'weights').mkdir(exist_ok=True)
 
     def logits(batch):
         labels = batch['labels']
@@ -128,15 +132,54 @@ def gradient_preflight(root, plan, lane, items, runtime, layer, med, mdu, tt,
                 mdu_kl = [float(locality(*n)) for n in validation_neg]
                 expert.load_state_dict(med[edit])
             result = dict(med_kl=med_kl, mdu_kl=mdu_kl)
-            if not calibration:
+            if not calibration and not formal:
                 dev = [batch(v, v['reference']) for v in item['views'] if v['role'] == 'validation']
                 assert len(dev) == 3
                 result['ce_grad'] = [grad_norm(positive(b)) for b in dev]
                 result['kl_grad'] = [grad_norm(locality(*n)) for n in neg]
-            if calibration or index < plan['timed_owners_per_lane']:
+            if formal or calibration or index < plan['timed_owners_per_lane']:
                 groups = [batch(v, v['reference']) for v in item['views'] if v['role'] == 'train']
                 fits = [batch(v, v['reference']) for v in source['source_rows'][1:]]
                 assert len(groups) == len(fits) == 4
+                if formal:
+                    sources = [native] + fits
+                    expanded = dict(zip((j for j, v in enumerate(item['views']) if v['role'] == 'train'),
+                                        groups, strict=True))
+                    for arm, lr_a in (('P1', 0.0001), ('P2', 0.001), ('P3', 0.0001), ('P4', 0.001)):
+                        expert.load_state_dict(med[edit])
+                        a, b = expert.parameter_groups()
+                        opt = torch.optim.Adam([dict(params=a, lr=lr_a), dict(params=b, lr=0.001)])
+                        for step, spec in enumerate(item['steps'], 1):
+                            assert time.time() < plan['deadline'] - 300
+                            assert spec['step'] == step and spec['native_source_index'] == 0
+                            opt.zero_grad(set_to_none=True)
+                            positive(native, with_eos=True).backward()
+                            supervised = ([sources[j] for j in spec['old_fit_indices']]
+                                          if arm in ('P1', 'P2') else
+                                          [expanded[j] for j in spec['expanded_view_indices']])
+                            assert len(supervised) == 4
+                            for view in supervised:
+                                (positive(view) / 4).backward()
+                            indices = spec['independent_train_negative_indices']
+                            assert indices and len(indices) <= 2
+                            for j in indices:
+                                (plan['beta'] * locality(*neg[j]) / len(indices)).backward()
+                            norm = torch.nn.utils.clip_grad_norm_(params, 1., error_if_nonfinite=True)
+                            opt.step()
+                            updates += 1
+                            if step == 1 or step % 40 == 0:
+                                print('STEP', index + 1, arm, step, float(norm), flush=True)
+                        assert step == 160
+                        state = {k: v.detach().cpu().clone() for k, v in expert.state_dict().items()}
+                        assert any(not torch.equal(state[k], med[edit][k]) for k in state)
+                        assert all(torch.isfinite(v).all() for v in state.values())
+                        target = root / 'weights' / f"{item['owner']}_{arm}.pt"
+                        with target.open('xb') as stream:
+                            torch.save(dict(state=state, edit=edit, seed=source['seed'], steps=step), stream)
+                        saved = torch.load(target, map_location='cpu', weights_only=True)
+                        assert all(torch.equal(saved['state'][k], state[k]) for k in state)
+                    rows.append(result)
+                    continue
                 if calibration:
                     result['candidates'] = {}
                     for factor in (0.3, 1., 3.):
@@ -163,4 +206,11 @@ def gradient_preflight(root, plan, lane, items, runtime, layer, med, mdu, tt,
                    disposable_updates=updates, generation=0, judge=0,
                    cuda_peak_allocated=torch.cuda.max_memory_allocated(),
                    cuda_peak_reserved=torch.cuda.max_memory_reserved())
-    (root / f'done{lane}.json').write_text(json.dumps(payload, allow_nan=False))
+    if formal:
+        assert [v._version for v in runtime.model.parameters()] == versions
+        assert updates == len(items) * 4 * 160
+        receipt = root / f'train{lane}.json'
+    else:
+        receipt = root / f'done{lane}.json'
+    with receipt.open('x') as out:
+        json.dump(payload, out, allow_nan=False)

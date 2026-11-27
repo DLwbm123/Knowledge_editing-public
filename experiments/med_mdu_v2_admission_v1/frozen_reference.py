@@ -50,8 +50,11 @@ def main(root):
     manifest=read(root/'panel.json')
     all_items=manifest['entries']
     calibration = plan.get('kl_calibration', False)
+    formal = plan.get('formal_pilot', False)
     if calibration:
         assert manifest['status'] == 'DEVELOPMENT_KL_ONLY' and len(all_items) == 8
+    elif formal:
+        assert manifest['status'] == 'ASTRA62_REVIEW_PASSED' and len(all_items) == 30
     else:
         assert manifest['status'] == 'MACHINE_READY_BLIND_REVIEW_PENDING' and len(all_items) == 30
     assert len({i['source']['source_rows'][0]['image_sha256'] for i in all_items}) == len(all_items)
@@ -74,7 +77,11 @@ def main(root):
             assert row['label']=='independent' and b['sequence_contract']=='continuation_only' and b['raw_token_ids']
             assert row['image_sha256']==src['source_rows'][0]['image_sha256']
             add('holdout_independent',row['question'],row['gold_answer'],b)
-    assert len(rows) == (0 if calibration else 120)
+        if formal:
+            for row in item['historical_t2l']:
+                add('historical_t2l', row['question'], row['reference'])
+    n_rows = len(rows)
+    assert n_rows == (0 if calibration else 120 + sum(len(i['historical_t2l']) for i in items) if formal else 120)
     bank=load(outputs/'med150-v1-20261027/run/retained/MED150.pt')
     med=bank['states']
     tasks={r['edit_id']:r for r in bank['tasks']}
@@ -153,17 +160,32 @@ def main(root):
         finally:
             for module in prefill:module.float()
 
-    if plan.get('gradient_preflight') or calibration:
+    if plan.get('gradient_preflight') or calibration or formal:
         from p import gradient_preflight
         runtime.model.float()
         gradient_preflight(root, plan, lane, items, runtime, layer, med, mdu, TT4,
                            MedTraceLayerHook, prepare, record, seed_everything)
-        return
+        if not formal:
+            return
+        waiting_for = root / f'train{1 - lane}.json'
+        while not waiting_for.is_file():
+            assert time.time() < plan['deadline'] - 300
+            time.sleep(15)
+        arms = list(manifest['arms'])
+        assert len(arms) == 4
+        for arm in arms:
+            states[arm] = dict(mdu)
+            for item in all_items:
+                src = item['source']
+                child = load(root / 'weights' / f"{item['owner']}_{arm}.pt")
+                assert child['edit'] == src['edit_id'] and child['seed'] == src['seed'] and child['steps'] == 160
+                states[arm][src['edit_id']] = child['state']
+        runtime.model.half()
 
     with torch.no_grad():
         routes=[]
         for row in rows:
-            if not row['role'].startswith('holdout'):
+            if not (row['role'].startswith('holdout') or row['role'] == 'historical_t2l'):
                 continue
             seed_everything(row['source']['seed'])
             batch=runtime.build_question_batch(record(row,''))
@@ -177,7 +199,7 @@ def main(root):
             row['routed']=selected
             counts['routes']+=1
             routes.append({'n':row['n'],'route':route,'own':selected==row['source']['edit_id']})
-    assert counts['routes']==45
+    assert counts['routes'] == 45 + (n_rows - 120 if formal else 0)
     (root/f'routes{lane}.json').write_text(json.dumps(routes,allow_nan=False))
     runtime.model.float()
 
@@ -281,10 +303,11 @@ def main(root):
             seed_everything(row['source']['seed'])
             edit=row['source']['edit_id']
             role=row['role']
-            sel=[('Base','Base',None),('MED','MED',edit),('MDU','MDU',edit)]
-            if role.startswith('holdout') and row['routed']!=edit:
-                for arm in ('MED','MDU'):
-                    sel.append(('bank_'+arm,arm,row['routed']))
+            measured_arms = ['MED', 'MDU'] + (arms if formal else [])
+            sel = [('Base', 'Base', None)] + [(arm, arm, edit) for arm in measured_arms]
+            if 'routed' in row and row['routed'] != edit:
+                for arm in measured_arms:
+                    sel.append(('bank_' + arm, arm, row['routed']))
             q=record(row,row['reference'])
             ref=teacher(prepare(row,q),sel)
             if role=='native':
@@ -293,16 +316,23 @@ def main(root):
             data['reference_prefix']=ref
             if row['base']:
                 data['base_prefix']=teacher(prepare(row,q,row['base']['raw_token_ids']),sel)
-            if role.startswith('holdout'):
-                data['route']=row['route']
-                raw,expanded=generation_inputs(row,q)
-                data['bank_generation']={arm:greedy(row,arm,row['routed'],raw,expanded) for arm in ('MED','MDU')}
-                data['reference']=row['reference']
-            print(json.dumps(data,ensure_ascii=False,allow_nan=False),file=out)
-            if row['n']%10==0:
-                print('DONE_EVENTS',row['n']+1,120,flush=True)
-    assert counts['teacher']>=405 and counts['generation']==90
-    (root/f'done{lane}.json').write_text(json.dumps({'events':120,'counts':dict(counts),'training':0,'judge':0}))
+            if formal or role.startswith('holdout'):
+                data['route'] = row.get('route')
+                raw, expanded = generation_inputs(row, q)
+                data['bank_generation'] = {arm: greedy(row, arm, row.get('routed', edit), raw, expanded)
+                                           for arm in measured_arms}
+                data['reference'] = row['reference']
+                if formal:
+                    data['question'] = row['question']
+            print(json.dumps(data, ensure_ascii=False, allow_nan=False), file=out)
+            if row['n'] % 10 == 0:
+                print('DONE_EVENTS', row['n'] + 1, n_rows, flush=True)
+    if formal:
+        assert counts['generation'] == 6 * n_rows
+    else:
+        assert counts['teacher'] >= 405 and counts['generation'] == 90
+    (root / f'done{lane}.json').write_text(json.dumps(
+        {'events': n_rows, 'counts': dict(counts), 'training': len(items) * 640 if formal else 0, 'judge': 0}))
 
 
 if __name__=='__main__':

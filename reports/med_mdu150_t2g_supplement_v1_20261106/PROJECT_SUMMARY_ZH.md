@@ -398,6 +398,10 @@ MDU 的全 T2L 与间接提问读入比中位数差为 **−0.174 [−0.247, −
 4. **固定首要机制指标与句型分层。** 学习率对照与 2×2 共同要求选择性间隔 $\Delta=\operatorname{median}r(\text{留出间接正例})-\operatorname{median}r(\text{留出同图独立负例})$ 相对配对参照增大。正负例都使用预先固定的 MDU150 FIT 分母，同批图像重采样同步计算各臂的间隔差与 95% 区间。原冻结面板的参考差为 0.174，新增留出面板在训练前另测参照，并预登记整图疾病清单和具体发现两类编辑的分层，作用范围不清的单列。已曝光的官方 T2G 间接问法与新视图库预先保留的句型族各自报告，均使用图像分组的配对 bootstrap。机制结论以预留句型族和最后的独立图像为主要证据。
 5. **在第二个多模态骨干上复核机制。** 使用普通 CE 训练的 TT 专家复现冻结读入、残差、NLL、同图 KL 和读入比回归。按骨干分别计算 FIT 分母，检验两个骨干的间隔与关联方向。完整 MED 初始化留在主骨干的对照中，第二骨干用于检验该读入现象是否可复现。
 
+### 5.10 MDU-v2 新面板 CORE 和梯度准入
+
+在 30 图冻结面板上，MED 和 MDU150 两类留出正例均为 28/30 CORE，同图独立负例均为 16/30。三组配对均无增损。GPT-6.2 Astra 复核 176/176 条视图通过，独立人工复核为 0。GPU 6/7 的梯度预跑得到每步约 5.5 秒，KL 系数初值为 0.27008，正式训练由开发集标定结果决定。[执行报告](MDU_V2_STAGE0_CORE_AND_GRADIENT_ZH.md)
+
 ## 6. GitHub 和复现入口
 
 | 用途 | 仓库或版本 |
@@ -435,10 +439,6 @@ MDU 的全 T2L 与间接提问读入比中位数差为 **−0.174 [−0.247, −
 [t5]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/med_t5_release_alignment_v2_20261108/RESULTS.json
 [longitudinal]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_longitudinal_v2_20261109/REPORT_ZH.md
 [temporal]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_temporal_mechanism_v1_20261109/REPORT_ZH.md
-### 5.10 MDU-v2 新面板 CORE 和梯度准入
-
-在 30 图冻结面板上，MED 和 MDU150 两类留出正例均为 28/30 CORE，同图独立负例均为 16/30。三组配对均无增损。GPT-6.2 Astra 复核 176/176 条视图通过，独立人工复核为 0。GPU 6/7 的梯度预跑得到每步约 5.5 秒，KL 系数初值为 0.27008，正式训练由开发集标定结果决定。[执行报告](MDU_V2_STAGE0_CORE_AND_GRADIENT_ZH.md)
-
 [conditional]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_conditional_mdu_v2_20261113/REPORT_ZH.md
 [conditional-json]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/padchest_conditional_mdu_v2_20261113/RESULTS.json
 [med-prereg]: https://github.com/DLwbm123/Knowledge_editing-public/blob/997168ae/reports/med146_single_sequential_v133_20261027/PREREG_ZH.md

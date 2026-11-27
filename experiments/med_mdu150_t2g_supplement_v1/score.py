@@ -43,7 +43,7 @@ def main():
     categories=source_input['categories'];payloads=source_input['payloads']
     count = int(os.environ.get('FIXED_ITEM_COUNT', '35'))
     epoch = os.environ.get('FIXED_SCORING_EPOCH', 'MED_MDU150_T2G_SUPPLEMENT_V1')
-    if not 0 < count <= 180 or len(categories['history_unverified']) != count or len(payloads) != count:
+    if not 0 < count <= 1548 or len(categories['history_unverified']) != count or len(payloads) != count:
         raise ValueError('scoring count mismatch')
     if categories['conflict_unknown'] or categories['known_unknown'] or set(categories['history_unverified']) != set(payloads):
         raise ValueError('scoring roles mismatch')

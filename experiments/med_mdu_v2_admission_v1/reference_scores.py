@@ -14,13 +14,11 @@ def write(path, data):
         json.dump(data, f, ensure_ascii=False, allow_nan=False)
 
 
-def prepare(panel, root):
-    rows = json.loads(panel.read_text())
-    assert len(rows) == 90
+def prepare_rows(rows, root, arms):
     payloads = {}
     consumers = []
     for row in rows:
-        for arm in ('MED', 'MDU'):
+        for arm in arms:
             question = row['question']
             gold = row['reference']
             answer = row['answers'][arm]['answer']
@@ -28,7 +26,7 @@ def prepare(panel, root):
             payloads[key] = dict(opaque_query_id=key, question=question, gold_answer=gold,
                                  raw_base_answer=answer)
             consumers.append(dict(key=key, owner=row['owner'], role=row['role'], arm=arm))
-    assert len(consumers) == len({(r['owner'], r['role'], r['arm']) for r in consumers}) == 180
+    assert len(consumers) == len(rows) * len(arms)
     order = sorted(payloads)
     random.Random(20261127).shuffle(order)
     write(root / 'SUPPLEMENT_INPUT.private.json',
@@ -38,6 +36,25 @@ def prepare(panel, root):
     write(root / 'contract.json', dict(protocol=PROTOCOL, prompt=PROMPT, model='gpt-6-astra',
                                        reasoning_effort='medium', snapshot=None))
     print(len(order))
+
+
+def prepare(panel, root):
+    rows = json.loads(panel.read_text())
+    assert len(rows) == len({(r['owner'], r['role']) for r in rows}) == 90
+    prepare_rows(rows, root, ('MED', 'MDU'))
+
+
+def prepare_pilot(run, root):
+    rows = []
+    for lane in range(2):
+        done = json.loads((run / f'done{lane}.json').read_text())
+        assert done['training'] == 9600 and done['judge'] == 0
+        block = [json.loads(line) for line in (run / f'metrics{lane}.jsonl').open()]
+        assert [r['n'] for r in block] == list(range(done['events']))
+        rows.extend(block)
+    assert len(rows) == 258
+    converted = [dict(r, answers=r['bank_generation']) for r in rows]
+    prepare_rows(converted, root, ('MED', 'MDU', 'P1', 'P2', 'P3', 'P4'))
 
 
 def summarize(root, output):
@@ -64,4 +81,4 @@ def summarize(root, output):
 
 if __name__ == '__main__':
     mode, first, second = sys.argv[1:]
-    {'prepare': prepare, 'summarize': summarize}[mode](Path(first), Path(second))
+    {'prepare': prepare, 'prepare_pilot': prepare_pilot, 'summarize': summarize}[mode](Path(first), Path(second))
