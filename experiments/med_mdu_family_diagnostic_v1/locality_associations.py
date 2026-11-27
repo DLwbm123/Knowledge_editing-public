@@ -41,6 +41,37 @@ def summary(values):
                 iqr=np.quantile(values,[.25,.75]).tolist())
 
 
+def log_slope(panel, predictor, response):
+    x = np.log(np.array([predictor(row) for row in panel]))
+    y = np.log(np.array([response(row) for row in panel]))
+    assert np.isfinite(x).all() and np.isfinite(y).all()
+    clusters = np.array([row['image_group'] for row in panel])
+    groups = np.unique(clusters)
+    indices = [np.flatnonzero(clusters == group) for group in groups]
+
+    def fit(selected):
+        a = x[selected]
+        b = y[selected]
+        a = a - a.mean()
+        b = b - b.mean()
+        return float(a.dot(b) / a.dot(a))
+
+    full = np.arange(len(panel))
+    rng = np.random.default_rng(20261127)
+    samples = []
+    for _ in range(4000):
+        drawn = rng.integers(0, len(indices), len(indices))
+        samples.append(fit(np.concatenate([indices[i] for i in drawn])))
+    slope = fit(full)
+    leave_one_out = [fit(full[clusters != group]) for group in groups]
+    correlation = float(np.corrcoef(x, y)[0,1])
+    return {
+        'events':len(panel), 'image_groups':len(groups), 'slope':slope,
+        'ci95':np.quantile(samples,[.025,.975]).tolist(), 'bootstrap':len(samples),
+        'r_squared':correlation**2, 'leave_one_image_out_range':[min(leave_one_out),max(leave_one_out)],
+    }
+
+
 def main(root):
     data=[json.loads(line) for line in (root/'metrics.jsonl').open()]
     owner_group={int(k):v for k,v in json.loads((root/'image_groups.private.json').read_text()).items()}
@@ -80,6 +111,16 @@ def main(root):
         metrics[name]={'kl_change':summary([r['delta_kl'] for r in panel]),
                        'core_errors':sum(not r['status']['MDU150']['core'] for r in panel),
                        'image_groups':len({r['image_group'] for r in panel})}
+    positive = [r for r in events if r['delta_kl'] > 0]
+    metrics['log_kl_scaling'] = {
+        'nonpositive_delta_excluded':len(events)-len(positive),
+        'positive_delta_over_mdu_readout':log_slope(positive, lambda r:r['MDU_ratio'], lambda r:r['delta_kl']),
+        'positive_delta_over_med_readout':log_slope(positive, lambda r:r['MED_ratio'], lambda r:r['delta_kl']),
+        'positive_delta_over_mdu_residual':log_slope(positive, lambda r:r['arms']['MDU']['residual'],
+                                                    lambda r:r['delta_kl']),
+        'med_kl_over_med_readout':log_slope(events, lambda r:r['MED_ratio'], lambda r:r['arms']['MED']['kl']),
+        'mdu_kl_over_mdu_readout':log_slope(events, lambda r:r['MDU_ratio'], lambda r:r['arms']['MDU']['kl']),
+    }
     print(json.dumps(metrics,allow_nan=False,indent=2))
 
 
