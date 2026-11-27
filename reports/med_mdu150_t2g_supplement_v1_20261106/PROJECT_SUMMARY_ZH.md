@@ -404,6 +404,8 @@ MDU 的全 T2L 与间接提问读入比中位数差为 **−0.174 [−0.247, −
 
 [第二骨干 Base 资格](MDU_V2_QWEN_BASE_ZH.md)
 
+[开发侧 KL 标定](MDU_V2_STAGE0_KL_CALIBRATION_ZH.md)
+
 ## 6. GitHub 和复现入口
 
 | 用途 | 仓库或版本 |
