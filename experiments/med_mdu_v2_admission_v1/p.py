@@ -182,7 +182,7 @@ def gradient_preflight(root, plan, lane, items, runtime, layer, med, mdu, tt,
                     continue
                 if calibration:
                     result['candidates'] = {}
-                    for factor in (0.3, 1., 3.):
+                    for factor in plan.get('factors', (0.3, 1., 3.)):
                         beta = plan['beta0'] * factor
                         arms = {}
                         for arm, views, lr_a in (('P1', fits, 0.0001), ('P2', fits, 0.001),

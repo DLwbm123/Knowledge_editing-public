@@ -59,6 +59,7 @@ def publish(worktree, basename, report, result, code_files=()):
             text = main_report.read_text()
             label = {
                 'MDU_V2_STAGE0_KL_CALIBRATION': '开发侧 KL 标定',
+                'MDU_V2_STAGE0_KL_CALIBRATION_EXTENDED': '加大 KL 系数的开发复验',
                 'MDU_V2_STAGE1_MATCHED_PILOT': '阶段 1 四臂结果',
                 'MDU_V2_QWEN_BASE': '第二骨干 Base 资格',
                 'MDU_V2_QWEN_MECHANISM': '第二骨干机制复现',
@@ -127,17 +128,20 @@ def report_pilot(result, beta, scoring):
     return '\n'.join(lines)
 
 
-def main(local, pilot, worktree, cutoff):
-    watch = local / 'followup'
+def main(local, pilot, worktree, cutoff, extended=False):
+    watch = local / ('followup_extended' if extended else 'followup')
     watch.mkdir(exist_ok=True)
     selection = wait_for(pilot, ('beta_selection.json',), cutoff)
     result = json.loads(selection['beta_selection.json'])
     (watch / 'beta_selection.json').write_text(selection['beta_selection.json'])
     try:
-        key = publish(worktree, 'MDU_V2_STAGE0_KL_CALIBRATION', report_calibration(result), result)
+        stem = 'MDU_V2_STAGE0_KL_CALIBRATION'
+        if extended:
+            stem += '_EXTENDED'
+        key = publish(worktree, stem, report_calibration(result), result)
         (watch / 'calibration_commit').write_text(key)
     except (subprocess.SubprocessError, AssertionError) as exc:
-        (watch / 'calibration_push_error').write_text(str(exc))
+        (watch / 'calibration_push_error').write_text(str(exc) + '\n' + str(getattr(exc, 'stderr', '')))
     if result['beta'] is None:
         return
 
@@ -185,4 +189,4 @@ def main(local, pilot, worktree, cutoff):
 
 if __name__ == '__main__':
     config = json.loads(Path('config.json').read_text())
-    main(Path(config['local']), Path(config['pilot']), Path(config['worktree']), config['calibration_cutoff'])
+    main(Path(config['local']), Path(config['pilot']), Path(config['worktree']), config['calibration_cutoff'], config.get('extended', False))

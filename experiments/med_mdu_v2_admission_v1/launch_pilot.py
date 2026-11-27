@@ -21,7 +21,8 @@ def choose(calibration, deadline):
             raise TimeoutError('KL calibration did not finish before its deadline')
         time.sleep(15)
     plan = json.loads((calibration / 'protocol.json').read_text())
-    assert plan['phase'] == 'STAGE0_KL_CALIBRATION' and plan['calibration_steps'] == 8
+    assert plan['phase'] in ('STAGE0_KL_CALIBRATION', 'STAGE0_KL_CALIBRATION_EXTENDED')
+    assert plan['calibration_steps'] == 8
     rows = []
     for i in range(2):
         d = json.loads((calibration / f'done{i}.json').read_text())
@@ -31,7 +32,7 @@ def choose(calibration, deadline):
     assert math.isfinite(ceiling) and ceiling > 0
     candidates = {}
     chosen = None
-    for multiplier in (0.3, 1., 3.):
+    for multiplier in plan.get('factors', (0.3, 1., 3.)):
         beta = plan['beta0'] * multiplier
         values = {}
         for arm in ('P1', 'P2', 'P3', 'P4'):
