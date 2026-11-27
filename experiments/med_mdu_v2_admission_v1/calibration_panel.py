@@ -8,13 +8,13 @@ import sys
 from freeze_data import FAMILIES, SEED, scope
 
 
-def build(root):
+def eligible_by_image(root, panel_names):
     def load(name):
         return json.loads((root / name).read_text())
 
     inventory = load('inventory.private.json')
-    pilot = load('pilot_inputs.private.json')
-    excluded = {v['source']['source_rows'][0]['image_sha256'] for v in pilot['entries']}
+    excluded = {v['source']['source_rows'][0]['image_sha256']
+                for name in panel_names for v in load(name)['entries']}
     negatives = defaultdict(lambda: defaultdict(list))
     base = load('base_continuations.private.json')
     for n in load('relation_labels.private.json'):
@@ -39,6 +39,11 @@ def build(root):
         e = dict(owner=owner, source=src, views=data, negative=dict(ns),
                  scope=scope(image['question']))
         options[image['image_sha256']].append(e)
+    return options, excluded
+
+
+def build(root):
+    options, excluded = eligible_by_image(root, ['pilot_inputs.private.json'])
     rng = random.Random(SEED + 1)
     picked = []
     for category in ('whole_image_findings', 'specific_finding_or_property'):

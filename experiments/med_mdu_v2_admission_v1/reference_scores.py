@@ -17,7 +17,7 @@ def write(path, data):
 def prepare_rows(rows, root, arms):
     payloads = {}
     consumers = []
-    for row in rows:
+    for event, row in enumerate(rows):
         for arm in arms:
             question = row['question']
             gold = row['reference']
@@ -25,7 +25,7 @@ def prepare_rows(rows, root, arms):
             key = digest([PROTOCOL, question, gold, answer])
             payloads[key] = dict(opaque_query_id=key, question=question, gold_answer=gold,
                                  raw_base_answer=answer)
-            consumers.append(dict(key=key, owner=row['owner'], role=row['role'], arm=arm))
+            consumers.append(dict(key=key, event=event, owner=row['owner'], role=row['role'], arm=arm))
     assert len(consumers) == len(rows) * len(arms)
     order = sorted(payloads)
     random.Random(20261127).shuffle(order)
