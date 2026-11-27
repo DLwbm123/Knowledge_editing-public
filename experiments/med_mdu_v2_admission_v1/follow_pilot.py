@@ -61,6 +61,7 @@ def publish(worktree, basename, report, result, code_files=()):
                 'MDU_V2_STAGE0_KL_CALIBRATION': '开发侧 KL 标定',
                 'MDU_V2_STAGE1_MATCHED_PILOT': '阶段 1 四臂结果',
                 'MDU_V2_QWEN_BASE': '第二骨干 Base 资格',
+                'MDU_V2_QWEN_MECHANISM': '第二骨干机制复现',
             }[basename]
             link = f'[{label}]({md.name})'
             assert link not in text
