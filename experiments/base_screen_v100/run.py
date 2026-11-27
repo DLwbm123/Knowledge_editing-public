@@ -29,6 +29,10 @@ def worker(key):
     torch.cuda.manual_seed_all(0)
     assert transformers.__version__ == '4.51.3'
     model_path = CFG['models'][key]['path']
+    expected_rows = CFG.get('rows', 90)
+    if CFG.get('limit_bytes'):
+        torch.cuda.set_per_process_memory_fraction(
+            CFG['limit_bytes'] / torch.cuda.get_device_properties(0).total_memory)
     counts = dict(forwards=0, generations=0, vision=0, backwards=0, updates=0)
     started = time.time()
     write(key+'/START.json', dict(time=started, pid=os.getpid()))
@@ -60,15 +64,19 @@ def worker(key):
             model_class=type(model).__name__,processor=processor.image_processor.to_dict(),
             generation_config=model.generation_config.to_dict(),argv=argv,gpu_processes=own))
         rows = json.loads((ROOT/'SOURCE_ROWS.json').read_text())
-        assert len(rows)==90 and len({r['qid'] for r in rows})==90
+        assert len(rows) == len({r['qid'] for r in rows}) == expected_rows
         eos = model.generation_config.eos_token_id
         eos = [eos] if isinstance(eos,int) else eos
         for row in rows:
             check()
             dest = key+'/outputs/'+str(row['qid'])+'.json'
             assert not (ROOT/dest).exists()
-            with Image.open(row['image_path']) as im:
-                assert im.mode=='RGB'
+            with Image.open(row['image_path']) as raw:
+                if CFG.get('convert_rgb'):
+                    im = raw.convert('RGB')
+                else:
+                    im = raw
+                    assert im.mode == 'RGB'
                 messages = [dict(role='user', content=[dict(type='image', image=im),dict(type='text',text=row['question'])])]
                 prompt = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
                 inputs = processor(text=[prompt],images=[im],padding=True,return_tensors='pt').to('cuda')
@@ -79,7 +87,7 @@ def worker(key):
             before = dict(counts)
             write(key+'/ATTEMPT.json',dict(qid=row['qid'],time=time.time(),counts=counts))
             counts['generations'] += 1
-            assert counts['generations']<=90
+            assert counts['generations'] <= expected_rows
             with torch.inference_mode():
                 out = model.generate(**inputs,do_sample=False,num_beams=1,max_new_tokens=1024,
                     repetition_penalty=1.05,temperature=None,top_p=None,top_k=None,use_cache=True)
