@@ -57,7 +57,11 @@ def publish(worktree, basename, report, result, code_files=()):
             summary = REPORT / 'PROJECT_SUMMARY_ZH.md'
             main_report = checkout / summary
             text = main_report.read_text()
-            label = '开发侧 KL 标定' if 'CALIBRATION' in basename else '阶段 1 四臂结果'
+            label = {
+                'MDU_V2_STAGE0_KL_CALIBRATION': '开发侧 KL 标定',
+                'MDU_V2_STAGE1_MATCHED_PILOT': '阶段 1 四臂结果',
+                'MDU_V2_QWEN_BASE': '第二骨干 Base 资格',
+            }[basename]
             link = f'[{label}]({md.name})'
             assert link not in text
             mark = '## 6. GitHub 和复现入口'
