@@ -1,0 +1,133 @@
+{
+  "methods": {
+    "MDU150": {
+      "events": 29,
+      "core": 18,
+      "refusal": 8,
+      "other": 3
+    },
+    "P1": {
+      "events": 29,
+      "core": 13,
+      "refusal": 14,
+      "other": 2,
+      "median_answer_nll": 0.10025935620069504,
+      "median_first_nll": 2.7642881870269775
+    },
+    "P2": {
+      "events": 29,
+      "core": 13,
+      "refusal": 13,
+      "other": 3,
+      "median_answer_nll": 0.06607864797115326,
+      "median_first_nll": 1.5621702671051025
+    },
+    "P3": {
+      "events": 29,
+      "core": 19,
+      "refusal": 7,
+      "other": 3,
+      "median_answer_nll": 0.018752187490463257,
+      "median_first_nll": 0.11126210540533066
+    },
+    "P4": {
+      "events": 29,
+      "core": 26,
+      "refusal": 3,
+      "other": 0,
+      "median_answer_nll": 0.0020864910911768675,
+      "median_first_nll": 0.007180715911090374
+    }
+  },
+  "pairs": {
+    "P4_vs_P1": {
+      "gain": 14,
+      "loss": 1,
+      "effects": {
+        "core": {
+          "delta": 0.4482758620689655,
+          "ci95": [
+            0.24137931034482757,
+            0.6551724137931034
+          ]
+        },
+        "refusal": {
+          "delta": -0.3793103448275862,
+          "ci95": [
+            -0.586206896551724,
+            -0.20603448275862069
+          ]
+        }
+      }
+    },
+    "P4_vs_P2": {
+      "gain": 13,
+      "loss": 0,
+      "effects": {
+        "core": {
+          "delta": 0.4482758620689655,
+          "ci95": [
+            0.27586206896551724,
+            0.6206896551724138
+          ]
+        },
+        "refusal": {
+          "delta": -0.3448275862068966,
+          "ci95": [
+            -0.5172413793103449,
+            -0.1724137931034483
+          ]
+        }
+      }
+    },
+    "P4_vs_P3": {
+      "gain": 7,
+      "loss": 0,
+      "effects": {
+        "core": {
+          "delta": 0.2413793103448276,
+          "ci95": [
+            0.10344827586206898,
+            0.4137931034482759
+          ]
+        },
+        "refusal": {
+          "delta": -0.13793103448275862,
+          "ci95": [
+            -0.3103448275862069,
+            0.0
+          ]
+        }
+      }
+    },
+    "P4_vs_MDU150": {
+      "gain": 8,
+      "loss": 0,
+      "effects": {
+        "core": {
+          "delta": 0.27586206896551724,
+          "ci95": [
+            0.10344827586206898,
+            0.44827586206896547
+          ]
+        },
+        "refusal": {
+          "delta": -0.1724137931034483,
+          "ci95": [
+            -0.3448275862068966,
+            0.0
+          ]
+        }
+      }
+    }
+  },
+  "images": 29,
+  "generated": 116,
+  "unique_scored": 64,
+  "unknown": 0,
+  "max_length_hits": 0,
+  "stage1b_mdu_fallback": 0,
+  "owner_only_equivalent": true,
+  "interpretation": "CATALOG_ASSISTANT_BLIND_BEHAVIOR_REVIEW",
+  "human_behavior_review": 0
+}

@@ -93,10 +93,16 @@ class ScopeTests(unittest.TestCase):
         labels = torch.tensor([[-100,-100,-100,5,6]])
         x = self.randn(1,5,30)
         feats = normalized_positions(x,labels)
-        torch.testing.assert_close(feats,x[0,2:].float()/(x[0,2:].float().square().mean(-1,keepdim=True).sqrt()+1e-6))
+        hook_mask = torch.zeros_like(labels,dtype=torch.bool)
+        hook_mask[:, :-1] = labels[:,1:] != -100
+        positions = torch.where(hook_mask[0])[0]
+        torch.testing.assert_close(positions,torch.tensor([2,3]))
+        torch.testing.assert_close(x[0,hook_mask[0]],x[0,2:4])
+        target = x[0,2:4].float()
+        torch.testing.assert_close(feats,target/(target.square().mean(-1,keepdim=True).sqrt()+1e-6))
         a,b = self.randn(4,30),torch.zeros(7,4,dtype=x.dtype)
         base = self.randn(5,7)
-        torch.testing.assert_close(base[2:] + (feats.double() @ a.T) @ b.T,base[2:],rtol=0,atol=0)
+        torch.testing.assert_close(base[2:4] + (feats.double() @ a.T) @ b.T,base[2:4],rtol=0,atol=0)
 
     def test_leakage_contract(self):
         base = dict(id='1',owner=1,role='train_eq',source_sha256='source',image_sha256='source',
@@ -107,6 +113,15 @@ class ScopeTests(unittest.TestCase):
             p = Path(t)/'m.json'
             p.write_text(json.dumps(plan))
             self.assertEqual(load_manifest(p)['rows'],[base])
+            indirect = dict(base,id='3',role='official_ind',question='official indirect')
+            p.write_text(json.dumps(dict(plan,rows=[indirect])))
+            self.assertEqual(load_manifest(p)['rows'],[indirect])
+            negative = dict(base,id='4',role='cal_ind',question='cal negative',relation='independent')
+            p.write_text(json.dumps(dict(plan,rows=[negative])))
+            with self.assertRaises(ValueError):
+                load_manifest(p)
+            p.write_text(json.dumps(dict(plan,rows=[negative],calibration_owners=[1])))
+            self.assertEqual(load_manifest(p)['calibration_owners'],[1])
             for other in (dict(base,id='2',role='hold_pos',family='holdout'),
                           dict(base,id='2',source_sha256='protected'),
                           dict(base,id='2',family='holdout')):
@@ -117,7 +132,7 @@ class ScopeTests(unittest.TestCase):
     def test_scope_and_unknown_counts(self):
         scores = [{'role':'hold_pos','score':2.},{'role':'hold_ind','score':1.},
                   {'role':'hold_vis','score':2.}]
-        self.assertEqual(scope_metrics(scores),{'delta':.5,'auc_ind':1.,'auc_vis':0.})
+        self.assertEqual(scope_metrics(scores),{'delta':.5,'delta_ind':1.,'delta_vis':0.,'auc_ind':1.,'auc_vis':0.})
         val = routing_report([dict(id='a',owner=1,role='official_ind',image='i',
                                    route='P4',core=None,selected=1)])
         self.assertEqual(val['groups']['P4']['official_ind']['core_unknown'],1)

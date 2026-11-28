@@ -134,8 +134,11 @@ def fit(positive, negatives, ridge, initial_g4, modes=112, rank=4, rounds=10, st
     g4 = row_basis(initial_g4.to(positive.rows)).detach().requires_grad_()
     adam = torch.optim.Adam([g4], lr=.01)
     trace = []
-    for _ in range(rounds):
+    for iteration in range(rounds):
         with torch.no_grad():
+            if iteration:
+                g4.copy_(row_basis(g4))
+                adam.state.clear()
             vals, g3 = g3_step(g4, positive, negatives, ridge, modes, rank)
             current = float(objective(input_matrix(g3, g4), positive, negatives, ridge))
             if trace and current < trace[-1] - 1e-8 * abs(trace[-1]):

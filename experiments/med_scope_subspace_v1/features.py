@@ -8,8 +8,9 @@ import torch
 
 
 DEV = {'native', 'fit', 'train_eq', 'train_ind', 'train_vis', 'bg', 'val_pos', 'val_neg'}
-TEST = {'cal_ind', 'cal_vis', 'hold_pos', 'hold_ind', 'hold_vis', 'official_ind', 't1g', 't2l', 'ood'}
-POSITIVES = {'native', 'fit', 'train_eq', 'val_pos', 'hold_pos', 'official_ind', 't1g'}
+OFFICIAL = {'official_ind','official_paraphrase','official_numeric','official_distractor'}
+TEST = OFFICIAL | {'cal_ind', 'cal_vis', 'hold_pos', 'hold_ind', 'hold_vis', 'official_ind', 't1g', 't2l', 'ood'}
+POSITIVES = OFFICIAL | {'native', 'fit', 'train_eq', 'val_pos', 'hold_pos', 'official_ind', 't1g'}
 VISUAL_NEGATIVE = {'black', 'strong_noise', 'strong_blur'}
 
 
@@ -42,7 +43,7 @@ def load_manifest(path):
             raise ValueError('Same input bound to different roles')
         if r['role'] in POSITIVES and not r.get('answer'):
             raise ValueError('Positive answer missing')
-        if (r['role'].endswith('_ind') or r['role'] == 'hold_ind') and r.get('relation') != 'independent':
+        if r['role'] in {'train_ind','cal_ind','hold_ind'} and r.get('relation') != 'independent':
             raise ValueError('Independent negatives need a relation label')
         family = r.get('transform', 'identity')
         if r['role'] == 'train_eq' and family != 'identity':
@@ -54,6 +55,11 @@ def load_manifest(path):
             raise ValueError('Visual training transform not admitted')
         if r['role'] in {'cal_vis', 'hold_vis'} and family != 'strong_blur':
             raise ValueError('Visual evaluation transform not admitted')
+    calibration_owners = {r['owner'] for r in rows if r['role'] in {'cal_ind','cal_vis'}}
+    if calibration_owners != set(plan.get('calibration_owners',[])):
+        raise ValueError('Calibration owner roster differs from calibration events')
+    if any(r['owner'] in calibration_owners for r in rows if r['role'] in {'hold_ind','hold_vis'}):
+        raise ValueError('A calibration owner also contributed a held-out negative')
     calibration = {r['source_sha256'] for r in rows if r['role'].startswith('cal_')}
     evaluation = {r['source_sha256'] for r in rows if r['role'] in {'hold_ind','hold_vis','ood'}}
     if calibration & evaluation:
@@ -89,12 +95,17 @@ def normalized_positions(x, labels):
     answer = torch.where(labels[0] != -100)[0]
     if not answer.numel() or int(answer[0]) == 0 or answer.numel() != int(answer[-1]-answer[0]+1):
         raise ValueError('Expected a contiguous one-example teacher mask')
-    x = x[0, int(answer[0])-1:int(answer[-1])+1].float()
+    x = x[0, int(answer[0])-1:int(answer[-1])].float()
     return x / (x.square().mean(-1, keepdim=True).sqrt()+1e-6)
 
 
-def acquire(runtime, plan, part, shard=0, shards=1):
-    rows = [r for r in plan['rows'] if r['role'] in (DEV if part == 'development' else TEST)]
+def acquire(runtime, plan, part, shard=0, shards=1, roles=None):
+    allowed = DEV if part=='development' else TEST
+    if roles:
+        if not set(roles)<=allowed:
+            raise ValueError('Requested feature role is outside the declared partition')
+        allowed = set(roles)
+    rows = [r for r in plan['rows'] if r['role'] in allowed]
     data = {}
     parity = plan.get('projection_parity',{})
     checked_zero = False

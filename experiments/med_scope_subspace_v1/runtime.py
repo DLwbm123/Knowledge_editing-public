@@ -1,5 +1,6 @@
 """Bind the stored LLaVA-Med runtime without changing earlier experiment entrypoints."""
 from contextlib import contextmanager, nullcontext
+from hashlib import sha256
 import json
 import os
 from pathlib import Path
@@ -23,6 +24,8 @@ class FrozenRuntime:
         self.max_generations = contract['max_generations']
         self.forwards = self.generations = 0
         self.base_outputs = {}
+        self.generated_base = set()
+        self.allow_base_generation = False
         self.device = torch.device('cuda:0')
         if torch.cuda.device_count() != 1:
             raise RuntimeError('Expose precisely one GPU to a model worker')
@@ -112,6 +115,44 @@ class FrozenRuntime:
         return self.record_type(edit,row['dataset'],row['question'],row.get('answer',''),row['question'],
                                 image,row.get('original_image_path',str(image)),row.get('owner') or 0,'SCOPE')
 
+    @staticmethod
+    def digest(value):
+        return sha256(json.dumps(value,sort_keys=True,ensure_ascii=False,
+                                 allow_nan=False,separators=(',',':')).encode()).hexdigest()
+
+    def base_binding(self, row):
+        return self.digest([row['id'],row['question'],row['image_sha256'],row.get('owner'),
+                            self.runtime.generation_config,os.environ.get('M3BENCH_MODEL_PATH')])
+
+    def base_answer(self, row):
+        key = row['id']
+        if key not in self.base_outputs:
+            if not self.allow_base_generation:
+                raise ValueError(f'Missing frozen Base continuation for {key}')
+            if row.get('owner') is not None:
+                self.seed(self.by_order[row['owner']]['seed'])
+            self.base_outputs[key] = {'binding':self.base_binding(row),'answer':self.generate(row)}
+            self.generated_base.add(key)
+        return self.base_outputs[key]['answer']
+
+    def load_prefixes(self, files, rows):
+        indexed = {r['id']:r for r in rows}
+        for path in files:
+            pack = json.loads(Path(path).read_text())
+            body = pack['outputs']
+            if self.digest(body)!=pack['digest']:
+                raise ValueError('Base-prefix payload digest differs')
+            for key,value in body.items():
+                if key not in indexed or value['binding']!=self.base_binding(indexed[key]):
+                    raise ValueError('Base-prefix event or runtime binding differs')
+                if key in self.base_outputs and self.base_outputs[key]!=value:
+                    raise ValueError('Conflicting frozen Base continuations')
+                self.base_outputs[key] = value
+
+    def generated_prefixes(self):
+        body = {k:self.base_outputs[k] for k in sorted(self.generated_base)}
+        return dict(digest=self.digest(body),outputs=body)
+
     @torch.no_grad()
     def teacher_batch(self, row, prefix):
         self.budget()
@@ -126,11 +167,9 @@ class FrozenRuntime:
             return answer
         tokens = row.get('base_tokens')
         if tokens is None:
-            if row['id'] not in self.base_outputs:
-                self.base_outputs[row['id']] = self.generate(row)
-            result = self.base_outputs[row['id']]
+            result = self.base_answer(row)
             if result['at_cap'] or not result['tokens']:
-                raise ValueError('Unusable Base prefix')
+                raise ValueError('Unusable frozen Base prefix. Inspect the prefix preflight receipt.')
             tokens = result['tokens']
         with self.tokenize_images():
             raw = self.runtime.adapter.prepare_inputs(rec.image_path,rec.question,None)
@@ -177,7 +216,7 @@ class FrozenRuntime:
             if raw['image_sha256'] != row['image_sha256']:
                 raise ValueError('Generation image binding differs')
             expanded = model.prepare_inputs_labels_for_multimodal(
-                raw['input_ids'],None,raw['attention_mask'],None,raw['images'],image_sizes=None)
+                raw['input_ids'],None,raw['attention_mask'],None,None,raw['images'],image_sizes=None)
         original = model.prepare_inputs_labels_for_multimodal
         calls = 0
         def reuse(*args, **kwargs):

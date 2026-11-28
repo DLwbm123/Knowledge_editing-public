@@ -35,8 +35,9 @@ def scope_metrics(rows):
         neg.sort()
         return sum(bisect_left(neg,p) for p in pos)/(len(pos)*len(neg))
     neg = ind + vis
-    return dict(delta=statistics.median(pos)-statistics.median(neg) if pos and neg else None,
-                auc_ind=auc(ind),auc_vis=auc(vis))
+    def delta(x):
+        return statistics.median(pos)-statistics.median(x) if pos and x else None
+    return dict(delta=delta(neg),delta_ind=delta(ind),delta_vis=delta(vis),auc_ind=auc(ind),auc_vis=auc(vis))
 
 
 def s0_report(scored, replicates=2000):
@@ -53,6 +54,9 @@ def s0_report(scored, replicates=2000):
     clusters = defaultdict(list)
     for row in rows:
         clusters[row['image']].append(row)
+    required = {'hold_pos','hold_ind','hold_vis'}
+    if any(not required <= {r['role'] for r in v} for v in clusters.values()):
+        raise ValueError('S0 requires positive, independent negative and visual negative support on every evaluation image')
     def metrics(data, arm):
         return scope_metrics([dict(role=r['role'],score=r['by_arm'][arm]) for r in data])
     readouts = {arm:metrics(rows,arm) for arm in candidates}
@@ -61,7 +65,7 @@ def s0_report(scored, replicates=2000):
         for anchor in ('K-P4','K-U'):
             if arm == anchor:
                 continue
-            for metric in ('delta','auc_ind','auc_vis'):
+            for metric in ('delta','delta_ind','delta_vis','auc_ind','auc_vis'):
                 def change(data):
                     a,b = metrics(data,arm)[metric],metrics(data,anchor)[metric]
                     return None if a is None or b is None else a-b
@@ -130,6 +134,10 @@ def routing_report(rows):
     groups = defaultdict(list)
     for r in rows:
         groups[(r['route'],r['role'])].append(r)
+    official = {'official_ind','official_paraphrase','official_numeric','official_distractor'}
+    for route in {route for route,_ in groups}:
+        if all((route,role) in groups for role in official):
+            groups[(route,'official_t2g')] = [row for role in sorted(official) for row in groups[(route,role)]]
     out = {}
     for (route,role), items in groups.items():
         decided = [r['core'] for r in items if r.get('core') is not None]
@@ -148,7 +156,7 @@ def routing_report(rows):
             target_exact=sum(bool(r.get('exact')) for r in items),
             exact_support=sum(r.get('exact') is not None for r in items),
             medians={key:statistics.median(values) for key in
-                ('first_nll','answer_nll','reference_kl','base_kl')
+                ('first_nll','answer_nll','reference_kl','target_path_kl','target_path_nll','base_kl')
                 if (values := [r['metric'][key] for r in items if key in r.get('metric',{})])})
     compared = {}
     for role in sorted({role for _,role in groups}):
@@ -172,7 +180,7 @@ def routing_report(rows):
             effects = {}
             field_pairs = [('core',lambda r:r.get('core')),('exact',lambda r:r.get('exact'))]
             field_pairs += [(metric,lambda r,k=metric:r.get('metric',{}).get(k)) for metric in
-                            ('answer_nll','reference_kl','base_kl')]
+                            ('answer_nll','reference_kl','target_path_kl','target_path_nll','base_kl')]
             for metric,get in field_pairs:
                 def est(data):
                     vals = [(get(l),get(r)) for l,r in data if get(l) is not None and get(r) is not None]

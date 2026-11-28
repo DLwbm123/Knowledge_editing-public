@@ -67,11 +67,22 @@ def make(stage1, supplement, image_dir):
                      image_path=str(image),image_sha256=encoded,transform=family)
             if i<2:
                 visual.append(id)
+        if supplement.get('reserve_visual_validation'):
+            image = image_dir/f'{o}-validation.png'
+            encoded = prepare_image(original,image,'strong_noise',src['seed']+104729)
+            add('validation-image','val_neg',native['question'],native['reference'],
+                image_path=str(image),image_sha256=encoded,transform='strong_noise')
+        if o in set(supplement.get('gamma_positive_owners',[])):
+            image = image_dir/f'{o}-gamma.png'
+            encoded = prepare_image(original,image,'gamma',src['seed'])
+            add('gamma-image','train_eq',native['question'],native['reference'],
+                image_path=str(image),image_sha256=encoded,transform='gamma',
+                family='gamma_native',answer_preserved=True)
         scheduled[str(o)] = [dict(native=source_ids[0],
              views=[train_views[i] for i in s['expanded_view_indices']],
              negatives=[negatives[s['independent_train_negative_indices'][0]],visual[(i-1)%len(visual)]])
              for i,s in enumerate(e['steps'],1)]
-    combined = {k:v for k,v in supplement.items() if k not in {'rows','calibration_owners'}}
+    combined = {k:v for k,v in supplement.items() if k != 'rows'}
     return dict(combined,rows=rows,schedules=scheduled,stage1_owners=sorted(owners))
 
 

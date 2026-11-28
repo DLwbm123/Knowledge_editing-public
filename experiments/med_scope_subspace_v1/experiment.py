@@ -10,7 +10,7 @@ import statistics
 import torch
 
 from .evaluate import d0, fit_scale, routing_report, s0_report
-from .features import load_manifest, acquire, read_features
+from .features import DEV, POSITIVES, TEST, VISUAL_NEGATIVE, load_manifest, acquire, read_features
 from .router import ScopeRouter
 from .runtime import FrozenRuntime
 from .solve_panel import solve
@@ -58,6 +58,19 @@ def get_schedule(plan, owner):
     return schedule
 
 
+def writer_initialization(solutions, owner):
+    result = solutions[owner]
+    tt = result['K-TT']
+    fits = result['fits'].to(tt['A'])
+    measured = torch.quantile((fits @ tt['A'].T).norm(dim=-1), .5)
+    reference = torch.quantile((fits @ result['K-P4']['A'].to(fits).T).norm(dim=-1), .5)
+    if min(float(measured),float(reference))<=0:
+        raise ValueError('Missing FIT read-in scale')
+    ratio = float(reference / measured)
+    scale = ratio if ratio>2 or ratio<.5 else 1.
+    return dict(tt,G3=tt['G3']*scale,fit_readin_ratio=ratio,writer_input_scale=scale)
+
+
 def reference_arm_states(runtime, owners):
     arms = {}
     for owner in owners:
@@ -89,6 +102,7 @@ def scoped_payload(plan, features, solutions):
 
 def measure(runtime,row,expert):
     result = {}
+    target_path = row.get('transform') in VISUAL_NEGATIVE
     if row.get('answer'):
         with torch.no_grad():
             batch = runtime.teacher_batch(row,'reference')
@@ -101,12 +115,16 @@ def measure(runtime,row,expert):
             lp = scores.log_softmax(-1)
             nll = -lp.gather(1,tokens[:,None]).squeeze(1)[tokens!=runtime.eos]
             if len(nll):
-                result.update(first_nll=float(nll[0]),answer_nll=float(nll.mean()))
+                if target_path:
+                    result['target_path_nll'] = float(nll.mean())
+                else:
+                    result.update(first_nll=float(nll[0]),answer_nll=float(nll.mean()))
     if row['role'] in {'hold_ind','hold_vis','t2l','ood'}:
         for prefix in ('reference','base'):
             if prefix=='reference' and not row.get('answer'):
                 continue
-            result[prefix+'_kl'] = validate_kl(runtime,row,expert,prefix) if expert is not None else 0.
+            metric = 'target_path_kl' if prefix=='reference' and target_path else prefix+'_kl'
+            result[metric] = validate_kl(runtime,row,expert,prefix) if expert is not None else 0.
     return result
 
 
@@ -125,7 +143,7 @@ def eval_workers(args, runtime, plan, solutions):
     if args.policy == 'stage1b' and any(r['role']!='official_ind' for r in rows):
         raise ValueError('Stage 1b is the frozen official indirect family only')
     rows = rows[args.shard::args.shards]
-    routes = runtime.frozen_routes(rows) if args.policy != 'writer' else {}
+    routes = runtime.frozen_routes(rows) if args.policy != 'writer' and not args.owner_only else {}
     bank = {}
     for path in args.bank or []:
         shard = load_state(path)
@@ -158,15 +176,21 @@ def eval_workers(args, runtime, plan, solutions):
     p_owners = set(plan.get('stage1_owners',[]))
     if args.policy=='stage1b' and not p_owners:
         raise ValueError('Declare the frozen Stage-1 checkpoint owners')
+    if args.owner_only and args.policy!='stage1b':
+        raise ValueError('Owner-only routing is a Stage-1b diagnostic')
+    fallback = 0
     for number,row in enumerate(rows,1):
         rid = row['id']
         if own_seed := row.get('owner'):
             runtime.seed(runtime.by_order[own_seed]['seed'])
         own = row.get('owner')
         if args.policy == 'stage1b':
-            selected = routes[rid]
+            selected = own if args.owner_only else routes[rid]
+            if not args.owner_only and 'frozen_r0_owner' in row and selected != row['frozen_r0_owner']:
+                raise ValueError('R0 differs from the frozen Stage-1b routing ledger')
+            fallback += int(selected is not None and selected not in p_owners)
             methods = [(arm,selected,runtime.checkpoint(arm if selected in p_owners else 'MDU',selected)
-                        if selected is not None else None) for arm in ('P1','P2','P3','P4','MDU')]
+                        if selected is not None else None) for arm in args.stage1b_arms]
         elif args.policy == 'writer':
             methods = [('V-TT',own,bank[own]['V-TT']),('V-TT-ft',own,bank[own]['V-TT-ft']),
                        ('P4',own,runtime.checkpoint('P4',own))]
@@ -195,18 +219,27 @@ def eval_workers(args, runtime, plan, solutions):
             exact = normalized == norm(target) if target is not None else None
             result.append(dict(id=rid,role=row['role'],image=row['source_sha256'],owner=own,
                               route=method,selected=selected,core=decisions.get(opaque),exact=exact,
-                              raw=output,metric=measurement,score_id=opaque,question=row['question'],reference=row.get('answer')))
+                              raw=output,metric=measurement,score_id=opaque,question=row['question'],reference=None if row.get('transform') in VISUAL_NEGATIVE else row.get('answer')))
         if number==1 or number%20==0:
             print('EVAL',number,flush=True)
     thresholds = {k:(r.threshold if math.isfinite(r.threshold) else None) for k,r in routers.items()}
-    return dict(rows=result,thresholds=thresholds,calibration_images=len(cal) if routers else 0)
+    return dict(rows=result,thresholds=thresholds,calibration_images=len(cal) if routers else 0,
+                stage1b_mdu_fallback=fallback,owner_only=args.owner_only,
+                forwards=runtime.forwards,generations=runtime.generations)
 
 
 def run(args):
     if args.command=='d0':
         with Path(args.diagnostics).open() as stream:
             rows = [json.loads(s) for s in stream]
-        json_write(args.output,d0(rows,json_read(args.images)))
+        image_groups = json_read(args.images)
+        report = d0(rows,image_groups)
+        if args.reference_audit:
+            valid = {r['q'] for r in json_read(args.reference_audit)['labels']
+                     if r['type']=='negation_uncertainty' and r['judge']=='V'}
+            subset = [r for r in rows if r.get('variant')!='negation_uncertainty' or r['query'] in valid]
+            report['reference_valid_sensitivity'] = d0(subset,image_groups)
+        json_write(args.output,report)
         return
     if args.command=='score-input':
         rows = [row for p in args.inputs for row in json_read(p)['rows'] if row.get('reference')]
@@ -252,7 +285,8 @@ def run(args):
             for row in rows:
                 row['core'] = decisions.get(row['score_id'])
         report = routing_report(rows)
-        report.update(thresholds=thresholds,calibration_images=shards[0]['calibration_images'])
+        report.update(thresholds=thresholds,calibration_images=shards[0]['calibration_images'],
+                      stage1b_mdu_fallback=sum(s.get('stage1b_mdu_fallback',0) for s in shards))
         json_write(args.output,report)
         return
     plan = load_manifest(args.manifest)
@@ -281,8 +315,12 @@ def run(args):
     solutions = bound_solution(args.solution,args.manifest) if getattr(args,'solution',None) else {}
     if args.command=='s0':
         scored = scoped_payload(plan,read_features(args.features),solutions)
-        main = {k:v for k,v in scored.items() if v['K-TT']['role']!='official_ind'}
+        owners = {r['id']:r.get('owner') for r in plan['rows']}
+        calibration = set(plan.get('calibration_owners',[]))
+        main = {k:v for k,v in scored.items()
+                if v['K-TT']['role']!='official_ind' and owners[k] not in calibration}
         report = s0_report(main)
+        report['calibration_owners_excluded'] = len(calibration)
         report['official_ind'] = {k:statistics.median(e[k]['score'] for e in scored.values()
             if e[k]['role']=='official_ind') for k in next(iter(main.values()))} if any(
                 e['K-TT']['role']=='official_ind' for e in scored.values()) else {}
@@ -297,10 +335,26 @@ def run(args):
         if gate['decision']!='S1_ADMITTED' or gate.get('solution_digest')!=h:
             raise ValueError('S0 gate does not admit this solution')
     runtime = FrozenRuntime(Path(args.output).parent,json_read(args.contract))
-    if args.command=='collect':
+    runtime.load_prefixes(args.base_prefixes or [], plan['rows'])
+    runtime.allow_base_generation = args.command in {'collect','prefix'}
+    if args.command=='prefix':
+        if args.part=='evaluation' and not solutions:
+            raise ValueError('Lock S0 before the evaluation prefix preflight')
+        allowed = DEV if args.part=='development' else TEST
+        rows = [r for r in plan['rows'] if r['role'] in allowed and r['role'] not in POSITIVES
+                and r.get('base_tokens') is None and (not args.roles or r['role'] in args.roles)]
+        rejected = []
+        for row in rows[args.shard::args.shards]:
+            result = runtime.base_answer(row)
+            if result['at_cap'] or not result['tokens'] or all(t==runtime.eos for t in result['tokens']):
+                rejected.append(dict(id=row['id'],role=row['role'],at_cap=result['at_cap']))
+        output = runtime.generated_prefixes()
+        output.update(rejected=rejected,requested=len(rows[args.shard::args.shards]))
+        json_write(args.output,output)
+    elif args.command=='collect':
         if args.part=='evaluation' and not solutions:
             raise ValueError('Lock S0 solutions before collecting held-out features')
-        cache = acquire(runtime,plan,args.part,args.shard,args.shards)
+        cache = acquire(runtime,plan,args.part,args.shard,args.shards,args.roles)
         if args.references:
             owners = {v['owner'] for v in cache.values() if v['role']=='native'}
             write_state(args.references,reference_arm_states(runtime,owners))
@@ -316,7 +370,7 @@ def run(args):
             raise ValueError('Incomplete beta validation support')
         for owner in owners:
             runtime.seed(runtime.by_order[owner]['seed'])
-            warm,_ = train(runtime,runtime.expert(owner),solutions[owner]['K-TT'],events,
+            warm,_ = train(runtime,runtime.expert(owner),writer_initialization(solutions,owner),events,
                            get_schedule(plan,owner)[:8],0.,False)
             p,n = gradient_ratio(runtime,runtime.expert(owner,warm),validations[owner])
             positive_grad.extend(p)
@@ -335,8 +389,8 @@ def run(args):
                 observations = []
                 for o in owners:
                     runtime.seed(runtime.by_order[o]['seed'])
-                    weights,_ = train(runtime,runtime.expert(o),solutions[o]['K-TT'],events,
-                                      get_schedule(plan,o)[:8],beta,joint)
+                    weights,_ = train(runtime,runtime.expert(o),writer_initialization(solutions,o),events,
+                                      get_schedule(plan,o),beta,joint)
                     editor = runtime.expert(o,weights)
                     observations.extend(validate_kl(runtime,r,editor) for r in validations[o] if r['role']=='val_neg')
                 kl['V-TT-ft' if joint else 'V-TT'] = statistics.median(observations)
@@ -345,7 +399,7 @@ def run(args):
                 selected = beta
         json_write(args.output,dict(beta=selected,reference=cap,candidates=candidates,ce_gradient=pg,kl_gradient=ng,
                                     manifest_digest=sha256(Path(args.manifest).read_bytes()).hexdigest(),
-                                    solution_digest=h))
+                                    solution_digest=h,candidate_steps=160,warmup_steps=8))
     elif args.command=='train':
         beta = json_read(args.beta)
         if (beta['beta'] is None or beta.get('solution_digest')!=h
@@ -359,10 +413,13 @@ def run(args):
             steps = get_schedule(plan,owner)
             if any(by_id[e]['owner']!=owner for step in steps for e in step['views']+step['negatives']+[step['native']]):
                 raise ValueError('Schedule crosses expert ownership')
+            state = writer_initialization(solutions,owner)
             bank[owner],curves[owner] = {},{}
             for arm,joint in (('V-TT',False),('V-TT-ft',True)):
                 bank[owner][arm],curves[owner][arm] = train(runtime,runtime.expert(owner),
-                    solutions[owner]['K-TT'],by_id,steps,beta['beta'],joint)
+                    state,by_id,steps,beta['beta'],joint)
+            curves[owner]['fit_readin_ratio'] = state['fit_readin_ratio']
+            curves[owner]['writer_input_scale'] = state['writer_input_scale']
             snapshots = Path(args.output).with_suffix('.owners')
             snapshots.mkdir(exist_ok=True)
             write_state(snapshots/f'{owner}.pt',bank[owner])
@@ -372,23 +429,24 @@ def run(args):
         json_write(Path(args.output).with_suffix('.curves.json'),curves)
     elif args.command=='eval':
         json_write(args.output,eval_workers(args,runtime,plan,solutions))
-    if args.command=='collect' and runtime.base_outputs:
-        json_write(Path(args.output).with_suffix('.base.json'),runtime.base_outputs)
+    if args.command=='collect' and runtime.generated_base:
+        json_write(Path(args.output).with_suffix('.base.json'),runtime.generated_prefixes())
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest='command',required=True)
-    for name in ('d0','collect','solve','s0','beta','train','eval','score-input','summarize'):
+    for name in ('d0','prefix','collect','solve','s0','beta','train','eval','score-input','summarize'):
         p = commands.add_parser(name)
         p.add_argument('--output',required=True)
-        if name in {'collect','solve','s0','beta','train','eval'}:
+        if name in {'prefix','collect','solve','s0','beta','train','eval'}:
             p.add_argument('--manifest',required=True)
-        if name in {'collect','beta','train','eval'}:
+        if name in {'prefix','collect','beta','train','eval'}:
             p.add_argument('--contract',required=True)
             p.add_argument('--shard',type=int,default=0)
             p.add_argument('--shards',type=int,default=1)
-        if name in {'collect','s0','beta','train','eval'}:
+            p.add_argument('--base-prefixes',nargs='+')
+        if name in {'prefix','collect','s0','beta','train','eval'}:
             p.add_argument('--solution',required=name in {'s0','beta','train'})
         if name in {'solve','s0','eval'}:
             p.add_argument('--features',nargs='+',required=name!='eval')
@@ -399,9 +457,13 @@ def main():
         if name=='d0':
             p.add_argument('--diagnostics',required=True)
             p.add_argument('--images',required=True)
-        if name=='collect':
+            p.add_argument('--reference-audit')
+        if name in {'collect','prefix'}:
             p.add_argument('--part',choices=('development','evaluation'),required=True)
+        if name=='collect':
             p.add_argument('--references')
+        if name in {'prefix','collect'}:
+            p.add_argument('--roles',nargs='+')
         if name=='solve':
             p.add_argument('--references',nargs='+',required=True)
             p.add_argument('--device',default='cpu')
@@ -411,6 +473,9 @@ def main():
             p.add_argument('--bank',nargs='+')
             p.add_argument('--bank-arm',choices=('V-TT','V-TT-ft'),default='V-TT')
             p.add_argument('--bank-pilot',action='store_true')
+            p.add_argument('--stage1b-arms',nargs='+',choices=('P1','P2','P3','P4','MDU'),
+                           default=('P1','P2','P3','P4','MDU'))
+            p.add_argument('--owner-only',action='store_true')
             p.add_argument('--decisions')
         if name in {'summarize','score-input'}:
             p.add_argument('--inputs',nargs='+',required=True)
