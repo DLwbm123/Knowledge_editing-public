@@ -5,6 +5,7 @@ from torch import nn
 
 from experiments.med_scope_subspace_v1.dense_writer import DenseReadIn, principal_angles
 from experiments.med_scope_subspace_v1.s1_dense import calibration_selection
+from experiments.med_scope_subspace_v1.s1_dense_report import judge
 from experiments.med_scope_subspace_v1.train_value import train
 
 
@@ -111,6 +112,24 @@ class WriterTests(unittest.TestCase):
         self.assertEqual(calibration_selection([partial,joint,fail],1.)['beta'],1.)
         self.assertEqual(calibration_selection([partial,fail],1.)['ku_arms'],['V-U'])
         self.assertEqual(calibration_selection([fail],1.)['training_arms'],[])
+
+    def test_visual_floor_still_requires_kl_superiority(self):
+        from collections import Counter
+
+        p4 = {'hold_vis':dict(target_exact=1,exact_support=15)}
+        source = {'native':dict(core_correct=30,medians={'answer_nll':.01}),
+                  'fit':dict(core_correct=120,medians={'answer_nll':.01})}
+        effects = {'exact':dict(ci95=[-.03,.04]),'base_kl':dict(ci95=[-.04,-.01])}
+        report = {'groups':{'P4':p4,'V-U':source},'paired':{
+            'V-U vs P4 – hold_vis':dict(effects=effects),
+            'V-U vs P4 – hold_ind':dict(effects=effects),
+            'V-U vs P4 – official_ind':dict(effects={'core':dict(ci95=[-.01,.07])},unknown=0)}}
+        self.assertTrue(judge('V-U',report,Counter())['visual_superior'])
+        effects['base_kl']['ci95'][1] = 0
+        self.assertFalse(judge('V-U',report,Counter())['visual_superior'])
+        effects['base_kl']['ci95'][1] = -.01
+        p4['hold_vis']['target_exact'] = 2
+        self.assertFalse(judge('V-U',report,Counter())['visual_superior'])
 
 
 if __name__=='__main__':

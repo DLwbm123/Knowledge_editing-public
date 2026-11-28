@@ -4,6 +4,7 @@ from hashlib import sha256
 from pathlib import Path
 import statistics
 import sys
+import time
 
 import torch
 
@@ -179,8 +180,24 @@ def run():
                  medians={a:statistics.median(x for v in grid.values() for x in v[str(m)][a]) for a in KU_ARMS})
             for m in MULTIPLIERS]
         selection = calibration_selection(candidates,warm['reference'])
+        chain = json_read('chain.json')
+        grid_seconds = json_read('grid.exit.json')['ended']-json_read('grid.start.json')['started']
+        seconds_per_step = grid_seconds/(4*len(KU_ARMS)*len(MULTIPLIERS)*160)
+        remaining = chain['deadline']-time.time()
+        arms = selection['training_arms']
+        deferred = []
+
+        def projected():
+            return 2400*seconds_per_step*(len(arms)+.25*('V-SGD-dense-vis' in arms))+4500
+
+        for optional in ('V-SGD-TT','V-SGD-dense'):
+            if optional in arms and projected()>remaining:
+                arms.remove(optional)
+                deferred.append(optional)
         json_write('selection.json',dict(selection,lock=lock,reference=warm['reference'],
-                                         candidates=candidates,candidate_steps=160))
+            candidates=candidates,candidate_steps=160,grid_seconds_per_step=seconds_per_step,
+            projected_remaining_seconds=projected() if arms else 0,available_seconds=remaining,
+            deferred_controls=deferred))
         return
 
     lane = int(sys.argv[2])
@@ -236,6 +253,10 @@ def run():
         bank = {}
         folder = Path(f'parts{lane}')
         folder.mkdir(exist_ok=True)
+        wall_start = time.time()
+        completed = 0
+        total = len(sorted(solutions)[lane::2])*len(selection['training_arms'])
+        checkpoint = set()
         for o in sorted(solutions)[lane::2]:
             params = inputs[o]
             bank[o] = {}
@@ -255,6 +276,15 @@ def run():
                     read_lr=params['lr'] if dense else 1e-3,
                     angle_basis=params['ku_basis'] if arm!='V-U' else None)
                 traces[arm][0]['ku_angles_deg_before_training'] = principal_angles(initial_read,params['ku_basis'])
+                completed += 1
+                elapsed = time.time()-wall_start
+                forecast = elapsed*(total-completed)/completed+4500
+                for tag,hit in (('hour1',elapsed>=3600),('half',2*completed>=total)):
+                    if hit and tag not in checkpoint:
+                        json_write(f'{tag}-lane{lane}.json',dict(completed=completed,total=total,
+                            seconds_per_update=elapsed/(160*completed), remaining_seconds=forecast,
+                            available_seconds=runtime.deadline-time.time()))
+                        checkpoint.add(tag)
                 print('TRAINED',o,arm,flush=True)
             write_state(folder/f'{o}.pt',bank[o])
             json_write(folder/f'{o}.json',traces)
