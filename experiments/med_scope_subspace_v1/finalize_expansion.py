@@ -65,7 +65,7 @@ def main(root, s0_path, transforms_path):
     neg_review = load(root/'negative_input.private.json')
     for row in neg_review:
         row['stratum'] = labels['negative']['decisions'].get(row['opaque_query_id'],'unknown')
-    final_review = blind_csv(root/'negatives_by_model_label_human_review.private.csv',neg_review,SEED)
+    final_review = blind_csv(root/'negatives_by_model_label_human_review.private.csv',neg_review,SEED,reveal_family=False)
 
     known_cal = {r['source_sha256'] for r in plan['rows'] if r['role'].startswith('cal_')}
     known_eval = {r['source_sha256'] for r in plan['rows'] if r['role'] in {'hold_ind','hold_vis','ood'}}

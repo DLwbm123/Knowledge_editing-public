@@ -1,4 +1,4 @@
-"""Verify the locked Lingshu architecture and run its ten-case GPU preflight."""
+"""Verify Lingshu architecture and generate its locked preflight and Base cases."""
 import json
 import os
 from pathlib import Path
@@ -43,8 +43,8 @@ def main():
         layer_check(model,index)
         print(json.dumps(info))
         return
-    if mode!='smoke' or torch.cuda.device_count()!=1:
-        raise ValueError('L0 smoke needs precisely one pinned device')
+    if mode not in {'smoke','base'} or torch.cuda.device_count()!=1:
+        raise ValueError('Lingshu inference needs precisely one pinned device')
     cfg = read(root/'launch.json')
     torch.cuda.set_per_process_memory_fraction(cfg['memory_bytes'] / torch.cuda.get_device_properties(0).total_memory)
     torch.set_num_threads(1)
@@ -59,11 +59,16 @@ def main():
     hook = MedTraceLayerHook(layer,expert)
     from PIL import Image
     rows = read(root/'examples.json')
-    assert len(rows)==10 and len({x['image_sha256'] for x in rows})==10
+    if mode=='smoke':
+        assert len(rows)==10 and len({x['image_sha256'] for x in rows})==10
+    else:
+        assert len(rows)==cfg['events'] and len({x['id'] for x in rows})==len(rows)
     receipt = []
     stops = model.generation_config.eos_token_id
     stops = [stops] if isinstance(stops,int) else stops
 
+    if mode=='base':
+        (root/'generation.private.jsonl').touch(exist_ok=False)
     with torch.no_grad():
         for i,row in enumerate(rows):
             if time.time()>=cfg['deadline']-20:
@@ -76,7 +81,7 @@ def main():
             msg = [dict(role='user',content=[dict(type='image',image=image),dict(type='text',text=row['question'])])]
             prompt = processor.apply_chat_template(msg,tokenize=False,add_generation_prompt=True)
             inputs = processor(text=[prompt],images=[image],return_tensors='pt').to(device)
-            if i==0:
+            if mode=='smoke' and i==0:
                 n = inputs['input_ids'].shape[1]
                 eos = processor.tokenizer.eos_token_id
                 tokens = processor.tokenizer(row['answer'],add_special_tokens=False).input_ids+[eos]
@@ -107,7 +112,19 @@ def main():
             suffix = result[0,inputs['input_ids'].shape[1]:].tolist()
             text = processor.decode(suffix,skip_special_tokens=True)
             receipt.append(dict(tokens=len(suffix),eos=bool(suffix and suffix[-1] in stops),nonempty=bool(text.strip())))
-            print('CHECK',i+1,len(suffix),receipt[-1]['eos'],flush=True)
+            if mode=='base':
+                with (root/'generation.private.jsonl').open('a') as stream:
+                    event = {k:row[k] for k in ('id','owner','dataset','split','role','question','answer')}
+                    event['generation'] = dict(text=text,tokens=suffix,**{
+                         k:v for k,v in receipt[-1].items() if k!='tokens'})
+                    print(json.dumps(event,ensure_ascii=False,allow_nan=False),file=stream)
+            if mode=='smoke' or (i+1)%10==0:
+                print('CHECK',i+1,len(suffix),receipt[-1]['eos'],flush=True)
+    if mode=='base':
+        with (root/'done.json').open('x') as stream:
+            json.dump(dict(info,events=len(receipt),valid=sum(
+                r['eos'] and r['nonempty'] and 0<r['tokens']<1024 for r in receipt)),stream)
+        return
     assert all(x['eos'] and x['nonempty'] and 0<x['tokens']<1024 for x in receipt)
     with (root/'done.json').open('x') as f:
         json.dump(dict(info,smoke=receipt,zero_residual_identical=True,first_answer_mask_valid=True),f)

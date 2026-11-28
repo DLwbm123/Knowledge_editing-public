@@ -40,7 +40,7 @@ def key(kind, private_id):
     return sha256(json.dumps([kind,private_id],ensure_ascii=False).encode()).hexdigest()
 
 
-def blind_csv(path, rows, seed):
+def blind_csv(path, rows, seed, *, reveal_family=True):
     rng = random.Random(seed)
     groups = defaultdict(list)
     for row in rows:
@@ -51,9 +51,11 @@ def blind_csv(path, rows, seed):
     rng.shuffle(sampled)
     with path.open('x',newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(('id','stratum','source_question','source_reference','candidate','human_verdict'))
+        family = ('family',) if reveal_family else ()
+        writer.writerow(('id',*family,'source_question','source_reference','candidate','human_verdict'))
         for r in sampled:
-            writer.writerow((r['opaque_query_id'],r['stratum'],r['question'],r['gold_answer'],
+            family = (r['stratum'],) if reveal_family else ()
+            writer.writerow((r['opaque_query_id'],*family,r['question'],r['gold_answer'],
                              r['raw_base_answer'],''))
     return {s:min(30,len(v)) for s,v in sorted(groups.items())}
 
@@ -118,7 +120,7 @@ def main(root, prior, s0, historical):
         assert len({r['opaque_query_id'] for r in rows})==len(rows)
         write(root/f'{kind}_input.private.json',rows)
     view_sample = blind_csv(root/'views_human_review.private.csv',payloads['view'],SEED)
-    neg_sample = blind_csv(root/'negatives_human_review.private.csv',payloads['negative'],SEED)
+    neg_sample = blind_csv(root/'negatives_human_review.private.csv',payloads['negative'],SEED,reveal_family=False)
 
     old_cal = {images[e['owner']] for e in old['entries'] if e['owner'] in s0_cal}
     old_eval = {images[e['owner']] for e in old['entries'] if e['owner'] not in s0_cal}
