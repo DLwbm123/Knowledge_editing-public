@@ -406,7 +406,7 @@ MDU 的全 T2L 与间接提问读入比中位数差为 **−0.174 [−0.247, −
 
 [开发侧 KL 标定](MDU_V2_STAGE0_KL_CALIBRATION_ZH.md)
 
-[第二骨干机制复现](MDU_V2_QWEN_MECHANISM_ZH.md)
+[第二骨干机制复现](MDU_V2_QWEN_MECHANISM_ZH.md) · [Qwen 冻结输出补评](MDU_V2_QWEN_CORE_SUPPLEMENT.json)
 
 [加大 KL 系数的开发复验](MDU_V2_STAGE0_KL_CALIBRATION_EXTENDED_ZH.md)
 

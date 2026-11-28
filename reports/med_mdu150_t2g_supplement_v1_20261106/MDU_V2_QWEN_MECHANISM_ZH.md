@@ -15,3 +15,22 @@
 | official_distractor_insertion | 27 | 19 | 8 | 0.9890 | 0.01993 | 4.779 |
 
 留出正负例选择性间隔为 0.1353。官方 T2G 控制问法组的读入系数、图像聚类 bootstrap 及各分组残差见结果 JSON。开发数据已有第一骨干的实验曝光。
+
+## 2026-11-28 冻结输出补评
+
+只补评上一轮 45 个未知去重载荷，保留 140 个已有判定。45 个载荷全部返回有效判定，覆盖 51 个原未知事件。未重新生成或训练。评分沿用同一方法盲 CORE 合同与 `gpt-6-astra` medium，服务使用模型别名。
+
+| 问法 | CORE | 补齐事件 |
+|---|---:|---:|
+| holdout_context | 27/27 | 8 |
+| holdout_modal | 25/27 | 9 |
+| independent | 15/27 | 4 |
+| native | 27/27 | 4 |
+| official_distractor_insertion | 27/27 | 8 |
+| official_negation_uncertainty | 25/27 | 4 |
+| official_numeric_perturbation | 24/26 | 8 |
+| official_paraphrase | 27/27 | 6 |
+
+官方四类 T2G 合计 103/107。原回归程序在完整评分上仍返回拟合不可用，读入关联没有得到可报告的回归估计。
+
+[冻结输出补评聚合](MDU_V2_QWEN_CORE_SUPPLEMENT.json)
