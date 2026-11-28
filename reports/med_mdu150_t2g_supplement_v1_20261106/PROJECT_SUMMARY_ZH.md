@@ -410,6 +410,8 @@ MDU 的全 T2L 与间接提问读入比中位数差为 **−0.174 [−0.247, −
 
 [加大 KL 系数的开发复验](MDU_V2_STAGE0_KL_CALIBRATION_EXTENDED_ZH.md)
 
+[阶段 1 四臂结果](MDU_V2_STAGE1_MATCHED_PILOT_ZH.md)
+
 ## 6. GitHub 和复现入口
 
 | 用途 | 仓库或版本 |
