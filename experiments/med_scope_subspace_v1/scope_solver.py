@@ -25,6 +25,55 @@ class Moment:
         z = self.rows @ right
         return z.T @ z
 
+    def tt_gram(self, g4, modes):
+        x = (self.rows.reshape(-1, modes, g4.size(1)) @ g4.T).flatten(1)
+        return x.T @ x
+
+    def compress_g3(self, g3):
+        rank, modes, bond = g3.shape
+        # Keep the low-rank factor for small cohorts.
+        rows = torch.einsum('nij,ris->nrsj', self.rows.reshape(len(self.rows), modes, -1), g3)
+        rows = rows.reshape(len(rows), rank, -1)
+
+        def gram(g4):
+            projected = rows @ g4.flatten()
+            return projected.T @ projected
+
+        return gram
+
+
+@dataclass(frozen=True)
+class CovarianceMoment:
+    """Exact Gram for the large shared cohort, cached once on the target device."""
+    matrix: torch.Tensor
+
+    def gram(self, right):
+        return right.T @ (self.matrix @ right)
+
+    def tt_gram(self, g4, modes):
+        width = g4.size(1)
+        bond = g4.size(0)
+        blocks = self.matrix.reshape(modes,width,modes,width) @ g4.T
+        left = blocks.permute(0,2,3,1).reshape(modes,modes*bond,width)
+        return (left @ g4.T).transpose(1,2).reshape(modes*bond,modes*bond)
+
+    def compress_g3(self, g3):
+        rank, modes, bond = g3.shape
+        width = self.matrix.size(0) // modes
+        projection = g3.transpose(1, 2).reshape(rank * bond, modes)
+        # Apply G3 along each TT mode of the background covariance before Adam.
+        blocks = self.matrix.reshape(modes, width, modes * width).transpose(0, 1)
+        left = (projection @ blocks).reshape(width, rank * bond, modes, width)
+        right = left.transpose(2, 3).reshape(width * rank * bond, width, modes) @ projection.T
+        reduced = right.reshape(width, rank * bond, width, rank * bond)
+        reduced = reduced.permute(1, 0, 3, 2).contiguous().reshape(rank, bond * width, rank, bond * width)
+
+        def gram(g4):
+            flat = g4.flatten()
+            return ((reduced @ flat).transpose(1, 2)) @ flat
+
+        return gram
+
 
 def input_matrix(g3, g4):
     return (g3 @ g4).flatten(1)
@@ -60,10 +109,23 @@ def objective(a, positive, negatives, ridge):
     return torch.trace(torch.linalg.solve(noise, signal))
 
 
+def compress_objective(g3, positive, negatives, ridge):
+    signal = positive.compress_g3(g3)
+    terms = [(weight, moment.compress_g3(g3)) for weight, moment in negatives if weight]
+
+    def evaluate(g4):
+        a = input_matrix(g3, g4)
+        noise = ridge * (a @ a.T)
+        for weight, gram in terms:
+            noise = noise + weight * gram(g4)
+        return torch.trace(torch.linalg.solve(noise, signal(g4)))
+
+    return evaluate
+
+
 def g3_step(g4, positive, negatives, ridge, modes, rank=4):
     def projected(moment):
-        x = (moment.rows.reshape(-1, modes, g4.size(1)) @ g4.T).flatten(1)
-        return x.T @ x
+        return moment.tt_gram(g4,modes)
 
     noise = ridge * torch.kron(torch.eye(modes, device=g4.device, dtype=g4.dtype),
                                (g4 @ g4.T).contiguous())
@@ -76,22 +138,27 @@ def g3_step(g4, positive, negatives, ridge, modes, rank=4):
 
 class BackgroundInverse:
     """Shared exact scalar-ridge inverse, factored once per background weight."""
-    def __init__(self, bg, gamma, ridge, dim):
+    def __init__(self, bg, gamma, ridge, dim, background_gram=None):
         if ridge <= 0 or gamma < 0:
             raise ValueError('Invalid regularization')
         self.ridge = ridge
         self.rows = None
         self.chol = None
         if gamma:
-            y = bg.rows.to('cpu', torch.float64) * gamma ** .5
-            if y.size(0) < dim:
-                self.rows = y
-                gram = (y @ y.T) / ridge
-                gram.diagonal().add_(1)
-            else:
-                # This shared spectral factor is the only d-by-d object in K-U.
-                gram = y.T @ y
+            if background_gram is not None:
+                if background_gram.shape!=(dim,dim) or background_gram.dtype!=torch.float64:
+                    raise ValueError('Invalid shared background Gram')
+                gram = background_gram.to('cpu') * gamma
                 gram.diagonal().add_(ridge)
+            else:
+                y = bg.rows.to('cpu', torch.float64) * gamma ** .5
+                if y.size(0) < dim:
+                    self.rows = y
+                    gram = (y @ y.T) / ridge
+                    gram.diagonal().add_(1)
+                else:
+                    gram = y.T @ y
+                    gram.diagonal().add_(ridge)
             self.chol = torch.linalg.cholesky(gram)
 
     def apply(self, rhs):
@@ -129,12 +196,14 @@ def tt_svd(a, modes=112, bond=8):
     return vh[:bond].contiguous()
 
 
-def fit(positive, negatives, ridge, initial_g4, modes=112, rank=4, rounds=10, steps=50):
+def fit(positive, negatives, ridge, initial_g4, modes=112, rank=4, rounds=10, steps=50, *, profile=None):
     begin = time.monotonic()
     g4 = row_basis(initial_g4.to(positive.rows)).detach().requires_grad_()
     adam = torch.optim.Adam([g4], lr=.01)
     trace = []
     for iteration in range(rounds):
+        if profile is not None:
+            phase_started = time.monotonic()
         with torch.no_grad():
             if iteration:
                 g4.copy_(row_basis(g4))
@@ -144,15 +213,24 @@ def fit(positive, negatives, ridge, initial_g4, modes=112, rank=4, rounds=10, st
             if trace and current < trace[-1] - 1e-8 * abs(trace[-1]):
                 raise RuntimeError('G3 exact step decreased objective')
             trace.append(current)
+            if profile is not None:
+                profile['g3'] += time.monotonic() - phase_started
+                phase_started = time.monotonic()
+            g4_objective = compress_objective(g3, positive, negatives, ridge)
+            if profile is not None:
+                if g4.is_cuda:
+                    torch.cuda.synchronize(g4.device)
+                profile['compression'] += time.monotonic() - phase_started
+                phase_started = time.monotonic()
         for _ in range(steps):
             adam.zero_grad(set_to_none=True)
-            (-objective(input_matrix(g3, g4), positive, negatives, ridge)).backward()
+            (-g4_objective(g4)).backward()
             saved = g4.detach().clone()
             state = copy.deepcopy(adam.state_dict())
             adam.step()
             with torch.no_grad():
                 try:
-                    proposal = float(objective(input_matrix(g3, g4), positive, negatives, ridge))
+                    proposal = float(g4_objective(g4))
                 except torch.linalg.LinAlgError:
                     proposal = float('nan')
                 if not (abs(proposal) < float('inf') and proposal >= current - 1e-8 * abs(current)):
@@ -162,6 +240,9 @@ def fit(positive, negatives, ridge, initial_g4, modes=112, rank=4, rounds=10, st
                 else:
                     current = proposal
                 trace.append(current)
+        if profile is not None:
+            profile['adam'] += time.monotonic() - phase_started
+        del g4_objective
     with torch.no_grad():
         # End at a G3 optimum so the reported eigenvalues and final objective agree.
         vals, g3 = g3_step(g4, positive, negatives, ridge, modes, rank)

@@ -9,7 +9,7 @@ from experiments.med_scope_subspace_v1.evaluate import scope_metrics, routing_re
 from experiments.med_scope_subspace_v1.features import load_manifest, normalized_positions
 from experiments.med_scope_subspace_v1.router import ScopeRouter
 from experiments.med_scope_subspace_v1.scope_solver import (
-    BackgroundInverse, Moment, fit, g3_step, generalized_top, input_matrix, objective,
+    BackgroundInverse, CovarianceMoment, Moment, compress_objective, fit, g3_step, generalized_top, input_matrix, objective,
     orthogonalize, row_basis, unrestricted,
 )
 
@@ -28,6 +28,26 @@ class ScopeTests(unittest.TestCase):
         a = input_matrix(g3,g4)
         torch.testing.assert_close(p @ g3.flatten(1).T,a.T)
         torch.testing.assert_close((x.reshape(-1,5,6) @ g4.T).flatten(1),x @ p)
+
+    def test_precomputed_background_matches_rows(self):
+        moment = Moment.from_queries([self.randn(11,30),self.randn(55,30)])
+        gram = moment.rows.T @ moment.rows
+        covariance = CovarianceMoment(gram)
+        g3,g4 = self.randn(4,5,3),self.randn(3,6).requires_grad_()
+        torch.testing.assert_close(covariance.tt_gram(g4,5),moment.tt_gram(g4,5))
+        positive = Moment.from_queries([self.randn(20,30)])
+        a = input_matrix(g3,g4)
+        losses = [objective(a,positive,[(1.3,bg)],.01) for bg in (moment,covariance)]
+        torch.testing.assert_close(*losses)
+        reduced = compress_objective(g3,positive,[(1.3,covariance)],.01)(g4)
+        reference_gradient = torch.autograd.grad(losses[0],g4,retain_graph=True)[0]
+        torch.testing.assert_close(reference_gradient,torch.autograd.grad(losses[1],g4)[0])
+        torch.testing.assert_close(reduced,losses[0],rtol=1e-11,atol=1e-13)
+        torch.testing.assert_close(torch.autograd.grad(reduced,g4)[0],reference_gradient,rtol=1e-11,atol=1e-13)
+        rhs = self.randn(30,8)
+        original = BackgroundInverse(moment,1.3,.01,30)
+        cached = BackgroundInverse(None,1.3,.01,30,gram)
+        torch.testing.assert_close(original.apply(rhs),cached.apply(rhs))
 
     def test_weighting_and_gauge(self):
         p = Moment.from_queries([self.randn(2,30),self.randn(6,30)])
