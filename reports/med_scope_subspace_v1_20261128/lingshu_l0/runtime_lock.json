@@ -1,0 +1,25 @@
+{
+  "lingshu_revision": "b98aecd41dfd9d7545a6b8e2f4743ae8471bd7a9",
+  "qwen_reference_revision": "cc594898137f460bfe9f0759e9844b3ce807cfb5",
+  "architecture": {
+    "model_type": "qwen2_5_vl",
+    "num_hidden_layers": 28,
+    "hidden_size": 3584,
+    "intermediate_size": 18944
+  },
+  "transformers": "4.51.3",
+  "target_layer": 18,
+  "tt_params": 8256,
+  "inference": {
+    "dtype": "bfloat16",
+    "tt_dtype": "float32",
+    "attention": "sdpa",
+    "visual_tokens": [
+      256,
+      1280
+    ],
+    "do_sample": false,
+    "repetition_penalty": 1.05,
+    "max_new_tokens": 1024
+  }
+}
