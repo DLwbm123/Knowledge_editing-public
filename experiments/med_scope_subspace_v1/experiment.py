@@ -473,7 +473,7 @@ def main():
             p.add_argument('--bank',nargs='+')
             p.add_argument('--bank-arm',choices=('V-TT','V-TT-ft'),default='V-TT')
             p.add_argument('--writer-arms',nargs='+',
-                           choices=('V-TT','V-TT-ft','V-U','V-U-ft','V-SGD-dense','V-SGD-TT'),
+                           choices=('V-TT','V-TT-ft','V-U','V-U-ft','V-SGD-dense','V-SGD-dense-vis','V-SGD-TT'),
                            default=('V-TT','V-TT-ft'))
             p.add_argument('--bank-pilot',action='store_true')
             p.add_argument('--stage1b-arms',nargs='+',choices=('P1','P2','P3','P4','MDU'),

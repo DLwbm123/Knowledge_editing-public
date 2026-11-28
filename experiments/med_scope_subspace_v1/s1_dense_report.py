@@ -23,11 +23,15 @@ def judge(arm, report, invalid):
         return result[0 if lower else 1]
 
     valid = lambda role: not (invalid[arm,role] or invalid['P4',role])
+    visual = report['groups']['P4']['hold_vis']
+    floor = visual['target_exact'] * 15 <= visual['exact_support']
+    visual_exact_upper = limit('hold_vis','exact')
     return dict(
         official_noninferior=valid('official_ind') and
             paired[f'{arm} vs P4 – official_ind']['unknown']==0 and
             limit('official_ind','core',lower=True)>=-.10,
-        visual_superior=valid('hold_vis') and limit('hold_vis','exact')<0 and limit('hold_vis','base_kl')<0,
+        visual_superior=valid('hold_vis') and limit('hold_vis','base_kl')<0 and
+            (visual_exact_upper<=.05 if floor else visual_exact_upper<0),
         independent_noninferior=valid('hold_ind') and limit('hold_ind','exact')<=.05 and
             limit('hold_ind','base_kl')<=.001,
         source_preserved=all(valid(role) and groups[role]['core_correct']==REQUIRED[role] and
@@ -54,7 +58,8 @@ def report(rows, decisions, arms):
             invalid[r['route'],role] += 1
         elif role in {'official_ind','native','fit'} and r['core'] is None:
             invalid[r['route'],role] += 1
-    controls = [('V-SGD-dense','V-U-ft'),('V-SGD-TT','V-SGD-dense'),('V-U-ft','V-U')]
+    controls = [('V-SGD-dense','V-U-ft'),('V-SGD-dense-vis','V-U-ft'),
+                ('V-SGD-dense','V-SGD-dense-vis'),('V-SGD-TT','V-SGD-dense'),('V-U','V-U-ft')]
     scored = routing_report(rows, [('P4',arm) for arm in arms]+controls)
     for arm in (*arms,'P4'):
         for role in ('native','fit'):
@@ -63,7 +68,14 @@ def report(rows, decisions, arms):
             scored['groups'][arm][role]['p95_answer_nll'] = (
                 statistics.quantiles(values,n=20,method='inclusive')[-1] if len(values)>1 else None)
     gates = {a:judge(a,scored,invalid) for a in ('V-U','V-U-ft') if a in arms}
+    visual = scored['groups']['P4']['hold_vis']
+    ref_kl = scored['groups']['P4']['hold_ind']['medians'].get('base_kl')
+    kl_ratio = {a:(scored['groups'][a]['hold_ind']['medians']['base_kl']/ref_kl
+                  if ref_kl and 'base_kl' in scored['groups'][a]['hold_ind']['medians'] else None)
+                for a in arms}
     return dict(scored,gate=gates,s2_admitted='V-U' in gates and all(gates['V-U'].values()),
+                visual_exact_floor=visual['target_exact']*15 <= visual['exact_support'],
+                independent_base_kl_ratio_to_p4=kl_ratio,
                 invalid={f'{arm} {role}':n for (arm,role),n in invalid.items()})
 
 

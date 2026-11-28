@@ -15,7 +15,7 @@ from .train_value import gradient_ratio, mounted, positive, train, validate_kl
 
 
 KU_ARMS = ('V-U','V-U-ft')
-CONTROLS = ('V-SGD-dense','V-SGD-TT')
+CONTROLS = ('V-SGD-dense','V-SGD-dense-vis','V-SGD-TT')
 MULTIPLIERS = (.3,1.,3.)
 
 
@@ -219,6 +219,17 @@ def run():
                                          fit_amplitude=norm,parameters=59904,
                                          gradient_norms=[float(g.norm()) for g in gradients]))
     elif stage=='train':
+        visual_schedules = {o:plan['schedules'][str(o)] for o in solutions}
+        for o,steps in visual_schedules.items():
+            if len(steps)!=160:
+                raise ValueError('Invalid visual-negative schedule length')
+            for mixed,base in zip(steps,schedules[o],strict=True):
+                visual_roles = sorted(events[i]['role'] for i in mixed['negatives'])
+                if (mixed['native']!=base['native'] or mixed['views']!=base['views']
+                        or visual_roles!=['train_ind','train_vis']
+                        or mixed['negatives'][0]!=base['negatives'][0]
+                        or any(events[i]['owner']!=o for i in mixed['negatives'])):
+                    raise ValueError('Visual control schedule changed')
         selection = json_read('selection.json')
         if selection['lock']!=lock or not selection['ku_arms']:
             raise ValueError('No admitted dense route')
@@ -232,16 +243,18 @@ def run():
             for arm in selection['training_arms']:
                 dense = arm != 'V-SGD-TT'
                 if dense:
-                    start = dict(A=params['med' if arm=='V-SGD-dense' else 'ku'])
+                    start = dict(A=params['med' if arm in CONTROLS else 'ku'])
                 else:
                     start = dict(G3=refs[o]['MED']['G3']*params['med_scale'],G4=refs[o]['MED']['G4'])
                 runtime.seed(runtime.by_order[o]['seed'])
+                schedule = visual_schedules[o] if arm=='V-SGD-dense-vis' else schedules[o]
+                from .scope_solver import input_matrix
+                initial_read = start['A'] if dense else input_matrix(start['G3'],start['G4'][:,:,0])
                 bank[o][arm],traces[arm] = train(runtime,runtime.expert(o,dense=dense),
-                    start,events,schedules[o],selection['beta'],arm!='V-U',
+                    start,events,schedule,selection['beta'],arm!='V-U',
                     read_lr=params['lr'] if dense else 1e-3,
-                    angle_basis=params['ku_basis'] if dense and arm!='V-U' else None)
-                if dense:
-                    traces[arm][0]['ku_angles_deg_before_training'] = principal_angles(start['A'],params['ku_basis'])
+                    angle_basis=params['ku_basis'] if arm!='V-U' else None)
+                traces[arm][0]['ku_angles_deg_before_training'] = principal_angles(initial_read,params['ku_basis'])
                 print('TRAINED',o,arm,flush=True)
             write_state(folder/f'{o}.pt',bank[o])
             json_write(folder/f'{o}.json',traces)

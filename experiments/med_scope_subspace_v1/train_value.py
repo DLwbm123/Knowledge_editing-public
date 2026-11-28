@@ -108,7 +108,7 @@ def train(runtime, expert, solution, events, schedule, beta, joint, clip=1., *,
             observation = {'ce':losses,'kl':locality,'gradient_norm':float(norm)}
             if angle_basis is not None and (number in (1,40,80,120,160) or number==len(schedule)):
                 from .dense_writer import principal_angles
-                observation['ku_angles_deg'] = principal_angles(expert.A, angle_basis)
+                observation['ku_angles_deg'] = principal_angles(expert.factors()[1], angle_basis)
             trace.append(observation)
     if not joint and any(not torch.equal(p, s) for p, s in zip(a, snapshots, strict=True)):
         raise RuntimeError('Read-in changed in the frozen arm')
