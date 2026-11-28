@@ -130,7 +130,7 @@ def d0(rows, image_groups, replicates=2000):
                 invalid=dict(unavailable),decision=decision)
 
 
-def routing_report(rows):
+def routing_report(rows, extra_comparisons=()):
     groups = defaultdict(list)
     for r in rows:
         groups[(r['route'],r['role'])].append(r)
@@ -163,6 +163,7 @@ def routing_report(rows):
         arms = sorted(a for a,k in groups if k==role)
         comparisons = [('P2','P4'),('MDU','P4'),('P4','V-TT'),('P4','V-TT-ft')]
         comparisons += [('R0',k) for k in arms if k!='R0']
+        comparisons += extra_comparisons
         for anchor,arm in comparisons:
             if anchor not in arms or arm not in arms:
                 continue

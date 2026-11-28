@@ -267,9 +267,13 @@ class FrozenRuntime:
                     return ck['state']
         raise KeyError((arm,owner))
 
-    def expert(self, owner, state=None):
+    def expert(self, owner, state=None, *, dense=False):
         seed = self.by_order[owner]['seed']
-        expert = self.expert_type(seed,8,8).to(self.device)
+        expert = self.expert_type(seed,8,8)
+        if dense or (state is not None and 'A' in state):
+            from .dense_writer import DenseReadIn
+            expert = DenseReadIn(expert)
+        expert.to(self.device)
         if state is not None:
             expert.load_state_dict(state,strict=True)
         return expert

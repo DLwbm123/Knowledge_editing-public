@@ -41,22 +41,26 @@ def mounted(runtime, expert):
         hook.detach()
 
 
-def train(runtime, expert, solution, events, schedule, beta, joint, clip=1.):
+def train(runtime, expert, solution, events, schedule, beta, joint, clip=1., *,
+          read_lr=1e-3, angle_basis=None):
     if not schedule or not 0 <= beta < float('inf'):
         raise ValueError('Invalid training contract')
     if any(p.requires_grad for p in runtime.model.parameters()):
         raise ValueError('Backbone must remain frozen')
     a, b = expert.parameter_groups()
     with torch.no_grad():
-        expert.G3.copy_(solution['G3'])
-        expert.G4.copy_(solution['G4'])
+        if 'A' in solution:
+            expert.A.copy_(solution['A'])
+        else:
+            expert.G3.copy_(solution['G3'])
+            expert.G4.copy_(solution['G4'])
         expert.G1.zero_()
     for p in a:
         p.requires_grad_(joint)
     snapshots = [p.detach().clone() for p in a]
     groups = [{'params': b, 'lr': 1e-3}]
     if joint:
-        groups.append({'params': a, 'lr': 1e-3})
+        groups.append({'params': a, 'lr': read_lr})
     opt = torch.optim.Adam(groups)
     used = {i for step in schedule for i in step['views'] + step['negatives'] + [step['native']]}
     batches = {}
@@ -77,7 +81,7 @@ def train(runtime, expert, solution, events, schedule, beta, joint, clip=1.):
                 base[i] = scores.log_softmax(-1)
     trace = []
     with mounted(runtime, expert) as hook:
-        for step in schedule:
+        for number, step in enumerate(schedule, 1):
             runtime.budget()
             views, negatives, native = step['views'], step['negatives'], step['native']
             if len(views) != 4 or not 1 <= len(negatives) <= 2 or native in views:
@@ -101,7 +105,11 @@ def train(runtime, expert, solution, events, schedule, beta, joint, clip=1.):
             norm = torch.nn.utils.clip_grad_norm_([p for p in expert.parameters() if p.requires_grad],
                                                   clip, error_if_nonfinite=True)
             opt.step()
-            trace.append({'ce':losses,'kl':locality,'gradient_norm':float(norm)})
+            observation = {'ce':losses,'kl':locality,'gradient_norm':float(norm)}
+            if angle_basis is not None and (number in (1,40,80,120,160) or number==len(schedule)):
+                from .dense_writer import principal_angles
+                observation['ku_angles_deg'] = principal_angles(expert.A, angle_basis)
+            trace.append(observation)
     if not joint and any(not torch.equal(p, s) for p, s in zip(a, snapshots, strict=True)):
         raise RuntimeError('Read-in changed in the frozen arm')
     return {k:v.detach().cpu() for k,v in expert.state_dict().items()}, trace

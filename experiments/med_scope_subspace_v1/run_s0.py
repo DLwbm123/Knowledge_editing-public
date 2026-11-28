@@ -21,17 +21,18 @@ def owned_bytes(root):
     return sum(p.stat().st_blocks*512 for p in root.rglob('*') if p.is_file() and not p.is_symlink())
 
 
-def run_group(name, entries, devices, deadline, cap):
+def run_group(name, entries, devices, deadline, cap, *, entrypoint=None):
     jobs = []
     root = Path.cwd()
+    entrypoint = entrypoint or 'experiments.med_scope_subspace_v1.experiment'
     def limit():
         resource.setrlimit(resource.RLIMIT_FSIZE,(4*1024**3,4*1024**3))
         resource.setrlimit(resource.RLIMIT_CORE,(0,0))
     try:
         for i,(args,gpu) in enumerate(zip(entries,devices,strict=True)):
             argv = ['w',*args]
-            payload = ('import sys;from experiments.med_scope_subspace_v1.experiment import main;'
-                       'sys.argv='+repr(argv)+';main()')
+            payload = ('import sys,runpy;sys.argv='+repr(argv)+';runpy.run_module('+repr(entrypoint)
+                       +',run_name="__main__")')
             source = Path(f'{name}.{i}.in')
             source.write_text(payload)
             with source.open() as stdin,Path(f'{name}.{i}.log').open('x') as out:

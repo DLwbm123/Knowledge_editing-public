@@ -192,8 +192,8 @@ def eval_workers(args, runtime, plan, solutions):
             methods = [(arm,selected,runtime.checkpoint(arm if selected in p_owners else 'MDU',selected)
                         if selected is not None else None) for arm in args.stage1b_arms]
         elif args.policy == 'writer':
-            methods = [('V-TT',own,bank[own]['V-TT']),('V-TT-ft',own,bank[own]['V-TT-ft']),
-                       ('P4',own,runtime.checkpoint('P4',own))]
+            methods = [(arm,own,bank[own][arm]) for arm in args.writer_arms]
+            methods.append(('P4',own,runtime.checkpoint('P4',own)))
         else:
             selected = routes[rid]
             methods = [('R0',selected,runtime.checkpoint('MDU',selected) if selected is not None else None),
@@ -219,7 +219,7 @@ def eval_workers(args, runtime, plan, solutions):
             exact = normalized == norm(target) if target is not None else None
             result.append(dict(id=rid,role=row['role'],image=row['source_sha256'],owner=own,
                               route=method,selected=selected,core=decisions.get(opaque),exact=exact,
-                              raw=output,metric=measurement,score_id=opaque,question=row['question'],reference=None if row.get('transform') in VISUAL_NEGATIVE else row.get('answer')))
+                              raw=output,metric=measurement,score_id=opaque,family=row.get('family'),question=row['question'],reference=None if row.get('transform') in VISUAL_NEGATIVE else row.get('answer')))
         if number==1 or number%20==0:
             print('EVAL',number,flush=True)
     thresholds = {k:(r.threshold if math.isfinite(r.threshold) else None) for k,r in routers.items()}
@@ -472,6 +472,9 @@ def main():
             p.add_argument('--roles',nargs='+',required=True)
             p.add_argument('--bank',nargs='+')
             p.add_argument('--bank-arm',choices=('V-TT','V-TT-ft'),default='V-TT')
+            p.add_argument('--writer-arms',nargs='+',
+                           choices=('V-TT','V-TT-ft','V-U','V-U-ft','V-SGD-dense','V-SGD-TT'),
+                           default=('V-TT','V-TT-ft'))
             p.add_argument('--bank-pilot',action='store_true')
             p.add_argument('--stage1b-arms',nargs='+',choices=('P1','P2','P3','P4','MDU'),
                            default=('P1','P2','P3','P4','MDU'))

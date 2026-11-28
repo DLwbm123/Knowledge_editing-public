@@ -3,6 +3,8 @@ import unittest
 import torch
 from torch import nn
 
+from experiments.med_scope_subspace_v1.dense_writer import DenseReadIn, principal_angles
+from experiments.med_scope_subspace_v1.s1_dense import calibration_selection
 from experiments.med_scope_subspace_v1.train_value import train
 
 
@@ -76,6 +78,39 @@ class WriterTests(unittest.TestCase):
         self.assertFalse(torch.equal(joint['G3'],source['G3']))
         self.assertIsNone(runtime.layer.weight.grad)
         self.assertEqual(len(runtime.layer._forward_hooks),0)
+
+    def test_dense_writer_trains_and_preserves_frozen_readin(self):
+        from types import SimpleNamespace
+
+        torch.manual_seed(44)
+        a = torch.randn(2,4)
+        tt = SimpleNamespace(G1=torch.zeros(1,2,2),G2=torch.randn(2,3,2),
+                             epsilon=1e-6,factors=lambda: (None,a))
+        runtime = Runtime()
+        fit = dict(inputs=torch.randn(1,5,4),labels=torch.tensor([[-100,-100,2,4,5]]))
+        events = {k:dict(role=role,batch=fit) for k,role in [('n','native'),('f','fit'),('i','train_ind')]}
+        steps = [dict(native='n',views=['f']*4,negatives=['i'])]*3
+        basis = torch.linalg.qr(a.double().T,mode='reduced').Q.T
+        with torch.no_grad():
+            self.assertEqual(DenseReadIn(tt).residual(fit['inputs']).abs().max().item(),0)
+        frozen,_ = train(runtime,DenseReadIn(tt),dict(A=a),events,steps,.3,False)
+        joint,trace = train(runtime,DenseReadIn(tt),dict(A=a),events,steps,.3,True,
+                            read_lr=.0002,angle_basis=basis)
+        self.assertTrue(torch.equal(frozen['A'],a))
+        self.assertFalse(torch.equal(joint['A'],a))
+        self.assertLess(max(principal_angles(a,basis)),1e-5)
+        self.assertEqual(len(trace[-1]['ku_angles_deg']),2)
+
+    def test_calibration_uses_first_joint_before_single(self):
+        def candidate(beta, frozen, joint):
+            return dict(beta=beta,medians={'V-U':frozen,'V-U-ft':joint})
+
+        partial = candidate(.3,0.,2.)
+        joint = candidate(1.,0.,0.)
+        fail = candidate(3.,2.,2.)
+        self.assertEqual(calibration_selection([partial,joint,fail],1.)['beta'],1.)
+        self.assertEqual(calibration_selection([partial,fail],1.)['ku_arms'],['V-U'])
+        self.assertEqual(calibration_selection([fail],1.)['training_arms'],[])
 
 
 if __name__=='__main__':
